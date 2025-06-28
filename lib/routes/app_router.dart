@@ -1,66 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:globeporter/presentation/authentication/login_screen.dart';
-import 'package:globeporter/presentation/authentication/onboarding_screen.dart';
-import 'package:globeporter/presentation/authentication/select_lang_screen.dart';
+import 'package:globeporter/presentation/authentication/view/driver_details_screen.dart';
+import 'package:globeporter/presentation/authentication/view/login_screen.dart';
+import 'package:globeporter/presentation/authentication/view/onboarding_screen.dart';
+import 'package:globeporter/presentation/authentication/view/otp_screen.dart';
+import 'package:globeporter/presentation/authentication/view/select_lang_screen.dart';
+import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart';
 import 'package:globeporter/routes/app_routes.dart';
-import '../presentation/authentication/splash_screen.dart';
+import '../presentation/authentication/view/splash_screen.dart';
 import 'error_screen.dart';
-
-// class Routes {
-//   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
-//     try {
-//       // Map<String, dynamic> args = {};
-//       // try {
-//       //   args = routeSettings.arguments != null ? routeSettings.arguments as Map<String, dynamic> : {};
-//       // } on Exception catch (e) {
-//       //   debugPrint('Arguments Error: ${e.toString()}');
-//       // }
-
-//       switch (routeSettings.name) {
-//         case SplashScreen.route:
-//           return ResponsivePageRoute(settings: routeSettings, builder: (_) => const SplashScreen());
-
-//         case SelectLangScreen.route:
-//           return ResponsivePageRoute(settings: routeSettings, builder: (_) => const SelectLangScreen());
-
-//         case OnboardingScreen.route:
-//           return ResponsivePageRoute(settings: routeSettings, builder: (_) => const OnboardingScreen());
-
-//         case LoginScreen.route:
-//           return ResponsivePageRoute(settings: routeSettings, builder: (_) => const LoginScreen());
-
-//         default:
-//           return errorRoute(routeSettings);
-//       }
-//     } catch (e) {
-//       debugPrint('Route Error: ${e.toString()}');
-//       return errorRoute(routeSettings);
-//     }
-//   }
-
-//   static Route<dynamic> errorRoute(RouteSettings routeSettings) {
-//     return ResponsivePageRoute(settings: routeSettings, builder: (_) => const ErrorScreen());
-//   }
-// }
-
-// class ResponsivePageRoute extends PageRouteBuilder {
-//   ResponsivePageRoute({super.settings, required WidgetBuilder builder, super.transitionDuration = const Duration(milliseconds: 500)})
-//     : super(
-//         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => builder(context),
-//         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-//           var begin = const Offset(1.0, 0.0);
-//           var end = Offset.zero;
-//           var curve = Curves.easeInOut;
-
-//           var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-//           var offsetAnimation = animation.drive(tween);
-
-//           return SlideTransition(position: offsetAnimation, child: child);
-//         },
-//         reverseTransitionDuration: transitionDuration,
-//       );
-// }
-
 import 'package:go_router/go_router.dart';
 
 CustomTransitionPage<T> slideTransitionPage<T>({
@@ -115,6 +62,30 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const LoginScreen(),
+      ),
+    ),
+    GoRoute(
+      name: signUpScreen,
+      path: signUpScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const SignUpScreen(),
+      ),
+    ),
+    GoRoute(
+      name: otpScreen,
+      path: otpScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const OtpScreen(),
+      ),
+    ),
+    GoRoute(
+      name: driverDetailsScreen,
+      path: driverDetailsScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const DriverDetailsScreen(),
       ),
     ),
   ],

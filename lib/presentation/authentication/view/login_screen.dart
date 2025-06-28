@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_strings.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -122,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                        hintText: 'Enter your mobile number',
+                        hintText: enterMobileText,
                         hintStyle:
                             Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
                         border: OutlineInputBorder(
@@ -158,6 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     String fullNumber = '$_selectedCountryCode${phoneController.text}';
                     debugPrint('Phone number entered: $fullNumber');
                     // Handle your login logic
+                    context.pushNamed(signUpScreen);
                   },
                   child: const Icon(Icons.arrow_forward, color: Colors.white),
                 ),
