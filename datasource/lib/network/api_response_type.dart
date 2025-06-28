@@ -1,0 +1,1 @@
+enum ApiResponseType { json, raw }

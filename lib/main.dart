@@ -1,52 +1,50 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
-import 'core/index.dart';
-import 'cubits/index.dart';
-import 'data/repositories/auth_repo.dart';
-import 'routes/app_routes.dart';
+import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_strings.dart';
+import 'package:core/di/service_locator.dart';
+import 'package:core/theme/theme_cubit.dart';
+import 'routes/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
-  // await Hive.initFlutter();
-  // await Firebase.initializeApp();
-  // Hive.registerAdapter(HiveUserModelAdapter());
-  // Box<HiveUserModel> session = await Hive.openBox('session');
-  final ApiService apiService = ApiService();
-  // FlutterNativeSplash.remove();
-  runApp(GlobePorter(authRepository: AuthRepository(apiService)));
+  setupServiceLocator();
+  runApp(GlobePorter());
   SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(statusBarColor: CustomColors.primaryColor, statusBarIconBrightness: Brightness.light, statusBarBrightness: Brightness.dark),
+    SystemUiOverlayStyle(
+      statusBarColor: primaryColor,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+    ),
   );
 }
 
 class GlobePorter extends StatelessWidget {
-  final AuthRepository authRepository;
-  const GlobePorter({super.key, required this.authRepository});
+  const GlobePorter({super.key});
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => AuthCubit(authRepository))],
-      child: ScreenUtilInit(
-        designSize: const Size(440, 956),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'GlobePorter',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: ThemeMode.light,
-          onGenerateRoute: Routes.generateRoute,
-          onUnknownRoute: Routes.errorRoute,
-          builder: (context, child) {
-            return MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
-              child: child!,
-            );
-          },
-        ),
+    final themeCubit = sl<ThemeCubit>();
+    return ScreenUtilInit(
+      designSize: const Size(440, 956),
+      child: BlocBuilder<ThemeCubit, ThemeData>(
+        bloc: themeCubit,
+        builder: (final context, final state) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            title: appNameString,
+            theme: state,
+            themeMode: ThemeMode.light,
+            routerConfig: router,
+            builder: (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
+                child: child!,
+              );
+            },
+          );
+        },
       ),
     );
   }

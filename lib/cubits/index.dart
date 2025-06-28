@@ -1,1 +1,1 @@
-export 'auth/auth_cubit.dart';
+export '../presentation/authentication/cubit/auth_cubit.dart';
