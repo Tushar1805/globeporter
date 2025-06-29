@@ -3,6 +3,7 @@ final String appLogoIcon = "assets/png/app_icon.png";
 
 // SVG Images
 final String driverWithVan = "assets/svg/driver_with_van.svg";
+final String shippedSvg = "assets/svg/shipped.svg";
 final String addSvg = "assets/svg/add.svg";
 final String homeSvg = "assets/svg/home.svg";
 final String chatSvg = "assets/svg/chat.svg";

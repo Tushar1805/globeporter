@@ -52,7 +52,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -67,18 +67,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Stack(
                 children: [
                   Container(
-                    height: 300 + statusBarHeight,
+                    height: size.height * 0.385,
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       color: Colors.green,
                       borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(100), bottomRight: Radius.circular(100)),
+                        bottomLeft: Radius.circular(125),
+                        bottomRight: Radius.circular(125),
+                      ),
                     ),
                     child: Column(
                       children: [
                         Center(
                           child: Padding(
-                            padding: EdgeInsets.only(top: statusBarHeight + 80),
+                            padding: EdgeInsets.only(top: size.height * 0.149),
                             child: SvgPicture.asset('assets/svg/logo_small.svg',
                                 width: MediaQuery.sizeOf(context).width * .4),
                           ),
@@ -88,7 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   Column(
                     children: [
-                      SizedBox(height: 180 + statusBarHeight),
+                      SizedBox(height: size.height * 0.246),
                       Expanded(
                         child: IndexedStack(
                           index: _currentIndex,
@@ -101,13 +103,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     SizedBox(
                                       width: MediaQuery.sizeOf(context).width * 1,
                                       height: MediaQuery.sizeOf(context).width * .7,
-                                      child: SvgPicture.asset('assets/svg/ellipse_shape.svg',
-                                          fit: BoxFit.contain),
+                                      child: SvgPicture.asset(
+                                        'assets/svg/ellipse_shape.svg',
+                                        fit: BoxFit.contain,
+                                      ),
                                     ),
                                     Positioned(
                                         top: 100,
                                         left: 50,
-                                        child: SvgPicture.asset(page['image']!, height: 200)),
+                                        child: SvgPicture.asset(
+                                          page['image']!,
+                                          height: page['title'] == 'Real-Time Tracking' ? 300 : 200,
+                                        )),
                                   ],
                                 ),
                                 const SizedBox(height: 40),

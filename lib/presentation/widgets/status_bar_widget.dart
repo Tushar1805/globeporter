@@ -6,17 +6,17 @@ class StatusBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final size = MediaQuery.of(context).size;
     return Stack(
       children: [
         Container(
-          height: 180 + statusBarHeight,
+          height: size.height * 0.135,
           width: double.infinity,
           decoration: const BoxDecoration(
             color: Colors.green,
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(124),
-              bottomRight: Radius.circular(124),
+              bottomLeft: Radius.circular(65),
+              bottomRight: Radius.circular(65),
             ),
           ),
         ),

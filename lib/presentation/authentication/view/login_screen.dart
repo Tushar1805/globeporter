@@ -20,6 +20,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
+    final size = MediaQuery.of(context).size;
+    debugPrint('Height: ${size.height.toString()}');
+    debugPrint('Width: ${size.width.toString()}');
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -30,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Stack(
               children: [
                 Container(
-                  height: 180 + statusBarHeight,
+                  height: size.height * 0.1735,
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: Colors.green,

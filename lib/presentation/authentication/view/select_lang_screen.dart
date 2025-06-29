@@ -74,7 +74,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
               ),
               onPressed: () {
                 // Navigator.pushNamed(context, OnboardingScreen.route);
-                context.push(onboardingScreen);
+                context.push(onboardingScreen1);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

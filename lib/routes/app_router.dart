@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:globeporter/presentation/authentication/view/driver_details_screen.dart';
 import 'package:globeporter/presentation/authentication/view/login_screen.dart';
+import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_1_screen.dart';
+import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_2_screen.dart';
+import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_3_screen.dart';
+import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_4_screen.dart';
 import 'package:globeporter/presentation/authentication/view/onboarding_screen.dart';
 import 'package:globeporter/presentation/authentication/view/otp_screen.dart';
 import 'package:globeporter/presentation/authentication/view/select_lang_screen.dart';
@@ -54,6 +58,38 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const OnboardingScreen(),
+      ),
+    ),
+    GoRoute(
+      name: onboardingScreen1,
+      path: onboardingScreen1,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const OnboardingScreen1(),
+      ),
+    ),
+    GoRoute(
+      name: onboardingScreen2,
+      path: onboardingScreen2,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const OnboardingScreen2(),
+      ),
+    ),
+    GoRoute(
+      name: onboardingScreen3,
+      path: onboardingScreen3,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const OnboardingScreen3(),
+      ),
+    ),
+    GoRoute(
+      name: onboardingScreen4,
+      path: onboardingScreen4,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const OnboardingScreen4(),
       ),
     ),
     GoRoute(
