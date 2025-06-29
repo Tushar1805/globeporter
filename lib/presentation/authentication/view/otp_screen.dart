@@ -121,11 +121,11 @@ class _OtpScreenState extends State<OtpScreen> {
                       //     Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     ),
@@ -160,11 +160,11 @@ class _OtpScreenState extends State<OtpScreen> {
                       //     Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     ),
@@ -199,11 +199,11 @@ class _OtpScreenState extends State<OtpScreen> {
                       //     Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     ),
