@@ -17,7 +17,7 @@ class BottomCurveClipper extends CustomClipper<Path> {
 
     path.quadraticBezierTo(
       size.width / 2, size.height + 60, // control point
-      size.width, size.height - 60,    // end point
+      size.width, size.height - 60, // end point
     );
 
     path.lineTo(size.width, 0);
@@ -165,6 +165,7 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                         ),
 
                         // Bottom Controls
+                         
 
                         const SizedBox(height: 24),
                       ],

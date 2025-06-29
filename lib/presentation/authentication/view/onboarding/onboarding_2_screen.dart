@@ -179,9 +179,6 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
                             ),
                           ],
                         ),
-
-                        // Bottom Controls
-
                         const SizedBox(height: 24),
                       ],
                     ),
@@ -190,6 +187,18 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
               ),
             ),
           ),
+          // Bottom Controls
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: TextButton(
+              onPressed: onSkip,
+              child: Text(
+                'Skip',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 22),
+              ),
+            ),
+          ),
+          SizedBox(height: size.height * 0.03),
         ],
       ),
     );

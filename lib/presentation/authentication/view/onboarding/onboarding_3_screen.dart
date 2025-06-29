@@ -14,8 +14,8 @@ class BottomCurveClipper extends CustomClipper<Path> {
     path.lineTo(0, size.height);
 
     path.quadraticBezierTo(
-      size.width * 0.4, size.height, // control point
-      size.width, size.height * 0.65, // end point
+      size.width * 0.5, size.height, // control point
+      size.width, size.height * 0.6, // end point
     );
 
     path.lineTo(size.width, 0);
@@ -193,6 +193,17 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: TextButton(
+              onPressed: onSkip,
+              child: Text(
+                'Skip',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 22),
+              ),
+            ),
+          ),
+          SizedBox(height: size.height * 0.03),
         ],
       ),
     );

@@ -87,7 +87,10 @@ class _LoginScreenState extends State<LoginScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset('assets/svg/driver_with_van.svg', width: size.width * .7),
+                SvgPicture.asset(
+                  'assets/svg/driver_with_van.svg',
+                  width: size.width * .7,
+                ),
               ],
             ),
 

@@ -52,7 +52,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   Text(
                     'Welcome!',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor, fontSize: 28),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: primaryColor, fontSize: 28),
                   ),
                 ],
               ),
@@ -73,7 +76,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
                         hintText: enterMobileText,
-                        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+                        hintStyle:
+                            Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                         border: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.green),
                           borderRadius: BorderRadius.circular(4),
@@ -186,7 +190,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
                     'Register Now',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),

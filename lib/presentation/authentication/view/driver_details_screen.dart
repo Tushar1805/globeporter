@@ -17,6 +17,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
   final TextEditingController vehicleNoController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -32,7 +33,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(driverWithVan, height: 160),
+                SvgPicture.asset(driverWithVan, width: size.width * .7),
               ],
             ),
 
@@ -45,7 +46,10 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                 children: [
                   Text(
                     'Update Personal Details',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: primaryColor, fontSize: 28),
                   ),
                 ],
               ),

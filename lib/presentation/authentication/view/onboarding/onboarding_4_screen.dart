@@ -180,6 +180,17 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: TextButton(
+              onPressed: onSkip,
+              child: Text(
+                'Skip',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 22),
+              ),
+            ),
+          ),
+          SizedBox(height: size.height * 0.03),
         ],
       ),
     );
