@@ -15,7 +15,7 @@ final List<Map<String, String>> onboardingData = [
     'subtitle': 'Stay updated with live tracking,\nestimated arrival time, and driver details.',
   },
   {
-    'image': 'assets/image/package_delivered.png',
+    'image': 'assets/images/package_delivered.png',
     'title': 'Trusted by Millions',
     'subtitle': 'From single items to house shifting,\nPorter is built to serve you better.',
   },

@@ -15,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController phoneController = TextEditingController();
-  String _selectedCountryCode = '+91';
+  final String _selectedCountryCode = '+91';
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +25,25 @@ class _LoginScreenState extends State<LoginScreen> {
     debugPrint('Width: ${size.width.toString()}');
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(14),
+            ),
+            onPressed: () {
+              String fullNumber = '$_selectedCountryCode${phoneController.text}';
+              debugPrint('Phone number entered: $fullNumber');
+              // Handle your login logic
+              context.pushNamed(signUpScreen);
+            },
+            child: const Icon(Icons.arrow_forward, color: Colors.white),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,10 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
             Stack(
               children: [
                 Container(
-                  height: size.height * 0.1735,
+                  height: size.width * 0.5,
                   width: double.infinity,
                   decoration: const BoxDecoration(
-                    color: Colors.green,
+                    color: primaryColor,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(124),
                       bottomRight: Radius.circular(124),
@@ -44,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Positioned(
-                  top: statusBarHeight + 60,
+                  top: size.width * 0.25,
                   left: 0,
                   right: 0,
                   child: SvgPicture.asset(
@@ -61,11 +80,11 @@ class _LoginScreenState extends State<LoginScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset('assets/svg/driver_with_van.svg', height: 160),
+                SvgPicture.asset('assets/svg/driver_with_van.svg', width: size.width * .7),
               ],
             ),
 
-            const SizedBox(height: 65),
+            const SizedBox(height: 60),
 
             Padding(
               padding: const EdgeInsets.only(left: 25),
@@ -84,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     'Enter a valid mobile number to continue\nusing delivery and other features',
                     textAlign: TextAlign.start,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20),
                   ),
                 ],
               ),
@@ -94,33 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Phone Input Row
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  // Country Code Picker
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.green),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: CountryCodePicker(
-                      textStyle: Theme.of(context).textTheme.bodyMedium,
-                      onChanged: (country) {
-                        setState(() {
-                          _selectedCountryCode = country.dialCode ?? '+91';
-                        });
-                      },
-                      initialSelection: 'IN',
-                      favorite: const ['+91', 'IN'],
-                      showCountryOnly: false,
-                      showOnlyCountryWhenClosed: false,
-                      alignLeft: false,
-                    ),
-                  ),
+                  CustomCountryPicker(),
                   const SizedBox(width: 10),
-
-                  // Mobile Number Input
                   Expanded(
                     child: TextField(
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -128,15 +125,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
                         hintText: enterMobileText,
-                        hintStyle:
-                            Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
+                        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                         border: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.green),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.green),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                       ),
@@ -149,28 +145,107 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 30),
 
             // Continue Button
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 24.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(14),
-                  ),
-                  onPressed: () {
-                    String fullNumber = '$_selectedCountryCode${phoneController.text}';
-                    debugPrint('Phone number entered: $fullNumber');
-                    // Handle your login logic
-                    context.pushNamed(signUpScreen);
-                  },
-                  child: const Icon(Icons.arrow_forward, color: Colors.white),
-                ),
-              ),
-            ),
+            // Align(
+            //   alignment: Alignment.centerRight,
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(right: 24.0),
+            //     child: ElevatedButton(
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: Colors.green,
+            //         shape: const CircleBorder(),
+            //         padding: const EdgeInsets.all(14),
+            //       ),
+            //       onPressed: () {
+            //         String fullNumber = '$_selectedCountryCode${phoneController.text}';
+            //         debugPrint('Phone number entered: $fullNumber');
+            //         // Handle your login logic
+            //         context.pushNamed(signUpScreen);
+            //       },
+            //       child: const Icon(Icons.arrow_forward, color: Colors.white),
+            //     ),
+            //   ),
+            // ),
 
             const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CustomCountryPicker extends StatefulWidget {
+  const CustomCountryPicker({super.key});
+
+  @override
+  _CustomCountryPickerState createState() => _CustomCountryPickerState();
+}
+
+class _CustomCountryPickerState extends State<CustomCountryPicker> {
+  CountryCode _selectedCountryCode = CountryCode.fromDialCode('+91');
+
+  void _showCountryPicker() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: CountryCodePicker(
+            onChanged: (country) {
+              setState(() {
+                _selectedCountryCode = country;
+              });
+              Navigator.pop(context);
+            },
+            initialSelection: _selectedCountryCode.code,
+            favorite: const ['+91', 'IN'],
+            showCountryOnly: false,
+            showOnlyCountryWhenClosed: false,
+            alignLeft: true,
+            textStyle: Theme.of(context).textTheme.bodyMedium,
+            flagDecoration: const BoxDecoration(shape: BoxShape.circle),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _showCountryPicker,
+      child: Container(
+        padding: const EdgeInsets.only(left: 5, right: 0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.green),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        height: 48,
+        // width: 100,
+        child: Row(
+          children: [
+            _selectedCountryCode.flagUri != null
+                ? ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(100),
+                    child: Image.asset(
+                      _selectedCountryCode.flagUri!,
+                      package: 'country_code_picker',
+                      fit: BoxFit.cover,
+                      width: 20,
+                      height: 20,
+                    ),
+                  )
+                : const SizedBox(),
+            const SizedBox(width: 5),
+            Text(
+              _selectedCountryCode.dialCode ?? '+91',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey, fontSize: 16),
+            ),
+            const Icon(
+              Icons.keyboard_arrow_down,
+              size: 20,
+              color: Colors.grey,
+            ),
           ],
         ),
       ),

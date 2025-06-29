@@ -28,6 +28,20 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(14),
+            ),
+            onPressed: onNext,
+            child: const Icon(Icons.arrow_forward, color: Colors.white),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           // Green curved header
@@ -39,8 +53,8 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
               child: Stack(
                 children: [
                   Container(
-                    height: size.height * 0.385,
-                    width: double.infinity,
+                    height: size.width * .9,
+                    width: size.width,
                     decoration: const BoxDecoration(
                       color: primaryColor,
                       borderRadius: BorderRadius.only(
@@ -51,24 +65,24 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                       children: [
                         Center(
                           child: Padding(
-                            padding: EdgeInsets.only(top: size.height * 0.149),
-                            child: SvgPicture.asset('assets/svg/logo_small.svg',
-                                width: MediaQuery.sizeOf(context).width * .4),
+                            padding: EdgeInsets.only(top: size.width * 0.3),
+                            child: SvgPicture.asset('assets/svg/logo_small.svg', width: MediaQuery.sizeOf(context).width * .4),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Column(
-                    children: [
-                      SizedBox(height: size.width * 0.5),
-                      Expanded(
-                        child: Column(
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: size.width * 0.5),
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Stack(
                               children: [
-                                SizedBox(
+                                Container(
+                                  padding: EdgeInsets.only(bottom: 20),
                                   width: MediaQuery.sizeOf(context).width * 1,
                                   height: MediaQuery.sizeOf(context).width * .75,
                                   child: SvgPicture.asset(
@@ -79,12 +93,14 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                                 Positioned(
                                   top: 0,
                                   left: 0,
+                                  bottom: -10,
                                   child: SizedBox(
                                     width: size.width,
                                     child: Center(
                                       child: SvgPicture.asset(
                                         onboardingData[2]['image']!,
-                                        height: size.width * 0.8,
+                                        fit: BoxFit.contain,
+                                        height: size.width * 0.7,
                                       ),
                                     ),
                                   ),
@@ -92,53 +108,33 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                               ],
                             ),
                             const SizedBox(height: 40),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  onboardingData[2]['title']!,
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
-                                      ?.copyWith(color: primaryColor),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  onboardingData[2]['subtitle']!,
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ],
+                            SizedBox(
+                              width: size.width - 20,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    onboardingData[2]['title']!,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor, fontSize: 28),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    onboardingData[2]['subtitle']!,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
 
-                      // Bottom Controls
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: onSkip,
-                            child: Text(
-                              'Skip',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(14),
-                            ),
-                            onPressed: onNext,
-                            child: const Icon(Icons.arrow_forward, color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                    ],
+                        // Bottom Controls
+
+                        const SizedBox(height: 12),
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -45,7 +45,7 @@ class OnboardingScreen4 extends StatefulWidget {
 
 class _OnboardingScreen4State extends State<OnboardingScreen4> {
   void onNext() {
-    // context.pushNamed(name)
+    context.pushReplacementNamed(loginScreen);
   }
 
   void onSkip() {
@@ -58,6 +58,20 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(14),
+            ),
+            onPressed: onNext,
+            child: const Icon(Icons.arrow_forward, color: Colors.white),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           // Green curved header
@@ -71,15 +85,15 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                   ClipPath(
                     clipper: GreenDiagonalShapeClipper(),
                     child: Container(
-                      height: size.height * 0.385, // Adjust height based on your design
+                      height: size.width * .9,
+                      width: size.width,
                       color: primaryColor,
                       child: Column(
                         children: [
                           Center(
                             child: Padding(
-                              padding: EdgeInsets.only(top: size.height * 0.149),
-                              child: SvgPicture.asset('assets/svg/logo_small.svg',
-                                  width: MediaQuery.sizeOf(context).width * .4),
+                              padding: EdgeInsets.only(top: size.width * 0.3),
+                              child: SvgPicture.asset('assets/svg/logo_small.svg', width: MediaQuery.sizeOf(context).width * .4),
                             ),
                           ),
                         ],
@@ -108,32 +122,32 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                   //     ],
                   //   ),
                   // ),
-                  Column(
-                    children: [
-                      SizedBox(height: size.height * 0.246),
-                      Expanded(
-                        child: Column(
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: size.width * 0.5),
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Stack(
                               children: [
                                 SizedBox(
                                   width: MediaQuery.sizeOf(context).width * 1,
-                                  height: MediaQuery.sizeOf(context).width * .7,
+                                  height: MediaQuery.sizeOf(context).width * .75,
                                   child: SvgPicture.asset(
                                     'assets/svg/ellipse_shape.svg',
                                     fit: BoxFit.contain,
                                   ),
                                 ),
                                 Positioned(
-                                  top: size.width * 0.195,
+                                  top: -45,
                                   left: 0,
                                   child: SizedBox(
                                     width: size.width,
                                     child: Center(
                                       child: Image.asset(
                                         onboardingData[3]['image']!,
-                                        width: size.width * 0.8,
+                                        width: size.width * 0.9,
                                       ),
                                     ),
                                   ),
@@ -147,49 +161,26 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                                 Text(
                                   onboardingData[3]['title']!,
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
-                                      ?.copyWith(color: primaryColor),
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor, fontSize: 28),
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   onboardingData[3]['subtitle']!,
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20),
                                 ),
                               ],
                             ),
                           ],
                         ),
-                      ),
 
-                      // const SizedBox(height: 40),
+                        // const SizedBox(height: 40),
 
-                      // Bottom Controls
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: onSkip,
-                            child: Text(
-                              'Skip',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(14),
-                            ),
-                            onPressed: onNext,
-                            child: const Icon(Icons.arrow_forward, color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                    ],
+                        // Bottom Controls
+
+                        const SizedBox(height: 24),
+                      ],
+                    ),
                   ),
                 ],
               ),

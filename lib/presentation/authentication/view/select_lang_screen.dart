@@ -36,15 +36,15 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
           children: [
             Text(
               selectLanguageText,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor, fontSize: 28),
             ),
             const SizedBox(height: 8),
             Text(
               selectLanguageDesc,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor, fontSize: 16),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 40),
 
             // English Option
             _buildLangCard(
@@ -80,10 +80,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Text(
                   'Continue',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
                 ),
               ),
             ),
@@ -110,9 +107,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
         decoration: BoxDecoration(
           color: Colors.green,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: selected
-              ? [BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 4))]
-              : [],
+          boxShadow: selected ? [BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 4))] : [],
         ),
         padding: const EdgeInsets.only(left: 16, right: 16, top: 15),
         child: Row(
@@ -120,15 +115,25 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
           children: [
             Column(
               children: [
-                Radio<String>(
-                  value: value,
-                  groupValue: selectedLanguage,
-                  activeColor: Colors.white,
-                  onChanged: (val) {
-                    setState(() {
-                      selectedLanguage = val!;
-                    });
-                  },
+                RadioTheme(
+                  data: RadioThemeData(
+                    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return Colors.white;
+                      }
+                      return Colors.white;
+                    }),
+                  ),
+                  child: Radio<String>(
+                    value: value,
+                    groupValue: selectedLanguage,
+                    activeColor: Colors.white,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedLanguage = val!;
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
@@ -147,11 +152,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
                             Text(label, style: const TextStyle(color: Colors.white, fontSize: 16)),
                             Text(
                               value == 'en' ? 'Aa' : 'अ',
-                              style: const TextStyle(
-                                  fontSize: 72,
-                                  color: Colors.white,
-                                  height: 1,
-                                  fontWeight: FontWeight.w600),
+                              style: const TextStyle(fontSize: 72, color: Colors.white, height: 1, fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(height: 15),
                           ],
@@ -165,12 +166,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
                         alignment: Alignment.center,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Opacity(
-                                opacity: 0.3,
-                                child: SvgPicture.asset(backgroundImage,
-                                    height: 80, fit: BoxFit.contain))
-                          ],
+                          children: [Opacity(opacity: 0.3, child: SvgPicture.asset(backgroundImage, height: 80, fit: BoxFit.contain))],
                         ),
                       ),
                     ),

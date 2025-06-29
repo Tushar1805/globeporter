@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:globeporter/resources/app_colors.dart';
 // import 'package:flutter_svg/svg.dart';
 
 class StatusBarWidget extends StatelessWidget {
@@ -13,7 +14,7 @@ class StatusBarWidget extends StatelessWidget {
           height: size.height * 0.135,
           width: double.infinity,
           decoration: const BoxDecoration(
-            color: Colors.green,
+            color: primaryColor,
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(65),
               bottomRight: Radius.circular(65),

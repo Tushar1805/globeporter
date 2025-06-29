@@ -1,6 +1,7 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:globeporter/presentation/authentication/view/login_screen.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -19,9 +20,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  String _selectedCountryCode = '+91';
+  final String _selectedCountryCode = '+91';
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -37,7 +39,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(driverWithVan, height: 160),
+                SvgPicture.asset(driverWithVan, width: size.width * .7),
               ],
             ),
 
@@ -50,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   Text(
                     'Welcome!',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor, fontSize: 28),
                   ),
                 ],
               ),
@@ -58,66 +60,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             const SizedBox(height: 24),
 
-            // Phone Input Row
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  // Country Code Picker
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.green),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: CountryCodePicker(
-                      textStyle: Theme.of(context).textTheme.bodyMedium,
-                      onChanged: (country) {
-                        setState(() {
-                          _selectedCountryCode = country.dialCode ?? '+91';
-                        });
-                      },
-                      initialSelection: 'IN',
-                      favorite: const ['+91', 'IN'],
-                      showCountryOnly: false,
-                      showOnlyCountryWhenClosed: false,
-                      alignLeft: false,
-                    ),
-                  ),
+                  CustomCountryPicker(),
                   const SizedBox(width: 10),
-
-                  // Mobile Number Input
                   Expanded(
                     child: TextField(
                       style: Theme.of(context).textTheme.bodyMedium,
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                          hintText: enterMobileText,
-                          hintStyle:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.green),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.green),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                          suffixIcon: SvgPicture.asset(editSvg),
-                          suffixIconColor: primaryColor),
+                        hintText: enterMobileText,
+                        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      ),
                     ),
                   ),
-
-                  const SizedBox(width: 10),
                 ],
               ),
             ),
 
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 15),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -141,11 +114,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //     Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     ),
@@ -155,7 +128,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
 
             const SizedBox(
-              height: 20,
+              height: 8,
             ),
 
             Padding(
@@ -164,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Email',
+                    'Email Id',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -180,11 +153,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //     Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     ),
@@ -193,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 60),
 
             Align(
               alignment: Alignment.bottomCenter,
@@ -213,10 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
                     'Register Now',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),

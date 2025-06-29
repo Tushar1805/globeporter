@@ -14,7 +14,7 @@ Future<void> main() async {
   setupServiceLocator();
   runApp(
     DevicePreview(
-      enabled: true,
+      enabled: false,
       tools: const [
         ...DevicePreview.defaultTools,
       ],
@@ -48,7 +48,7 @@ class GlobePorter extends StatelessWidget {
             routerConfig: router,
             builder: (context, child) {
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(.9)),
                 child: child!,
               );
             },
