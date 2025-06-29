@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_strings.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -30,8 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: const CircleBorder(),
+              backgroundColor: primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30), // Large enough for pill shape
+              ),
               padding: const EdgeInsets.all(14),
             ),
             onPressed: () {
@@ -40,7 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
               // Handle your login logic
               context.pushNamed(signUpScreen);
             },
-            child: const Icon(Icons.arrow_forward, color: Colors.white),
+            child: Image.asset(
+              arrowForward,
+              width: size.width * 0.136,
+              height: size.height * 0.017,
+            ),
           ),
         ],
       ),
@@ -125,7 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
                         hintText: enterMobileText,
-                        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+                        hintStyle:
+                            Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                         border: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.green),
                           borderRadius: BorderRadius.circular(4),
@@ -239,7 +247,10 @@ class _CustomCountryPickerState extends State<CustomCountryPicker> {
             const SizedBox(width: 5),
             Text(
               _selectedCountryCode.dialCode ?? '+91',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey, fontSize: 16),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.grey, fontSize: 16),
             ),
             const Icon(
               Icons.keyboard_arrow_down,

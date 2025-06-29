@@ -3,8 +3,29 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_constants.dart';
+import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+
+class BottomCurveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, size.height);
+
+    path.quadraticBezierTo(
+      size.width * 0.4, size.height, // control point
+      size.width, size.height * 0.65, // end point
+    );
+
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
 
 class OnboardingScreen3 extends StatefulWidget {
   const OnboardingScreen3({super.key});
@@ -33,12 +54,18 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: const CircleBorder(),
+              backgroundColor: primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30), // Large enough for pill shape
+              ),
               padding: const EdgeInsets.all(14),
             ),
             onPressed: onNext,
-            child: const Icon(Icons.arrow_forward, color: Colors.white),
+            child: Image.asset(
+              arrowForward,
+              width: size.width * 0.136,
+              height: size.height * 0.017,
+            ),
           ),
         ],
       ),
@@ -52,26 +79,46 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
               padding: const EdgeInsets.symmetric(horizontal: 0),
               child: Stack(
                 children: [
-                  Container(
-                    height: size.width * .9,
-                    width: size.width,
-                    decoration: const BoxDecoration(
+                  ClipPath(
+                    clipper: BottomCurveClipper(),
+                    child: Container(
+                      height: size.width * .9,
+                      width: size.width,
                       color: primaryColor,
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(200),
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: size.width * 0.3),
+                              child: SvgPicture.asset('assets/svg/logo_small.svg',
+                                  width: MediaQuery.sizeOf(context).width * .4),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(top: size.width * 0.3),
-                            child: SvgPicture.asset('assets/svg/logo_small.svg', width: MediaQuery.sizeOf(context).width * .4),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
+                  // Container(
+                  //   height: size.width * .9,
+                  //   width: size.width,
+                  //   decoration: const BoxDecoration(
+                  //     color: primaryColor,
+                  //     borderRadius: BorderRadius.only(
+                  //       bottomRight: Radius.circular(200),
+                  //     ),
+                  //   ),
+                  //   child: Column(
+                  //     children: [
+                  //       Center(
+                  //         child: Padding(
+                  //           padding: EdgeInsets.only(top: size.width * 0.3),
+                  //           child: SvgPicture.asset('assets/svg/logo_small.svg',
+                  //               width: MediaQuery.sizeOf(context).width * .4),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   SingleChildScrollView(
                     child: Column(
                       children: [
@@ -116,13 +163,19 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                                   Text(
                                     onboardingData[2]['title']!,
                                     textAlign: TextAlign.center,
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor, fontSize: 28),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(color: primaryColor, fontSize: 28),
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
                                     onboardingData[2]['subtitle']!,
                                     textAlign: TextAlign.center,
-                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(fontSize: 20),
                                   ),
                                 ],
                               ),

@@ -1,10 +1,33 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_constants.dart';
+import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+
+class BottomCurveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, size.height - 60);
+
+    path.quadraticBezierTo(
+      size.width / 2, size.height + 60, // control point
+      size.width, size.height - 60,    // end point
+    );
+
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
 
 class OnboardingScreen1 extends StatefulWidget {
   const OnboardingScreen1({super.key});
@@ -33,12 +56,18 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: const CircleBorder(),
+              backgroundColor: primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30), // Large enough for pill shape
+              ),
               padding: const EdgeInsets.all(14),
             ),
             onPressed: onNext,
-            child: const Icon(Icons.arrow_forward, color: Colors.white),
+            child: Image.asset(
+              arrowForward,
+              width: size.width * 0.136,
+              height: size.height * 0.017,
+            ),
           ),
         ],
       ),
@@ -67,7 +96,8 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                         Center(
                           child: Padding(
                             padding: EdgeInsets.only(top: size.width * 0.35),
-                            child: SvgPicture.asset('assets/svg/logo_small.svg', width: MediaQuery.sizeOf(context).width * .4),
+                            child: SvgPicture.asset('assets/svg/logo_small.svg',
+                                width: MediaQuery.sizeOf(context).width * .4),
                           ),
                         ),
                       ],
@@ -114,13 +144,19 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                                   Text(
                                     onboardingData[0]['title']!,
                                     textAlign: TextAlign.start,
-                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: primaryColor, fontSize: 30),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(color: primaryColor, fontSize: 30),
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
                                     onboardingData[0]['subtitle']!,
                                     textAlign: TextAlign.start,
-                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(fontSize: 20),
                                   ),
                                 ],
                               ),
