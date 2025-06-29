@@ -17,8 +17,8 @@ class GreenDiagonalShapeClipper extends CustomClipper<Path> {
     path.lineTo(0, size.height - 50);
     // 4. left to right
     path.quadraticBezierTo(
-      size.width * 0.6, // 3 - 50 % width
-      size.height - 150, // 3 - depth inwards from 50%
+      size.width * 0.5, // 3 - 50 % width
+      size.height - size.height * 0.132, // 3 - depth inwards from 50%
       size.width, // 4
       size.height, // 4
     );
@@ -126,12 +126,18 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                                   ),
                                 ),
                                 Positioned(
-                                    top: 100,
-                                    left: 50,
-                                    child: SvgPicture.asset(
-                                      onboardingData[3]['image']!,
-                                      height: 200,
-                                    )),
+                                  top: size.width * 0.195,
+                                  left: 0,
+                                  child: SizedBox(
+                                    width: size.width,
+                                    child: Center(
+                                      child: Image.asset(
+                                        onboardingData[3]['image']!,
+                                        width: size.width * 0.8,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 40),
@@ -143,7 +149,7 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .titleLarge
+                                      .bodyLarge
                                       ?.copyWith(color: primaryColor),
                                 ),
                                 const SizedBox(height: 12),
@@ -158,7 +164,7 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                         ),
                       ),
 
-                      const SizedBox(height: 40),
+                      // const SizedBox(height: 40),
 
                       // Bottom Controls
                       Row(
@@ -166,7 +172,10 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                         children: [
                           TextButton(
                             onPressed: onSkip,
-                            child: const Text('Skip'),
+                            child: Text(
+                              'Skip',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(

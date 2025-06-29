@@ -44,22 +44,22 @@ final ThemeData primaryTheme = ThemeData(
   textTheme: TextTheme(
     //For title and subtitle used in card and container
     titleLarge: GoogleFonts.lato(
-      fontSize: 30,
+      fontSize: 25,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
     bodyLarge: GoogleFonts.lato(
-      fontSize: 27,
+      fontSize: 20,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
     bodyMedium: GoogleFonts.lato(
-      fontSize: 20,
+      fontSize: 15,
       fontWeight: FontWeight.w400,
       color: Colors.black,
     ),
     bodySmall: GoogleFonts.lato(
-      fontSize: 16,
+      fontSize: 11,
       fontWeight: FontWeight.w400,
       color: Colors.black,
     ),

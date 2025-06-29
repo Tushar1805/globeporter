@@ -39,6 +39,7 @@ dependencies:
   flutter_svg: 
   flutter_secure_storage: ^9.2.2
   go_router: 
+  device_preview: ^1.2.0
 
 flutter_native_splash:
   color: "#51B848"

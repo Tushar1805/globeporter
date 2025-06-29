@@ -78,11 +78,16 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                                   ),
                                 ),
                                 Positioned(
-                                  top: size.height * 0.088,
-                                  left: size.width * 0.097,
-                                  child: SvgPicture.asset(
-                                    onboardingData[0]['image']!,
-                                    height: size.height * 0.18,
+                                  top: size.width * 0.195,
+                                  left: 0,
+                                  child: SizedBox(
+                                    width: size.width,
+                                    child: Center(
+                                      child: SvgPicture.asset(
+                                        onboardingData[0]['image']!,
+                                        width: size.width * 0.85,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -110,8 +115,6 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                           ],
                         ),
                       ),
-
-                      const SizedBox(height: 40),
 
                       // Bottom Controls
                       Row(

@@ -77,11 +77,16 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
                                   ),
                                 ),
                                 Positioned(
-                                  top: size.height * 0.088,
-                                  left: size.width * 0.097,
-                                  child: SvgPicture.asset(
-                                    onboardingData[1]['image']!,
-                                    height: size.height * 0.2,
+                                  top: size.width * 0.195,
+                                  left: 0,
+                                  child: SizedBox(
+                                    width: size.width,
+                                    child: Center(
+                                      child: SvgPicture.asset(
+                                        onboardingData[1]['image']!,
+                                        width: size.width * 0.9,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -95,7 +100,7 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .titleLarge
+                                      .bodyLarge
                                       ?.copyWith(color: primaryColor),
                                 ),
                                 const SizedBox(height: 12),
@@ -110,15 +115,16 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
                         ),
                       ),
 
-                      const SizedBox(height: 40),
-
                       // Bottom Controls
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
                             onPressed: onSkip,
-                            child: const Text('Skip'),
+                            child: Text(
+                              'Skip',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(

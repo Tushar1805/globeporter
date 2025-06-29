@@ -61,7 +61,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                   ),
                   Column(
                     children: [
-                      SizedBox(height: size.height * 0.246),
+                      SizedBox(height: size.width * 0.5),
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -70,7 +70,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                               children: [
                                 SizedBox(
                                   width: MediaQuery.sizeOf(context).width * 1,
-                                  height: MediaQuery.sizeOf(context).width * .7,
+                                  height: MediaQuery.sizeOf(context).width * .75,
                                   child: SvgPicture.asset(
                                     'assets/svg/ellipse_shape.svg',
                                     fit: BoxFit.contain,
@@ -78,10 +78,15 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                                 ),
                                 Positioned(
                                   top: 0,
-                                  left: size.width * 0.156,
-                                  child: SvgPicture.asset(
-                                    onboardingData[2]['image']!,
-                                    height: size.height * 0.317,
+                                  left: 0,
+                                  child: SizedBox(
+                                    width: size.width,
+                                    child: Center(
+                                      child: SvgPicture.asset(
+                                        onboardingData[2]['image']!,
+                                        height: size.width * 0.8,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -95,7 +100,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .titleLarge
+                                      .bodyLarge
                                       ?.copyWith(color: primaryColor),
                                 ),
                                 const SizedBox(height: 12),
@@ -110,15 +115,16 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                         ),
                       ),
 
-                      const SizedBox(height: 40),
-
                       // Bottom Controls
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
                             onPressed: onSkip,
-                            child: const Text('Skip'),
+                            child: Text(
+                              'Skip',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -131,7 +137,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 12),
                     ],
                   ),
                 ],

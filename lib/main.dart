@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +12,15 @@ import 'routes/app_router.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
-  runApp(GlobePorter());
+  runApp(
+    DevicePreview(
+      enabled: true,
+      tools: const [
+        ...DevicePreview.defaultTools,
+      ],
+      builder: (context) => const GlobePorter(),
+    ),
+  );
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: primaryColor,
