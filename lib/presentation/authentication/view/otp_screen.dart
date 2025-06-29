@@ -23,6 +23,7 @@ class _OtpScreenState extends State<OtpScreen> {
   String _selectedCountryCode = '+91';
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -38,7 +39,7 @@ class _OtpScreenState extends State<OtpScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(driverWithVan, height: 160),
+                SvgPicture.asset(driverWithVan, width: size.width * .7),
               ],
             ),
 
@@ -51,7 +52,9 @@ class _OtpScreenState extends State<OtpScreen> {
                 children: [
                   Text(
                     'Welcome!',
-                    style: Theme.of(context).textTheme.bodyLarge
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
                         ?.copyWith(color: primaryColor, fontSize: 28),
                   ),
                 ],
