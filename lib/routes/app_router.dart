@@ -9,6 +9,7 @@ import 'package:globeporter/presentation/authentication/view/onboarding_screen.d
 import 'package:globeporter/presentation/authentication/view/otp_screen.dart';
 import 'package:globeporter/presentation/authentication/view/select_lang_screen.dart';
 import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart';
+import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import '../presentation/authentication/view/splash_screen.dart';
 import 'error_screen.dart';
@@ -122,6 +123,14 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const DriverDetailsScreen(),
+      ),
+    ),
+    GoRoute(
+      name: customerDashboard,
+      path: customerDashboard,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const CustomerDashboard(),
       ),
     ),
   ],

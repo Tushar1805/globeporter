@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class DriverDetailsScreen extends StatefulWidget {
   const DriverDetailsScreen({super.key});
@@ -183,7 +185,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                 ),
                 onPressed: () {
                   // Navigator.pushNamed(context, OnboardingScreen.route);
-                  // context.push(onboardingScreen);
+                  context.push(customerDashboard);
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

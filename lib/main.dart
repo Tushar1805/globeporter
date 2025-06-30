@@ -14,7 +14,7 @@ Future<void> main() async {
   setupServiceLocator();
   runApp(
     DevicePreview(
-      enabled: false,
+      enabled: true,
       tools: const [
         ...DevicePreview.defaultTools,
       ],
