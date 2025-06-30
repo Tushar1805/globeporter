@@ -40,6 +40,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   go_router: 
   device_preview: ^1.2.0
+  intl: 
 
 flutter_native_splash:
   color: "#51B848"
@@ -64,6 +65,8 @@ dev_dependencies:
   flutter_lints: 
 
 flutter:
+  generate: true
+
   uses-material-design: true
 
   assets:

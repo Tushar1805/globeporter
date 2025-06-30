@@ -1,7 +1,9 @@
+import 'package:core/di/service_locator.dart';
+import 'package:core/localization/language_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
-import 'package:globeporter/resources/app_strings.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,11 +15,16 @@ class SelectLangScreen extends StatefulWidget {
 }
 
 class _SelectLangScreenState extends State<SelectLangScreen> {
-  String selectedLanguage = 'en';
+  String? selectedLanguage = 'en';
+  late final LanguageCubit languageCubit;
 
   @override
   void initState() {
     super.initState();
+    languageCubit = sl<LanguageCubit>();
+    setState(() {
+      selectedLanguage = languageCubit.appLocale?.languageCode;
+    });
   }
 
   @override
@@ -35,14 +42,20 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              selectLanguageText,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: primaryColor, fontSize: 28),
+              AppLocalizations.of(context)!.selectLanguage,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(color: primaryColor, fontSize: 28),
             ),
             const SizedBox(height: 8),
             Text(
-              selectLanguageDesc,
+              AppLocalizations.of(context)!.selectLanguageDesc,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor, fontSize: 16),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: greyTextColor, fontSize: 16),
             ),
             const SizedBox(height: 40),
 
@@ -69,18 +82,20 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
 
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: primaryColor,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
               ),
               onPressed: () {
-                // Navigator.pushNamed(context, OnboardingScreen.route);
                 context.push(onboardingScreen1);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Text(
-                  'Continue',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
+                  AppLocalizations.of(context)!.continueString,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
                 ),
               ),
             ),
@@ -102,12 +117,15 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
         setState(() {
           selectedLanguage = value;
         });
+        languageCubit.changeLanguage(Locale(selectedLanguage ?? 'en'));
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.green,
+          color: primaryColor,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: selected ? [BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 4))] : [],
+          boxShadow: selected
+              ? [BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 4))]
+              : [],
         ),
         padding: const EdgeInsets.only(left: 16, right: 16, top: 15),
         child: Row(
@@ -132,6 +150,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
                       setState(() {
                         selectedLanguage = val!;
                       });
+                      languageCubit.changeLanguage(Locale(selectedLanguage ?? 'en'));
                     },
                   ),
                 ),
@@ -152,7 +171,11 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
                             Text(label, style: const TextStyle(color: Colors.white, fontSize: 16)),
                             Text(
                               value == 'en' ? 'Aa' : 'अ',
-                              style: const TextStyle(fontSize: 72, color: Colors.white, height: 1, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                  fontSize: 72,
+                                  color: Colors.white,
+                                  height: 1,
+                                  fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(height: 15),
                           ],
@@ -166,7 +189,12 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
                         alignment: Alignment.center,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: [Opacity(opacity: 0.3, child: SvgPicture.asset(backgroundImage, height: 80, fit: BoxFit.contain))],
+                          children: [
+                            Opacity(
+                                opacity: 0.3,
+                                child: SvgPicture.asset(backgroundImage,
+                                    height: 80, fit: BoxFit.contain))
+                          ],
                         ),
                       ),
                     ),

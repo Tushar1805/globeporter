@@ -1,0 +1,99 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Hindi (`hi`).
+class AppLocalizationsHi extends AppLocalizations {
+  AppLocalizationsHi([String locale = 'hi']) : super(locale);
+
+  @override
+  String get helloWorld => 'हैलो वर्ल्ड';
+
+  @override
+  String get selectLanguage => 'अपनी भाषा का चयन करें';
+
+  @override
+  String get selectLanguageDesc =>
+      'आपकी चयनित भाषा को सेटिंग्स से किसी भी \nसमय बदला जा सकता है।';
+
+  @override
+  String get continueString => 'जारी रखें';
+
+  @override
+  String get skipString => 'छोड़ें';
+
+  @override
+  String get onboarding1Title => 'स्वागत है!';
+
+  @override
+  String get onboarding1Desc => 'आपका भरोसेमंद डिलीवरी और लॉजिस्टिक्स साथी';
+
+  @override
+  String get onboarding2Title => 'स्थानीय डिलीवरी अब आसान';
+
+  @override
+  String get onboarding2Desc =>
+      'मिनी ट्रक, बाइक या ऑटो कुछ ही मिनटों में बुक करें \nअपनी सभी डिलीवरी जरूरतों के लिए।';
+
+  @override
+  String get onboarding3Title => 'रियल-टाइम ट्रैकिंग';
+
+  @override
+  String get onboarding3Desc =>
+      'लाइव ट्रैकिंग, अनुमानित आगमन समय और ड्राइवर विवरण \nके साथ अपडेट रहें।';
+
+  @override
+  String get onboarding4Title => 'करोड़ों का भरोसा';
+
+  @override
+  String get onboarding4Desc =>
+      'सिंगल आइटम से लेकर घर शिफ्टिंग तक, Porter आपकी \n बेहतर सेवा के लिए बना है।';
+
+  @override
+  String get enterMobileString =>
+      'डिलीवरी और अन्य सुविधाओं का उपयोग जारी रखने के लिए \n एक मान्य मोबाइल नंबर दर्ज करें';
+
+  @override
+  String get enterMobileHint => 'अपना मोबाइल संख्या दर्ज करे';
+
+  @override
+  String get nameString => 'नाम';
+
+  @override
+  String get emailString => 'ईमेल आईडी';
+
+  @override
+  String get otpString => 'ओ.टी.पी';
+
+  @override
+  String get loginString => 'लॉग इन करें';
+
+  @override
+  String get registerString => 'अभी पंजीकरण करें';
+
+  @override
+  String get driverAskString => 'क्या आप ड्राइवर हैं?';
+
+  @override
+  String get yesString => 'हाँ';
+
+  @override
+  String get noString => 'नहीं';
+
+  @override
+  String get updatePersonalDetailsString => 'व्यक्तिगत विवरण अपडेट करें';
+
+  @override
+  String get vehicleIdString => 'वाहन आईडी';
+
+  @override
+  String get driverLicenceString => 'चालक लाइसेंस';
+
+  @override
+  String get vehicleNo => 'वाहन नं.';
+
+  @override
+  String get submitString => 'सबमिट करें';
+}

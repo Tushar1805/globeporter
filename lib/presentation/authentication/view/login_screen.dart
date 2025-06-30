@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
-import 'package:globeporter/resources/app_strings.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
     final size = MediaQuery.of(context).size;
     debugPrint('Height: ${size.height.toString()}');
     debugPrint('Width: ${size.width.toString()}');
@@ -101,8 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Welcome!',
+                  Text(
+                    AppLocalizations.of(context)!.onboarding1Title,
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
@@ -111,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Enter a valid mobile number to continue\nusing delivery and other features',
+                    AppLocalizations.of(context)!.enterMobileString,
                     textAlign: TextAlign.start,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20),
                   ),
@@ -134,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                        hintText: enterMobileText,
+                        hintText: AppLocalizations.of(context)!.enterMobileHint,
                         hintStyle:
                             Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                         border: OutlineInputBorder(

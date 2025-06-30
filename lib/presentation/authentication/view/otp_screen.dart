@@ -1,12 +1,11 @@
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/view/login_screen.dart';
 import 'package:globeporter/presentation/widgets/driver_dialog_widget.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
-import 'package:globeporter/resources/app_strings.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -51,7 +50,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Welcome!',
+                    AppLocalizations.of(context)!.onboarding1Title,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
@@ -76,7 +75,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                        hintText: enterMobileText,
+                        hintText: AppLocalizations.of(context)!.enterMobileHint,
                         hintStyle:
                             Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                         border: OutlineInputBorder(
@@ -105,7 +104,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Name',
+                    AppLocalizations.of(context)!.nameString,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -144,7 +143,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Email',
+                    AppLocalizations.of(context)!.emailString,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -183,7 +182,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'OTP',
+                    AppLocalizations.of(context)!.otpString,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -218,7 +217,7 @@ class _OtpScreenState extends State<OtpScreen> {
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: primaryColor,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                 ),
                 onPressed: () {
@@ -231,7 +230,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    'Login',
+                    AppLocalizations.of(context)!.loginString,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium

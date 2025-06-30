@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_constants.dart';
@@ -161,7 +162,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    onboardingData[2]['title']!,
+                                    AppLocalizations.of(context)!.onboarding3Title,
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
@@ -170,7 +171,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    onboardingData[2]['subtitle']!,
+                                    AppLocalizations.of(context)!.onboarding3Desc,
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
@@ -198,7 +199,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
             child: TextButton(
               onPressed: onSkip,
               child: Text(
-                'Skip',
+                AppLocalizations.of(context)!.skipString,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 22),
               ),
             ),

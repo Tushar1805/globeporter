@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -47,7 +48,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Update Personal Details',
+                    AppLocalizations.of(context)!.updatePersonalDetailsString,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
@@ -67,7 +68,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Vehicle ID',
+                    AppLocalizations.of(context)!.vehicleIdString,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -106,7 +107,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Driver Licence',
+                    AppLocalizations.of(context)!.driverLicenceString,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -145,7 +146,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Vehicle No.',
+                    AppLocalizations.of(context)!.vehicleNo,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -190,7 +191,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    'Submit',
+                    AppLocalizations.of(context)!.submitString,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium

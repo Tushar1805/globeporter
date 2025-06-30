@@ -1,0 +1,33 @@
+{
+    "helloWorld": "Hello World",
+    "selectLanguage": "Select Your Language",
+    "@selectLanguage":{
+         "description": "Instructions to select language"
+    },
+    "selectLanguageDesc": "Your selected language can be changed\nanytime from Settings.",
+    "continueString": "Continue",
+    "skipString": "Skip",
+    "onboarding1Title": "Welcome!",
+    "onboarding1Desc": "Your trusted delivery & logistics partner",
+    "onboarding2Title": "Local Deliveries Made Easy",
+    "onboarding2Desc": "Book mini trucks, bikes, or autos\nin minutes for all your delivery needs.",
+    "onboarding3Title": "Real-Time Tracking",
+    "onboarding3Desc": "Stay updated with live tracking,\nestimated arrival time, and driver details.",
+    "onboarding4Title": "Trusted by Millions",
+    "onboarding4Desc": "From single items to house shifting,\nPorter is built to serve you better.",
+    "enterMobileString": "Enter a valid mobile number to continue\nusing delivery and other features",
+    "enterMobileHint": "Enter your mobile number",
+    "nameString": "Name",
+    "emailString": "Email Id",
+    "otpString": "OTP",
+    "loginString": "Login",
+    "registerString": "Register Now",
+    "driverAskString": "Are You Driver?",
+    "yesString": "Yes",
+    "noString": "No",
+    "updatePersonalDetailsString": "Update Personal Details",
+    "vehicleIdString": "Vehicle ID",
+    "driverLicenceString": "Driver Licence",
+    "vehicleNo": "Vehicle No.",
+    "submitString": "Submit"
+}

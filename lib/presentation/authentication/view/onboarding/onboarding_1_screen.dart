@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_constants.dart';
@@ -142,7 +143,7 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    onboardingData[0]['title']!,
+                                    AppLocalizations.of(context)!.onboarding1Title,
                                     textAlign: TextAlign.start,
                                     style: Theme.of(context)
                                         .textTheme
@@ -151,7 +152,7 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    onboardingData[0]['subtitle']!,
+                                    AppLocalizations.of(context)!.onboarding1Desc,
                                     textAlign: TextAlign.start,
                                     style: Theme.of(context)
                                         .textTheme
@@ -165,7 +166,6 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                         ),
 
                         // Bottom Controls
-                         
 
                         const SizedBox(height: 24),
                       ],

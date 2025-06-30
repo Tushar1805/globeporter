@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 
@@ -51,7 +52,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
                         ),
                         SizedBox(width: 15),
                         Text(
-                          "Welcome!",
+                          AppLocalizations.of(context)!.onboarding1Title,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge

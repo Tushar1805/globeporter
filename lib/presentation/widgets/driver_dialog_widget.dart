@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -17,11 +18,13 @@ void showDriverDialog(final context) {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Are you Driver?',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(fontSize: 24, color: primaryColor)),
+            Text(
+              AppLocalizations.of(context)!.driverAskString,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontSize: 24,
+                    color: primaryColor,
+                  ),
+            ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -36,11 +39,13 @@ void showDriverDialog(final context) {
                     backgroundColor: Colors.green,
                     shape: const StadiumBorder(),
                   ),
-                  child: Text('Yes',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontSize: 24, color: whiteColor)),
+                  child: Text(
+                    AppLocalizations.of(context)!.yesString,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 24,
+                          color: whiteColor,
+                        ),
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -52,11 +57,13 @@ void showDriverDialog(final context) {
                     backgroundColor: Colors.red,
                     shape: const StadiumBorder(),
                   ),
-                  child: Text('No',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontSize: 24, color: whiteColor)),
+                  child: Text(
+                    AppLocalizations.of(context)!.noString,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 24,
+                          color: whiteColor,
+                        ),
+                  ),
                 ),
               ],
             ),

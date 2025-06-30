@@ -1,0 +1,301 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_hi.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('hi')
+  ];
+
+  /// No description provided for @helloWorld.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello World'**
+  String get helloWorld;
+
+  /// Instructions to select language
+  ///
+  /// In en, this message translates to:
+  /// **'Select Your Language'**
+  String get selectLanguage;
+
+  /// No description provided for @selectLanguageDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your selected language can be changed\nanytime from Settings.'**
+  String get selectLanguageDesc;
+
+  /// No description provided for @continueString.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueString;
+
+  /// No description provided for @skipString.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skipString;
+
+  /// No description provided for @onboarding1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get onboarding1Title;
+
+  /// No description provided for @onboarding1Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trusted delivery & logistics partner'**
+  String get onboarding1Desc;
+
+  /// No description provided for @onboarding2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Deliveries Made Easy'**
+  String get onboarding2Title;
+
+  /// No description provided for @onboarding2Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Book mini trucks, bikes, or autos\nin minutes for all your delivery needs.'**
+  String get onboarding2Desc;
+
+  /// No description provided for @onboarding3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-Time Tracking'**
+  String get onboarding3Title;
+
+  /// No description provided for @onboarding3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay updated with live tracking,\nestimated arrival time, and driver details.'**
+  String get onboarding3Desc;
+
+  /// No description provided for @onboarding4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted by Millions'**
+  String get onboarding4Title;
+
+  /// No description provided for @onboarding4Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'From single items to house shifting,\nPorter is built to serve you better.'**
+  String get onboarding4Desc;
+
+  /// No description provided for @enterMobileString.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid mobile number to continue\nusing delivery and other features'**
+  String get enterMobileString;
+
+  /// No description provided for @enterMobileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your mobile number'**
+  String get enterMobileHint;
+
+  /// No description provided for @nameString.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameString;
+
+  /// No description provided for @emailString.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Id'**
+  String get emailString;
+
+  /// No description provided for @otpString.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP'**
+  String get otpString;
+
+  /// No description provided for @loginString.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginString;
+
+  /// No description provided for @registerString.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Now'**
+  String get registerString;
+
+  /// No description provided for @driverAskString.
+  ///
+  /// In en, this message translates to:
+  /// **'Are You Driver?'**
+  String get driverAskString;
+
+  /// No description provided for @yesString.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yesString;
+
+  /// No description provided for @noString.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get noString;
+
+  /// No description provided for @updatePersonalDetailsString.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Personal Details'**
+  String get updatePersonalDetailsString;
+
+  /// No description provided for @vehicleIdString.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle ID'**
+  String get vehicleIdString;
+
+  /// No description provided for @driverLicenceString.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Licence'**
+  String get driverLicenceString;
+
+  /// No description provided for @vehicleNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle No.'**
+  String get vehicleNo;
+
+  /// No description provided for @submitString.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submitString;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'hi'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'hi':
+      return AppLocalizationsHi();
+  }
+
+  throw FlutterError(
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
+}

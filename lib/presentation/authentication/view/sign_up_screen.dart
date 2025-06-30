@@ -1,11 +1,10 @@
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/view/login_screen.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
-import 'package:globeporter/resources/app_strings.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -51,7 +50,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Welcome!',
+                    AppLocalizations.of(context)!.onboarding1Title,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
@@ -75,7 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                        hintText: enterMobileText,
+                        hintText: AppLocalizations.of(context)!.enterMobileHint,
                         hintStyle:
                             Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                         border: OutlineInputBorder(
@@ -102,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Name',
+                    AppLocalizations.of(context)!.nameString,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -141,7 +140,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Email Id',
+                    AppLocalizations.of(context)!.emailString,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                   ),
                   const SizedBox(
@@ -189,7 +188,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    'Register Now',
+                    AppLocalizations.of(context)!.registerString,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium

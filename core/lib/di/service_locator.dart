@@ -1,3 +1,4 @@
+import 'package:core/localization/language_cubit.dart';
 import 'package:core/theme/theme_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
@@ -17,6 +18,9 @@ void setupServiceLocator() async {
   //* Cubits
   sl.registerLazySingleton<ThemeCubit>(
     ThemeCubit.new,
+  );
+  sl.registerLazySingleton<LanguageCubit>(
+    LanguageCubit.new,
   );
   sl.registerSingleton<AuthCubit>(
     AuthCubit(sl<AuthRepository>()),
