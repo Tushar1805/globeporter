@@ -1,8 +1,8 @@
 {
-    "helloWorld": "हैलो वर्ल्ड",
+    "@@locale": "hi",
     "selectLanguage": "अपनी भाषा का चयन करें",
-    "@selectLanguage":{
-         "description": "भाषा चयन हेतु निर्देश"
+    "@selectLanguage": {
+        "description": "भाषा चयन हेतु निर्देश"
     },
     "selectLanguageDesc": "आपकी चयनित भाषा को सेटिंग्स से किसी भी \nसमय बदला जा सकता है।",
     "continueString": "जारी रखें",
@@ -29,5 +29,20 @@
     "vehicleIdString": "वाहन आईडी",
     "driverLicenceString": "चालक लाइसेंस",
     "vehicleNo": "वाहन नं.",
-    "submitString": "सबमिट करें"
+    "submitString": "सबमिट करें",
+    "currentLocationString": "वर्तमान स्थान",
+    "urbanString": "शहरी",
+    "ruralString": "ग्रामीण",
+    "createRequestString": "अनुरोध बनाएँ",
+    "mapString": "मानचित्र",
+    "pickupLocationString": "लेने की जगह",
+    "selectItemsString": "वस्तुएं चुनें",
+    "descriptionString": "विवरण",
+    "receiverNameString": "प्राप्तकर्ता का नाम",
+    "contactNoString": "संपर्क नंबर।",
+    "destinationLocationString": "गंतव्य स्थान",
+    "pickImageString": "छवि चुनें",
+    "addMoreItemsString": "और आइटम जोड़ें",
+    "packagingTypeString": "पैकेजिंग प्रकार",
+    "quantingString": "मात्रा"
 }

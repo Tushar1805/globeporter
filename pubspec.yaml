@@ -41,6 +41,7 @@ dependencies:
   go_router: 
   device_preview: ^1.2.0
   intl: 
+  image_picker: ^1.1.2
 
 flutter_native_splash:
   color: "#51B848"

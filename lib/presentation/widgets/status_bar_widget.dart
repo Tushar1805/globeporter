@@ -11,13 +11,13 @@ class StatusBarWidget extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: size.height * 0.135,
+          height: size.width * 0.3,
           width: double.infinity,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: primaryColor,
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(65),
-              bottomRight: Radius.circular(65),
+              bottomLeft: Radius.circular(size.width * 0.127),
+              bottomRight: Radius.circular(size.width * 0.127),
             ),
           ),
         ),

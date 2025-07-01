@@ -9,9 +9,6 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get helloWorld => 'हैलो वर्ल्ड';
-
-  @override
   String get selectLanguage => 'अपनी भाषा का चयन करें';
 
   @override
@@ -96,4 +93,49 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get submitString => 'सबमिट करें';
+
+  @override
+  String get currentLocationString => 'वर्तमान स्थान';
+
+  @override
+  String get urbanString => 'शहरी';
+
+  @override
+  String get ruralString => 'ग्रामीण';
+
+  @override
+  String get createRequestString => 'अनुरोध बनाएँ';
+
+  @override
+  String get mapString => 'मानचित्र';
+
+  @override
+  String get pickupLocationString => 'लेने की जगह';
+
+  @override
+  String get selectItemsString => 'वस्तुएं चुनें';
+
+  @override
+  String get descriptionString => 'विवरण';
+
+  @override
+  String get receiverNameString => 'प्राप्तकर्ता का नाम';
+
+  @override
+  String get contactNoString => 'संपर्क नंबर।';
+
+  @override
+  String get destinationLocationString => 'गंतव्य स्थान';
+
+  @override
+  String get pickImageString => 'छवि चुनें';
+
+  @override
+  String get addMoreItemsString => 'और आइटम जोड़ें';
+
+  @override
+  String get packagingTypeString => 'पैकेजिंग प्रकार';
+
+  @override
+  String get quantingString => 'मात्रा';
 }

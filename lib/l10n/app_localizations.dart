@@ -98,12 +98,6 @@ abstract class AppLocalizations {
     Locale('hi')
   ];
 
-  /// No description provided for @helloWorld.
-  ///
-  /// In en, this message translates to:
-  /// **'Hello World'**
-  String get helloWorld;
-
   /// Instructions to select language
   ///
   /// In en, this message translates to:
@@ -265,6 +259,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submit'**
   String get submitString;
+
+  /// No description provided for @currentLocationString.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Location'**
+  String get currentLocationString;
+
+  /// No description provided for @urbanString.
+  ///
+  /// In en, this message translates to:
+  /// **'Urban'**
+  String get urbanString;
+
+  /// No description provided for @ruralString.
+  ///
+  /// In en, this message translates to:
+  /// **'Rural'**
+  String get ruralString;
+
+  /// No description provided for @createRequestString.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Request'**
+  String get createRequestString;
+
+  /// No description provided for @mapString.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get mapString;
+
+  /// No description provided for @pickupLocationString.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup Location'**
+  String get pickupLocationString;
+
+  /// No description provided for @selectItemsString.
+  ///
+  /// In en, this message translates to:
+  /// **'Select items'**
+  String get selectItemsString;
+
+  /// No description provided for @descriptionString.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get descriptionString;
+
+  /// No description provided for @receiverNameString.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiver Name'**
+  String get receiverNameString;
+
+  /// No description provided for @contactNoString.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact No.'**
+  String get contactNoString;
+
+  /// No description provided for @destinationLocationString.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination Location'**
+  String get destinationLocationString;
+
+  /// No description provided for @pickImageString.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Image'**
+  String get pickImageString;
+
+  /// No description provided for @addMoreItemsString.
+  ///
+  /// In en, this message translates to:
+  /// **'Add more Items'**
+  String get addMoreItemsString;
+
+  /// No description provided for @packagingTypeString.
+  ///
+  /// In en, this message translates to:
+  /// **'Packaging Type'**
+  String get packagingTypeString;
+
+  /// No description provided for @quantingString.
+  ///
+  /// In en, this message translates to:
+  /// **'Qty.'**
+  String get quantingString;
 }
 
 class _AppLocalizationsDelegate

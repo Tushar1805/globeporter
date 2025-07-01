@@ -13,3 +13,5 @@ const driverDetailsScreen = '/driver_details_screen';
 
 //* Customer Routes
 const customerDashboard = '/customer_dashboard';
+const urbanRequestScreen = '/urban_request_screen';
+const ruralRequestScreen = '/rural_request_screen';

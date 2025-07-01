@@ -91,7 +91,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                           Center(
                             child: Padding(
                               padding: EdgeInsets.only(top: size.width * 0.3),
-                              child: SvgPicture.asset('assets/svg/logo_small.svg',
+                              child: SvgPicture.asset(appLogoSmall,
                                   width: MediaQuery.sizeOf(context).width * .4),
                             ),
                           ),

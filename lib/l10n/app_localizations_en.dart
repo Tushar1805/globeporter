@@ -9,9 +9,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get helloWorld => 'Hello World';
-
-  @override
   String get selectLanguage => 'Select Your Language';
 
   @override
@@ -96,4 +93,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get submitString => 'Submit';
+
+  @override
+  String get currentLocationString => 'Current Location';
+
+  @override
+  String get urbanString => 'Urban';
+
+  @override
+  String get ruralString => 'Rural';
+
+  @override
+  String get createRequestString => 'Create Request';
+
+  @override
+  String get mapString => 'Map';
+
+  @override
+  String get pickupLocationString => 'Pickup Location';
+
+  @override
+  String get selectItemsString => 'Select items';
+
+  @override
+  String get descriptionString => 'Description';
+
+  @override
+  String get receiverNameString => 'Receiver Name';
+
+  @override
+  String get contactNoString => 'Contact No.';
+
+  @override
+  String get destinationLocationString => 'Destination Location';
+
+  @override
+  String get pickImageString => 'Pick Image';
+
+  @override
+  String get addMoreItemsString => 'Add more Items';
+
+  @override
+  String get packagingTypeString => 'Packaging Type';
+
+  @override
+  String get quantingString => 'Qty.';
 }
