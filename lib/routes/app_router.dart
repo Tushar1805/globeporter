@@ -5,7 +5,6 @@ import 'package:globeporter/presentation/authentication/view/onboarding/onboardi
 import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_2_screen.dart';
 import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_3_screen.dart';
 import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_4_screen.dart';
-import 'package:globeporter/presentation/authentication/view/onboarding_screen.dart';
 import 'package:globeporter/presentation/authentication/view/otp_screen.dart';
 import 'package:globeporter/presentation/authentication/view/select_lang_screen.dart';
 import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart';
@@ -53,14 +52,6 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const SelectLangScreen(),
-      ),
-    ),
-    GoRoute(
-      name: onboardingScreen,
-      path: onboardingScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const OnboardingScreen(),
       ),
     ),
     GoRoute(

@@ -5,6 +5,7 @@ import 'package:globeporter/presentation/authentication/view/login_screen.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,7 +39,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(driverWithVan, width: size.width * .7),
+                SvgPicture.asset(driverWithVanSvg, width: size.width * .7),
               ],
             ),
 
@@ -96,37 +97,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const SizedBox(height: 15),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.nameString,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextField(
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    controller: nameController,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      // hintText: enterMobileText,
-                      // hintStyle:
-                      //     Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                AppLocalizations.of(context)!.nameString,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
               ),
             ),
 
@@ -134,68 +108,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
               height: 8,
             ),
 
+            CustomTextField(textEditingController: nameController),
+
+            const SizedBox(
+              height: 12,
+            ),
+
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.emailString,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextField(
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    controller: emailController,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      // hintText: enterMobileText,
-                      // hintStyle:
-                      //     Theme.of(context).textTheme.bodySmall?.copyWith(color: greyTextColor),
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                AppLocalizations.of(context)!.emailString,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
               ),
             ),
 
+            const SizedBox(
+              height: 8,
+            ),
+
+            CustomTextField(textEditingController: emailController),
+
             const SizedBox(height: 60),
 
-            Align(
+            CustomElevatedButton(
+              name: AppLocalizations.of(context)!.registerString,
+              borderRadius: 25,
               alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                ),
-                onPressed: () {
-                  // Navigator.pushNamed(context, OnboardingScreen.route);
-
-                  String fullNumber = '$_selectedCountryCode${phoneController.text}';
-                  debugPrint('Phone number entered: $fullNumber');
-                  context.push(otpScreen);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Text(
-                    AppLocalizations.of(context)!.registerString,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ),
+              onPressed: () {
+                String fullNumber = '$_selectedCountryCode${phoneController.text}';
+                debugPrint('Phone number entered: $fullNumber');
+                context.push(otpScreen);
+              },
+              textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              nameSize: 22,
             ),
 
             const SizedBox(height: 20),

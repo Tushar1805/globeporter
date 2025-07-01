@@ -82,9 +82,6 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
       ),
       body: Column(
         children: [
-          // Green curved header
-
-          // Onboarding Content
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -102,7 +99,7 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                             child: Padding(
                               padding: EdgeInsets.only(top: size.width * 0.3),
                               child: SvgPicture.asset(
-                                'assets/svg/logo_small.svg',
+                                appLogoSmall,
                                 width: MediaQuery.sizeOf(context).width * .4,
                               ),
                             ),
@@ -124,7 +121,7 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                                   width: MediaQuery.sizeOf(context).width * 1,
                                   height: MediaQuery.sizeOf(context).width * .75,
                                   child: SvgPicture.asset(
-                                    'assets/svg/ellipse_shape.svg',
+                                    ellipseShapeSvg,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
@@ -168,11 +165,6 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                             ),
                           ],
                         ),
-
-                        // const SizedBox(height: 40),
-
-                        // Bottom Controls
-
                         const SizedBox(height: 24),
                       ],
                     ),

@@ -1,7 +1,6 @@
 //* Onboarding Routes
 const splashScreen = '/';
 const loginScreen = '/login';
-const onboardingScreen = '/onboarding';
 const onboardingScreen1 = '/onboarding1';
 const onboardingScreen2 = '/onboarding2';
 const onboardingScreen3 = '/onboarding3';

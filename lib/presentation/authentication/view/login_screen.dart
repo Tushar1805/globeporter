@@ -21,8 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    debugPrint('Height: ${size.height.toString()}');
-    debugPrint('Width: ${size.width.toString()}');
+    // debugPrint('Height: ${size.height.toString()}');
+    // debugPrint('Width: ${size.width.toString()}');
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: Row(
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   left: 0,
                   right: 0,
                   child: SvgPicture.asset(
-                    'assets/svg/logo_small.svg',
+                    appLogoSmall,
                     width: MediaQuery.sizeOf(context).width * .4,
                   ),
                 ),
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SvgPicture.asset(
-                  'assets/svg/driver_with_van.svg',
+                  driverWithVanSvg,
                   width: size.width * .7,
                 ),
               ],
@@ -137,11 +137,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintStyle:
                             Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                         border: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.green),
+                          borderSide: const BorderSide(color: primaryColor),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.green),
+                          borderSide: const BorderSide(color: primaryColor),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
@@ -151,32 +151,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
-
-            const SizedBox(height: 30),
-
-            // Continue Button
-            // Align(
-            //   alignment: Alignment.centerRight,
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(right: 24.0),
-            //     child: ElevatedButton(
-            //       style: ElevatedButton.styleFrom(
-            //         backgroundColor: Colors.green,
-            //         shape: const CircleBorder(),
-            //         padding: const EdgeInsets.all(14),
-            //       ),
-            //       onPressed: () {
-            //         String fullNumber = '$_selectedCountryCode${phoneController.text}';
-            //         debugPrint('Phone number entered: $fullNumber');
-            //         // Handle your login logic
-            //         context.pushNamed(signUpScreen);
-            //       },
-            //       child: const Icon(Icons.arrow_forward, color: Colors.white),
-            //     ),
-            //   ),
-            // ),
-
-            const SizedBox(height: 20),
           ],
         ),
       ),

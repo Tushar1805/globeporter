@@ -72,9 +72,6 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
       ),
       body: Column(
         children: [
-          // Green curved header
-
-          // Onboarding Content
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -95,8 +92,10 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                         Center(
                           child: Padding(
                             padding: EdgeInsets.only(top: size.width * 0.35),
-                            child: SvgPicture.asset('assets/svg/logo_small.svg',
-                                width: MediaQuery.sizeOf(context).width * .4),
+                            child: SvgPicture.asset(
+                              appLogoSmall,
+                              width: MediaQuery.sizeOf(context).width * .4,
+                            ),
                           ),
                         ),
                       ],
@@ -115,7 +114,7 @@ class _OnboardingScreen1State extends State<OnboardingScreen1> {
                                   width: MediaQuery.sizeOf(context).width * 1,
                                   height: MediaQuery.sizeOf(context).width * .7,
                                   child: SvgPicture.asset(
-                                    'assets/svg/ellipse_shape.svg',
+                                    ellipseShapeSvg,
                                     fit: BoxFit.contain,
                                   ),
                                 ),

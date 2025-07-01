@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -65,7 +67,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
               value: 'en',
               selected: selectedLanguage == 'en',
               icon: Icons.language,
-              backgroundImage: 'assets/svg/buildings.svg', // replace with your image
+              backgroundImage: buildingSvg, // replace with your image
             ),
             const SizedBox(height: 30),
 
@@ -75,29 +77,20 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
               value: 'hi',
               selected: selectedLanguage == 'hi',
               icon: Icons.translate,
-              backgroundImage: 'assets/svg/tajmahal.svg', // replace with your image
+              backgroundImage: tajMahalSvg, // replace with your image
             ),
 
             const Spacer(),
 
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-              ),
+            CustomElevatedButton(
+              name: AppLocalizations.of(context)!.continueString,
+              borderRadius: 25,
+              alignment: Alignment.center,
               onPressed: () {
                 context.push(onboardingScreen1);
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: Text(
-                  AppLocalizations.of(context)!.continueString,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: whiteColor, fontSize: 22, fontWeight: FontWeight.w700),
-                ),
-              ),
+              textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              nameSize: 22,
             ),
           ],
         ),

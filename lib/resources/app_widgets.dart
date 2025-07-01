@@ -59,9 +59,15 @@ class CustomLocationBox extends StatelessWidget {
 }
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({super.key, required this.textEditingController, this.maxLines});
+  const CustomTextField({
+    super.key,
+    required this.textEditingController,
+    this.maxLines,
+    this.inputType,
+  });
   final TextEditingController textEditingController;
   final int? maxLines;
+  final TextInputType? inputType;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -69,7 +75,7 @@ class CustomTextField extends StatelessWidget {
       child: TextField(
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
         controller: textEditingController,
-        keyboardType: TextInputType.name,
+        keyboardType: inputType ?? TextInputType.name,
         maxLines: maxLines ?? 1,
         decoration: InputDecoration(
           prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),

@@ -7,11 +7,14 @@ final String mapImage = "assets/images/map_image.png";
 final String imageIcon = "assets/images/image_icon.png";
 
 // SVG Images
-final String driverWithVan = "assets/svg/driver_with_van.svg";
-final String shippedSvg = "assets/svg/shipped.svg";
 
-final String addSvg = "assets/svg/add.svg";
+final String buildingSvg = "assets/svg/buildings.svg";
+final String tajMahalSvg = "assets/svg/tajmahal.svg";
 final String appLogoSmall = "assets/svg/logo_small.svg";
+final String ellipseShapeSvg = "assets/svg/ellipse_shape.svg";
+final String driverWithVanSvg = "assets/svg/driver_with_van.svg";
+final String shippedSvg = "assets/svg/shipped.svg";
+final String addSvg = "assets/svg/add.svg";
 final String homeSvg = "assets/svg/home.svg";
 final String chatSvg = "assets/svg/chat.svg";
 final String notificationSvg = "assets/svg/notification.svg";
