@@ -137,5 +137,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get packagingTypeString => 'Packaging Type';
 
   @override
-  String get quantingString => 'Qty.';
+  String get quantityString => 'Qty.';
 }

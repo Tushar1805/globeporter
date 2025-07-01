@@ -64,7 +64,7 @@ class _RuralRequestScreenState extends State<RuralRequestScreen> {
               height: 15,
             ),
 
-            CustomText(text: 'Packaging Type'),
+            CustomText(text: AppLocalizations.of(context)!.packagingTypeString),
 
             const SizedBox(
               height: 8,
@@ -77,7 +77,7 @@ class _RuralRequestScreenState extends State<RuralRequestScreen> {
               height: 15,
             ),
 
-            CustomText(text: 'Qty.'),
+            CustomText(text: AppLocalizations.of(context)!.quantityString),
 
             const SizedBox(
               height: 8,

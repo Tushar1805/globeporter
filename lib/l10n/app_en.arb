@@ -84,7 +84,7 @@
     "@addMoreItemsString": {},
     "packagingTypeString": "Packaging Type",
     "@packagingTypeString": {},
-    "quantingString": "Qty.",
-    "@quantingString": {}
+    "quantityString": "Qty.",
+    "@quantityString": {}
 
 }

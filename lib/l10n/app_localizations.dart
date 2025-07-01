@@ -344,11 +344,11 @@ abstract class AppLocalizations {
   /// **'Packaging Type'**
   String get packagingTypeString;
 
-  /// No description provided for @quantingString.
+  /// No description provided for @quantityString.
   ///
   /// In en, this message translates to:
   /// **'Qty.'**
-  String get quantingString;
+  String get quantityString;
 }
 
 class _AppLocalizationsDelegate

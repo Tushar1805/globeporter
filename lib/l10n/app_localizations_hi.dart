@@ -137,5 +137,5 @@ class AppLocalizationsHi extends AppLocalizations {
   String get packagingTypeString => 'पैकेजिंग प्रकार';
 
   @override
-  String get quantingString => 'मात्रा';
+  String get quantityString => 'मात्रा';
 }
