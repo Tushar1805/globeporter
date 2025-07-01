@@ -138,4 +138,19 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get quantityString => 'मात्रा';
+
+  @override
+  String get myRequestString => 'मेरे अनुरोध';
+
+  @override
+  String get statusString => 'स्थिति';
+
+  @override
+  String get typeString => 'प्रकार';
+
+  @override
+  String get dateString => 'तारीख';
+
+  @override
+  String get productTypeString => 'उत्पाद का प्रकार';
 }

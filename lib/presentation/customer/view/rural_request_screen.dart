@@ -4,6 +4,8 @@ import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/location_service.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class RuralRequestScreen extends StatefulWidget {
   const RuralRequestScreen({super.key});
@@ -150,7 +152,11 @@ class _RuralRequestScreenState extends State<RuralRequestScreen> {
               name: AppLocalizations.of(context)!.submitString,
               borderRadius: 25,
               alignment: Alignment.bottomCenter,
-              onPressed: () {},
+              onPressed: () {
+                context.pushNamed(myRequestScreen, extra: {
+                  'type': 'rural',
+                });
+              },
               textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               nameSize: 22,
             ),

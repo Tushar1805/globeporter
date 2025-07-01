@@ -138,4 +138,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quantityString => 'Qty.';
+
+  @override
+  String get myRequestString => 'My Request';
+
+  @override
+  String get statusString => 'Status';
+
+  @override
+  String get typeString => 'Type';
+
+  @override
+  String get dateString => 'Date';
+
+  @override
+  String get productTypeString => 'Product Type';
 }

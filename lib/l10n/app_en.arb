@@ -5,7 +5,9 @@
         "description": "Instructions to select language"
     },
     "selectLanguageDesc": "Your selected language can be changed\nanytime from Settings.",
-    "@selectLanguageDesc": {},
+    "@selectLanguageDesc": {
+        "description": "Information about how to change language"
+    },
     "continueString": "Continue",
     "@continueString": {},
     "skipString": "Skip",
@@ -85,6 +87,15 @@
     "packagingTypeString": "Packaging Type",
     "@packagingTypeString": {},
     "quantityString": "Qty.",
-    "@quantityString": {}
-
+    "@quantityString": {},
+    "myRequestString": "My Request",
+    "@myRequestString": {},
+    "statusString": "Status",
+    "@statusString": {},
+    "typeString": "Type",
+    "@typeString": {},
+    "dateString": "Date",
+    "@dateString": {},
+    "productTypeString": "Product Type",
+    "@productTypeString": {}
 }

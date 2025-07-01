@@ -9,6 +9,8 @@ import 'package:globeporter/presentation/authentication/view/otp_screen.dart';
 import 'package:globeporter/presentation/authentication/view/select_lang_screen.dart';
 import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart';
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
+import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
+import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/rural_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/urban_request_screen.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -141,6 +143,32 @@ final GoRouter router = GoRouter(
         key: state.pageKey,
         child: const RuralRequestScreen(),
       ),
+    ),
+    GoRoute(
+      name: myRequestScreen,
+      path: myRequestScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: MyRequestScreen(
+            type: params?['type'] as String?,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      name: myRequestDetailsScreen,
+      path: myRequestDetailsScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: MyRequestDetailsScreen(
+            type: params?['type'] as String?,
+          ),
+        );
+      },
     ),
   ],
 );

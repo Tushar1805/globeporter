@@ -4,9 +4,10 @@ import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 
 class CustomText extends StatelessWidget {
-  const CustomText({super.key, required this.text, this.fontSize});
+  const CustomText({super.key, required this.text, this.fontSize, this.style});
   final String text;
   final double? fontSize;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,64 @@ class CustomText extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: fontSize ?? 18),
+        style: style ?? Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: fontSize ?? 18),
+      ),
+    );
+  }
+}
+
+class CustomTextMedium extends StatelessWidget {
+  const CustomTextMedium({super.key, required this.text, this.fontSize, this.style});
+  final String text;
+  final double? fontSize;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Text(
+        text,
+        style: style ?? Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: fontSize ?? 16),
+      ),
+    );
+  }
+}
+
+class CustomRichText extends StatelessWidget {
+  const CustomRichText({
+    super.key,
+    required this.title,
+    required this.value,
+    this.titleStyle,
+    this.valueStyle,
+  });
+
+  final String? title;
+  final String? value;
+  final TextStyle? titleStyle;
+  final TextStyle? valueStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        text: title,
+        style: titleStyle ??
+            Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+        children: [
+          TextSpan(
+            text: value,
+            style: valueStyle ??
+                Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+          ),
+        ],
       ),
     );
   }
@@ -95,8 +153,9 @@ class CustomTextField extends StatelessWidget {
 }
 
 class CustomStatusBarWidget extends StatelessWidget {
-  const CustomStatusBarWidget({super.key, required this.title});
+  const CustomStatusBarWidget({super.key, required this.title, this.text});
   final String? title;
+  final Widget? text;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -126,13 +185,14 @@ class CustomStatusBarWidget extends StatelessWidget {
         Positioned(
           top: size.height * 0.055,
           left: size.width * 0.043,
-          child: Text(
-            title ?? '',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: whiteColor,
-                  fontSize: 24,
-                ),
-          ),
+          child: text ??
+              Text(
+                title ?? '',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: whiteColor,
+                      fontSize: 24,
+                    ),
+              ),
         ),
       ],
     );

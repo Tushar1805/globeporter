@@ -104,7 +104,7 @@ abstract class AppLocalizations {
   /// **'Select Your Language'**
   String get selectLanguage;
 
-  /// No description provided for @selectLanguageDesc.
+  /// Information about how to change language
   ///
   /// In en, this message translates to:
   /// **'Your selected language can be changed\nanytime from Settings.'**
@@ -349,6 +349,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Qty.'**
   String get quantityString;
+
+  /// No description provided for @myRequestString.
+  ///
+  /// In en, this message translates to:
+  /// **'My Request'**
+  String get myRequestString;
+
+  /// No description provided for @statusString.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get statusString;
+
+  /// No description provided for @typeString.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get typeString;
+
+  /// No description provided for @dateString.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get dateString;
+
+  /// No description provided for @productTypeString.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Type'**
+  String get productTypeString;
 }
 
 class _AppLocalizationsDelegate

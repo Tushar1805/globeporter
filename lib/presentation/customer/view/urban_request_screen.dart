@@ -8,6 +8,8 @@ import 'package:globeporter/location/location_service.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
@@ -240,7 +242,11 @@ class _UrbanRequestScreenState extends State<UrbanRequestScreen> {
               name: AppLocalizations.of(context)!.submitString,
               borderRadius: 25,
               alignment: Alignment.bottomCenter,
-              onPressed: () {},
+              onPressed: () {
+                context.pushNamed(myRequestScreen, extra: {
+                  'type': 'urban',
+                });
+              },
               textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               nameSize: 22,
             ),
