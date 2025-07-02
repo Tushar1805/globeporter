@@ -8,7 +8,7 @@ import 'package:globeporter/presentation/authentication/view/onboarding/onboardi
 import 'package:globeporter/presentation/authentication/view/otp_screen.dart';
 import 'package:globeporter/presentation/authentication/view/select_lang_screen.dart';
 import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart';
-import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
+import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/rural_request_screen.dart';
@@ -121,11 +121,11 @@ final GoRouter router = GoRouter(
       ),
     ),
     GoRoute(
-      name: customerDashboard,
-      path: customerDashboard,
+      name: createRequestScreen,
+      path: createRequestScreen,
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
-        child: const CustomerDashboard(),
+        child: const CreateRequestScreen(),
       ),
     ),
     GoRoute(

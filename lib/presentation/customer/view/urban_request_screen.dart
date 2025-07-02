@@ -11,7 +11,16 @@ import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
+
+class ItemEntry {
+  File? imageFile;
+  TextEditingController descriptionController;
+
+  ItemEntry({
+    this.imageFile,
+    required this.descriptionController,
+  });
+}
 
 class UrbanRequestScreen extends StatefulWidget {
   const UrbanRequestScreen({super.key});
@@ -26,6 +35,7 @@ class _UrbanRequestScreenState extends State<UrbanRequestScreen> {
   final TextEditingController receiverNameController = TextEditingController();
   final TextEditingController contactNumberController = TextEditingController();
   late final List<Placemark> placemarks;
+  List<ItemEntry> itemEntries = [];
 
   File? image;
   String? fileName;
@@ -42,29 +52,49 @@ class _UrbanRequestScreenState extends State<UrbanRequestScreen> {
   void initState() {
     super.initState();
     getCurrentLocation();
+    addNewItem();
   }
 
-  Future pickImage() async {
+  void addNewItem() {
+    setState(() {
+      itemEntries.add(ItemEntry(descriptionController: TextEditingController()));
+    });
+  }
+
+  void removeItem(int index) {
+    setState(() {
+      itemEntries[index].descriptionController.dispose();
+      itemEntries.removeAt(index);
+    });
+  }
+
+  Future<File?> pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-      if (image == null) return;
+      if (image == null) return null;
 
       final imageTemporary = File(image.path);
 
-      setState(() {
-        this.image = imageTemporary;
-        fileName = path.basename(image.path);
-      });
+      return imageTemporary;
     } on PlatformException catch (e) {
       debugPrint('Failed to pick image: $e');
     }
+    return null;
   }
 
   void deleteImage() {
     setState(() {
       image = null;
     });
+  }
+
+  @override
+  void dispose() {
+    for (var item in itemEntries) {
+      item.descriptionController.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -94,77 +124,90 @@ class _UrbanRequestScreenState extends State<UrbanRequestScreen> {
               currentLocationController: currentLocationController,
             ),
 
-            const SizedBox(
-              height: 20,
-            ),
+            //* Select items
+            ...itemEntries.asMap().entries.map((entry) {
+              int index = entry.key;
+              ItemEntry item = entry.value;
 
-            CustomText(
-              text: AppLocalizations.of(context)!.selectItemsString,
-              fontSize: 20,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: TextField(
-                onTap: () async {
-                  await pickImage();
-                },
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
-                readOnly: true,
-                controller: TextEditingController(
-                  text: image != null ? fileName : AppLocalizations.of(context)!.pickImageString,
-                ),
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.green),
-                    borderRadius: BorderRadius.circular(4),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 20,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.green),
-                    borderRadius: BorderRadius.circular(4),
+                  CustomText(
+                    text: AppLocalizations.of(context)!.selectItemsString,
+                    fontSize: 20,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Image.asset(
-                      imageIcon,
-                      width: 24,
-                      height: 32,
-                    ),
+                  const SizedBox(
+                    height: 8,
                   ),
-                  suffixIcon: image != null
-                      ? IconButton(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      onTap: () async {
+                        final picked = await pickImage();
+                        if (picked != null) {
+                          setState(() {
+                            item.imageFile = picked;
+                          });
+                        }
+                      },
+                      style:
+                          Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
+                      readOnly: true,
+                      controller: TextEditingController(
+                        text: item.imageFile != null
+                            ? item.imageFile!.path.split('/').last
+                            : AppLocalizations.of(context)!.pickImageString,
+                      ),
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                        prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Image.asset(
+                            imageIcon,
+                            width: 24,
+                            height: 32,
+                          ),
+                        ),
+                        suffixIcon: IconButton(
                           icon: Icon(Icons.close),
                           color: primaryColor,
                           onPressed: () {
-                            deleteImage();
+                            removeItem(index);
                           },
-                        )
-                      : SizedBox.shrink(),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-
-            CustomText(
-              text: AppLocalizations.of(context)!.descriptionString,
-              fontSize: 20,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-
-            CustomTextField(
-              textEditingController: itemDescriptionController,
-              maxLines: 5,
-            ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  CustomText(
+                    text: AppLocalizations.of(context)!.descriptionString,
+                    fontSize: 20,
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  CustomTextField(
+                    textEditingController: item.descriptionController,
+                    maxLines: 5,
+                  ),
+                ],
+              );
+            }),
 
             const SizedBox(
               height: 8,
@@ -176,7 +219,7 @@ class _UrbanRequestScreenState extends State<UrbanRequestScreen> {
                 name: '+ ${AppLocalizations.of(context)!.addMoreItemsString}',
                 borderRadius: 4,
                 alignment: Alignment.centerRight,
-                onPressed: () {},
+                onPressed: addNewItem,
               ),
             ),
 

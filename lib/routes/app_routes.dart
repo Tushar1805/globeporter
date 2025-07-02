@@ -11,7 +11,7 @@ const otpScreen = '/otp_screen';
 const driverDetailsScreen = '/driver_details_screen';
 
 //* Customer Routes
-const customerDashboard = '/customer_dashboard';
+const createRequestScreen = '/create_request_screen';
 const urbanRequestScreen = '/urban_request_screen';
 const ruralRequestScreen = '/rural_request_screen';
 const myRequestScreen = '/my_request_screen';

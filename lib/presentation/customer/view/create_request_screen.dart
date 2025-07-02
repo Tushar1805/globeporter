@@ -14,14 +14,14 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class CustomerDashboard extends StatefulWidget {
-  const CustomerDashboard({super.key});
+class CreateRequestScreen extends StatefulWidget {
+  const CreateRequestScreen({super.key});
 
   @override
-  State<CustomerDashboard> createState() => _CustomerDashboardState();
+  State<CreateRequestScreen> createState() => _CreateRequestScreenState();
 }
 
-class _CustomerDashboardState extends State<CustomerDashboard> {
+class _CreateRequestScreenState extends State<CreateRequestScreen> {
   final TextEditingController currentLocationController = TextEditingController();
   final Completer<GoogleMapController> _controller = Completer();
   late final List<Placemark> placemarks;

@@ -51,6 +51,7 @@ void showDriverDialog(final context) {
                   onPressed: () {
                     context.pop();
                     // Handle No logic here
+                    context.push(createRequestScreen);
                     debugPrint('User is not a driver');
                   },
                   style: ElevatedButton.styleFrom(
