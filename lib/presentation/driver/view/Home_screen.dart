@@ -1,0 +1,195 @@
+import 'package:core/di/service_locator.dart';
+import 'package:flutter/material.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
+
+class DriverHomeScreen extends StatefulWidget {
+  const DriverHomeScreen({super.key});
+
+  @override
+  State<DriverHomeScreen> createState() => _DriverHomeScreenState();
+}
+
+class _DriverHomeScreenState extends State<DriverHomeScreen> {
+  final myTrips = [
+    {
+      'name': 'Vinod Sharma',
+      'date': '25 June',
+      'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
+      'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
+    },
+    {
+      'name': 'Vinod Sharma',
+      'date': '25 June',
+      'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
+      'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
+    },
+    {
+      'name': 'Vinod Sharma',
+      'date': '25 June',
+      'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
+      'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
+    },
+    {
+      'name': 'Vinod Sharma',
+      'date': '25 June',
+      'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
+      'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
+    }
+  ];
+  final driverCubit = sl<DriverCubit>();
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: myTrips.length,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              itemBuilder: (final context, final index) {
+                final trip = myTrips[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(9),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                trip['name'] ?? '',
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      fontSize: 20,
+                                    ),
+                              ),
+                            ),
+                            Text(
+                              trip['date'] ?? '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(fontSize: 15, color: greyTextColor),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.pickupLocationString,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        addressRow(address: trip['pickupLocation']),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.destinationLocationString,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        addressRow(address: trip['pickupLocation']),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomElevatedButton(
+                              name: AppLocalizations.of(context)!.acceptString,
+                              borderRadius: 5,
+                              alignment: Alignment.centerLeft,
+                              onPressed: () {
+                                showCustomDialog(
+                                  context: context,
+                                  borderRadius: 18,
+                                  title: '₹100 will be deducted from your wallet.',
+                                  onTapYes: () {
+                                    driverCubit.deductAmount();
+                                    context.pop();
+                                    context.pushNamed(itemDetailsScreen);
+                                  },
+                                  onTapNo: () {
+                                    context.pop();
+                                  },
+                                );
+                              },
+                              textPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            ),
+                            SizedBox(
+                              width: size.width * 0.06,
+                            ),
+                            CustomElevatedButton(
+                              name: AppLocalizations.of(context)!.declineString,
+                              borderRadius: 5,
+                              alignment: Alignment.centerLeft,
+                              backgroundColor: Colors.red,
+                              onPressed: () {
+                                showReasonDialog(
+                                  context: context,
+                                  onTap: context.pop,
+                                );
+                              },
+                              textPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget addressRow({required final String? address}) => Row(
+        children: [
+          Image.asset(
+            locationPinImage,
+            width: 24,
+            height: 32,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: Text(
+              address ?? '',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+            ),
+          )
+        ],
+      );
+}

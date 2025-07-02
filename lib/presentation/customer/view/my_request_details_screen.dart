@@ -46,26 +46,8 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
             const SizedBox(
               height: 8,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Image.asset(
-                    locationPinImage,
-                    width: 24,
-                    height: 32,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Flat No. 203, Sai Residency, Indore',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
-                    ),
-                  )
-                ],
-              ),
+            ShowLocationWidget(
+              address: 'Flat No. 203, Sai Residency, Indore',
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -77,26 +59,8 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
             const SizedBox(
               height: 8,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Image.asset(
-                    locationPinImage,
-                    width: 24,
-                    height: 32,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Flat No. 203, Sai Residency, Indore',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
-                    ),
-                  )
-                ],
-              ),
+            ShowLocationWidget(
+              address: 'Flat No. 203, Sai Residency, Indore',
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

@@ -97,5 +97,17 @@
     "dateString": "Date",
     "@dateString": {},
     "productTypeString": "Product Type",
-    "@productTypeString": {}
+    "@productTypeString": {},
+    "selectReasonString":"Please Select Reason",
+    "@selectReasonString": {},
+    "acceptString": "Accept",
+    "@acceptString": {},
+    "declineString": "Decline",
+    "@declineString": {},
+    "itemDetailsString": "Item Details",
+    "@itemDetailsString": {},
+    "itemImageString": "Item Image",
+    "@itemImageString": {},
+    "goString": "Go",
+    "@goString": {}
 }

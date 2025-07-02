@@ -153,4 +153,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get productTypeString => 'उत्पाद का प्रकार';
+
+  @override
+  String get selectReasonString => 'कृपया कारण चुनें';
+
+  @override
+  String get acceptString => 'स्वीकार करें';
+
+  @override
+  String get declineString => 'अस्वीकार करें';
+
+  @override
+  String get itemDetailsString => 'आइटम विवरण';
+
+  @override
+  String get itemImageString => 'आइटम छवि';
+
+  @override
+  String get goString => 'जाओ';
 }

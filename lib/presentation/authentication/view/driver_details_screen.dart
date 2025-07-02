@@ -123,7 +123,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
               borderRadius: 25,
               alignment: Alignment.bottomCenter,
               onPressed: () {
-                // context.push(customerDashboard);
+                context.push(driverDashboard);
               },
               textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               nameSize: 22,

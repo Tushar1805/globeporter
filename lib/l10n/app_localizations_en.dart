@@ -153,4 +153,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productTypeString => 'Product Type';
+
+  @override
+  String get selectReasonString => 'Please Select Reason';
+
+  @override
+  String get acceptString => 'Accept';
+
+  @override
+  String get declineString => 'Decline';
+
+  @override
+  String get itemDetailsString => 'Item Details';
+
+  @override
+  String get itemImageString => 'Item Image';
+
+  @override
+  String get goString => 'Go';
 }

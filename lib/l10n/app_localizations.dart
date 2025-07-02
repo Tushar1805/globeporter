@@ -379,6 +379,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Product Type'**
   String get productTypeString;
+
+  /// No description provided for @selectReasonString.
+  ///
+  /// In en, this message translates to:
+  /// **'Please Select Reason'**
+  String get selectReasonString;
+
+  /// No description provided for @acceptString.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get acceptString;
+
+  /// No description provided for @declineString.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get declineString;
+
+  /// No description provided for @itemDetailsString.
+  ///
+  /// In en, this message translates to:
+  /// **'Item Details'**
+  String get itemDetailsString;
+
+  /// No description provided for @itemImageString.
+  ///
+  /// In en, this message translates to:
+  /// **'Item Image'**
+  String get itemImageString;
+
+  /// No description provided for @goString.
+  ///
+  /// In en, this message translates to:
+  /// **'Go'**
+  String get goString;
 }
 
 class _AppLocalizationsDelegate

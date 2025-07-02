@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 
@@ -226,7 +227,9 @@ class CustomElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? primaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius ?? 4)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? 4),
+          ),
         ),
         onPressed: onPressed,
         child: Padding(
@@ -240,6 +243,230 @@ class CustomElevatedButton extends StatelessWidget {
                 ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class BottomNavBarIcon extends StatelessWidget {
+  const BottomNavBarIcon({
+    required this.icon,
+    required this.onTap,
+    required this.pageIndex,
+    required this.itemIndex,
+    super.key,
+  });
+
+  final String icon;
+  final VoidCallback onTap;
+  final int pageIndex;
+  final int itemIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return IconButton(
+      highlightColor: Colors.transparent,
+      enableFeedback: false,
+      onPressed: onTap.call,
+      icon: pageIndex == itemIndex
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  icon,
+                  height: size.width * 0.0587,
+                ),
+              ],
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Opacity(
+                  opacity: 0.5,
+                  child: Image.asset(
+                    icon,
+                    height: size.width * 0.0587,
+                    color: primaryColor,
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+void showReasonDialog({
+  required final BuildContext context,
+  required final VoidCallback onTap,
+}) {
+  String? selectedReason;
+  final List<String> reasons = [
+    'Reason 1',
+    'Reason 2',
+    'Reason 3',
+  ];
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: primaryColor),
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: selectedReason,
+                      hint: Text(
+                        AppLocalizations.of(context)!.selectReasonString,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontSize: 28,
+                              color: whiteColor,
+                            ),
+                      ),
+                      dropdownColor: Colors.green.shade700,
+                      icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                      items: reasons.map((reason) {
+                        return DropdownMenuItem(
+                          value: reason,
+                          child: Text(
+                            reason,
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedReason = value;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  CustomElevatedButton(
+                    name: AppLocalizations.of(context)!.submitString,
+                    borderRadius: 25,
+                    alignment: Alignment.center,
+                    onPressed: onTap,
+                    backgroundColor: whiteColor,
+                    nameColor: primaryColor,
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showCustomDialog({
+  required final BuildContext context,
+  required final double? borderRadius,
+  required final String? title,
+  required final VoidCallback onTapYes,
+  required final VoidCallback onTapNo,
+}) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius ?? 16),
+          side: BorderSide(color: primaryColor),
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(borderRadius ?? 18),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title ?? '',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 24,
+                      color: whiteColor,
+                    ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomElevatedButton(
+                    name: AppLocalizations.of(context)!.yesString,
+                    borderRadius: 28,
+                    alignment: Alignment.center,
+                    onPressed: onTapYes,
+                    backgroundColor: whiteColor,
+                    nameColor: primaryColor,
+                    nameSize: 24,
+                  ),
+                  CustomElevatedButton(
+                    name: AppLocalizations.of(context)!.noString,
+                    borderRadius: 28,
+                    alignment: Alignment.center,
+                    onPressed: onTapNo,
+                    backgroundColor: Colors.red,
+                    nameColor: whiteColor,
+                    nameSize: 24,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+class ShowLocationWidget extends StatelessWidget {
+  const ShowLocationWidget({super.key, required this.address, this.fontSize});
+  final String? address;
+  final double? fontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Image.asset(
+            locationPinImage,
+            width: 24,
+            height: 32,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: Text(
+              address ?? '',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+            ),
+          )
+        ],
       ),
     );
   }

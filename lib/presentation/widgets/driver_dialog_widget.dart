@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
 void showDriverDialog(final context) {
   showDialog(
     context: context,
-    barrierDismissible: true, // prevent closing by tapping outside
+    barrierDismissible: true,
     builder: (context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: primaryColor),
         ),
-        contentPadding: const EdgeInsets.all(16),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -29,42 +30,30 @@ void showDriverDialog(final context) {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    context.pushNamed(driverDetailsScreen);
-                    // Handle Yes logic here
-                    debugPrint('User is a driver');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: const StadiumBorder(),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.yesString,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 24,
-                          color: whiteColor,
-                        ),
-                  ),
-                ),
-                ElevatedButton(
+                CustomElevatedButton(
+                  name: AppLocalizations.of(context)!.yesString,
+                  borderRadius: 28,
+                  alignment: Alignment.center,
                   onPressed: () {
                     context.pop();
-                    // Handle No logic here
+                    context.pushNamed(driverDetailsScreen);
+                    debugPrint('User is a driver');
+                  },
+                  nameColor: whiteColor,
+                  nameSize: 24,
+                ),
+                CustomElevatedButton(
+                  name: AppLocalizations.of(context)!.noString,
+                  borderRadius: 28,
+                  alignment: Alignment.center,
+                  backgroundColor: Colors.red,
+                  onPressed: () {
+                    context.pop();
                     context.push(createRequestScreen);
                     debugPrint('User is not a driver');
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    shape: const StadiumBorder(),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.noString,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 24,
-                          color: whiteColor,
-                        ),
-                  ),
+                  nameColor: whiteColor,
+                  nameSize: 24,
                 ),
               ],
             ),

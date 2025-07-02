@@ -49,5 +49,11 @@
     "statusString": "स्थिति",
     "typeString": "प्रकार",
     "dateString": "तारीख",
-    "productTypeString": "उत्पाद का प्रकार"
+    "productTypeString": "उत्पाद का प्रकार",
+    "selectReasonString": "कृपया कारण चुनें",
+    "acceptString": "स्वीकार करें",
+    "declineString": "अस्वीकार करें",
+    "itemDetailsString": "आइटम विवरण",
+    "itemImageString": "आइटम छवि",
+    "goString": "जाओ"
 }

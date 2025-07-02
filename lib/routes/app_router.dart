@@ -13,6 +13,8 @@ import 'package:globeporter/presentation/customer/view/my_request_details_screen
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/rural_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/urban_request_screen.dart';
+import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
+import 'package:globeporter/presentation/driver/view/item_details_screen.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import '../presentation/authentication/view/splash_screen.dart';
 import 'error_screen.dart';
@@ -169,6 +171,22 @@ final GoRouter router = GoRouter(
           ),
         );
       },
+    ),
+    GoRoute(
+      name: driverDashboard,
+      path: driverDashboard,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const DriverDashboard(),
+      ),
+    ),
+    GoRoute(
+      name: itemDetailsScreen,
+      path: itemDetailsScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const ItemDetailsScreen(),
+      ),
     ),
   ],
 );
