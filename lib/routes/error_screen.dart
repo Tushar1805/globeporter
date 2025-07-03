@@ -13,7 +13,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
     return SafeArea(
       child: Scaffold(
           body: Container(
-        color: Colors.white,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
@@ -28,7 +27,8 @@ class _ErrorScreenState extends State<ErrorScreen> {
         child: Center(
           child: Text(
             'Something went wrong',
-            style: const TextStyle(color: Color(0xff1F2E4C), fontWeight: FontWeight.w700, fontSize: 12),
+            style: const TextStyle(
+                color: Color(0xff1F2E4C), fontWeight: FontWeight.w700, fontSize: 12),
           ),
         ),
       )),

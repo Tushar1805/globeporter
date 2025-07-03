@@ -96,6 +96,8 @@
     "@typeString": {},
     "dateString": "Date",
     "@dateString": {},
+    "productNameString": "Product Name",
+    "@productNameString": {},
     "productTypeString": "Product Type",
     "@productTypeString": {},
     "selectReasonString": "Please Select Reason",
@@ -110,6 +112,8 @@
     "@itemImageString": {},
     "goString": "Go",
     "@goString": {},
+    "deductionMessageString": "will be deducted from your wallet.",
+    "@deductionMessageString": {},
     "walletString": "Wallet",
     "@walletString": {},
     "balanceString": "Balance",
@@ -119,5 +123,13 @@
     "addAmountDescString": "Add an amount to your wallet to continue \n using the services.",
     "@addAmountDescString": {},
     "addAmountString": "Add Amount",
-    "@addAmountString": {}
+    "@addAmountString": {},
+    "okString": "Ok",
+    "@okString": {},
+    "reachedPickupLocationMsgString": "You’ve reached at the \n Pickup Location",
+    "@reachedPickupLocationMsgString": {},
+    "startTripString": "Start the Trip",
+    "@startTripString": {},
+    "reachedDropLocationMsgString": "You’ve reached at the\nDrop Location",
+    "@reachedDropLocationMsgString": {}
 }

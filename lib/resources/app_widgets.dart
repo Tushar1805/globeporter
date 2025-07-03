@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomText extends StatelessWidget {
   const CustomText({super.key, required this.text, this.fontSize, this.style});
@@ -123,28 +125,35 @@ class CustomTextField extends StatelessWidget {
     required this.textEditingController,
     this.maxLines,
     this.inputType,
+    this.borderRadius,
+    this.textStyle,
+    this.cursorColor,
   });
   final TextEditingController textEditingController;
   final int? maxLines;
   final TextInputType? inputType;
+  final double? borderRadius;
+  final TextStyle? textStyle;
+  final Color? cursorColor;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
+        style: textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
         controller: textEditingController,
         keyboardType: inputType ?? TextInputType.name,
+        cursorColor: cursorColor,
         maxLines: maxLines ?? 1,
         decoration: InputDecoration(
           prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),
           border: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.green),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(borderRadius ?? 4),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.green),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(borderRadius ?? 4),
           ),
           contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         ),
@@ -478,4 +487,242 @@ class ShowLocationWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+void showCustomDialogOneButton({
+  required final BuildContext context,
+  required final double? borderRadius,
+  required final String? title,
+  required final VoidCallback onTap,
+  required final String? buttonTitle,
+  final Widget? text,
+}) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius ?? 16),
+          side: BorderSide(color: primaryColor),
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(borderRadius ?? 18),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              text ??
+                  Text(
+                    title ?? '',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 24,
+                          color: whiteColor,
+                        ),
+                  ),
+              const SizedBox(height: 20),
+              CustomElevatedButton(
+                name: buttonTitle ?? AppLocalizations.of(context)!.yesString,
+                borderRadius: 28,
+                alignment: Alignment.center,
+                onPressed: onTap,
+                backgroundColor: whiteColor,
+                nameColor: primaryColor,
+                nameSize: 24,
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+class PackageDetail {
+  TextEditingController productNameController;
+  TextEditingController packagingTypeController;
+  TextEditingController quantiyTypeController;
+
+  PackageDetail({
+    required this.productNameController,
+    required this.packagingTypeController,
+    required this.quantiyTypeController,
+  });
+}
+
+class DynamicItemDialog extends StatefulWidget {
+  const DynamicItemDialog({super.key, required this.type});
+  final String? type;
+
+  @override
+  State<DynamicItemDialog> createState() => _DynamicItemDialogState();
+}
+
+class _DynamicItemDialogState extends State<DynamicItemDialog> {
+  List<PackageDetail> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _addNewItem();
+  }
+
+  void _addNewItem() {
+    setState(() {
+      items.add(PackageDetail(
+        packagingTypeController: TextEditingController(),
+        productNameController: TextEditingController(),
+        quantiyTypeController: TextEditingController(),
+      ));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.itemDetailsString,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 20,
+                      color: primaryColor,
+                    ),
+              ),
+              const SizedBox(height: 10),
+              ...items.asMap().entries.map((entry) {
+                // final index = entry.key;
+                final item = entry.value;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.productNameString,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: primaryColor, fontSize: 18),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        CustomTextField(
+                          textEditingController: item.productNameController,
+                          borderRadius: 10,
+                          textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontSize: 20,
+                                color: primaryColor,
+                              ),
+                          cursorColor: primaryColor,
+                        ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.packagingTypeString,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: primaryColor, fontSize: 18),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        CustomTextField(
+                          textEditingController: item.packagingTypeController,
+                          borderRadius: 10,
+                          textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontSize: 20,
+                                color: primaryColor,
+                              ),
+                          cursorColor: primaryColor,
+                        ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.quantityString,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: primaryColor, fontSize: 18),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        CustomTextField(
+                          textEditingController: item.quantiyTypeController,
+                          borderRadius: 10,
+                          textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontSize: 20,
+                                color: primaryColor,
+                              ),
+                          cursorColor: primaryColor,
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 10),
+              CustomElevatedButton(
+                name: '+ ${AppLocalizations.of(context)!.addMoreItemsString}',
+                borderRadius: 4,
+                alignment: Alignment.centerRight,
+                onPressed: _addNewItem,
+              ),
+              const SizedBox(height: 10),
+              CustomElevatedButton(
+                name: AppLocalizations.of(context)!.submitString,
+                borderRadius: 25,
+                alignment: Alignment.bottomCenter,
+                onPressed: () {
+                  for (var item in items) {
+                    debugPrint('Product: ${item.productNameController.text}, '
+                        'Packaging: ${item.packagingTypeController.text}, '
+                        'Qty: ${item.quantiyTypeController.text}');
+                  }
+                  context.pop();
+                  context.pushNamed(startTripScreen, extra: {'type': widget.type});
+                },
+                textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                nameSize: 22,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+void showDynamicItemDialog({required final BuildContext context, required final String? type}) {
+  showDialog(
+    context: context,
+    builder: (_) => DynamicItemDialog(type: type),
+  );
 }

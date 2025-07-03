@@ -22,7 +22,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       'date': '25 June',
       'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
       'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
-      'type': 'uraban',
+      'type': 'urban',
     },
     {
       'name': 'Vinod Sharma',
@@ -36,14 +36,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       'date': '25 June',
       'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
       'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
-      'type': 'uraban',
+      'type': 'urban',
     },
     {
       'name': 'Vinod Sharma',
       'date': '25 June',
       'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
       'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
-      'type': 'uraban',
+      'type': 'urban',
     }
   ];
   final driverCubit = sl<DriverCubit>();
@@ -135,11 +135,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                 showCustomDialog(
                                   context: context,
                                   borderRadius: 18,
-                                  title: '₹100 will be deducted from your wallet.',
+                                  title:
+                                      '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
                                   onTapYes: () {
                                     driverCubit.deductAmount();
                                     context.pop();
-                                    context.pushNamed(itemDetailsScreen, extra: trip['type']);
+                                    context.pushNamed(
+                                      itemDetailsScreen,
+                                      extra: {'type': trip['type']},
+                                    );
                                   },
                                   onTapNo: () {
                                     context.pop();

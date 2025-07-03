@@ -49,6 +49,7 @@
     "statusString": "स्थिति",
     "typeString": "प्रकार",
     "dateString": "तारीख",
+    "productNameString": "प्रोडक्ट का नाम",
     "productTypeString": "उत्पाद का प्रकार",
     "selectReasonString": "कृपया कारण चुनें",
     "acceptString": "स्वीकार करें",
@@ -56,9 +57,14 @@
     "itemDetailsString": "आइटम विवरण",
     "itemImageString": "आइटम छवि",
     "goString": "जाओ",
+    "deductionMessageString": "आपके वॉलेट से काट लिया जाएगा.",
     "walletString": "खाता शेष",
     "balanceString": "खाते में शेष",
     "rsString": "रु",
     "addAmountDescString": "सेवाओं का उपयोग जारी रखने के लिए अपने \n वॉलेट में एक राशि जोड़ें।",
-    "addAmountString": "राशि जोड़ें"
+    "addAmountString": "राशि जोड़ें",
+    "okString": "ठीक है",
+    "reachedPickupLocationMsgString": "आप पिकअप स्थान पर\n पहुँच गए हैं",
+    "startTripString": "यात्रा प्रारंभ करें",
+    "reachedDropLocationMsgString": "आप ड्रॉप स्थान पर\n पहुंच गए हैं"
 }

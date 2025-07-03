@@ -152,6 +152,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get dateString => 'तारीख';
 
   @override
+  String get productNameString => 'प्रोडक्ट का नाम';
+
+  @override
   String get productTypeString => 'उत्पाद का प्रकार';
 
   @override
@@ -173,6 +176,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get goString => 'जाओ';
 
   @override
+  String get deductionMessageString => 'आपके वॉलेट से काट लिया जाएगा.';
+
+  @override
   String get walletString => 'खाता शेष';
 
   @override
@@ -187,4 +193,17 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get addAmountString => 'राशि जोड़ें';
+
+  @override
+  String get okString => 'ठीक है';
+
+  @override
+  String get reachedPickupLocationMsgString =>
+      'आप पिकअप स्थान पर\n पहुँच गए हैं';
+
+  @override
+  String get startTripString => 'यात्रा प्रारंभ करें';
+
+  @override
+  String get reachedDropLocationMsgString => 'आप ड्रॉप स्थान पर\n पहुंच गए हैं';
 }

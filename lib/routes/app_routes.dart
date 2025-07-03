@@ -21,3 +21,5 @@ const myRequestDetailsScreen = '/my_request_details_screeen';
 const driverDashboard = '/driver_dashboard';
 const itemDetailsScreen = '/item_details_screen';
 const walletScreen = '/wallet_screen';
+const tripInfoScreen = '/trip_info_screen';
+const startTripScreen = '/start_trip_screen';

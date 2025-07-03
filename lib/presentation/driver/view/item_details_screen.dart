@@ -3,6 +3,8 @@ import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   const ItemDetailsScreen({super.key, required this.type});
@@ -151,7 +153,12 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               name: AppLocalizations.of(context)!.goString,
               borderRadius: 5,
               alignment: Alignment.center,
-              onPressed: () {},
+              onPressed: () {
+                context.pushNamed(
+                  tripInfoScreen,
+                  extra: {'type': widget.type},
+                );
+              },
             ),
           ],
         ),

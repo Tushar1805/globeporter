@@ -374,6 +374,12 @@ abstract class AppLocalizations {
   /// **'Date'**
   String get dateString;
 
+  /// No description provided for @productNameString.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Name'**
+  String get productNameString;
+
   /// No description provided for @productTypeString.
   ///
   /// In en, this message translates to:
@@ -416,6 +422,12 @@ abstract class AppLocalizations {
   /// **'Go'**
   String get goString;
 
+  /// No description provided for @deductionMessageString.
+  ///
+  /// In en, this message translates to:
+  /// **'will be deducted from your wallet.'**
+  String get deductionMessageString;
+
   /// No description provided for @walletString.
   ///
   /// In en, this message translates to:
@@ -445,6 +457,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Amount'**
   String get addAmountString;
+
+  /// No description provided for @okString.
+  ///
+  /// In en, this message translates to:
+  /// **'Ok'**
+  String get okString;
+
+  /// No description provided for @reachedPickupLocationMsgString.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ve reached at the \n Pickup Location'**
+  String get reachedPickupLocationMsgString;
+
+  /// No description provided for @startTripString.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the Trip'**
+  String get startTripString;
+
+  /// No description provided for @reachedDropLocationMsgString.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ve reached at the\nDrop Location'**
+  String get reachedDropLocationMsgString;
 }
 
 class _AppLocalizationsDelegate

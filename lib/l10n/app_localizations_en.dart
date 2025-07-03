@@ -152,6 +152,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dateString => 'Date';
 
   @override
+  String get productNameString => 'Product Name';
+
+  @override
   String get productTypeString => 'Product Type';
 
   @override
@@ -173,6 +176,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goString => 'Go';
 
   @override
+  String get deductionMessageString => 'will be deducted from your wallet.';
+
+  @override
   String get walletString => 'Wallet';
 
   @override
@@ -187,4 +193,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addAmountString => 'Add Amount';
+
+  @override
+  String get okString => 'Ok';
+
+  @override
+  String get reachedPickupLocationMsgString =>
+      'You’ve reached at the \n Pickup Location';
+
+  @override
+  String get startTripString => 'Start the Trip';
+
+  @override
+  String get reachedDropLocationMsgString =>
+      'You’ve reached at the\nDrop Location';
 }
