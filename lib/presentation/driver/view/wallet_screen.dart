@@ -1,6 +1,7 @@
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -25,7 +26,7 @@ class _WalletScreenState extends State<WalletScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(size.width * 0.35),
         child: CustomStatusBarWidget(
-          title: 'Wallet',
+          title: AppLocalizations.of(context)!.walletString,
           height: size.width * 0.35,
           titlePositionTop: size.width * 0.2,
         ),
@@ -52,7 +53,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 }
               },
               child: CustomText(
-                text: 'Balance: $amount rs',
+                text: '${AppLocalizations.of(context)!.balanceString}: $amount ${AppLocalizations.of(context)!.rsString}',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 22),
               ),
             ),
@@ -60,7 +61,7 @@ class _WalletScreenState extends State<WalletScreen> {
               height: 12,
             ),
             Text(
-              'Add an amount to your wallet to continue \n using the services.',
+              AppLocalizations.of(context)!.addAmountDescString,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 18,
                     color: greyTextColor,
@@ -71,7 +72,7 @@ class _WalletScreenState extends State<WalletScreen> {
               height: size.width * 0.1,
             ),
             CustomElevatedButton(
-              name: 'Add Amount',
+              name: AppLocalizations.of(context)!.addAmountString,
               borderRadius: 25,
               alignment: Alignment.center,
               onPressed: () {},

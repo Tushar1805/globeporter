@@ -171,4 +171,20 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get goString => 'जाओ';
+
+  @override
+  String get walletString => 'खाता शेष';
+
+  @override
+  String get balanceString => 'खाते में शेष';
+
+  @override
+  String get rsString => 'रु';
+
+  @override
+  String get addAmountDescString =>
+      'सेवाओं का उपयोग जारी रखने के लिए अपने \n वॉलेट में एक राशि जोड़ें।';
+
+  @override
+  String get addAmountString => 'राशि जोड़ें';
 }

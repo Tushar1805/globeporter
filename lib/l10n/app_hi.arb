@@ -55,5 +55,10 @@
     "declineString": "अस्वीकार करें",
     "itemDetailsString": "आइटम विवरण",
     "itemImageString": "आइटम छवि",
-    "goString": "जाओ"
+    "goString": "जाओ",
+    "walletString": "खाता शेष",
+    "balanceString": "खाते में शेष",
+    "rsString": "रु",
+    "addAmountDescString": "सेवाओं का उपयोग जारी रखने के लिए अपने \n वॉलेट में एक राशि जोड़ें।",
+    "addAmountString": "राशि जोड़ें"
 }

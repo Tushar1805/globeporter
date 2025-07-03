@@ -415,6 +415,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go'**
   String get goString;
+
+  /// No description provided for @walletString.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get walletString;
+
+  /// No description provided for @balanceString.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get balanceString;
+
+  /// No description provided for @rsString.
+  ///
+  /// In en, this message translates to:
+  /// **'rs'**
+  String get rsString;
+
+  /// No description provided for @addAmountDescString.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an amount to your wallet to continue \n using the services.'**
+  String get addAmountDescString;
+
+  /// No description provided for @addAmountString.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Amount'**
+  String get addAmountString;
 }
 
 class _AppLocalizationsDelegate

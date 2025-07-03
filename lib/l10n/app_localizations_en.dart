@@ -171,4 +171,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goString => 'Go';
+
+  @override
+  String get walletString => 'Wallet';
+
+  @override
+  String get balanceString => 'Balance';
+
+  @override
+  String get rsString => 'rs';
+
+  @override
+  String get addAmountDescString =>
+      'Add an amount to your wallet to continue \n using the services.';
+
+  @override
+  String get addAmountString => 'Add Amount';
 }

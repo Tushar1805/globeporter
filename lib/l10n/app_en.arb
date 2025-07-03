@@ -98,7 +98,7 @@
     "@dateString": {},
     "productTypeString": "Product Type",
     "@productTypeString": {},
-    "selectReasonString":"Please Select Reason",
+    "selectReasonString": "Please Select Reason",
     "@selectReasonString": {},
     "acceptString": "Accept",
     "@acceptString": {},
@@ -109,5 +109,15 @@
     "itemImageString": "Item Image",
     "@itemImageString": {},
     "goString": "Go",
-    "@goString": {}
+    "@goString": {},
+    "walletString": "Wallet",
+    "@walletString": {},
+    "balanceString": "Balance",
+    "@balanceString": {},
+    "rsString": "rs",
+    "@rsString": {},
+    "addAmountDescString": "Add an amount to your wallet to continue \n using the services.",
+    "@addAmountDescString": {},
+    "addAmountString": "Add Amount",
+    "@addAmountString": {}
 }

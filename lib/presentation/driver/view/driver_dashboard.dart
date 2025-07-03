@@ -167,7 +167,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                         },
                         builder: (final context, final state) {
                           return Text(
-                            '$amount rs',
+                            '$amount ${AppLocalizations.of(context)!.rsString}',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
