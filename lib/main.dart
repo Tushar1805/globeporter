@@ -87,7 +87,7 @@ class _GlobePorterState extends State<GlobePorter> {
                   routerConfig: router,
                   builder: (context, child) {
                     return MediaQuery(
-                      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(.85)),
+                      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(.8)),
                       child: child!,
                     );
                   },

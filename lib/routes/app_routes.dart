@@ -20,3 +20,4 @@ const myRequestDetailsScreen = '/my_request_details_screeen';
 //* Driver Routes
 const driverDashboard = '/driver_dashboard';
 const itemDetailsScreen = '/item_details_screen';
+const walletScreen = '/wallet_screen';

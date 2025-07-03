@@ -11,6 +11,8 @@ import 'package:globeporter/presentation/driver/view/my_trips_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class DriverDashboard extends StatefulWidget {
   const DriverDashboard({super.key});
@@ -133,45 +135,48 @@ class _DriverDashboardState extends State<DriverDashboard> {
             Positioned(
               right: 15,
               bottom: size.width * 0.08,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                alignment: Alignment.bottomRight,
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(25),
+              child: GestureDetector(
+                onTap: () => context.pushNamed(walletScreen),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  alignment: Alignment.bottomRight,
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(25),
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      coinImage,
-                      width: size.width * 0.047,
-                      height: size.width * 0.047,
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    BlocConsumer(
-                      bloc: driverCubit,
-                      listener: (final context, final state) {
-                        if (state is AmountDeductedState) {
-                          setState(() {
-                            amount = state.message ;
-                          });
-                        }
-                      },
-                      builder: (final context, final state) {
-                        return Text(
-                          '$amount rs',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(fontSize: 20, color: primaryColor),
-                        );
-                      },
-                    ),
-                  ],
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        coinImage,
+                        width: size.width * 0.047,
+                        height: size.width * 0.047,
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      BlocConsumer(
+                        bloc: driverCubit,
+                        listener: (final context, final state) {
+                          if (state is AmountDeductedState) {
+                            setState(() {
+                              amount = state.message;
+                            });
+                          }
+                        },
+                        builder: (final context, final state) {
+                          return Text(
+                            '$amount rs',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontSize: 20, color: primaryColor),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )

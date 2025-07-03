@@ -10,6 +10,7 @@ final String requestIcon = "assets/images/request_icon.png";
 final String homeIcon = "assets/images/home_icon.png";
 final String profileIcon = "assets/images/profile_icon.png";
 final String phoneCallIcon = "assets/images/phone_call.png";
+final String walletImage = "assets/images/wallet_image.png";
 
 // SVG Images
 

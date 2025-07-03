@@ -5,7 +5,8 @@ import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
-  const ItemDetailsScreen({super.key});
+  const ItemDetailsScreen({super.key, required this.type});
+  final String? type;
 
   @override
   State<ItemDetailsScreen> createState() => _ItemDetailsScreenState();

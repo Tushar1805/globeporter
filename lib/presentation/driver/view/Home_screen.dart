@@ -22,24 +22,28 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       'date': '25 June',
       'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
       'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
+      'type': 'uraban',
     },
     {
       'name': 'Vinod Sharma',
       'date': '25 June',
       'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
       'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
+      'type': 'rural',
     },
     {
       'name': 'Vinod Sharma',
       'date': '25 June',
       'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
       'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
+      'type': 'uraban',
     },
     {
       'name': 'Vinod Sharma',
       'date': '25 June',
       'pickupLocation': 'Flat No. 203, Sai Residency, Indore',
       'destinationLocation': 'Flat No. 203, Sai Residency, Indore',
+      'type': 'uraban',
     }
   ];
   final driverCubit = sl<DriverCubit>();
@@ -135,7 +139,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                   onTapYes: () {
                                     driverCubit.deductAmount();
                                     context.pop();
-                                    context.pushNamed(itemDetailsScreen);
+                                    context.pushNamed(itemDetailsScreen, extra: trip['type']);
                                   },
                                   onTapNo: () {
                                     context.pop();

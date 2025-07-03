@@ -154,16 +154,24 @@ class CustomTextField extends StatelessWidget {
 }
 
 class CustomStatusBarWidget extends StatelessWidget {
-  const CustomStatusBarWidget({super.key, required this.title, this.text});
+  const CustomStatusBarWidget({
+    super.key,
+    required this.title,
+    this.text,
+    this.height,
+    this.titlePositionTop,
+  });
   final String? title;
   final Widget? text;
+  final double? height;
+  final double? titlePositionTop;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Stack(
       children: [
         Container(
-          height: size.width * 0.25,
+          height: height ?? size.width * 0.25,
           width: double.infinity,
           decoration: BoxDecoration(
             color: primaryColor,
@@ -184,7 +192,7 @@ class CustomStatusBarWidget extends StatelessWidget {
           ),
         ),
         Positioned(
-          top: size.height * 0.055,
+          top: titlePositionTop ?? size.height * 0.055,
           left: size.width * 0.043,
           child: text ??
               Text(
