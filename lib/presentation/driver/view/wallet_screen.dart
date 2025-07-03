@@ -1,9 +1,7 @@
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
-import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -43,19 +41,10 @@ class _WalletScreenState extends State<WalletScreen> {
                 width: size.width * 0.8,
               ),
             ),
-            BlocListener(
-              bloc: driverCubit,
-              listener: (final context, final state) {
-                if (state is AmountDeductedState) {
-                  setState(() {
-                    amount = state.message;
-                  });
-                }
-              },
-              child: CustomText(
-                text: '${AppLocalizations.of(context)!.balanceString}: $amount ${AppLocalizations.of(context)!.rsString}',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 22),
-              ),
+            CustomText(
+              text:
+                  '${AppLocalizations.of(context)!.balanceString}: ${driverCubit.amount.toString()} ${AppLocalizations.of(context)!.rsString}',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 22),
             ),
             const SizedBox(
               height: 12,

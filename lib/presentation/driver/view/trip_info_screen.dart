@@ -18,7 +18,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 2), () {
       widget.type == 'urban'
           ? showCustomDialogOneButton(
               context: context,

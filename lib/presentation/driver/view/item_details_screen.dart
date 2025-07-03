@@ -160,6 +160,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                 );
               },
             ),
+            const SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),

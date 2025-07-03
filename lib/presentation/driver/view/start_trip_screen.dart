@@ -17,7 +17,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 2), () {
       showCustomDialogOneButton(
         context: context,
         borderRadius: 18,
@@ -152,6 +152,9 @@ class _StartTripScreenState extends State<StartTripScreen> {
               alignment: Alignment.center,
               onPressed: () {},
               nameSize: 20,
+            ),
+            const SizedBox(
+              height: 20,
             ),
           ],
         ),

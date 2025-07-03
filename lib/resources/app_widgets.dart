@@ -688,14 +688,13 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
                   ),
                 );
               }),
-              const SizedBox(height: 10),
               CustomElevatedButton(
                 name: '+ ${AppLocalizations.of(context)!.addMoreItemsString}',
                 borderRadius: 4,
                 alignment: Alignment.centerRight,
                 onPressed: _addNewItem,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               CustomElevatedButton(
                 name: AppLocalizations.of(context)!.submitString,
                 borderRadius: 25,
