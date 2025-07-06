@@ -10,7 +10,8 @@ final List<Map<String, String>> onboardingData = [
     'subtitle': 'Book mini trucks, bikes, or autos\nin minutes for all your delivery needs.',
   },
   {
-    'image': 'assets/svg/parcel_waiting.svg',
+    // 'image': 'assets/svg/parcel_waiting.svg',
+    'image': 'assets/svg/realtime_tracking.svg',
     'title': 'Real-Time Tracking',
     'subtitle': 'Stay updated with live tracking,\nestimated arrival time, and driver details.',
   },

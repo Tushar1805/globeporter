@@ -46,6 +46,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     currentLocationController.text = placemarks.isNotEmpty
         ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
         : "";
+    // placemarks.forEach((place) {
+    //   debugPrint("Place: ${place.toJson().toString()} \n");
+    // });
   }
 
   @override
@@ -252,7 +255,8 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        padding: EdgeInsets.symmetric(
+            horizontal: 8, vertical: MediaQuery.of(context).size.height * 0.00704),
         decoration: BoxDecoration(
           color: backgroundColor,
           border: Border.all(color: primaryColor),
@@ -264,7 +268,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                ?.copyWith(color: textColor, fontSize: 24, fontWeight: FontWeight.w700),
+                ?.copyWith(color: textColor, fontSize: 22, fontWeight: FontWeight.w700),
           ),
         ),
       ),

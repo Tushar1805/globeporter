@@ -108,9 +108,9 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                             Stack(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(bottom: 20),
-                                  width: MediaQuery.sizeOf(context).width * 1,
-                                  height: MediaQuery.sizeOf(context).width * .75,
+                                  padding: EdgeInsets.only(bottom: 30),
+                                  width: size.width,
+                                  height: size.width * .75,
                                   child: SvgPicture.asset(
                                     ellipseShapeSvg,
                                     fit: BoxFit.contain,
@@ -118,7 +118,7 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                                 ),
                                 Positioned(
                                   top: 0,
-                                  left: 0,
+                                  left: -size.width * 0.078,
                                   bottom: -10,
                                   child: SizedBox(
                                     width: size.width,

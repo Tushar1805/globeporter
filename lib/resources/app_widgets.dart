@@ -95,7 +95,10 @@ class CustomLocationBox extends StatelessWidget {
         controller: currentLocationController,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
-          prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),
+          prefixIconConstraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.width * 0.0626,
+            minWidth: MediaQuery.of(context).size.width * 0.0469,
+          ),
           border: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.green),
             borderRadius: BorderRadius.circular(4),
@@ -104,13 +107,16 @@ class CustomLocationBox extends StatelessWidget {
             borderSide: const BorderSide(color: Colors.green),
             borderRadius: BorderRadius.circular(4),
           ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          contentPadding: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.width * 0.023,
+            horizontal: 12,
+          ),
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Image.asset(
               locationPinImage,
-              width: 24,
-              height: 32,
+              width: MediaQuery.of(context).size.width * 0.0469,
+              height: MediaQuery.of(context).size.width * 0.0626,
             ),
           ),
         ),

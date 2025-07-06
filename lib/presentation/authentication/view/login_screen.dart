@@ -151,6 +151,58 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
+            SizedBox(
+              height: size.width * 0.1,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: size.width * .1,
+                  child: const Divider(
+                    color: Color(0xFF737272),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  'or sign up with',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontSize: 16, color: Color(0xFF737272)),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                SizedBox(
+                  width: size.width * .1,
+                  child: const Divider(
+                    color: Color(0xFF737272),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  googleIcon,
+                  width: size.width * .0587,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Image.asset(
+                  facebookIcon,
+                  width: size.width * .1,
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),
