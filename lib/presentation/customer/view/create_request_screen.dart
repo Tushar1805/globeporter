@@ -261,7 +261,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
         decoration: BoxDecoration(
           color: backgroundColor,
           border: Border.all(color: primaryColor),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
           child: Text(
