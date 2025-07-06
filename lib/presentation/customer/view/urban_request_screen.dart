@@ -286,7 +286,7 @@ class _UrbanRequestScreenState extends State<UrbanRequestScreen> {
               borderRadius: 25,
               alignment: Alignment.bottomCenter,
               onPressed: () {
-                context.pushNamed(myRequestScreen, extra: {
+                context.pushNamed(customerDashboard, extra: {
                   'type': 'urban',
                 });
               },

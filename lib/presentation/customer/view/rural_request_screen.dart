@@ -153,7 +153,7 @@ class _RuralRequestScreenState extends State<RuralRequestScreen> {
               borderRadius: 25,
               alignment: Alignment.bottomCenter,
               onPressed: () {
-                context.pushNamed(myRequestScreen, extra: {
+                context.pushNamed(customerDashboard, extra: {
                   'type': 'rural',
                 });
               },

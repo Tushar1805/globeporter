@@ -9,6 +9,7 @@ import 'package:globeporter/presentation/authentication/view/otp_screen.dart';
 import 'package:globeporter/presentation/authentication/view/select_lang_screen.dart';
 import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
+import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/rural_request_screen.dart';
@@ -124,6 +125,19 @@ final GoRouter router = GoRouter(
         key: state.pageKey,
         child: const DriverDetailsScreen(),
       ),
+    ),
+     GoRoute(
+      name: customerDashboard,
+      path: customerDashboard,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: CustomerDashboard(
+            type: params?['type'] as String?,
+          ),
+        );
+      },
     ),
     GoRoute(
       name: createRequestScreen,

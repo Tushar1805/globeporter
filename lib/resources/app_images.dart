@@ -7,6 +7,7 @@ final String mapImage = "assets/images/map_image.png";
 final String imageIcon = "assets/images/image_icon.png";
 final String coinImage = "assets/images/coin_image.png";
 final String requestIcon = "assets/images/request_icon.png";
+final String myRequestIcon = "assets/images/my_requests_icon.png";
 final String homeIcon = "assets/images/home_icon.png";
 final String profileIcon = "assets/images/profile_icon.png";
 final String phoneCallIcon = "assets/images/phone_call.png";
