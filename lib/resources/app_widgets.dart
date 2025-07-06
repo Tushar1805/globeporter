@@ -315,7 +315,6 @@ class BottomNavBarIcon extends StatelessWidget {
                   child: Image.asset(
                     icon,
                     height: size.width * 0.0587,
-                    color: primaryColor,
                   ),
                 ),
               ],
@@ -735,4 +734,68 @@ void showDynamicItemDialog({required final BuildContext context, required final 
     context: context,
     builder: (_) => DynamicItemDialog(type: type),
   );
+}
+
+class ProfileEditCard extends StatelessWidget {
+  const ProfileEditCard(
+      {super.key,
+      required this.label,
+      required this.value,
+      required this.onTap,
+      this.icon,
+      this.widget});
+  final String label;
+  final String value;
+  final VoidCallback onTap;
+  final String? icon;
+  final Widget? widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        elevation: 10,
+        child: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  widget ??
+                      Text(
+                        value,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
+                ],
+              ),
+              IconButton(
+                onPressed: onTap,
+                icon: Image.asset(
+                  icon ?? editIcon,
+                  height: 24,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

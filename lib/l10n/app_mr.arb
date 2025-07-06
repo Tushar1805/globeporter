@@ -132,5 +132,7 @@
     "@startTripString": {},
     "reachedDropLocationMsgString": "आपण ड्रॉप ठिकाणी\nपोहोचलात",
     "@reachedDropLocationMsgString": {},
-    "orSignUpString": "किंवा सह साइन अप करा"
+    "orSignUpString": "किंवा सह साइन अप करा",
+    "uploadDocumentString": "दस्तऐवज अपलोड करा",
+    "updateString": "अपडेट करा"
 }

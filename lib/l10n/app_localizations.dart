@@ -489,6 +489,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'or sign up with'**
   String get orSignUpString;
+
+  /// No description provided for @uploadDocumentString.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Document'**
+  String get uploadDocumentString;
+
+  /// No description provided for @updateString.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateString;
 }
 
 class _AppLocalizationsDelegate

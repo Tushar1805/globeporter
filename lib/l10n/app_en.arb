@@ -133,5 +133,8 @@
     "reachedDropLocationMsgString": "You’ve reached at the\nDrop Location",
     "@reachedDropLocationMsgString": {},
     "orSignUpString": "or sign up with",
-    "@orSignUpString": {}
+    "@orSignUpString": {},
+    "uploadDocumentString": "Upload Document",
+    "@uploadDocumentString": {},
+    "updateString": "Update"
 }

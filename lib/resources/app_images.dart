@@ -14,6 +14,9 @@ final String phoneCallIcon = "assets/images/phone_call.png";
 final String walletImage = "assets/images/wallet_image.png";
 final String googleIcon = "assets/images/google_icon.png";
 final String facebookIcon = "assets/images/facebook_icon.png";
+final String editIcon = "assets/images/edit_icon.png";
+final String uploadIcon = "assets/images/upload_icon.png";
+final String bellIcon = "assets/images/bell_icon.png";
 
 // SVG Images
 

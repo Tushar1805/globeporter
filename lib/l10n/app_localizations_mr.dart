@@ -208,4 +208,10 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get orSignUpString => 'किंवा सह साइन अप करा';
+
+  @override
+  String get uploadDocumentString => 'दस्तऐवज अपलोड करा';
+
+  @override
+  String get updateString => 'अपडेट करा';
 }

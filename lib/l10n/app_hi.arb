@@ -67,5 +67,7 @@
     "reachedPickupLocationMsgString": "आप पिकअप स्थान पर\n पहुँच गए हैं",
     "startTripString": "यात्रा प्रारंभ करें",
     "reachedDropLocationMsgString": "आप ड्रॉप स्थान पर\n पहुंच गए हैं",
-    "orSignUpString": "या इसके साथ साइन अप करें"
+    "orSignUpString": "या इसके साथ साइन अप करें",
+    "uploadDocumentString": "दस्तावेज़ अपलोड करें",
+    "updateString": "अद्यतन करें"
 }

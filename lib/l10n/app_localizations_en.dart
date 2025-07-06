@@ -210,4 +210,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orSignUpString => 'or sign up with';
+
+  @override
+  String get uploadDocumentString => 'Upload Document';
+
+  @override
+  String get updateString => 'Update';
 }

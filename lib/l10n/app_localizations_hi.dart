@@ -209,4 +209,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get orSignUpString => 'या इसके साथ साइन अप करें';
+
+  @override
+  String get uploadDocumentString => 'दस्तावेज़ अपलोड करें';
+
+  @override
+  String get updateString => 'अद्यतन करें';
 }
