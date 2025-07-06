@@ -82,8 +82,13 @@ class CustomRichText extends StatelessWidget {
 }
 
 class CustomLocationBox extends StatelessWidget {
-  const CustomLocationBox({super.key, required this.currentLocationController});
+  const CustomLocationBox({
+    super.key,
+    required this.currentLocationController,
+    this.readOnly,
+  });
   final TextEditingController currentLocationController;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +96,7 @@ class CustomLocationBox extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
-        readOnly: true,
+        readOnly: readOnly ?? true,
         controller: currentLocationController,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(

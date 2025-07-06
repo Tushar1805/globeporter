@@ -139,6 +139,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
 
             CustomLocationBox(
               currentLocationController: currentLocationController,
+              readOnly: false,
             ),
 
             const SizedBox(
