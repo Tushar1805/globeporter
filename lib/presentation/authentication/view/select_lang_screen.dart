@@ -79,6 +79,16 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
               icon: Icons.translate,
               backgroundImage: tajMahalSvg, // replace with your image
             ),
+            const SizedBox(height: 30),
+
+            // Marathi Option
+            _buildLangCard(
+              label: 'मराठी',
+              value: 'mr',
+              selected: selectedLanguage == 'mr',
+              icon: Icons.translate,
+              backgroundImage: redfortSvg, // replace with your image
+            ),
 
             const Spacer(),
 
@@ -184,9 +194,13 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Opacity(
-                                opacity: 0.3,
-                                child: SvgPicture.asset(backgroundImage,
-                                    height: 80, fit: BoxFit.contain))
+                              opacity: label == 'मराठी' ? 1 : 0.3,
+                              child: SvgPicture.asset(
+                                backgroundImage,
+                                height: MediaQuery.of(context).size.height * 0.08,
+                                fit: BoxFit.contain,
+                              ),
+                            )
                           ],
                         ),
                       ),

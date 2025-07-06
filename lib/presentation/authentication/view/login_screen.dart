@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 10,
                 ),
                 Text(
-                  'or sign up with',
+                  AppLocalizations.of(context)!.orSignUpString,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium

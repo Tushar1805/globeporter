@@ -206,4 +206,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get reachedDropLocationMsgString => 'आप ड्रॉप स्थान पर\n पहुंच गए हैं';
+
+  @override
+  String get orSignUpString => 'या इसके साथ साइन अप करें';
 }

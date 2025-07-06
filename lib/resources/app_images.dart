@@ -19,6 +19,7 @@ final String facebookIcon = "assets/images/facebook_icon.png";
 
 final String buildingSvg = "assets/svg/buildings.svg";
 final String tajMahalSvg = "assets/svg/tajmahal.svg";
+final String redfortSvg = "assets/svg/red_fort.svg";
 final String appLogoSmall = "assets/svg/logo_small.svg";
 final String ellipseShapeSvg = "assets/svg/ellipse_shape.svg";
 final String driverWithVanSvg = "assets/svg/driver_with_van.svg";

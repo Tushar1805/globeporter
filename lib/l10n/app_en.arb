@@ -131,5 +131,7 @@
     "startTripString": "Start the Trip",
     "@startTripString": {},
     "reachedDropLocationMsgString": "You’ve reached at the\nDrop Location",
-    "@reachedDropLocationMsgString": {}
+    "@reachedDropLocationMsgString": {},
+    "orSignUpString": "or sign up with",
+    "@orSignUpString": {}
 }

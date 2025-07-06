@@ -25,9 +25,12 @@ class LanguageCubit extends Cubit<Locale> {
     if (type == Locale('en')) {
       await storage.saveValue(key: languageCodeKey, value: 'en');
       emit(Locale('en'));
-    } else {
+    } else if (type == Locale('hi')) {
       await storage.saveValue(key: languageCodeKey, value: 'hi');
       emit(Locale('hi'));
+    } else {
+      await storage.saveValue(key: languageCodeKey, value: 'mr');
+      emit(Locale('mr'));
     }
     customPrint('App Language Changed: ${_appLocale?.languageCode}');
   }

@@ -207,4 +207,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reachedDropLocationMsgString =>
       'You’ve reached at the\nDrop Location';
+
+  @override
+  String get orSignUpString => 'or sign up with';
 }

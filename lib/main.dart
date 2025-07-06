@@ -81,7 +81,7 @@ class _GlobePorterState extends State<GlobePorter> {
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                   ],
-                  supportedLocales: [Locale('en'), Locale('hi')],
+                  supportedLocales: [Locale('en'), Locale('hi'), Locale('mr')],
                   theme: themeState,
                   themeMode: ThemeMode.light,
                   routerConfig: router,
