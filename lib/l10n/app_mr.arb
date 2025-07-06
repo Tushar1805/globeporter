@@ -134,5 +134,8 @@
     "@reachedDropLocationMsgString": {},
     "orSignUpString": "किंवा सह साइन अप करा",
     "uploadDocumentString": "दस्तऐवज अपलोड करा",
-    "updateString": "अपडेट करा"
+    "updateString": "अपडेट करा",
+    "notificationString": "सूचना",
+    "todayString": "आज",
+    "yesterdayString": "काल"
 }

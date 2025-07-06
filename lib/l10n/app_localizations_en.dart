@@ -216,4 +216,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateString => 'Update';
+
+  @override
+  String get notificationString => 'Notification';
+
+  @override
+  String get todayString => 'Today';
+
+  @override
+  String get yesterdayString => 'Yesterday';
 }

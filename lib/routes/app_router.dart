@@ -19,6 +19,7 @@ import 'package:globeporter/presentation/driver/view/item_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/start_trip_screen.dart';
 import 'package:globeporter/presentation/driver/view/trip_info_screen.dart';
 import 'package:globeporter/presentation/driver/view/wallet_screen.dart';
+import 'package:globeporter/presentation/notification/view/notification_screen.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import '../presentation/authentication/view/splash_screen.dart';
 import 'error_screen.dart';
@@ -126,7 +127,7 @@ final GoRouter router = GoRouter(
         child: const DriverDetailsScreen(),
       ),
     ),
-     GoRoute(
+    GoRoute(
       name: customerDashboard,
       path: customerDashboard,
       pageBuilder: (final context, final state) {
@@ -226,7 +227,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: startTripScreen,
       path: startTripScreen,
-       pageBuilder: (final context, final state) {
+      pageBuilder: (final context, final state) {
         final params = state.extra as Map<String, dynamic>?;
         return slideTransitionPage(
           key: state.pageKey,
@@ -242,6 +243,14 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const WalletScreen(),
+      ),
+    ),
+    GoRoute(
+      name: notificationScreen,
+      path: notificationScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const NotificationScreen(),
       ),
     ),
   ],

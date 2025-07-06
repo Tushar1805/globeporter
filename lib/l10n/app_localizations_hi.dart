@@ -215,4 +215,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get updateString => 'अद्यतन करें';
+
+  @override
+  String get notificationString => 'अधिसूचना';
+
+  @override
+  String get todayString => 'आज';
+
+  @override
+  String get yesterdayString => 'कल';
 }

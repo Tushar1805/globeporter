@@ -136,5 +136,13 @@
     "@orSignUpString": {},
     "uploadDocumentString": "Upload Document",
     "@uploadDocumentString": {},
-    "updateString": "Update"
+    "updateString": "Update",
+    "@updateString": {},
+    "notificationString": "Notification",
+    "@notificationString": {},
+    "todayString": "Today",
+    "@todayString": {},
+    "yesterdayString": "Yesterday",
+    "@yesterdayString": {}
+
 }

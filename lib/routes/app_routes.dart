@@ -24,3 +24,6 @@ const itemDetailsScreen = '/item_details_screen';
 const walletScreen = '/wallet_screen';
 const tripInfoScreen = '/trip_info_screen';
 const startTripScreen = '/start_trip_screen';
+
+//* All other routes
+const notificationScreen = '/notification_screen';

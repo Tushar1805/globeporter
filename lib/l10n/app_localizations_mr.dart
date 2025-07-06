@@ -214,4 +214,13 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get updateString => 'अपडेट करा';
+
+  @override
+  String get notificationString => 'सूचना';
+
+  @override
+  String get todayString => 'आज';
+
+  @override
+  String get yesterdayString => 'काल';
 }

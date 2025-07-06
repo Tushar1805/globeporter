@@ -3,6 +3,8 @@ import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class DriverProfileScreen extends StatefulWidget {
   const DriverProfileScreen({super.key});
@@ -137,7 +139,9 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
               name: AppLocalizations.of(context)!.updateString,
               borderRadius: 25,
               alignment: Alignment.bottomCenter,
-              onPressed: () {},
+              onPressed: () {
+                context.pushNamed(notificationScreen);
+              },
               textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               nameSize: 20,
             ),

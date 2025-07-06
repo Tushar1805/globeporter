@@ -501,6 +501,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update'**
   String get updateString;
+
+  /// No description provided for @notificationString.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification'**
+  String get notificationString;
+
+  /// No description provided for @todayString.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get todayString;
+
+  /// No description provided for @yesterdayString.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterdayString;
 }
 
 class _AppLocalizationsDelegate
