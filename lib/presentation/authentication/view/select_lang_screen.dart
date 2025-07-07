@@ -68,6 +68,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
               selected: selectedLanguage == 'en',
               icon: Icons.language,
               backgroundImage: buildingSvg, // replace with your image
+              fontSize: 38,
             ),
             const SizedBox(height: 30),
 
@@ -78,6 +79,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
               selected: selectedLanguage == 'hi',
               icon: Icons.translate,
               backgroundImage: tajMahalSvg, // replace with your image
+              fontSize: 47,
             ),
             const SizedBox(height: 30),
 
@@ -88,6 +90,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
               selected: selectedLanguage == 'mr',
               icon: Icons.translate,
               backgroundImage: redfortSvg, // replace with your image
+              fontSize: 47,
             ),
 
             const Spacer(),
@@ -114,6 +117,7 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
     required bool selected,
     required IconData icon,
     required String backgroundImage,
+    required double fontSize,
   }) {
     return GestureDetector(
       onTap: () {
@@ -134,30 +138,26 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              children: [
-                RadioTheme(
-                  data: RadioThemeData(
-                    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return Colors.white;
-                      }
-                      return Colors.white;
-                    }),
-                  ),
-                  child: Radio<String>(
-                    value: value,
-                    groupValue: selectedLanguage,
-                    activeColor: Colors.white,
-                    onChanged: (val) {
-                      setState(() {
-                        selectedLanguage = val!;
-                      });
-                      languageCubit.changeLanguage(Locale(selectedLanguage ?? 'en'));
-                    },
-                  ),
-                ),
-              ],
+            RadioTheme(
+              data: RadioThemeData(
+                fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return Colors.white;
+                  }
+                  return Colors.white;
+                }),
+              ),
+              child: Radio<String>(
+                value: value,
+                groupValue: selectedLanguage,
+                activeColor: Colors.white,
+                onChanged: (val) {
+                  setState(() {
+                    selectedLanguage = val!;
+                  });
+                  languageCubit.changeLanguage(Locale(selectedLanguage ?? 'en'));
+                },
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -171,43 +171,47 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(label, style: const TextStyle(color: Colors.white, fontSize: 16)),
+                            Text(
+                              label,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
                             Text(
                               value == 'en' ? 'Aa' : 'अ',
-                              style: const TextStyle(
-                                  fontSize: 72,
-                                  color: Colors.white,
-                                  height: 1,
-                                  fontWeight: FontWeight.w600),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: whiteColor, fontSize: fontSize, height: 1),
                             ),
-                            const SizedBox(height: 15),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  if (backgroundImage.isNotEmpty)
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Opacity(
-                              opacity: label == 'मराठी' ? 1 : 0.3,
-                              child: SvgPicture.asset(
-                                backgroundImage,
-                                height: MediaQuery.of(context).size.height * 0.08,
-                                fit: BoxFit.contain,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
                 ],
               ),
             ),
+            if (backgroundImage.isNotEmpty)
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Opacity(
+                        opacity: label == 'मराठी' ? 1 : 0.3,
+                        child: SvgPicture.asset(
+                          backgroundImage,
+                          height: MediaQuery.of(context).size.height * 0.07,
+                          fit: BoxFit.contain,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),
