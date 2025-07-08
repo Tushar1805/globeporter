@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:core/utils/core_utils.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
@@ -23,29 +24,46 @@ class CreateRequestScreen extends StatefulWidget {
 
 class _CreateRequestScreenState extends State<CreateRequestScreen> {
   final TextEditingController currentLocationController = TextEditingController();
+
   final Completer<GoogleMapController> _controller = Completer();
   late final List<Placemark> placemarks;
   bool isUrban = true;
+  Position? position;
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(35.6844, 73.0479),
+  CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(20.5574253, 78.8386951),
     zoom: 14,
   );
 
-  final List<Marker> _markers = const <Marker>[
-    Marker(
-        markerId: MarkerId('1'),
-        position: LatLng(35.6844, 73.0479),
-        infoWindow: InfoWindow(title: 'The title of the marker'))
-  ];
+  List<Marker>? _markers;
 
   void getCurrentLocation() async {
-    final position = await determinePosition();
-    debugPrint("Position: ${position.latitude} :: ${position.longitude}");
-    placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    currentLocationController.text = placemarks.isNotEmpty
-        ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
-        : "";
+    try {
+      position = await determinePosition();
+      debugPrint("Position: ${position?.latitude} :: ${position?.longitude}");
+      placemarks = await placemarkFromCoordinates(
+          position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951);
+      currentLocationController.text = placemarks.isNotEmpty
+          ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
+          : "";
+      final GoogleMapController controller = await _controller.future;
+      setState(() {
+        _kGooglePlex = CameraPosition(
+          target: LatLng(position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951),
+          zoom: 14,
+        );
+        _markers = <Marker>[
+          Marker(
+              markerId: MarkerId('1'),
+              position: LatLng(position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951),
+              infoWindow: InfoWindow(title: 'The title of the marker'))
+        ];
+        controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
+      });
+    } catch (e) {
+      debugPrint("Error: Getting Location: $e");
+    }
+
     // placemarks.forEach((place) {
     //   debugPrint("Place: ${place.toJson().toString()} \n");
     // });
@@ -63,6 +81,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
+        controller: ScrollController(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -221,24 +240,24 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
             ),
 
             SizedBox(
-              width: size.width,
-              height: size.width * 0.9,
-              child: Image.asset(
-                mapImage,
-                fit: BoxFit.cover,
+              height: size.height * 0.5,
+              child: GoogleMap(
+                initialCameraPosition: _kGooglePlex,
+                markers: Set<Marker>.of(_markers ?? []),
+                myLocationEnabled: true,
+                onMapCreated: (final controller) {
+                  _controller.complete(controller);
+                },
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+                  ),
+                },
               ),
             ),
-
-            // SizedBox(
-            //   height: size.height * 0.5,
-            //   child: GoogleMap(
-            //     initialCameraPosition: _kGooglePlex,
-            //     markers: Set<Marker>.of(_markers),
-            //     onMapCreated: (final controller) {
-            //       _controller.complete(controller);
-            //     },
-            //   ),
-            // )
+            // const SizedBox(
+            //   height: 20,
+            // ),
           ],
         ),
       ),
