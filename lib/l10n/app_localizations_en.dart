@@ -232,4 +232,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get orderHistoryDesc =>
       'Only the last 2 years of order history are \n displayed. For previous records, feel free \n to connect with our support team.';
+
+  @override
+  String get benefitString => 'Benefits';
+
+  @override
+  String get recentPickupString => 'Recent Pickup Address';
+
+  @override
+  String get referFreindString => 'Refer your friends!';
+
+  @override
+  String get inviteString => 'Invite';
+
+  @override
+  String get supportLegalString => 'Support & Legal';
+
+  @override
+  String get helpSupportString => 'Help & Support';
+
+  @override
+  String get termsConditionString => 'Terms & Conditions';
+
+  @override
+  String get settingString => 'Settings';
+
+  @override
+  String get chooseLanguageString => 'Choose Language';
+
+  @override
+  String get logoutString => 'Logout';
+
+  @override
+  String get referEarnString => 'Refer & Earn';
 }

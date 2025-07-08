@@ -231,4 +231,37 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get orderHistoryDesc =>
       'केवल पिछले 2 वर्षों का ऑर्डर इतिहास प्रदर्शित किया जाता है।\n पिछले रिकॉर्ड के लिए, हमारी सहायता टीम से \n संपर्क करने में संकोच न करें।';
+
+  @override
+  String get benefitString => 'फ़ायदे';
+
+  @override
+  String get recentPickupString => 'हाल का पिकअप पता';
+
+  @override
+  String get referFreindString => 'अपने मित्रों को सन्दर्भित करें!';
+
+  @override
+  String get inviteString => 'आमंत्रित करें';
+
+  @override
+  String get supportLegalString => 'समर्थन एवं कानूनी';
+
+  @override
+  String get helpSupportString => 'सहायता एवं सहायता';
+
+  @override
+  String get termsConditionString => 'नियम एवं शर्तें';
+
+  @override
+  String get settingString => 'सेटिंग्ज';
+
+  @override
+  String get chooseLanguageString => 'भाषा चुनें';
+
+  @override
+  String get logoutString => 'लॉगआउट करें';
+
+  @override
+  String get referEarnString => 'रेफर करें और कमाएं';
 }

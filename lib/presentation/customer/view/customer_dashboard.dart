@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:globeporter/presentation/customer/view/customer_home_screen.dart';
-import 'package:globeporter/presentation/customer/view/customer_profile_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
-import 'package:globeporter/presentation/driver/view/Home_screen.dart';
-import 'package:globeporter/presentation/driver/view/driver_profile_screen.dart';
+import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -57,7 +55,9 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
         type: widget.type,
       ),
       CustomerHomeScreen(),
-      CustomerProfileScreen(),
+      SettingsScreen(
+        role: 'customer',
+      ),
     ];
     return Scaffold(
       backgroundColor: whiteColor,

@@ -531,6 +531,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Only the last 2 years of order history are \n displayed. For previous records, feel free \n to connect with our support team.'**
   String get orderHistoryDesc;
+
+  /// No description provided for @benefitString.
+  ///
+  /// In en, this message translates to:
+  /// **'Benefits'**
+  String get benefitString;
+
+  /// No description provided for @recentPickupString.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Pickup Address'**
+  String get recentPickupString;
+
+  /// No description provided for @referFreindString.
+  ///
+  /// In en, this message translates to:
+  /// **'Refer your friends!'**
+  String get referFreindString;
+
+  /// No description provided for @inviteString.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get inviteString;
+
+  /// No description provided for @supportLegalString.
+  ///
+  /// In en, this message translates to:
+  /// **'Support & Legal'**
+  String get supportLegalString;
+
+  /// No description provided for @helpSupportString.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupportString;
+
+  /// No description provided for @termsConditionString.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Conditions'**
+  String get termsConditionString;
+
+  /// No description provided for @settingString.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingString;
+
+  /// No description provided for @chooseLanguageString.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Language'**
+  String get chooseLanguageString;
+
+  /// No description provided for @logoutString.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logoutString;
+
+  /// No description provided for @referEarnString.
+  ///
+  /// In en, this message translates to:
+  /// **'Refer & Earn'**
+  String get referEarnString;
 }
 
 class _AppLocalizationsDelegate

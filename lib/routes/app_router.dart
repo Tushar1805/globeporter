@@ -10,16 +10,19 @@ import 'package:globeporter/presentation/authentication/view/select_lang_screen.
 import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
+import 'package:globeporter/presentation/customer/view/customer_profile_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/rural_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/urban_request_screen.dart';
 import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
+import 'package:globeporter/presentation/driver/view/driver_profile_screen.dart';
 import 'package:globeporter/presentation/driver/view/item_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/start_trip_screen.dart';
 import 'package:globeporter/presentation/driver/view/trip_info_screen.dart';
 import 'package:globeporter/presentation/driver/view/wallet_screen.dart';
 import 'package:globeporter/presentation/notification/view/notification_screen.dart';
+import 'package:globeporter/presentation/settings/view/refer_screen.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import '../presentation/authentication/view/splash_screen.dart';
 import 'error_screen.dart';
@@ -58,10 +61,15 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: setLanguageScreen,
       path: setLanguageScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const SelectLangScreen(),
-      ),
+       pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: SelectLangScreen(
+            onPop: params?['onPop'] as bool?,
+          ),
+        );
+      },
     ),
     GoRoute(
       name: onboardingScreen1,
@@ -251,6 +259,30 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const NotificationScreen(),
+      ),
+    ),
+    GoRoute(
+      name: customerProfileScreen,
+      path: customerProfileScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const CustomerProfileScreen(),
+      ),
+    ),
+    GoRoute(
+      name: driverProfileScreen,
+      path: driverProfileScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const DriverProfileScreen(),
+      ),
+    ),
+    GoRoute(
+      name: referAndEarnScreen,
+      path: referAndEarnScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const ReferAndEarnScreen(),
       ),
     ),
   ],

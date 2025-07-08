@@ -2,8 +2,8 @@ import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/view/Home_screen.dart';
-import 'package:globeporter/presentation/driver/view/driver_profile_screen.dart';
 import 'package:globeporter/presentation/driver/view/my_trips_screen.dart';
+import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -24,7 +24,9 @@ class _DriverDashboardState extends State<DriverDashboard> {
   final screens = [
     MyTripsScreen(),
     DriverHomeScreen(),
-    DriverProfileScreen(),
+    SettingsScreen(
+      role: 'driver',
+    ),
   ];
 
   @override

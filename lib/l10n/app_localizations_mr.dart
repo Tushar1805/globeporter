@@ -230,4 +230,37 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get orderHistoryDesc =>
       'फक्त गेल्या २ वर्षांचा ऑर्डर इतिहास प्रदर्शित \n केला जातो. मागील रेकॉर्डसाठी, आमच्या \n सपोर्ट टीमशी संपर्क साधा.';
+
+  @override
+  String get benefitString => 'फायदे';
+
+  @override
+  String get recentPickupString => 'अलीकडील पिकअप पत्ता';
+
+  @override
+  String get referFreindString => 'तुमच्या मित्रांना रेफर करा!';
+
+  @override
+  String get inviteString => 'आमंत्रित करा';
+
+  @override
+  String get supportLegalString => 'समर्थन आणि कायदेशीर';
+
+  @override
+  String get helpSupportString => 'मदत आणि समर्थन';
+
+  @override
+  String get termsConditionString => 'नियम आणि अटी';
+
+  @override
+  String get settingString => 'सेटिंग्ज';
+
+  @override
+  String get chooseLanguageString => 'भाषा निवडा';
+
+  @override
+  String get logoutString => 'लॉगआउट करा';
+
+  @override
+  String get referEarnString => 'रेफर करा आणि कमवा';
 }

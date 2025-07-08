@@ -21,6 +21,8 @@ final String giftIcon = "assets/images/gift_icon.png";
 final String likeIcon = "assets/images/like_icon.png";
 final String logoutIcon = "assets/images/logout_icon.png";
 final String shareIcon = "assets/images/share_icon.png";
+final String helpIcon = "assets/images/help_icon.png";
+final String chooseLanguageIcon = "assets/images/choose_language_icon.png";
 final String termsConditionIcon = "assets/images/terms_condition_icon.png";
 final String cashAndCoinImage = "assets/images/cash_and_coin.png";
 
@@ -42,6 +44,4 @@ final String searchSvg = "assets/svg/search.svg";
 final String videoSvg = "assets/svg/video.svg";
 final String editSvg = "assets/svg/edit_icon.svg";
 final String realtimeTracking = "assets/svg/realtime_tracking.svg";
-final String changeLanguageIcon = "assets/svg/change_language_icon.svg";
 final String emptyBoxImage = "assets/svg/empty_box.svg";
-final String questionMarkIcon = "assets/svg/question_mark_icon.svg";

@@ -81,23 +81,23 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: whiteColor,
-      body: Column(
-        children: [
-          CustomStatusBarWidget(
-            title: AppLocalizations.of(context)!.myRequestString,
-            fontSize: 22,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          show
-              ? Expanded(
-                  child: widget.type == 'urban'
-                      ? customListView(itemList: myRequestsUrban, type: 'urban')
-                      : customListView(itemList: myRequestsRural, type: 'rural'),
-                )
-              : Expanded(
-                  child: Column(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            CustomStatusBarWidget(
+              title: AppLocalizations.of(context)!.myRequestString,
+              fontSize: 22,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            show
+                ? Expanded(
+                    child: widget.type == 'urban'
+                        ? customListView(itemList: myRequestsUrban, type: 'urban')
+                        : customListView(itemList: myRequestsRural, type: 'rural'),
+                  )
+                : Column(
                     children: [
                       SizedBox(height: size.width * 0.2),
                       SizedBox(
@@ -148,8 +148,9 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                       )
                     ],
                   ),
-                ),
-        ],
+            SizedBox(height: size.width * 0.1),
+          ],
+        ),
       ),
     );
   }

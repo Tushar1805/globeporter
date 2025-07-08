@@ -241,6 +241,7 @@ class CustomElevatedButton extends StatelessWidget {
     this.backgroundColor,
     this.nameColor,
     this.nameSize,
+    this.textWidget,
   });
   final String? name;
   final double? borderRadius;
@@ -250,6 +251,7 @@ class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? nameColor;
   final double? nameSize;
+  final Widget? textWidget;
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -264,14 +266,15 @@ class CustomElevatedButton extends StatelessWidget {
         onPressed: onPressed,
         child: Padding(
           padding: textPadding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          child: Text(
-            name ?? "",
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: nameColor ?? whiteColor,
-                  fontSize: nameSize ?? 16,
-                  fontWeight: FontWeight.w700,
-                ),
-          ),
+          child: textWidget ??
+              Text(
+                name ?? "",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: nameColor ?? whiteColor,
+                      fontSize: nameSize ?? 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
         ),
       ),
     );
@@ -795,6 +798,98 @@ class ProfileEditCard extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SettingCardContent extends StatelessWidget {
+  const SettingCardContent({
+    super.key,
+    required this.title,
+    required this.prefixIcon,
+    required this.onTap,
+    this.suffixIcon,
+    this.bottomPadding,
+  });
+  final String prefixIcon;
+  final String title;
+  final Widget? suffixIcon;
+  final double? bottomPadding;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomPadding ?? 0),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(5),
+              width: 24,
+              height: 24,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
+                ),
+                color: Color(0xFFE0FFDE),
+              ),
+              child: Image.asset(
+                prefixIcon,
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: suffixIcon ??
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 15,
+                    color: primaryColor,
+                  ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsCard extends StatelessWidget {
+  const SettingsCard({super.key, required this.listContent});
+  final List<SettingCardContent> listContent;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Card(
+        elevation: 10,
+        color: const Color(0xFFFAFFFA),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(9),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          child: Column(
+            children: listContent,
           ),
         ),
       ),

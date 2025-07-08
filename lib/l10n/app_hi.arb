@@ -74,5 +74,16 @@
     "todayString": "आज",
     "yesterdayString": "कल",
     "noRequestString": "कोई अनुरोध नहीं!",
-    "orderHistoryDesc": "केवल पिछले 2 वर्षों का ऑर्डर इतिहास प्रदर्शित किया जाता है।\n पिछले रिकॉर्ड के लिए, हमारी सहायता टीम से \n संपर्क करने में संकोच न करें।"
+    "orderHistoryDesc": "केवल पिछले 2 वर्षों का ऑर्डर इतिहास प्रदर्शित किया जाता है।\n पिछले रिकॉर्ड के लिए, हमारी सहायता टीम से \n संपर्क करने में संकोच न करें।",
+    "benefitString": "फ़ायदे",
+    "recentPickupString": "हाल का पिकअप पता",
+    "referFreindString": "अपने मित्रों को सन्दर्भित करें!",
+    "inviteString": "आमंत्रित करें",
+    "supportLegalString": "समर्थन एवं कानूनी",
+    "helpSupportString": "सहायता एवं सहायता",
+    "termsConditionString": "नियम एवं शर्तें",
+    "settingString": "सेटिंग्ज",
+    "chooseLanguageString": "भाषा चुनें",
+    "logoutString": "लॉगआउट करें",
+    "referEarnString": "रेफर करें और कमाएं"
 }

@@ -10,7 +10,8 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
 class SelectLangScreen extends StatefulWidget {
-  const SelectLangScreen({super.key});
+  const SelectLangScreen({super.key, this.onPop});
+  final bool? onPop;
 
   @override
   State<SelectLangScreen> createState() => _SelectLangScreenState();
@@ -94,17 +95,18 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
             ),
 
             const Spacer(),
-
-            CustomElevatedButton(
-              name: AppLocalizations.of(context)!.continueString,
-              borderRadius: 25,
-              alignment: Alignment.center,
-              onPressed: () {
-                context.push(onboardingScreen1);
-              },
-              textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              nameSize: 22,
-            ),
+            (widget.onPop ?? false)
+                ? SizedBox.shrink()
+                : CustomElevatedButton(
+                    name: AppLocalizations.of(context)!.continueString,
+                    borderRadius: 25,
+                    alignment: Alignment.center,
+                    onPressed: () {
+                      context.push(onboardingScreen1);
+                    },
+                    textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    nameSize: 22,
+                  ),
           ],
         ),
       ),
@@ -123,8 +125,13 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
       onTap: () {
         setState(() {
           selectedLanguage = value;
+
+          languageCubit.changeLanguage(Locale(selectedLanguage ?? 'en'));
+          if (widget.onPop ?? false) {
+            debugPrint('Popping back from here');
+            context.pop();
+          }
         });
-        languageCubit.changeLanguage(Locale(selectedLanguage ?? 'en'));
       },
       child: Container(
         decoration: BoxDecoration(
