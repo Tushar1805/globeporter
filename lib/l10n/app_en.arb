@@ -143,6 +143,9 @@
     "todayString": "Today",
     "@todayString": {},
     "yesterdayString": "Yesterday",
-    "@yesterdayString": {}
-
+    "@yesterdayString": {},
+    "noRequestString": "No Request!",
+    "@noRequestString": {},
+    "orderHistoryDesc": "Only the last 2 years of order history are \n displayed. For previous records, feel free \n to connect with our support team.",
+    "@orderHistoryDesc": {}
 }

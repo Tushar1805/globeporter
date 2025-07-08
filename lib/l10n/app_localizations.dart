@@ -519,6 +519,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday'**
   String get yesterdayString;
+
+  /// No description provided for @noRequestString.
+  ///
+  /// In en, this message translates to:
+  /// **'No Request!'**
+  String get noRequestString;
+
+  /// No description provided for @orderHistoryDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the last 2 years of order history are \n displayed. For previous records, feel free \n to connect with our support team.'**
+  String get orderHistoryDesc;
 }
 
 class _AppLocalizationsDelegate

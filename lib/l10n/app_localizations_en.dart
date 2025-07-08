@@ -225,4 +225,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yesterdayString => 'Yesterday';
+
+  @override
+  String get noRequestString => 'No Request!';
+
+  @override
+  String get orderHistoryDesc =>
+      'Only the last 2 years of order history are \n displayed. For previous records, feel free \n to connect with our support team.';
 }

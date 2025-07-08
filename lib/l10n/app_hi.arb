@@ -72,5 +72,7 @@
     "updateString": "अद्यतन करें",
     "notificationString": "अधिसूचना",
     "todayString": "आज",
-    "yesterdayString": "कल"
+    "yesterdayString": "कल",
+    "noRequestString": "कोई अनुरोध नहीं!",
+    "orderHistoryDesc": "केवल पिछले 2 वर्षों का ऑर्डर इतिहास प्रदर्शित किया जाता है।\n पिछले रिकॉर्ड के लिए, हमारी सहायता टीम से \n संपर्क करने में संकोच न करें।"
 }

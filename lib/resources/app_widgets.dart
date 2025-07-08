@@ -180,11 +180,13 @@ class CustomStatusBarWidget extends StatelessWidget {
     this.text,
     this.height,
     this.titlePositionTop,
+    this.fontSize,
   });
   final String? title;
   final Widget? text;
   final double? height;
   final double? titlePositionTop;
+  final double? fontSize;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -219,7 +221,7 @@ class CustomStatusBarWidget extends StatelessWidget {
                 title ?? '',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: whiteColor,
-                      fontSize: 24,
+                      fontSize: fontSize ?? 24,
                     ),
               ),
         ),

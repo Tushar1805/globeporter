@@ -224,4 +224,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get yesterdayString => 'कल';
+
+  @override
+  String get noRequestString => 'कोई अनुरोध नहीं!';
+
+  @override
+  String get orderHistoryDesc =>
+      'केवल पिछले 2 वर्षों का ऑर्डर इतिहास प्रदर्शित किया जाता है।\n पिछले रिकॉर्ड के लिए, हमारी सहायता टीम से \n संपर्क करने में संकोच न करें।';
 }
