@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:globeporter/presentation/customer/view/customer_home_screen.dart';
+import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -54,7 +54,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
       MyRequestScreen(
         type: widget.type,
       ),
-      CustomerHomeScreen(),
+      CreateRequestScreen(),
       SettingsScreen(
         role: 'customer',
       ),

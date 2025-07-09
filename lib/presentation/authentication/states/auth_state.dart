@@ -1,38 +1,9 @@
 part of '../cubit/auth_cubit.dart';
 
-
-abstract class AuthState extends Equatable {
-  const AuthState();
-
-  @override
-  List<Object> get props => [];
+class AuthLoadingState extends LoadingState {
+  AuthLoadingState(super.loadingMessage);
 }
 
-class AuthInitial extends AuthState {}
-
-class AuthLoading extends AuthState {}
-
-class AuthCodeSent extends AuthState {
-  final String verificationId;
-  AuthCodeSent(this.verificationId);
-}
-
-class AuthLoggedIn extends AuthState {
-  AuthLoggedIn();
-}
-
-class AuthRegistered extends AuthState {
-  AuthRegistered();
-}
-
-class AuthLoggedOut extends AuthState {}
-
-class AuthUserNotFound extends AuthState {
-  final String phone;
-  AuthUserNotFound(this.phone);
-}
-
-class AuthError extends AuthState {
-  final String message;
-  AuthError(this.message);
+class AuthLoadedState extends LoadedState {
+  AuthLoadedState({required super.data});
 }
