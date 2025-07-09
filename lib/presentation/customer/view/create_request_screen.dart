@@ -21,7 +21,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateRequestScreen extends StatefulWidget {
-  const CreateRequestScreen({super.key});
+  const CreateRequestScreen({super.key, this.onSubmitTap});
+  final VoidCallback? onSubmitTap;
 
   @override
   State<CreateRequestScreen> createState() => _CreateRequestScreenState();
@@ -158,28 +159,45 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: size.width * 0.12,
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed(customerProfileScreen);
+                          },
                           child: CircleAvatar(
-                            radius: size.width * 0.116,
-                            backgroundImage: AssetImage(
-                              profileImage,
-                            ),
                             backgroundColor: Colors.white,
+                            radius: size.width * 0.12,
+                            child: CircleAvatar(
+                              radius: size.width * 0.116,
+                              backgroundImage: AssetImage(
+                                profileImage,
+                              ),
+                              backgroundColor: Colors.white,
+                            ),
                           ),
                         ),
                         SizedBox(width: 15),
                         SizedBox(
                           height: size.width * 0.125,
                           child: Center(
-                            child: Text(
-                              AppLocalizations.of(context)!.onboarding1Title,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                  ),
-                              textAlign: TextAlign.end,
+                            child: Column(
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.onboarding1Title,
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                      ),
+                                  textAlign: TextAlign.end,
+                                ),
+                                Text(
+                                  'Ravi Gupta',
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700),
+                                  textAlign: TextAlign.end,
+                                ),
+                              ],
                             ),
                           ),
                         ),

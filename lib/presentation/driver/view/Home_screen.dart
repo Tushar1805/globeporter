@@ -86,15 +86,20 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: size.width * 0.1,
+                  GestureDetector(
+                    onTap: () {
+                      context.pushNamed(driverProfileScreen);
+                    },
                     child: CircleAvatar(
-                      radius: size.width * 0.097,
-                      backgroundImage: AssetImage(
-                        profileImage,
-                      ),
                       backgroundColor: Colors.white,
+                      radius: size.width * 0.1,
+                      child: CircleAvatar(
+                        radius: size.width * 0.097,
+                        backgroundImage: AssetImage(
+                          profileImage,
+                        ),
+                        backgroundColor: Colors.white,
+                      ),
                     ),
                   ),
                   SizedBox(width: 15),

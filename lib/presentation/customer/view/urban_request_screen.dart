@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/location_service.dart';
+import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -36,6 +38,7 @@ class _UrbanRequestScreenState extends State<UrbanRequestScreen> {
   final TextEditingController contactNumberController = TextEditingController();
   late final List<Placemark> placemarks;
   List<ItemEntry> itemEntries = [];
+  final customerCubit = sl<CustomerCubit>();
 
   File? image;
   String? fileName;
@@ -286,8 +289,9 @@ class _UrbanRequestScreenState extends State<UrbanRequestScreen> {
               borderRadius: 25,
               alignment: Alignment.bottomCenter,
               onPressed: () {
-                context.pushNamed(customerDashboard, extra: {
+                context.pushNamed(myRequestScreen, extra: {
                   'type': 'urban',
+                  'show': true,
                 });
               },
               textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

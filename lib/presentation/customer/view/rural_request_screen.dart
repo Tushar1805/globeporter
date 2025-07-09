@@ -1,7 +1,9 @@
+import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/location_service.dart';
+import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -21,6 +23,7 @@ class _RuralRequestScreenState extends State<RuralRequestScreen> {
   final TextEditingController packagingTypeController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
   late final List<Placemark> placemarks;
+  final customerCubit = sl<CustomerCubit>();
 
   void getCurrentLocation() async {
     final position = await determinePosition();
@@ -153,8 +156,9 @@ class _RuralRequestScreenState extends State<RuralRequestScreen> {
               borderRadius: 25,
               alignment: Alignment.bottomCenter,
               onPressed: () {
-                context.pushNamed(customerDashboard, extra: {
+                context.pushNamed(myRequestScreen, extra: {
                   'type': 'rural',
+                  'show': true,
                 });
               },
               textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

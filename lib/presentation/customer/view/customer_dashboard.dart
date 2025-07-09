@@ -1,4 +1,6 @@
+import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
@@ -7,7 +9,10 @@ import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 
 class CustomerDashboard extends StatefulWidget {
-  const CustomerDashboard({super.key, required this.type});
+  const CustomerDashboard({
+    super.key,
+    required this.type,
+  });
   final String? type;
 
   @override
@@ -15,8 +20,9 @@ class CustomerDashboard extends StatefulWidget {
 }
 
 class _CustomerDashboardState extends State<CustomerDashboard> {
-  int pageIndex = 0;
+  int pageIndex = 1;
   late PageController pageController;
+  final customerCubit = sl<CustomerCubit>();
 
   @override
   void initState() {
@@ -53,8 +59,12 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
     final screens = [
       MyRequestScreen(
         type: widget.type,
+        onCreateRequestTap: () => onNavBarTap(1),
+        show: customerCubit.show,
       ),
-      CreateRequestScreen(),
+      CreateRequestScreen(
+        onSubmitTap: () => onNavBarTap(0),
+      ),
       SettingsScreen(
         role: 'customer',
       ),

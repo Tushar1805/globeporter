@@ -8,9 +8,12 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
 class MyRequestScreen extends StatefulWidget {
-  const MyRequestScreen({super.key, required this.type});
+  const MyRequestScreen(
+      {super.key, required this.type, this.onCreateRequestTap, this.show = false});
   //* urban or rural
   final String? type;
+  final bool? show;
+  final VoidCallback? onCreateRequestTap;
 
   @override
   State<MyRequestScreen> createState() => _MyRequestScreenState();
@@ -75,82 +78,77 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
     }
   ];
 
-  final show = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: whiteColor,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CustomStatusBarWidget(
-              title: AppLocalizations.of(context)!.myRequestString,
-              fontSize: 22,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            show
-                ? Expanded(
-                    child: widget.type == 'urban'
-                        ? customListView(itemList: myRequestsUrban, type: 'urban')
-                        : customListView(itemList: myRequestsRural, type: 'rural'),
-                  )
-                : Column(
-                    children: [
-                      SizedBox(height: size.width * 0.2),
-                      SizedBox(
-                        height: size.width * 0.6,
-                        width: size.width * 0.6,
-                        child: Card(
-                          elevation: 10,
-                          color: Color(0xFFE0FFDD),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(size.width),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(30.0),
-                            child: SvgPicture.asset(emptyBoxImage),
-                          ),
+      body: Column(
+        children: [
+          CustomStatusBarWidget(
+            title: AppLocalizations.of(context)!.myRequestString,
+            fontSize: 22,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          (widget.show ?? false)
+              ? Expanded(
+                  child: widget.type == 'urban'
+                      ? customListView(itemList: myRequestsUrban, type: 'urban')
+                      : customListView(itemList: myRequestsRural, type: 'rural'),
+                )
+              : Column(
+                  children: [
+                    SizedBox(height: size.width * 0.2),
+                    SizedBox(
+                      height: size.width * 0.6,
+                      width: size.width * 0.6,
+                      child: Card(
+                        elevation: 10,
+                        color: Color(0xFFE0FFDD),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(size.width),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: SvgPicture.asset(emptyBoxImage),
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.noRequestString,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.orderHistoryDesc,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF7D7171),
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: size.width * 0.2),
-                      CustomElevatedButton(
-                        name: AppLocalizations.of(context)!.createRequestString,
-                        borderRadius: 8,
-                        alignment: Alignment.center,
-                        onPressed: () {
-                          context.pushNamed(createRequestScreen);
-                        },
-                      )
-                    ],
-                  ),
-            SizedBox(height: size.width * 0.1),
-          ],
-        ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!.noRequestString,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!.orderHistoryDesc,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF7D7171),
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: size.width * 0.2),
+                    CustomElevatedButton(
+                      name: AppLocalizations.of(context)!.createRequestString,
+                      borderRadius: 8,
+                      alignment: Alignment.center,
+                      onPressed: widget.onCreateRequestTap ?? () {},
+                    )
+                  ],
+                ),
+          SizedBox(height: size.width * 0.1),
+        ],
       ),
     );
   }

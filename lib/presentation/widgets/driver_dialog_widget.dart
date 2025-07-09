@@ -49,7 +49,7 @@ void showDriverDialog(final context) {
                   backgroundColor: Colors.red,
                   onPressed: () {
                     context.pop();
-                    context.push(createRequestScreen);
+                    context.push(customerDashboard);
                     debugPrint('User is not a driver');
                   },
                   nameColor: whiteColor,

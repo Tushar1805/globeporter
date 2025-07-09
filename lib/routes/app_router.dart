@@ -61,7 +61,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: setLanguageScreen,
       path: setLanguageScreen,
-       pageBuilder: (final context, final state) {
+      pageBuilder: (final context, final state) {
         final params = state.extra as Map<String, dynamic>?;
         return slideTransitionPage(
           key: state.pageKey,
@@ -181,6 +181,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: MyRequestScreen(
             type: params?['type'] as String?,
+            show: params?['show'] as bool?,
           ),
         );
       },
