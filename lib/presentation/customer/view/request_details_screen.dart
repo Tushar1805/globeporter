@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/foundation.dart';
@@ -73,6 +74,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   List<Marker>? _markers;
   Set<Polyline> _polylines = {};
   List<LatLng> polylineCoordinates = [];
+  Uint8List? customMarker;
 
   File? image;
   String? fileName;
@@ -89,16 +91,20 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
       currentLocationController.text = locationCubit.currentLocation ?? '';
       final GoogleMapController controller = await _controller.future;
+      final icon = await getBytesFromAssets(path: truckIcon, width: 50);
       setState(() {
         _kGooglePlex = CameraPosition(
           target: LatLng(position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951),
           zoom: 14,
         );
+
         _markers = <Marker>[
           Marker(
+            icon: BitmapDescriptor.bytes(icon),
             markerId: MarkerId('pickup'),
             position: LatLng(position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951),
             // infoWindow: InfoWindow(title: 'The title of the marker'),
+            flat: true,
           )
         ];
         controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
@@ -216,6 +222,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
 
     return points;
+  }
+
+  Future<Uint8List> getBytesFromAssets(
+      {required final String path, required final int width}) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetHeight: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
   @override
