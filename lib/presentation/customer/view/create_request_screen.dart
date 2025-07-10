@@ -358,7 +358,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
               borderRadius: 25,
               alignment: Alignment.center,
               onPressed: () {
-                context.push(isUrban ? urbanRequestScreen : ruralRequestScreen);
+                context.push(requestDetailsScreen, extra: {
+                  'type': isUrban ? 'urban' : 'rural',
+                });
               },
               nameSize: 20,
               textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

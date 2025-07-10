@@ -13,8 +13,7 @@ import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
 import 'package:globeporter/presentation/customer/view/customer_profile_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
-import 'package:globeporter/presentation/customer/view/rural_request_screen.dart';
-import 'package:globeporter/presentation/customer/view/urban_request_screen.dart';
+import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
 import 'package:globeporter/presentation/driver/view/driver_profile_screen.dart';
 import 'package:globeporter/presentation/driver/view/item_details_screen.dart';
@@ -157,20 +156,17 @@ final GoRouter router = GoRouter(
       ),
     ),
     GoRoute(
-      name: urbanRequestScreen,
-      path: urbanRequestScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const UrbanRequestScreen(),
-      ),
-    ),
-    GoRoute(
-      name: ruralRequestScreen,
-      path: ruralRequestScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const RuralRequestScreen(),
-      ),
+      name: requestDetailsScreen,
+      path: requestDetailsScreen,
+       pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: RequestDetailsScreen(
+            type: params?['type'] as String?,
+          ),
+        );
+      },
     ),
     GoRoute(
       name: myRequestScreen,
