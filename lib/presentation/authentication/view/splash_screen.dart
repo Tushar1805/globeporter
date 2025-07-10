@@ -24,19 +24,24 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> init() async {
     await Future.delayed(const Duration(seconds: 2), () {});
-    // Navigator.pushReplacementNamed(context, setLanguageScreen);
-
     context.pushReplacementNamed(setLanguageScreen);
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
         color: primaryColor,
         child: Center(
-          child: SvgPicture.asset('assets/svg/logo_large.svg',
-              fit: BoxFit.contain, width: MediaQuery.of(context).size.width * .6),
+          child: SizedBox(
+            width: size.width * 0.6,
+            child: SvgPicture.asset(
+              'assets/svg/logo_large.svg',
+              height: size.width * 0.6,
+              fit: BoxFit.contain,
+            ),
+          ),
         ),
       ),
     );

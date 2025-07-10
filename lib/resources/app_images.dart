@@ -25,6 +25,7 @@ final String helpIcon = "assets/images/help_icon.png";
 final String chooseLanguageIcon = "assets/images/choose_language_icon.png";
 final String termsConditionIcon = "assets/images/terms_condition_icon.png";
 final String cashAndCoinImage = "assets/images/cash_and_coin.png";
+final String appLogoLarge = "assets/images/logo_large.png";
 
 // SVG Images
 
