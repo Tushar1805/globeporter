@@ -63,16 +63,22 @@ class _DriverDashboardState extends State<DriverDashboard> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: whiteColor,
-      body: PageView(
-        controller: pageController,
-        children: screens,
-        onPageChanged: (index) {
-          setState(() {
-            pageIndex = index;
-          });
-        },
+      body: SafeArea(
+        top: false,
+        right: false,
+        left: false,
+        child: PageView(
+          controller: pageController,
+          children: screens,
+          onPageChanged: (index) {
+            setState(() {
+              pageIndex = index;
+            });
+          },
+        ),
       ),
       bottomNavigationBar: Container(
+        padding: const EdgeInsets.only(bottom: 5),
         height: size.width * 0.12,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(

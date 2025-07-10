@@ -71,17 +71,23 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
     ];
     return Scaffold(
       backgroundColor: whiteColor,
-      body: PageView(
-        controller: pageController,
-        children: screens,
-        onPageChanged: (index) {
-          setState(() {
-            pageIndex = index;
-          });
-        },
+      body: SafeArea(
+        left: false,
+        right: false,
+        top: false,
+        child: PageView(
+          controller: pageController,
+          children: screens,
+          onPageChanged: (index) {
+            setState(() {
+              pageIndex = index;
+            });
+          },
+        ),
       ),
       bottomNavigationBar: Container(
         height: size.width * 0.12,
+        padding: const EdgeInsets.only(bottom: 5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(
             Radius.circular(12),
