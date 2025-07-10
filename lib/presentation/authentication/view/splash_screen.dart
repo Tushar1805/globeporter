@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> init() async {
     await Future.delayed(const Duration(seconds: 2), () {});
     // Navigator.pushReplacementNamed(context, setLanguageScreen);
-    await locationCubit.determinePosition();
+
     context.pushReplacementNamed(setLanguageScreen);
   }
 

@@ -50,7 +50,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
 
   void getCurrentLocation() async {
     try {
-      position = locationCubit.position;
+      position = await locationCubit.determinePosition();
       debugPrint("Position: ${position?.latitude} :: ${position?.longitude}");
       placemarks = await placemarkFromCoordinates(
           position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951);
