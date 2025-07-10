@@ -11,3 +11,6 @@ class LocationLoadedState extends LoadedState {
 class SearchLocationResultState extends LoadedState {
   SearchLocationResultState({required super.data});
 }
+class RouteDirectionsLoadedState extends LoadedState {
+  RouteDirectionsLoadedState({required super.data});
+}

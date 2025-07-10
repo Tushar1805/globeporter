@@ -1,5 +1,6 @@
 import 'package:core/utils/core_utils.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
+import 'package:globeporter/location/model/route_direction_response.dart';
 import 'package:globeporter/location/repository/location_repository.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/location/states/location_states.dart';
@@ -8,6 +9,7 @@ class LocationCubit extends BaseCubit {
   final LocationRepository _locationRepository;
   LocationCubit(this._locationRepository);
   Position? position;
+  String? currentLocation;
 
   final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high,
@@ -74,6 +76,28 @@ class LocationCubit extends BaseCubit {
       emit(SearchLocationResultState(data: response));
     } catch (e) {
       customPrint("Error: Searching Location: $e");
+    }
+  }
+
+  Future<RouteDirectionsResponse?> routeDirection({
+    required final double pickupLat,
+    required final double pickupLng,
+    required final double dropLat,
+    required final double dropLng,
+  }) async {
+    try {
+      final response = await _locationRepository.routeDirection(
+        pickupLat: pickupLat,
+        pickupLng: pickupLng,
+        dropLat: dropLat,
+        dropLng: dropLng,
+      );
+
+      emit(RouteDirectionsLoadedState(data: response));
+      return response;
+    } catch (e) {
+      customPrint("Error: Routing Directions: $e");
+      return null;
     }
   }
 }

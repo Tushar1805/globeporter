@@ -57,6 +57,8 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       currentLocationController.text = placemarks.isNotEmpty
           ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
           : "";
+      locationCubit.currentLocation = currentLocationController.text;
+      locationCubit.position = position;
       final GoogleMapController controller = await _controller.future;
       setState(() {
         _kGooglePlex = CameraPosition(
@@ -65,9 +67,10 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
         );
         _markers = <Marker>[
           Marker(
-              markerId: MarkerId('1'),
-              position: LatLng(position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951),
-              infoWindow: InfoWindow(title: 'The title of the marker'))
+            markerId: MarkerId('1'),
+            position: LatLng(position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951),
+            // infoWindow: InfoWindow(title: 'The title of the marker'),
+          )
         ];
         controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
       });
@@ -249,6 +252,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                             // Suppress onChange
                             _suppressOnChange = true;
                             currentLocationController.text = selectedDescription;
+                            locationCubit.currentLocation = currentLocationController.text;
 
                             setState(() {
                               searchPlacesResponse = null;
@@ -268,6 +272,21 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                               if (locations.isNotEmpty) {
                                 final latLng =
                                     LatLng(locations[0].latitude, locations[0].longitude);
+                                // Convert to Position
+                                final position = Position(
+                                  latitude: latLng.latitude,
+                                  longitude: latLng.longitude,
+                                  timestamp: DateTime.now(),
+                                  accuracy: 1.0,
+                                  altitude: 0.0,
+                                  heading: 0.0,
+                                  speed: 0.0,
+                                  speedAccuracy: 0.0,
+                                  altitudeAccuracy: 1.0,
+                                  headingAccuracy: 1.0,
+                                );
+
+                                locationCubit.position = position;
 
                                 setState(() {
                                   _markers = <Marker>[
