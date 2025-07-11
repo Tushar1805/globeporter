@@ -411,6 +411,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 initialCameraPosition: _kGooglePlex,
                 markers: Set<Marker>.of(_markers ?? []),
                 myLocationEnabled: true,
+                mapToolbarEnabled: false,
                 onMapCreated: (final controller) {
                   _controller.complete(controller);
                 },

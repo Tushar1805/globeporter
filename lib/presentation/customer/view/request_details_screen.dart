@@ -548,8 +548,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       });
                                     });
 
-                                    // final GoogleMapController mapController = await _controller.future;
-                                    // mapController.animateCamera(CameraUpdate.newLatLng(latLng));
+                                    final GoogleMapController mapController =
+                                        await _controller.future;
+                                    mapController.animateCamera(CameraUpdate.newLatLng(latLng));
                                   }
                                 } catch (e) {
                                   debugPrint('Error getting location: $e');
@@ -581,8 +582,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   child: GoogleMap(
                     initialCameraPosition: _kGooglePlex,
                     markers: Set<Marker>.of(_markers ?? []),
-                    myLocationButtonEnabled: true,
                     mapToolbarEnabled: false,
+                    myLocationEnabled: true,
                     onMapCreated: (final controller) {
                       _controller.complete(controller);
                     },
