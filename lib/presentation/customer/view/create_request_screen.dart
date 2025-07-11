@@ -39,7 +39,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   String? _sessionToken;
   var uuid = Uuid();
   Timer? _debounce;
-  bool _suppressOnChange = false;
+  bool _suppressOnChange = true;
 
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(20.5574253, 78.8386951),
@@ -61,6 +61,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       locationCubit.position = position;
       final GoogleMapController controller = await _controller.future;
       setState(() {
+        _suppressOnChange = false;
         _kGooglePlex = CameraPosition(
           target: LatLng(position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951),
           zoom: 14,
@@ -118,7 +119,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   }
 
   void getSuggestion(String input) async {
-    locationCubit.searchPlaces(input: input, sesssionToken: _sessionToken);
+    locationCubit.searchPickupPlaces(input: input, sesssionToken: _sessionToken);
   }
 
   @override
@@ -227,7 +228,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
             BlocConsumer(
               bloc: locationCubit,
               listener: (final context, final state) {
-                if (state is SearchLocationResultState) {
+                if (state is SearchPickupLocationResultState) {
                   setState(() {
                     searchPlacesResponse = state.data as SearchPlacesResponse?;
                   });

@@ -66,14 +66,26 @@ class LocationCubit extends BaseCubit {
     return this.position!;
   }
 
-  Future<void> searchPlaces({
+  Future<void> searchPickupPlaces({
     required final String input,
     required final String? sesssionToken,
   }) async {
     try {
       final response =
           await _locationRepository.searchPlaces(input: input, sessionToken: sesssionToken);
-      emit(SearchLocationResultState(data: response));
+      emit(SearchPickupLocationResultState(data: response));
+    } catch (e) {
+      customPrint("Error: Searching Location: $e");
+    }
+  }
+  Future<void> searchDestinationPlaces({
+    required final String input,
+    required final String? sesssionToken,
+  }) async {
+    try {
+      final response =
+          await _locationRepository.searchPlaces(input: input, sessionToken: sesssionToken);
+      emit(SearchDestinationLocationResultState(data: response));
     } catch (e) {
       customPrint("Error: Searching Location: $e");
     }
