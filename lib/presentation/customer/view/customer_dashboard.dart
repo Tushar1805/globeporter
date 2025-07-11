@@ -69,13 +69,11 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
         role: 'customer',
       ),
     ];
-    return Scaffold(
-      backgroundColor: whiteColor,
-      body: SafeArea(
-        left: false,
-        right: false,
-        top: false,
-        child: PageView(
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        backgroundColor: whiteColor,
+        body: PageView(
           controller: pageController,
           children: screens,
           onPageChanged: (index) {
@@ -84,42 +82,42 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
             });
           },
         ),
-      ),
-      bottomNavigationBar: Container(
-        height: size.width * 0.12,
-        padding: const EdgeInsets.only(bottom: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(12),
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFCDCDCD,
+        bottomNavigationBar: Container(
+          height: size.width * 0.12,
+          padding: const EdgeInsets.only(bottom: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+            border: Border.all(
+              color: const Color(
+                0xFFCDCDCD,
+              ),
             ),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            BottomNavBarIcon(
-              icon: myRequestIcon,
-              onTap: () => onNavBarTap(0),
-              pageIndex: pageIndex,
-              itemIndex: 0,
-            ),
-            BottomNavBarIcon(
-              icon: homeIcon,
-              onTap: () => onNavBarTap(1),
-              pageIndex: pageIndex,
-              itemIndex: 1,
-            ),
-            BottomNavBarIcon(
-              icon: profileIcon,
-              onTap: () => onNavBarTap(2),
-              pageIndex: pageIndex,
-              itemIndex: 2,
-            ),
-          ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              BottomNavBarIcon(
+                icon: myRequestIcon,
+                onTap: () => onNavBarTap(0),
+                pageIndex: pageIndex,
+                itemIndex: 0,
+              ),
+              BottomNavBarIcon(
+                icon: homeIcon,
+                onTap: () => onNavBarTap(1),
+                pageIndex: pageIndex,
+                itemIndex: 1,
+              ),
+              BottomNavBarIcon(
+                icon: profileIcon,
+                onTap: () => onNavBarTap(2),
+                pageIndex: pageIndex,
+                itemIndex: 2,
+              ),
+            ],
+          ),
         ),
       ),
     );

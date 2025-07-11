@@ -61,13 +61,11 @@ class _DriverDashboardState extends State<DriverDashboard> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: whiteColor,
-      body: SafeArea(
-        top: false,
-        right: false,
-        left: false,
-        child: PageView(
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        backgroundColor: whiteColor,
+        body: PageView(
           controller: pageController,
           children: screens,
           onPageChanged: (index) {
@@ -76,42 +74,42 @@ class _DriverDashboardState extends State<DriverDashboard> {
             });
           },
         ),
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(bottom: 5),
-        height: size.width * 0.12,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(12),
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFCDCDCD,
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.only(bottom: 5),
+          height: size.width * 0.12,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+            border: Border.all(
+              color: const Color(
+                0xFFCDCDCD,
+              ),
             ),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            BottomNavBarIcon(
-              icon: myRequestIcon,
-              onTap: () => onNavBarTap(0),
-              pageIndex: pageIndex,
-              itemIndex: 0,
-            ),
-            BottomNavBarIcon(
-              icon: homeIcon,
-              onTap: () => onNavBarTap(1),
-              pageIndex: pageIndex,
-              itemIndex: 1,
-            ),
-            BottomNavBarIcon(
-              icon: profileIcon,
-              onTap: () => onNavBarTap(2),
-              pageIndex: pageIndex,
-              itemIndex: 2,
-            ),
-          ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              BottomNavBarIcon(
+                icon: myRequestIcon,
+                onTap: () => onNavBarTap(0),
+                pageIndex: pageIndex,
+                itemIndex: 0,
+              ),
+              BottomNavBarIcon(
+                icon: homeIcon,
+                onTap: () => onNavBarTap(1),
+                pageIndex: pageIndex,
+                itemIndex: 1,
+              ),
+              BottomNavBarIcon(
+                icon: profileIcon,
+                onTap: () => onNavBarTap(2),
+                pageIndex: pageIndex,
+                itemIndex: 2,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -24,152 +24,157 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Curved Green Header with Logo
-            StatusBarWidget(),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Curved Green Header with Logo
+              StatusBarWidget(),
 
-            const SizedBox(height: 45),
+              const SizedBox(height: 45),
 
-            // Truck Image
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(driverWithVanSvg, width: size.width * .7),
-              ],
-            ),
-
-            const SizedBox(height: 35),
-
-            Padding(
-              padding: const EdgeInsets.only(left: 25),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Truck Image
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    AppLocalizations.of(context)!.onboarding1Title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(color: primaryColor, fontSize: 28),
-                  ),
+                  SvgPicture.asset(driverWithVanSvg, width: size.width * .7),
                 ],
               ),
-            ),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 35),
 
-            // Phone Input Row
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  CustomCountryPicker(),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      controller: phoneController,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.enterMobileHint,
-                        hintStyle:
-                            Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.green),
-                          borderRadius: BorderRadius.circular(4),
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.onboarding1Title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(color: primaryColor, fontSize: 28),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Phone Input Row
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    CustomCountryPicker(),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        controller: phoneController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)!.enterMobileHint,
+                          hintStyle: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: greyTextColor),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.green),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.green),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.green),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(
-              height: 20,
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Text(
-                AppLocalizations.of(context)!.nameString,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+              const SizedBox(
+                height: 20,
               ),
-            ),
 
-            const SizedBox(
-              height: 8,
-            ),
-
-            CustomTextField(textEditingController: nameController),
-
-            const SizedBox(
-              height: 20,
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Text(
-                AppLocalizations.of(context)!.emailString,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  AppLocalizations.of(context)!.nameString,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+                ),
               ),
-            ),
 
-            const SizedBox(
-              height: 8,
-            ),
-
-            CustomTextField(textEditingController: emailController),
-
-            const SizedBox(
-              height: 20,
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Text(
-                AppLocalizations.of(context)!.otpString,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+              const SizedBox(
+                height: 8,
               ),
-            ),
 
-            const SizedBox(
-              height: 8,
-            ),
+              CustomTextField(textEditingController: nameController),
 
-            CustomTextField(
-              textEditingController: otpController,
-              inputType: TextInputType.number,
-            ),
+              const SizedBox(
+                height: 20,
+              ),
 
-            const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  AppLocalizations.of(context)!.emailString,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+                ),
+              ),
 
-            CustomElevatedButton(
-              name: AppLocalizations.of(context)!.loginString,
-              borderRadius: 25,
-              alignment: Alignment.bottomCenter,
-              onPressed: () {
-                // Navigator.pushNamed(context, OnboardingScreen.route);
-                // context.push(onboardingScreen);
-                String fullNumber = '$_selectedCountryCode${phoneController.text}';
-                debugPrint('Phone number entered: $fullNumber');
-                showDriverDialog(context);
-              },
-              textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              nameSize: 22,
-            ),
-            const SizedBox(height: 20),
-          ],
+              const SizedBox(
+                height: 8,
+              ),
+
+              CustomTextField(textEditingController: emailController),
+
+              const SizedBox(
+                height: 20,
+              ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  AppLocalizations.of(context)!.otpString,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+                ),
+              ),
+
+              const SizedBox(
+                height: 8,
+              ),
+
+              CustomTextField(
+                textEditingController: otpController,
+                inputType: TextInputType.number,
+              ),
+
+              const SizedBox(height: 30),
+
+              CustomElevatedButton(
+                name: AppLocalizations.of(context)!.loginString,
+                borderRadius: 25,
+                alignment: Alignment.bottomCenter,
+                onPressed: () {
+                  // Navigator.pushNamed(context, OnboardingScreen.route);
+                  // context.push(onboardingScreen);
+                  String fullNumber = '$_selectedCountryCode${phoneController.text}';
+                  debugPrint('Phone number entered: $fullNumber');
+                  showDriverDialog(context);
+                },
+                textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                nameSize: 22,
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

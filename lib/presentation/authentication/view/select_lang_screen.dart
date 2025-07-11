@@ -32,82 +32,85 @@ class _SelectLangScreenState extends State<SelectLangScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: whiteColor,
-        padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: MediaQuery.of(context).padding.top + 30,
-          bottom: 50,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.selectLanguage,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(color: primaryColor, fontSize: 28),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.selectLanguageDesc,
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: greyTextColor, fontSize: 16),
-            ),
-            const SizedBox(height: 40),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        body: Container(
+          color: whiteColor,
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: MediaQuery.of(context).padding.top + 30,
+            bottom: 50,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.selectLanguage,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: primaryColor, fontSize: 28),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context)!.selectLanguageDesc,
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: greyTextColor, fontSize: 16),
+              ),
+              const SizedBox(height: 40),
 
-            // English Option
-            _buildLangCard(
-              label: 'English',
-              value: 'en',
-              selected: selectedLanguage == 'en',
-              icon: Icons.language,
-              backgroundImage: buildingSvg, // replace with your image
-              fontSize: 38,
-            ),
-            const SizedBox(height: 30),
+              // English Option
+              _buildLangCard(
+                label: 'English',
+                value: 'en',
+                selected: selectedLanguage == 'en',
+                icon: Icons.language,
+                backgroundImage: buildingSvg, // replace with your image
+                fontSize: 38,
+              ),
+              const SizedBox(height: 30),
 
-            // Hindi Option
-            _buildLangCard(
-              label: 'हिंदी',
-              value: 'hi',
-              selected: selectedLanguage == 'hi',
-              icon: Icons.translate,
-              backgroundImage: tajMahalSvg, // replace with your image
-              fontSize: 47,
-            ),
-            const SizedBox(height: 30),
+              // Hindi Option
+              _buildLangCard(
+                label: 'हिंदी',
+                value: 'hi',
+                selected: selectedLanguage == 'hi',
+                icon: Icons.translate,
+                backgroundImage: tajMahalSvg, // replace with your image
+                fontSize: 47,
+              ),
+              const SizedBox(height: 30),
 
-            // Marathi Option
-            _buildLangCard(
-              label: 'मराठी',
-              value: 'mr',
-              selected: selectedLanguage == 'mr',
-              icon: Icons.translate,
-              backgroundImage: redfortSvg, // replace with your image
-              fontSize: 47,
-            ),
+              // Marathi Option
+              _buildLangCard(
+                label: 'मराठी',
+                value: 'mr',
+                selected: selectedLanguage == 'mr',
+                icon: Icons.translate,
+                backgroundImage: redfortSvg, // replace with your image
+                fontSize: 47,
+              ),
 
-            const Spacer(),
-            (widget.onPop ?? false)
-                ? SizedBox.shrink()
-                : CustomElevatedButton(
-                    name: AppLocalizations.of(context)!.continueString,
-                    borderRadius: 25,
-                    alignment: Alignment.center,
-                    onPressed: () {
-                      context.push(onboardingScreen1);
-                    },
-                    textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    nameSize: 22,
-                  ),
-          ],
+              const Spacer(),
+              (widget.onPop ?? false)
+                  ? SizedBox.shrink()
+                  : CustomElevatedButton(
+                      name: AppLocalizations.of(context)!.continueString,
+                      borderRadius: 25,
+                      alignment: Alignment.center,
+                      onPressed: () {
+                        context.push(onboardingScreen1);
+                      },
+                      textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      nameSize: 22,
+                    ),
+            ],
+          ),
         ),
       ),
     );
