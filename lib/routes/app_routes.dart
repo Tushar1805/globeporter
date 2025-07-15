@@ -9,6 +9,7 @@ const setLanguageScreen = '/select_lang';
 const signUpScreen = '/signup_screen';
 const otpScreen = '/otp_screen';
 const driverDetailsScreen = '/driver_details_screen';
+const ownerDetailsScreen = '/owner_details_screen';
 
 //* Customer Routes
 const customerDashboard = '/customer_dashboard';
@@ -29,3 +30,4 @@ const driverProfileScreen = '/driver_profile_screen';
 //* All other routes
 const notificationScreen = '/notification_screen';
 const referAndEarnScreen = '/refer_screen';
+const uploadDocumentScreen = '/upload_document_screen';

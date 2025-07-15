@@ -496,6 +496,12 @@ abstract class AppLocalizations {
   /// **'Upload Document'**
   String get uploadDocumentString;
 
+  /// No description provided for @uploadString.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get uploadString;
+
   /// No description provided for @updateString.
   ///
   /// In en, this message translates to:
@@ -597,6 +603,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refer & Earn'**
   String get referEarnString;
+
+  /// No description provided for @ownerString.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get ownerString;
+
+  /// No description provided for @vehicleString.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle'**
+  String get vehicleString;
+
+  /// No description provided for @driverString.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver'**
+  String get driverString;
+
+  /// No description provided for @ownerDetailsString.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Details'**
+  String get ownerDetailsString;
+
+  /// No description provided for @uploadTheFollowingString.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload the following'**
+  String get uploadTheFollowingString;
+
+  /// No description provided for @ownerAdhaarCardString.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Adhaar Card'**
+  String get ownerAdhaarCardString;
+
+  /// No description provided for @ownerPanCardString.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Pan Card'**
+  String get ownerPanCardString;
+
+  /// No description provided for @vehicleRcString.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle RC'**
+  String get vehicleRcString;
+
+  /// No description provided for @uploadRcString.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload RC'**
+  String get uploadRcString;
+
+  /// No description provided for @vehicleTypeString.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Type'**
+  String get vehicleTypeString;
+
+  /// No description provided for @phoneNumberString.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumberString;
+
+  /// No description provided for @licenceNumberString.
+  ///
+  /// In en, this message translates to:
+  /// **'Licence Number'**
+  String get licenceNumberString;
+
+  /// No description provided for @driverAdhaarCardString.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Adhaar Card'**
+  String get driverAdhaarCardString;
+
+  /// No description provided for @driverPanCardString.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Pan Card'**
+  String get driverPanCardString;
+
+  /// No description provided for @driverPhotoString.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Photo'**
+  String get driverPhotoString;
+
+  /// No description provided for @detailsString.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get detailsString;
+
+  /// No description provided for @frontSideString.
+  ///
+  /// In en, this message translates to:
+  /// **'Front Side'**
+  String get frontSideString;
+
+  /// No description provided for @backSide.
+  ///
+  /// In en, this message translates to:
+  /// **'Back Side'**
+  String get backSide;
 }
 
 class _AppLocalizationsDelegate

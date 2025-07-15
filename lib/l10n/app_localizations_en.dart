@@ -215,6 +215,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadDocumentString => 'Upload Document';
 
   @override
+  String get uploadString => 'Upload';
+
+  @override
   String get updateString => 'Update';
 
   @override
@@ -265,4 +268,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get referEarnString => 'Refer & Earn';
+
+  @override
+  String get ownerString => 'Owner';
+
+  @override
+  String get vehicleString => 'Vehicle';
+
+  @override
+  String get driverString => 'Driver';
+
+  @override
+  String get ownerDetailsString => 'Owner Details';
+
+  @override
+  String get uploadTheFollowingString => 'Upload the following';
+
+  @override
+  String get ownerAdhaarCardString => 'Owner Adhaar Card';
+
+  @override
+  String get ownerPanCardString => 'Owner Pan Card';
+
+  @override
+  String get vehicleRcString => 'Vehicle RC';
+
+  @override
+  String get uploadRcString => 'Upload RC';
+
+  @override
+  String get vehicleTypeString => 'Vehicle Type';
+
+  @override
+  String get phoneNumberString => 'Phone Number';
+
+  @override
+  String get licenceNumberString => 'Licence Number';
+
+  @override
+  String get driverAdhaarCardString => 'Driver Adhaar Card';
+
+  @override
+  String get driverPanCardString => 'Driver Pan Card';
+
+  @override
+  String get driverPhotoString => 'Driver Photo';
+
+  @override
+  String get detailsString => 'Details';
+
+  @override
+  String get frontSideString => 'Front Side';
+
+  @override
+  String get backSide => 'Back Side';
 }

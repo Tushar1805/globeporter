@@ -214,6 +214,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get uploadDocumentString => 'दस्तावेज़ अपलोड करें';
 
   @override
+  String get uploadString => 'अपलोड करें';
+
+  @override
   String get updateString => 'अद्यतन करें';
 
   @override
@@ -264,4 +267,58 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get referEarnString => 'रेफर करें और कमाएं';
+
+  @override
+  String get ownerString => 'मालक';
+
+  @override
+  String get vehicleString => 'वाहन';
+
+  @override
+  String get driverString => 'चालक';
+
+  @override
+  String get ownerDetailsString => 'मालक का विवरण';
+
+  @override
+  String get uploadTheFollowingString => 'निम्नलिखित अपलोड करें';
+
+  @override
+  String get ownerAdhaarCardString => 'मालक का आधार कार्ड';
+
+  @override
+  String get ownerPanCardString => 'मालक का पैन कार्ड';
+
+  @override
+  String get vehicleRcString => 'वाहन आरसी';
+
+  @override
+  String get uploadRcString => 'आरसी अपलोड करें';
+
+  @override
+  String get vehicleTypeString => 'वाहन प्रकार';
+
+  @override
+  String get phoneNumberString => 'फोन नंबर';
+
+  @override
+  String get licenceNumberString => 'परवाना क्रमांक';
+
+  @override
+  String get driverAdhaarCardString => 'चालक का आधार कार्ड';
+
+  @override
+  String get driverPanCardString => 'चालक का पैन कार्ड';
+
+  @override
+  String get driverPhotoString => 'चालक की फोटो';
+
+  @override
+  String get detailsString => 'विवरण';
+
+  @override
+  String get frontSideString => 'सामने की ओर';
+
+  @override
+  String get backSide => 'पीछे की ओर';
 }

@@ -36,7 +36,8 @@ void showDriverDialog(final context) {
                   alignment: Alignment.center,
                   onPressed: () {
                     context.pop();
-                    context.pushNamed(driverDetailsScreen);
+                    // context.pushNamed(driverDetailsScreen);
+                    context.pushNamed(ownerDetailsScreen);
                     debugPrint('User is a driver');
                   },
                   nameColor: whiteColor,

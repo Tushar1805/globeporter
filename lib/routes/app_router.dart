@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:globeporter/presentation/authentication/view/driver_details_screen.dart';
 import 'package:globeporter/presentation/authentication/view/login_screen.dart';
@@ -14,12 +16,14 @@ import 'package:globeporter/presentation/customer/view/customer_profile_screen.d
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
+import 'package:globeporter/presentation/driver/view/document_upload_screen.dart';
 import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
 import 'package:globeporter/presentation/driver/view/driver_profile_screen.dart';
 import 'package:globeporter/presentation/driver/view/item_details_screen.dart';
+import 'package:globeporter/presentation/driver/view/owner_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/start_trip_screen.dart';
 import 'package:globeporter/presentation/driver/view/trip_info_screen.dart';
-import 'package:globeporter/presentation/driver/view/wallet_screen.dart';
+import 'package:globeporter/presentation/settings/view/wallet_screen.dart';
 import 'package:globeporter/presentation/notification/view/notification_screen.dart';
 import 'package:globeporter/presentation/settings/view/refer_screen.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -158,7 +162,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: requestDetailsScreen,
       path: requestDetailsScreen,
-       pageBuilder: (final context, final state) {
+      pageBuilder: (final context, final state) {
         final params = state.extra as Map<String, dynamic>?;
         return slideTransitionPage(
           key: state.pageKey,
@@ -281,6 +285,32 @@ final GoRouter router = GoRouter(
         key: state.pageKey,
         child: const ReferAndEarnScreen(),
       ),
+    ),
+    GoRoute(
+      name: ownerDetailsScreen,
+      path: ownerDetailsScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const OwnerDetailsScreen(),
+      ),
+    ),
+    GoRoute(
+      name: uploadDocumentScreen,
+      path: uploadDocumentScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        // Ensure function is present
+        final void Function(File?) onCaptured =
+            (params?['onImageCaptured'] as void Function(File?));
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: DocumentCameraScreen(
+            title: params?['title'] as String,
+            hintText: params?['hintText'] as String,
+            onImageCaptured: onCaptured,
+          ),
+        );
+      },
     ),
   ],
 );

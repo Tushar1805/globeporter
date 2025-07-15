@@ -86,7 +86,7 @@ class AppLocalizationsMr extends AppLocalizations {
   String get vehicleIdString => 'वाहन आयडी';
 
   @override
-  String get driverLicenceString => 'ड्रायव्हर लायसन्स';
+  String get driverLicenceString => 'चालकाचे लायसन्स';
 
   @override
   String get vehicleNo => 'वाहन क्रमांक';
@@ -213,6 +213,9 @@ class AppLocalizationsMr extends AppLocalizations {
   String get uploadDocumentString => 'दस्तऐवज अपलोड करा';
 
   @override
+  String get uploadString => 'अपलोड करा';
+
+  @override
   String get updateString => 'अपडेट करा';
 
   @override
@@ -263,4 +266,58 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get referEarnString => 'रेफर करा आणि कमवा';
+
+  @override
+  String get ownerString => 'मालक';
+
+  @override
+  String get vehicleString => 'वाहन';
+
+  @override
+  String get driverString => 'चालक';
+
+  @override
+  String get ownerDetailsString => 'मालकाचे तपशील';
+
+  @override
+  String get uploadTheFollowingString => 'खालील अपलोड करा';
+
+  @override
+  String get ownerAdhaarCardString => 'मालकाचा आधार कार्ड';
+
+  @override
+  String get ownerPanCardString => 'मालकाचा पॅन कार्ड';
+
+  @override
+  String get vehicleRcString => 'वाहन आरसी';
+
+  @override
+  String get uploadRcString => 'आरसी अपलोड करा';
+
+  @override
+  String get vehicleTypeString => 'वाहनाचा प्रकार';
+
+  @override
+  String get phoneNumberString => 'फ़ोन नंबर';
+
+  @override
+  String get licenceNumberString => 'लाइसेंस नंबर';
+
+  @override
+  String get driverAdhaarCardString => 'चालकाचा आधार कार्ड';
+
+  @override
+  String get driverPanCardString => 'चालकाचा पॅन कार्ड';
+
+  @override
+  String get driverPhotoString => 'चालकाचा फोटो';
+
+  @override
+  String get detailsString => 'तपशील';
+
+  @override
+  String get frontSideString => 'समोरची बाजू';
+
+  @override
+  String get backSide => 'मागची बाजू';
 }
