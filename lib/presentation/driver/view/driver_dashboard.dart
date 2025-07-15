@@ -76,7 +76,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
         ),
         bottomNavigationBar: Container(
           padding: const EdgeInsets.only(bottom: 5),
-          height: size.width * 0.12,
+          height: size.width * 0.14,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(
               Radius.circular(12),
