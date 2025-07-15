@@ -298,6 +298,9 @@ class AppLocalizationsMr extends AppLocalizations {
   String get vehicleTypeString => 'वाहनाचा प्रकार';
 
   @override
+  String get vehiclePhotoString => 'वाहनाचा फोटो';
+
+  @override
   String get phoneNumberString => 'फ़ोन नंबर';
 
   @override

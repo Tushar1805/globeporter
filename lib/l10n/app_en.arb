@@ -192,6 +192,8 @@
     "@uploadRcString": {},
     "vehicleTypeString": "Vehicle Type",
     "@vehicleTypeString": {},
+    "vehiclePhotoString": "Vehicle Photo",
+    "@vehiclePhotoString": {},
     "phoneNumberString": "Phone Number",
     "@phoneNumberString": {},
     "licenceNumberString": "Licence Number",

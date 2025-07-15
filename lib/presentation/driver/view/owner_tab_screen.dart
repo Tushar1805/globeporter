@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
+import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
 class OwnerTab extends StatefulWidget {
-  const OwnerTab({super.key});
+  const OwnerTab({super.key, required this.animateToPage});
+  final VoidCallback animateToPage;
 
   @override
   State<OwnerTab> createState() => _OwnerTabState();
@@ -17,10 +19,28 @@ class OwnerTab extends StatefulWidget {
 
 class _OwnerTabState extends State<OwnerTab> {
   final TextEditingController nameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white60,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          CustomElevatedButton(
+            name: 'Next',
+            borderRadius: 4,
+            alignment: Alignment.bottomRight,
+            onPressed: widget.animateToPage,
+            textWidget: Image.asset(
+              arrowForward,
+              width: size.width * 0.13,
+              height: size.height * 0.017,
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

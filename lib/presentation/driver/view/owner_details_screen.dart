@@ -144,9 +144,9 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
             child: PageView(
               controller: _pageController,
               onPageChanged: (index) => setState(() => currentIndex = index),
-              children: const [
-                OwnerTab(),
-                VehicleTab(),
+              children:  [
+                OwnerTab(animateToPage: ()=>animateToPage(1)),
+                VehicleTab(animateToPage: ()=>animateToPage(2)),
                 DriverTab(),
               ],
             ),

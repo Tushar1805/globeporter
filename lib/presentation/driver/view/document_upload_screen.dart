@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DocumentCameraScreen extends StatefulWidget {
-  final String title; // e.g.  "Capture Driving Licence (Back Side)"
-  final String hintText; // e.g.  "Driving Licence (Back Side)"
+  final String title; 
+  final String hintText; 
   final Function(File? file) onImageCaptured;
 
   const DocumentCameraScreen({
@@ -46,13 +46,11 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
     super.dispose();
   }
 
-  // ---  bottom sheet to pick from gallery  ---
   Future<void> _pickFromGallery() async {
     final XFile? pic = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pic != null) widget.onImageCaptured(File(pic.path));
   }
 
-  // ---  take photo  ---
   Future<void> _capture() async {
     final XFile pic = await _controller.takePicture();
     widget.onImageCaptured(File(pic.path));

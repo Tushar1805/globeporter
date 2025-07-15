@@ -83,7 +83,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
           },
         ),
         bottomNavigationBar: Container(
-          height: size.width * 0.12,
+          height: size.width * 0.14,
           padding: const EdgeInsets.only(bottom: 5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(

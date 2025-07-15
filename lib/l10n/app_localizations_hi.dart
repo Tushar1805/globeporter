@@ -299,6 +299,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get vehicleTypeString => 'वाहन प्रकार';
 
   @override
+  String get vehiclePhotoString => 'वाहन का फोटो';
+
+  @override
   String get phoneNumberString => 'फोन नंबर';
 
   @override

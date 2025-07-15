@@ -664,6 +664,12 @@ abstract class AppLocalizations {
   /// **'Vehicle Type'**
   String get vehicleTypeString;
 
+  /// No description provided for @vehiclePhotoString.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Photo'**
+  String get vehiclePhotoString;
+
   /// No description provided for @phoneNumberString.
   ///
   /// In en, this message translates to:

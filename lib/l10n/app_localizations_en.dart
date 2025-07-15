@@ -300,6 +300,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vehicleTypeString => 'Vehicle Type';
 
   @override
+  String get vehiclePhotoString => 'Vehicle Photo';
+
+  @override
   String get phoneNumberString => 'Phone Number';
 
   @override

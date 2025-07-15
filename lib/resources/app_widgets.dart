@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
@@ -892,6 +893,66 @@ class SettingsCard extends StatelessWidget {
             children: listContent,
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CustomDropdownField extends StatelessWidget {
+  final String? value;
+  final List<String> options;
+  final void Function(String?) onChanged;
+
+  const CustomDropdownField({
+    super.key,
+    required this.value,
+    required this.options,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: DropdownButtonFormField2<String>(
+        value: value,
+        isExpanded: true,
+        iconStyleData: IconStyleData(icon: const Icon(Icons.keyboard_arrow_down)),
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: primaryColor),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+        dropdownStyleData: DropdownStyleData(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          maxHeight: MediaQuery.of(context).size.width * 0.5,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: secondaryColor,
+          ),
+          offset: const Offset(0, -4),
+          scrollbarTheme: ScrollbarThemeData(
+            thumbColor: WidgetStateProperty.all(
+              primaryColor,
+            ),
+            radius: Radius.circular(4),
+          ),
+        ),
+        items: options.map((type) {
+          return DropdownMenuItem(
+            value: type,
+            child: Text(
+              type,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          );
+        }).toList(),
+        onChanged: onChanged,
       ),
     );
   }
