@@ -1,11 +1,22 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/resources/app_api_keys.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,12 +28,126 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController phoneController = TextEditingController();
   final String _selectedCountryCode = '+91';
+  final GoogleSignIn signIn = GoogleSignIn.instance;
+  GoogleSignInAccount? _currentUser;
+  final _storage = sl<SecureStorage>();
+
+  bool _isAuthorized = false;
+
+// has granted permissions?
+  List<String> scopes = <String>[
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ];
+
+  Future<void> _handleAuthenticationError(Object e) async {
+    setState(() {
+      _currentUser = null;
+    });
+  }
+
+  String? _pickFirstNamedContact(Map<String, dynamic> data) {
+    final List<dynamic>? connections = data['connections'] as List<dynamic>?;
+    final Map<String, dynamic>? contact = connections?.firstWhere(
+      (dynamic contact) => (contact as Map<Object?, dynamic>)['names'] != null,
+      orElse: () => null,
+    ) as Map<String, dynamic>?;
+    if (contact != null) {
+      final List<dynamic> names = contact['names'] as List<dynamic>;
+      final Map<String, dynamic>? name = names.firstWhere(
+        (dynamic name) => (name as Map<Object?, dynamic>)['displayName'] != null,
+        orElse: () => null,
+      ) as Map<String, dynamic>?;
+      if (name != null) {
+        return name['displayName'] as String?;
+      }
+    }
+    return null;
+  }
+
+  // Calls the People API REST endpoint for the signed-in user to retrieve information.
+  Future<void> _handleGetContact(GoogleSignInAccount user) async {
+    setState(() {});
+    customPrint('Entered to get info');
+    final Map<String, String>? headers =
+        await user.authorizationClient.authorizationHeaders(scopes);
+    customPrint(headers.toString());
+    if (headers == null) {
+      setState(() {});
+      return;
+    }
+    final http.Response response = await http.get(
+      Uri.parse('https://people.googleapis.com/v1/people/me/connections'
+          '?requestMask.includeField=person.names'),
+      headers: headers,
+    );
+    if (response.statusCode != 200) {
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        setState(() {});
+      } else {
+        customPrint('People API ${response.statusCode} response: ${response.body}');
+        setState(() {});
+      }
+      return;
+    }
+    final Map<String, dynamic> data = json.decode(response.body) as Map<String, dynamic>;
+    final String? namedContact = _pickFirstNamedContact(data);
+    setState(() {
+      if (namedContact != null) {
+      } else {}
+    });
+  }
+
+  Future<void> _handleAuthenticationEvent(GoogleSignInAuthenticationEvent event) async {
+    // #docregion CheckAuthorization
+    final GoogleSignInAccount? user = // ...
+        // #enddocregion CheckAuthorization
+        switch (event) {
+      GoogleSignInAuthenticationEventSignIn() => event.user,
+      GoogleSignInAuthenticationEventSignOut() => null,
+    };
+
+    // Check for existing authorization.
+    // #docregion CheckAuthorization
+    final GoogleSignInClientAuthorization? authorization =
+        await user?.authorizationClient.authorizationForScopes(scopes);
+    // #enddocregion CheckAuthorization
+
+    setState(() {
+      _currentUser = user;
+    });
+
+    // If the user has already granted access to the required scopes, call the
+    // REST API.
+    if (user != null && authorization != null) {
+      unawaited(_handleGetContact(user));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(signIn
+        .initialize(
+      clientId: oAuthClientId,
+      serverClientId: oAuthServerId,
+    )
+        .then((_) {
+      signIn.authenticationEvents
+          .listen(_handleAuthenticationEvent)
+          .onError(_handleAuthenticationError);
+
+      /// This example always uses the stream-based approach to determining
+      /// which UI state to show, rather than using the future returned here,
+      /// if any, to conditionally skip directly to the signed-in state.
+      //* Automatice sign in with googel after entering to the screen
+      // signIn.attemptLightweightAuthentication();
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    // debugPrint('Height: ${size.height.toString()}');
-    // debugPrint('Width: ${size.width.toString()}');
+
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -191,9 +316,46 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    googleIcon,
-                    width: size.width * .0587,
+                  GestureDetector(
+                    onTap: () async {
+                      try {
+                        final account = await GoogleSignIn.instance.authenticate();
+
+                        final auth = account.authentication;
+
+                        final idToken = auth.idToken;
+
+                        if (idToken != null) {
+                          await _storage.saveValue(
+                              key: displayNameKey, value: account.displayName ?? '');
+                          await _storage.saveValue(key: userEmailKey, value: account.email);
+                          await _storage.saveValue(key: photoUrlKey, value: account.photoUrl ?? '');
+                          await _storage.saveValue(key: idTokenKey, value: idToken);
+
+                          setState(() {
+                            _currentUser = account;
+                            _isAuthorized = true;
+                          });
+
+                          customPrint('Signed in as ${account.displayName}');
+                        } else {
+                          throw Exception("Invalid authentication. No tokens returned.");
+                        }
+                        customPrint(
+                          'Text: ${_currentUser?.displayName}, ${_currentUser?.email}, ${_currentUser?.id}, ${_currentUser?.photoUrl}',
+                        );
+                      } catch (e) {
+                        customPrint('Something went wrong');
+                      }
+
+                      if (_isAuthorized) {
+                        context.pushNamed(signUpScreen);
+                      }
+                    },
+                    child: Image.asset(
+                      googleIcon,
+                      width: size.width * .0587,
+                    ),
                   ),
                   const SizedBox(
                     width: 10,

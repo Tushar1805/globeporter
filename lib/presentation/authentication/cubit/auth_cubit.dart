@@ -1,7 +1,6 @@
-
 import 'package:datasource/states/data_state.dart';
-import 'package:equatable/equatable.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
+
 import '../repository/auth_repo.dart';
 part '../states/auth_state.dart';
 

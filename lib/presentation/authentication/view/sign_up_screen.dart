@@ -1,3 +1,4 @@
+import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
@@ -5,6 +6,8 @@ import 'package:globeporter/presentation/authentication/view/login_screen.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -18,9 +21,31 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   final String _selectedCountryCode = '+91';
+  final storage = sl<SecureStorage>();
+  bool nameReadOnly = false;
+  bool emailReadOnly = false;
+
+  void getUserInfo() async {
+    final name = await storage.readValue(displayNameKey);
+    final email = await storage.readValue(userEmailKey);
+    setState(() {
+      nameReadOnly = name != null;
+      emailReadOnly = email != null;
+
+      nameController.text = name ?? '';
+      emailController.text = email ?? '';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -112,7 +137,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: 8,
               ),
 
-              CustomTextField(textEditingController: nameController),
+              CustomTextField(
+                textEditingController: nameController,
+                readOnly: nameReadOnly,
+              ),
 
               const SizedBox(
                 height: 12,
@@ -130,7 +158,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: 8,
               ),
 
-              CustomTextField(textEditingController: emailController),
+              CustomTextField(
+                textEditingController: emailController,
+                readOnly: emailReadOnly,
+              ),
 
               const SizedBox(height: 60),
 

@@ -31,8 +31,17 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+         getByName("debug") {
+            keyAlias = "globeporterdebugkey"
+            keyPassword = "globeporter"
+            storeFile = file("globeporter-keystore.jks")
+            storePassword = "globeporter"
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("debug") {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
