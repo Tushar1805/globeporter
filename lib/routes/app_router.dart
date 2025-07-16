@@ -16,13 +16,15 @@ import 'package:globeporter/presentation/customer/view/customer_profile_screen.d
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
-import 'package:globeporter/presentation/driver/view/document_upload_screen.dart';
+import 'package:globeporter/presentation/driver/widgets/document_upload_screen.dart';
 import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
 import 'package:globeporter/presentation/driver/view/driver_profile_screen.dart';
 import 'package:globeporter/presentation/driver/view/item_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/owner_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/start_trip_screen.dart';
 import 'package:globeporter/presentation/driver/view/trip_info_screen.dart';
+import 'package:globeporter/presentation/driver/widgets/full_image_preview.dart';
+import 'package:globeporter/presentation/driver/widgets/normal_upload_screen.dart';
 import 'package:globeporter/presentation/settings/view/wallet_screen.dart';
 import 'package:globeporter/presentation/notification/view/notification_screen.dart';
 import 'package:globeporter/presentation/settings/view/refer_screen.dart';
@@ -300,14 +302,47 @@ final GoRouter router = GoRouter(
       pageBuilder: (final context, final state) {
         final params = state.extra as Map<String, dynamic>?;
         // Ensure function is present
-        final void Function(File?) onCaptured =
-            (params?['onImageCaptured'] as void Function(File?));
+        final void Function(File?, bool?) onCaptured =
+            (params?['onImageCaptured'] as void Function(File?, bool?));
         return slideTransitionPage(
           key: state.pageKey,
           child: DocumentCameraScreen(
             title: params?['title'] as String,
             hintText: params?['hintText'] as String,
             onImageCaptured: onCaptured,
+            type: params?['type'] as String,
+            front: params?['front'] as bool?,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      name: normalUploadScreen,
+      path: normalUploadScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        // Ensure function is present
+        final void Function(File?) onCaptured =
+            (params?['onImageCaptured'] as void Function(File?));
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: SelfieCameraScreen(
+            title: params?['title'] as String,
+            onImageCaptured: onCaptured,
+          ),
+        );
+      },
+    ),
+
+     GoRoute(
+      name: fullImagePreviewScreen,
+      path: fullImagePreviewScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: FullImagePreviewScreen(
+            imageFile: params?['imageFile'] as File,
           ),
         );
       },

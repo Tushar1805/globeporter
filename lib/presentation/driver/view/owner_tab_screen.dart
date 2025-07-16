@@ -19,6 +19,10 @@ class OwnerTab extends StatefulWidget {
 
 class _OwnerTabState extends State<OwnerTab> {
   final TextEditingController nameController = TextEditingController();
+  File? frontAdhaar;
+  File? backAdhaar;
+  File? frontPan;
+  File? backPan;
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +80,25 @@ class _OwnerTabState extends State<OwnerTab> {
                 context.pushNamed(
                   uploadDocumentScreen,
                   extra: {
+                    'type': 'own_adhaar',
                     'title': AppLocalizations.of(context)!.ownerAdhaarCardString,
                     'hintText':
                         '${AppLocalizations.of(context)!.ownerAdhaarCardString} (${AppLocalizations.of(context)!.frontSideString})',
-                    'onImageCaptured': (File? file) {
+                    'onImageCaptured': (File? file, bool? front) {
                       // upload to Firebase or send back to previous page
-                      debugPrint("Captured file path: ${file?.path}");
+                      if (front ?? false) {
+                        setState(() {
+                          frontAdhaar = file;
+                        });
+                      } else {
+                        setState(() {
+                          backAdhaar = file;
+                        });
+                      }
+                      debugPrint(
+                          "Captured file path: Front:  ${frontAdhaar?.path} : back: ${backAdhaar?.path}");
                     },
+                    'front': true,
                   },
                 );
               },
@@ -96,13 +112,24 @@ class _OwnerTabState extends State<OwnerTab> {
                 context.pushNamed(
                   uploadDocumentScreen,
                   extra: {
+                    'type': 'own_pan',
                     'title': AppLocalizations.of(context)!.ownerPanCardString,
                     'hintText':
                         '${AppLocalizations.of(context)!.ownerPanCardString} (${AppLocalizations.of(context)!.frontSideString})',
-                    'onImageCaptured': (File? file) {
-                      // upload to Firebase or send back to previous page
-                      debugPrint("Captured file path: ${file?.path}");
+                    'onImageCaptured': (File? file, bool? front) {
+                      if (front ?? false) {
+                        setState(() {
+                          frontPan = file;
+                        });
+                      } else {
+                        setState(() {
+                          backPan = file;
+                        });
+                      }
+                      debugPrint(
+                          "Captured file path: Front:  ${frontPan?.path} : back: ${backPan?.path}");
                     },
+                    'front': true,
                   },
                 );
               },

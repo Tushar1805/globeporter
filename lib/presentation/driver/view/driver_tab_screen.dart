@@ -19,6 +19,13 @@ class _DriverTabState extends State<DriverTab> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController licenceNumberController = TextEditingController();
+  File? frontAdhaar;
+  File? backAdhaar;
+  File? frontPan;
+  File? backPan;
+  File? frontLicence;
+  File? backLincece;
+  File? driverPhoto;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,13 +73,24 @@ class _DriverTabState extends State<DriverTab> {
                 context.pushNamed(
                   uploadDocumentScreen,
                   extra: {
+                    'type': 'driver_adhaar',
                     'title': AppLocalizations.of(context)!.driverAdhaarCardString,
                     'hintText':
                         '${AppLocalizations.of(context)!.driverAdhaarCardString} (${AppLocalizations.of(context)!.frontSideString})',
-                    'onImageCaptured': (File? file) {
-                      // upload to Firebase or send back to previous page
-                      debugPrint("Captured file path: ${file?.path}");
+                    'onImageCaptured': (File? file, bool? front) {
+                      if (front ?? false) {
+                        setState(() {
+                          frontAdhaar = file;
+                        });
+                      } else {
+                        setState(() {
+                          backAdhaar = file;
+                        });
+                      }
+                      debugPrint(
+                          "Captured file path: Front:  ${frontAdhaar?.path} : back: ${backAdhaar?.path}");
                     },
+                    'front': true,
                   },
                 );
               },
@@ -86,13 +104,24 @@ class _DriverTabState extends State<DriverTab> {
                 context.pushNamed(
                   uploadDocumentScreen,
                   extra: {
+                    'type': 'driver_pan',
                     'title': AppLocalizations.of(context)!.driverPanCardString,
                     'hintText':
                         '${AppLocalizations.of(context)!.driverPanCardString} (${AppLocalizations.of(context)!.frontSideString})',
-                    'onImageCaptured': (File? file) {
-                      // upload to Firebase or send back to previous page
-                      debugPrint("Captured file path: ${file?.path}");
+                    'onImageCaptured': (File? file, bool? front) {
+                      if (front ?? false) {
+                        setState(() {
+                          frontPan = file;
+                        });
+                      } else {
+                        setState(() {
+                          backPan = file;
+                        });
+                      }
+                      debugPrint(
+                          "Captured file path: Front:  ${frontPan?.path} : back: ${backPan?.path}");
                     },
+                    'front': true,
                   },
                 );
               },
@@ -106,13 +135,24 @@ class _DriverTabState extends State<DriverTab> {
                 context.pushNamed(
                   uploadDocumentScreen,
                   extra: {
+                    'type': 'driver_licence',
                     'title': AppLocalizations.of(context)!.driverLicenceString,
                     'hintText':
                         '${AppLocalizations.of(context)!.driverLicenceString} (${AppLocalizations.of(context)!.frontSideString})',
-                    'onImageCaptured': (File? file) {
-                      // upload to Firebase or send back to previous page
-                      debugPrint("Captured file path: ${file?.path}");
+                    'onImageCaptured': (File? file, bool? front) {
+                      if (front ?? false) {
+                        setState(() {
+                          frontLicence = file;
+                        });
+                      } else {
+                        setState(() {
+                          backLincece = file;
+                        });
+                      }
+                      debugPrint(
+                          "Captured file path: Front:  ${frontLicence?.path} : back: ${backLincece?.path}");
                     },
+                    'front': true,
                   },
                 );
               },
@@ -124,14 +164,14 @@ class _DriverTabState extends State<DriverTab> {
               text: AppLocalizations.of(context)!.driverPhotoString,
               onTap: () {
                 context.pushNamed(
-                  uploadDocumentScreen,
+                  normalUploadScreen,
                   extra: {
                     'title': AppLocalizations.of(context)!.driverPhotoString,
-                    'hintText':
-                        '${AppLocalizations.of(context)!.driverPhotoString} (${AppLocalizations.of(context)!.frontSideString})',
                     'onImageCaptured': (File? file) {
-                      // upload to Firebase or send back to previous page
-                      debugPrint("Captured file path: ${file?.path}");
+                      setState(() {
+                        driverPhoto = file;
+                      });
+                      debugPrint("Captured file path: Vehicle:  ${driverPhoto?.path}");
                     },
                   },
                 );

@@ -31,3 +31,5 @@ const driverProfileScreen = '/driver_profile_screen';
 const notificationScreen = '/notification_screen';
 const referAndEarnScreen = '/refer_screen';
 const uploadDocumentScreen = '/upload_document_screen';
+const normalUploadScreen = '/normal_upload_screen';
+const fullImagePreviewScreen = '/full_image_preview_screen';

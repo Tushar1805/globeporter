@@ -23,6 +23,9 @@ class _VehicleTabState extends State<VehicleTab> {
   final TextEditingController vehicleTypeController = TextEditingController();
 
   String? selectedVehicleType;
+  File? frontRc;
+  File? backRc;
+  File? vehiclePhoto;
   final List<String> vehicleTypes = [
     '2-Wheeler',
     '3-Wheeler',
@@ -123,13 +126,24 @@ class _VehicleTabState extends State<VehicleTab> {
                 context.pushNamed(
                   uploadDocumentScreen,
                   extra: {
+                    'type': 'vehicle_rc',
                     'title': AppLocalizations.of(context)!.uploadRcString,
                     'hintText':
                         '${AppLocalizations.of(context)!.uploadRcString} (${AppLocalizations.of(context)!.frontSideString})',
-                    'onImageCaptured': (File? file) {
-                      // upload to Firebase or send back to previous page
-                      debugPrint("Captured file path: ${file?.path}");
+                    'onImageCaptured': (File? file, bool? front) {
+                      if (front ?? false) {
+                        setState(() {
+                          frontRc = file;
+                        });
+                      } else {
+                        setState(() {
+                          backRc = file;
+                        });
+                      }
+                      debugPrint(
+                          "Captured file path: Front:  ${frontRc?.path} : back: ${backRc?.path}");
                     },
+                    'front': true,
                   },
                 );
               },
@@ -141,13 +155,14 @@ class _VehicleTabState extends State<VehicleTab> {
               text: AppLocalizations.of(context)!.vehiclePhotoString,
               onTap: () {
                 context.pushNamed(
-                  uploadDocumentScreen,
+                  normalUploadScreen,
                   extra: {
                     'title': AppLocalizations.of(context)!.vehiclePhotoString,
-                    'hintText': AppLocalizations.of(context)!.vehiclePhotoString,
                     'onImageCaptured': (File? file) {
-                      // upload to Firebase or send back to previous page
-                      debugPrint("Captured file path: ${file?.path}");
+                      setState(() {
+                        vehiclePhoto = file;
+                      });
+                      debugPrint("Captured file path: Vehicle:  ${vehiclePhoto?.path}");
                     },
                   },
                 );

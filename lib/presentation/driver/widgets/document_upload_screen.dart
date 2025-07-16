@@ -1,20 +1,28 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DocumentCameraScreen extends StatefulWidget {
-  final String title; 
-  final String hintText; 
-  final Function(File? file) onImageCaptured;
+  final String title;
+  final String hintText;
+  final String type; // aadhaar, pan, licence, rc, other
+  final Function(File? file, bool? front) onImageCaptured;
+  final bool? front;
 
   const DocumentCameraScreen({
     super.key,
     required this.title,
     required this.hintText,
+    required this.type,
     required this.onImageCaptured,
+    this.front,
   });
 
   @override
@@ -25,9 +33,15 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
   late CameraController _controller;
   bool _isReady = false;
 
+  File? _frontImage;
+  File? _backImage;
+  bool _isFront = true; // initially capturing front side
+  String? hint;
+
   @override
   void initState() {
     super.initState();
+    hint = widget.hintText;
     _initializeCamera();
   }
 
@@ -48,12 +62,24 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
 
   Future<void> _pickFromGallery() async {
     final XFile? pic = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pic != null) widget.onImageCaptured(File(pic.path));
+    if (pic != null) _storeCapturedImage(File(pic.path));
   }
 
   Future<void> _capture() async {
     final XFile pic = await _controller.takePicture();
-    widget.onImageCaptured(File(pic.path));
+    _storeCapturedImage(File(pic.path));
+  }
+
+  void _storeCapturedImage(File file) {
+    setState(() {
+      if (_isFront) {
+        _frontImage = file;
+      } else {
+        _backImage = file;
+      }
+    });
+
+    widget.onImageCaptured(file, _isFront);
   }
 
   @override
@@ -77,7 +103,61 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
                           onPressed: () => Navigator.pop(context),
                         ),
                         const SizedBox(width: 4),
-                        Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+                        Text(widget.title, style: Theme.of(context).textTheme.bodyLarge),
+                        // Front/Back toggle
+                        Spacer(),
+                        Row(
+                          children: [
+                            Text(
+                              _isFront
+                                  ? AppLocalizations.of(context)!.frontSideString
+                                  : AppLocalizations.of(context)!.backSide,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: primaryColor, fontSize: 16),
+                            ),
+                            Switch(
+                              value: _isFront,
+                              activeColor: primaryColor,
+                              inactiveThumbColor: secondaryColor,
+                              inactiveTrackColor: Colors.grey,
+                              onChanged: (val) {
+                                setState(() => _isFront = !_isFront);
+
+                                setState(() {
+                                  if (_isFront) {
+                                    if (hint!.contains(AppLocalizations.of(context)!.backSide)) {
+                                      hint = widget.hintText.replaceAll(
+                                          AppLocalizations.of(context)!.backSide,
+                                          AppLocalizations.of(context)!.frontSideString);
+                                    }
+                                  } else {
+                                    if (hint!
+                                        .contains(AppLocalizations.of(context)!.frontSideString)) {
+                                      hint = widget.hintText.replaceAll(
+                                        AppLocalizations.of(context)!.frontSideString,
+                                        AppLocalizations.of(context)!.backSide,
+                                      );
+                                    }
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        // TextButton(
+                        //   onPressed: () {
+
+                        //   },
+                        //   child: Text(
+                        //     _isFront ? 'Switch to Back Side' : 'Switch to Front Side',
+                        //     style: Theme.of(context)
+                        //         .textTheme
+                        //         .bodyMedium
+                        //         ?.copyWith(color: primaryColor, fontSize: 16),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -149,7 +229,7 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
                               right: 0,
                               child: Center(
                                 child: Text(
-                                  widget.hintText,
+                                  hint ?? widget.hintText,
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         fontSize: 16,
                                         color: Colors.white70,
@@ -191,7 +271,31 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: size.width * 0.109), // spacer (for symmetry)
+                        // Preview thumbnail
+                        if ((_isFront ? _frontImage : _backImage) != null)
+                          GestureDetector(
+                            onTap: () {
+                              final file = _isFront ? _frontImage : _backImage;
+                              if (file != null) {
+                                context.pushNamed(
+                                  fullImagePreviewScreen,
+                                  extra: {'imageFile': file},
+                                );
+                              }
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Image.file(
+                                _isFront ? _frontImage! : _backImage!,
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        else
+                          const SizedBox(width: 60, height: 60),
+                        // SizedBox(width: size.width * 0.109), // spacer (for symmetry)
                       ],
                     ),
                   ),
