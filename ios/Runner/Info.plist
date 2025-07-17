@@ -58,9 +58,9 @@
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>App want's to access your location to get address.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>App want's to access your gallery to get item image.</string>
+		<string>App want's to access your gallery to get image.</string>
 		<key>NSCameraUsageDescription</key>
-		<string>App want's to access your camera to capture item image.</string>
+		<string>App want's to access your camera to capture image.</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>App want's to capture audio for image picker plugin.</string>
 	</dict>
