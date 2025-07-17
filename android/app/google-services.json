@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "532818634989",
+    "project_id": "globeporter-8bc9c",
+    "storage_bucket": "globeporter-8bc9c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:532818634989:android:bfdcc78fdb03aa351344e4",
+        "android_client_info": {
+          "package_name": "com.globeporter.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQS7l5qnpyHkBM4ZlEvB779fNptFBXlBQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
