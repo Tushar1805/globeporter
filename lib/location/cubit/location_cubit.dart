@@ -1,20 +1,35 @@
+import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
 import 'package:globeporter/location/model/route_direction_response.dart';
 import 'package:globeporter/location/repository/location_repository.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/location/states/location_states.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
+import 'package:uuid/uuid.dart';
 
 class LocationCubit extends BaseCubit {
   final LocationRepository _locationRepository;
   LocationCubit(this._locationRepository);
+  final storage = sl<SecureStorage>();
   Position? position;
   String? currentLocation;
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref().child('locations');
 
   final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high,
     distanceFilter: 100,
   );
+
+  Future<void> _initUserId() async {
+    final userId = await storage.readValue(userIdKey);
+    if (userId == null) {
+      await storage.saveValue(value: const Uuid().v4(), key: userIdKey);
+    }
+  }
 
   /// Determine the current position of the device.
   ///
@@ -23,6 +38,8 @@ class LocationCubit extends BaseCubit {
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
+
+    await _initUserId();
 
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -78,6 +95,7 @@ class LocationCubit extends BaseCubit {
       customPrint("Error: Searching Location: $e");
     }
   }
+
   Future<void> searchDestinationPlaces({
     required final String input,
     required final String? sesssionToken,
@@ -109,6 +127,35 @@ class LocationCubit extends BaseCubit {
       return response;
     } catch (e) {
       customPrint("Error: Routing Directions: $e");
+      return null;
+    }
+  }
+
+  Future<void> updateMyLocation({
+    required final double lat,
+    required final double lng,
+  }) async {
+    final userId = await storage.readValue(userIdKey);
+    try {
+      await _dbRef.child(userId ?? '').set({
+        "latitude": lat,
+        "longitude": lng,
+        "last_updated": ServerValue.timestamp,
+        "type": "truck",
+      });
+      debugPrint('Location Updaget: lat: $lat Lng: $lng');
+    } catch (e) {
+      debugPrint('Something went wrong: $e');
+    }
+  }
+
+  Future<Map?> fetchNearbyUsers() async {
+    try {
+      final snapshot = await _dbRef.once();
+      final data = snapshot.snapshot.value as Map?;
+      return data;
+    } catch (e) {
+      debugPrint('Something went wrong: $e');
       return null;
     }
   }

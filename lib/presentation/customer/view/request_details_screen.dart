@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui' as ui;
 
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +18,7 @@ import 'package:globeporter/location/states/location_states.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -225,14 +225,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return points;
   }
 
-  Future<Uint8List> getBytesFromAssets(
-      {required final String path, required final int width}) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetHeight: width);
-    ui.FrameInfo fi = await codec.getNextFrame();
-
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-  }
+  
 
   @override
   Widget build(BuildContext context) {

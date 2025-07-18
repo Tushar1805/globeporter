@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/foundation.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
@@ -14,10 +15,14 @@ import 'package:globeporter/location/model/search_places_response.dart';
 import 'package:globeporter/location/states/location_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as loc;
 import 'package:uuid/uuid.dart';
 
 class CreateRequestScreen extends StatefulWidget {
@@ -32,14 +37,17 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   final TextEditingController currentLocationController = TextEditingController();
   final Completer<GoogleMapController> _controller = Completer();
   final locationCubit = sl<LocationCubit>();
+  final storage = sl<SecureStorage>();
   SearchPlacesResponse? searchPlacesResponse;
-  late final List<Placemark> placemarks;
+  late final List<geocoding.Placemark> placemarks;
   bool isUrban = true;
   Position? position;
   String? _sessionToken;
   var uuid = Uuid();
   Timer? _debounce;
   bool _suppressOnChange = true;
+  final loc.Location _location = loc.Location();
+  LatLng? _currentPosition;
 
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(20.5574253, 78.8386951),
@@ -52,7 +60,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     try {
       position = await locationCubit.determinePosition();
       debugPrint("Position: ${position?.latitude} :: ${position?.longitude}");
-      placemarks = await placemarkFromCoordinates(
+      placemarks = await geocoding.placemarkFromCoordinates(
           position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951);
       currentLocationController.text = placemarks.isNotEmpty
           ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
@@ -84,10 +92,88 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     // });
   }
 
+  Future<void> startTracking() async {
+    final permissionGranted = await _location.requestPermission();
+    final serviceEnabled = await _location.serviceEnabled() || await _location.requestService();
+
+    if (permissionGranted != loc.PermissionStatus.granted || !serviceEnabled) {
+      return;
+    }
+
+    _location.onLocationChanged.listen((locationData) {
+      if (locationData.latitude == null || locationData.longitude == null) return;
+
+      final lat = locationData.latitude!;
+      final lng = locationData.longitude!;
+      _currentPosition = LatLng(lat, lng);
+
+      locationCubit.updateMyLocation(lat: lat, lng: lng);
+      _fetchAndShowNearbyUsers();
+    });
+  }
+
+  double _calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // km
+    final dLat = (lat2 - lat1) * pi / 180;
+    final dLon = (lon2 - lon1) * pi / 180;
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1 * pi / 180) * cos(lat2 * pi / 180) * sin(dLon / 2) * sin(dLon / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return R * c;
+  }
+
+  Future<void> _fetchAndShowNearbyUsers() async {
+    final data = await locationCubit.fetchNearbyUsers();
+    final userId = await storage.readValue(userIdKey);
+    final icon = await getBytesFromAssets(path: truckIcon, width: 50);
+
+    if (data == null || _currentPosition == null) return;
+
+    final nearbyMarkers = <Marker>[];
+
+    data.forEach((key, value) {
+      if (key == userId) return; // skip own marker
+
+      final lat = value['latitude'] * 1.0;
+      final lng = value['longitude'] * 1.0;
+
+      final dist = _calculateDistance(
+        _currentPosition!.latitude,
+        _currentPosition!.longitude,
+        lat,
+        lng,
+      );
+
+      if (dist <= 20) {
+        if (value['type'] == 'truck') {
+          nearbyMarkers.add(Marker(
+            icon: BitmapDescriptor.bytes(icon),
+            markerId: MarkerId(key),
+            position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: "Nearby User ($dist km)"),
+          ));
+        } else {
+          nearbyMarkers.add(Marker(
+            icon: BitmapDescriptor.bytes(icon),
+            markerId: MarkerId(key),
+            position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: "Nearby User ($dist km)"),
+          ));
+        }
+      }
+    });
+
+    setState(() {
+      _markers?.addAll(nearbyMarkers);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getCurrentLocation();
+    startTracking();
 
     currentLocationController.addListener(() {
       onChange();
@@ -268,8 +354,8 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                             });
 
                             try {
-                              List<Location> locations =
-                                  await locationFromAddress(selectedDescription);
+                              List<geocoding.Location> locations =
+                                  await geocoding.locationFromAddress(selectedDescription);
                               if (locations.isNotEmpty) {
                                 final latLng =
                                     LatLng(locations[0].latitude, locations[0].longitude);
