@@ -48,6 +48,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   google_sign_in: ^7.1.1
   flutter_facebook_auth: ^7.1.2  
+  firebase_auth: ^5.6.2
 
 flutter_native_splash:
   color: "#51B848"

@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_api_keys.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -31,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final GoogleSignIn signIn = GoogleSignIn.instance;
   GoogleSignInAccount? _currentUser;
   final _storage = sl<SecureStorage>();
+  final authCubit = sl<AuthCubit>();
 
   bool _isAuthorized = false;
 
@@ -360,9 +361,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     width: 10,
                   ),
-                  Image.asset(
-                    facebookIcon,
-                    width: size.width * .1,
+                  GestureDetector(
+                    onTap: () async{
+                     final user = await authCubit.signInWithFacebook();
+                     
+                    },
+                    child: Image.asset(
+                      facebookIcon,
+                      width: size.width * .1,
+                    ),
                   ),
                 ],
               ),

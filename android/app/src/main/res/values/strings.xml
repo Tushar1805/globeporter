@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GlobePorter</string>
+    <string name="facebook_app_id">1976493156426302</string>
+    <string name="fb_login_protocol_scheme">fb1976493156426302</string>
+    <string name="facebook_client_token">09cf7723f9afa4fd9f7d86a98d04bb5e</string>
+</resources>
