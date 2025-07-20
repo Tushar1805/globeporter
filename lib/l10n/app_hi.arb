@@ -105,5 +105,10 @@
     "driverPhotoString": "चालक की फोटो",
     "detailsString": "विवरण",
     "frontSideString": "सामने की ओर",
-    "backSide": "पीछे की ओर"
+    "backSide": "पीछे की ओर",
+    "validPhoneNumberString": "कृपया एक वैध नंबर डालें",
+    "validEnterPhoneNumberString": "कृपया फ़ोन नंबर दर्ज करें",
+    "validNameString": "कृपया वैध नाम दर्ज करें",
+    "valideEmailString": "कृपया सही ईमेल पता दें",
+    "registrationFailedString": "पंजीकरण विफल रहा"
 }

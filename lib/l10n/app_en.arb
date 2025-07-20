@@ -209,5 +209,15 @@
     "frontSideString": "Front Side",
     "@frontSideString": {},
     "backSide": "Back Side",
-    "@backSide": {}
+    "@backSide": {},
+    "validPhoneNumberString": "Please enter valid phone number",
+    "@validPhoneNumberString": {},
+    "validEnterPhoneNumberString": "Please enter phone number",
+    "@validEnterPhoneNumberString": {},
+    "validNameString":  "Please enter valid name",
+    "@validNameString": {},
+    "valideEmailString": "Please enter valid email address",
+    "@valideEmailString": {},
+    "registrationFailedString": "Registration Failed",
+    "@registrationFailedString": {}
 }

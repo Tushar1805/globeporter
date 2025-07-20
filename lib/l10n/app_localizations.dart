@@ -717,6 +717,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back Side'**
   String get backSide;
+
+  /// No description provided for @validPhoneNumberString.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid phone number'**
+  String get validPhoneNumberString;
+
+  /// No description provided for @validEnterPhoneNumberString.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter phone number'**
+  String get validEnterPhoneNumberString;
+
+  /// No description provided for @validNameString.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid name'**
+  String get validNameString;
+
+  /// No description provided for @valideEmailString.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid email address'**
+  String get valideEmailString;
+
+  /// No description provided for @registrationFailedString.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Failed'**
+  String get registrationFailedString;
 }
 
 class _AppLocalizationsDelegate

@@ -1,10 +1,19 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
-import 'package:globeporter/presentation/authentication/view/login_screen.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/authentication/model/register_response_model.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_storage.dart';
@@ -13,37 +22,39 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen(
+      {super.key,
+      required this.phoneNumber,
+      required this.countryCode,
+      required this.userId,
+      this.otp});
+  final String phoneNumber;
+  final String countryCode;
+  final int userId;
+  final int? otp;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController phoneController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  final String _selectedCountryCode = '+91';
+  final authCubit = sl<AuthCubit>();
+  String _selectedCountryCode = '+91';
   final storage = sl<SecureStorage>();
-  bool nameReadOnly = false;
-  bool emailReadOnly = false;
-
-  void getUserInfo() async {
-    final name = await storage.readValue(displayNameKey);
-    final email = await storage.readValue(userEmailKey);
-    setState(() {
-      nameReadOnly = name != null;
-      emailReadOnly = email != null;
-
-      nameController.text = name ?? '';
-      emailController.text = email ?? '';
-    });
-  }
+  bool isValidEmail = false;
+  FToast? fToast;
+  bool loading = false;
 
   @override
   void initState() {
     super.initState();
-    getUserInfo();
+    fToast = FToast();
+    fToast!.init(context);
+    phoneController.text = widget.phoneNumber;
+    _selectedCountryCode = widget.countryCode;
   }
 
   @override
@@ -94,13 +105,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-                    CustomCountryPicker(),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4),
+                        ),
+                        border: BoxBorder.all(color: primaryColor, width: 1),
+                      ),
+                      child: CountryCodePicker(
+                        enabled: false,
+                        flagWidth: 24,
+                        textStyle: Theme.of(context).textTheme.bodyMedium,
+                        onChanged: (country) {},
+                        initialSelection: _selectedCountryCode,
+                        favorite: const ['+91'],
+                        flagDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        pickerStyle: PickerStyle.bottomSheet,
+                      ),
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
                         style: Theme.of(context).textTheme.bodyMedium,
                         controller: phoneController,
                         keyboardType: TextInputType.phone,
+                        readOnly: true,
                         decoration: InputDecoration(
                           hintText: AppLocalizations.of(context)!.enterMobileHint,
                           hintStyle: Theme.of(context)
@@ -139,7 +170,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               CustomTextField(
                 textEditingController: nameController,
-                readOnly: nameReadOnly,
               ),
 
               const SizedBox(
@@ -160,23 +190,81 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               CustomTextField(
                 textEditingController: emailController,
-                readOnly: emailReadOnly,
+                onChanged: (final value) {
+                  setState(() {
+                    isValidEmail = value.isValidEmail();
+                  });
+                },
               ),
 
               const SizedBox(height: 60),
 
-              CustomElevatedButton(
-                name: AppLocalizations.of(context)!.registerString,
-                borderRadius: 25,
-                alignment: Alignment.bottomCenter,
-                onPressed: () {
-                  String fullNumber = '$_selectedCountryCode${phoneController.text}';
-                  debugPrint('Phone number entered: $fullNumber');
-                  context.push(otpScreen);
+              BlocListener(
+                bloc: authCubit,
+                listener: (final context, final state) {
+                  if (state is RegisterLoadingState) {
+                    setState(() {
+                      loading = true;
+                    });
+                  } else if (state is RegisterLoadedState) {
+                    final data = state.data as RegisterResponseModel?;
+
+                    if (data?.registrationDone == 1) {
+                      context.push(otpScreen, extra: {
+                        'countryCode': widget.countryCode,
+                        'email': emailController.text,
+                        'name': nameController.text,
+                        'phone': widget.phoneNumber,
+                        'userId': data?.userId,
+                        'otp': widget.otp,
+                      });
+                    } else {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: AppLocalizations.of(context)!.registrationFailedString,
+                        duration: 3,
+                      );
+                    }
+                  }
                 },
-                textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                nameSize: 22,
+                child: loading
+                    ? SizedBox.shrink()
+                    : CustomElevatedButton(
+                        name: AppLocalizations.of(context)!.registerString,
+                        borderRadius: 25,
+                        alignment: Alignment.bottomCenter,
+                        onPressed: () async {
+                          final langCode = await storage.readValue(languageCodeKey);
+                          if (nameController.text.isEmpty && nameController.text.length < 5) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: AppLocalizations.of(context)!.validNameString,
+                              duration: 3,
+                            );
+                          } else if (!isValidEmail) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: AppLocalizations.of(context)!.valideEmailString,
+                              duration: 3,
+                            );
+                          } else {
+                            await authCubit.register(
+                              userId: widget.userId,
+                              langCode: langCode ?? 'en',
+                              name: nameController.text,
+                              email: emailController.text,
+                            );
+                          }
+                        },
+                        textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        nameSize: 22,
+                      ),
               ),
+
+              loading ? LoadingWithoutText() : SizedBox.shrink(),
 
               const SizedBox(height: 20),
             ],

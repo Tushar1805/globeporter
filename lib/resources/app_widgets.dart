@@ -141,6 +141,7 @@ class CustomTextField extends StatelessWidget {
     this.textStyle,
     this.cursorColor,
     this.readOnly,
+    this.onChanged,
   });
   final TextEditingController textEditingController;
   final int? maxLines;
@@ -149,6 +150,7 @@ class CustomTextField extends StatelessWidget {
   final TextStyle? textStyle;
   final Color? cursorColor;
   final bool? readOnly;
+  final Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -160,6 +162,7 @@ class CustomTextField extends StatelessWidget {
         cursorColor: cursorColor,
         maxLines: maxLines ?? 1,
         readOnly: readOnly ?? false,
+        onChanged: onChanged ?? (val){},
         decoration: InputDecoration(
           prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),
           border: OutlineInputBorder(

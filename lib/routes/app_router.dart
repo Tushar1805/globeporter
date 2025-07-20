@@ -119,18 +119,37 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: signUpScreen,
       path: signUpScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const SignUpScreen(),
-      ),
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: SignUpScreen(
+            countryCode: params?['countryCode'] as String,
+            phoneNumber: params?['phoneNumber'] as String,
+            userId: params?['userId'] as int,
+            otp: params?['otp'] as int?,
+            
+          ),
+        );
+      },
     ),
     GoRoute(
       name: otpScreen,
       path: otpScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const OtpScreen(),
-      ),
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: OtpScreen(
+            countryCode: params?['countryCode'] as String,
+            email: params?['email'] as String,
+            phone: params?['phone'] as String,
+            name: params?['name'] as String,
+            userId: params?['userId'] as int,
+            otp: params?['otp'] as int?,
+          ),
+        );
+      },
     ),
     GoRoute(
       name: driverDetailsScreen,
@@ -333,8 +352,7 @@ final GoRouter router = GoRouter(
         );
       },
     ),
-
-     GoRoute(
+    GoRoute(
       name: fullImagePreviewScreen,
       path: fullImagePreviewScreen,
       pageBuilder: (final context, final state) {

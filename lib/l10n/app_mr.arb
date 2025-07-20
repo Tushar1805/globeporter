@@ -108,5 +108,10 @@
     "driverPhotoString": "चालकाचा फोटो",
     "detailsString": "तपशील",
     "frontSideString": "समोरची बाजू",
-    "backSide": "मागची बाजू"
+    "backSide": "मागची बाजू",
+    "validPhoneNumberString": "कृपया वैध फोन नंबर एंटर करा.",
+    "validEnterPhoneNumberString": "कृपया फोन नंबर प्रविष्ट करा.",
+    "validNameString": "कृपया वैध नाव प्रविष्ट करा.",
+    "valideEmailString": "कृपया वैध ईमेल पत्ता प्रविष्ट करा.",
+    "registrationFailedString": "नोंदणी अयशस्वी"
 }

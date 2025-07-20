@@ -1,26 +1,71 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:core/app_widgets.dart';
+import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
-import 'package:globeporter/presentation/authentication/view/login_screen.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/authentication/model/otp_response_model.dart';
+import 'package:globeporter/presentation/authentication/model/user_type_response_model.dart';
 import 'package:globeporter/presentation/widgets/driver_dialog_widget.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  const OtpScreen({
+    super.key,
+    required this.countryCode,
+    required this.email,
+    required this.phone,
+    required this.name,
+    required this.userId,
+    this.otp,
+  });
+  final String countryCode;
+  final String email;
+  final String phone;
+  final String name;
+  final int? otp;
+  final int userId;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController otpController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController otpController = TextEditingController();
   String _selectedCountryCode = '+91';
+  final storage = sl<SecureStorage>();
+  final authCubit = sl<AuthCubit>();
+  bool loading = false;
+  FToast? fToast;
+
+  @override
+  void initState() {
+    fToast = FToast();
+    fToast!.init(context);
+    _selectedCountryCode = widget.countryCode;
+    phoneController.text = widget.phone;
+    nameController.text = widget.name;
+    emailController.text = widget.email;
+    otpController.text = widget.otp.toString();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -70,13 +115,33 @@ class _OtpScreenState extends State<OtpScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-                    CustomCountryPicker(),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4),
+                        ),
+                        border: BoxBorder.all(color: primaryColor, width: 1),
+                      ),
+                      child: CountryCodePicker(
+                        enabled: false,
+                        flagWidth: 24,
+                        textStyle: Theme.of(context).textTheme.bodyMedium,
+                        onChanged: (country) {},
+                        initialSelection: _selectedCountryCode,
+                        favorite: const ['+91'],
+                        flagDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        pickerStyle: PickerStyle.bottomSheet,
+                      ),
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
                         style: Theme.of(context).textTheme.bodyMedium,
                         controller: phoneController,
                         keyboardType: TextInputType.phone,
+                        readOnly: true,
                         decoration: InputDecoration(
                           hintText: AppLocalizations.of(context)!.enterMobileHint,
                           hintStyle: Theme.of(context)
@@ -115,7 +180,10 @@ class _OtpScreenState extends State<OtpScreen> {
                 height: 8,
               ),
 
-              CustomTextField(textEditingController: nameController),
+              CustomTextField(
+                textEditingController: nameController,
+                readOnly: true,
+              ),
 
               const SizedBox(
                 height: 20,
@@ -133,7 +201,10 @@ class _OtpScreenState extends State<OtpScreen> {
                 height: 8,
               ),
 
-              CustomTextField(textEditingController: emailController),
+              CustomTextField(
+                textEditingController: emailController,
+                readOnly: true,
+              ),
 
               const SizedBox(
                 height: 20,
@@ -158,21 +229,68 @@ class _OtpScreenState extends State<OtpScreen> {
 
               const SizedBox(height: 30),
 
-              CustomElevatedButton(
-                name: AppLocalizations.of(context)!.loginString,
-                borderRadius: 25,
-                alignment: Alignment.bottomCenter,
-                onPressed: () {
-                  // Navigator.pushNamed(context, OnboardingScreen.route);
-                  // context.push(onboardingScreen);
-                  String fullNumber = '$_selectedCountryCode${phoneController.text}';
-                  debugPrint('Phone number entered: $fullNumber');
-                  showDriverDialog(context);
+              BlocListener(
+                bloc: authCubit,
+                listener: (final context, final state) async {
+                  if (state is OtpVerifyLoadingState || state is UserTypeLoadingState) {
+                    setState(() {
+                      loading = true;
+                    });
+                  } else if (state is OtpVerifyLoadedState) {
+                    final data = state.data as OtpResponseModel?;
+                    final userType = await storage.readValue(userTypeKey);
+                    if (data?.statusCode == 200) {
+                      if (userType != null) {
+                        if (userType == '2') {
+                          context.pushNamed(driverDashboard);
+                        } else {
+                          context.pushNamed(customerDashboard);
+                        }
+                      } else {
+                        DriverDialog.show(context, authCubit);
+                      }
+                    } else {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: 'OTP verification failed',
+                        duration: 3,
+                      );
+                    }
+
+                    setState(() {
+                      loading = false;
+                    });
+                  } else if (state is UserTypeLoadedState) {
+                    final data = state.data as UserTypeResponseModel?;
+                    if (data?.statusCode == 200) {
+                      if (data?.data?.userType == "1") {
+                        context.pushNamed(ownerDetailsScreen);
+                      } else {
+                        context.push(customerDashboard);
+                      }
+                    }
+                  }
                 },
-                textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                nameSize: 22,
+                child: loading
+                    ? SizedBox.shrink()
+                    : CustomElevatedButton(
+                        name: AppLocalizations.of(context)!.loginString,
+                        borderRadius: 25,
+                        alignment: Alignment.bottomCenter,
+                        onPressed: () async {
+                          await authCubit.verifyOtp(
+                            otp: widget.otp.toString(),
+                            userId: widget.userId,
+                          );
+                        },
+                        textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        nameSize: 22,
+                      ),
               ),
               const SizedBox(height: 20),
+
+              loading ? LoadingWithoutText() : SizedBox.shrink(),
             ],
           ),
         ),

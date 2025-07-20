@@ -1,5 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -15,6 +19,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  final authCubit = sl<AuthCubit>();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -233,7 +238,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SettingCardContent(
                   title: AppLocalizations.of(context)!.logoutString,
                   prefixIcon: logoutIcon,
-                  onTap: () {},
+                  onTap: () async {
+                    await authCubit.logout();
+                    context.pushNamed(loginScreen);
+                  },
                 )
               ],
             ),

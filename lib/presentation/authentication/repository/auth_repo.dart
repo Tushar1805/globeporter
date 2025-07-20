@@ -1,4 +1,128 @@
 import 'package:datasource/base_repository.dart';
+import 'package:datasource/network/api_call_type.dart';
+import 'package:globeporter/presentation/authentication/model/login_response_model.dart';
+import 'package:globeporter/presentation/authentication/model/otp_response_model.dart';
+import 'package:globeporter/presentation/authentication/model/register_response_model.dart';
+import 'package:globeporter/presentation/authentication/model/user_details_response_model.dart';
+import 'package:globeporter/presentation/authentication/model/user_type_response_model.dart';
+import 'package:globeporter/resources/app_api.dart';
 
 class AuthRepository extends BaseRepository {
+  Future<UserDetailsResponseModel?> getUserDetails({
+    required final String accessToken,
+    required final String lang,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      accessToken: accessToken,
+      apiUrl: getUserUrl,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return UserDetailsResponseModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<LoginResponseModel?> login({
+    required final String lang,
+    required final String dialCode,
+    required final String phoneNumber,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: loginUrl,
+      requestModel: {
+        'lang': lang,
+        'dial_code': dialCode,
+        'mobile': phoneNumber,
+      },
+    );
+
+    return LoginResponseModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<RegisterResponseModel?> register({
+    required final int userId,
+    required final String lang,
+    required final String name,
+    required final String email,
+    required final String fcmToken,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: registerUrl,
+      requestModel: {
+        'user_id': userId,
+        'lang': lang,
+        'name': name,
+        'email': email,
+        'fcm_token': fcmToken,
+      },
+    );
+
+    return RegisterResponseModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<OtpResponseModel?> verifyOtp({
+    required final int userId,
+    required final String lang,
+    required final String otp,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: otpVerificationUrl,
+      requestModel: {
+        'user_id': userId,
+        'lang': lang,
+        'otp': otp,
+      },
+    );
+
+    return OtpResponseModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<UserTypeResponseModel?> updateUserType({
+    required final String userType,
+    required final String lang,
+    required final String accessToken,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: updateUserTypeUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'user_type': userType,
+        'lang': lang,
+      },
+    );
+
+    return UserTypeResponseModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<UserTypeResponseModel?> logout({
+    required final String accessToken,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: logoutUrl,
+      accessToken: accessToken,
+    );
+
+    return UserTypeResponseModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+
 }

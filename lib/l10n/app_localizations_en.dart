@@ -325,4 +325,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backSide => 'Back Side';
+
+  @override
+  String get validPhoneNumberString => 'Please enter valid phone number';
+
+  @override
+  String get validEnterPhoneNumberString => 'Please enter phone number';
+
+  @override
+  String get validNameString => 'Please enter valid name';
+
+  @override
+  String get valideEmailString => 'Please enter valid email address';
+
+  @override
+  String get registrationFailedString => 'Registration Failed';
 }

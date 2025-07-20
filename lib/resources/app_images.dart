@@ -1,5 +1,5 @@
 // PNG Images
-final String appLogoIcon = "assets/png/app_icon.png";
+final String appLogoIcon = "assets/images/app_icon.png";
 final String arrowForward = "assets/images/arrow_icon.png";
 final String profileImage = "assets/images/profile_image.png";
 final String locationPinImage = "assets/images/location_pin.png";

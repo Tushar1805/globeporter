@@ -2,7 +2,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_images.dart';
 
 // void showToast(final String message) {
 //   Fluttertoast.showToast(
@@ -76,4 +79,58 @@ void showIOSAlertDialog(
 
 void popDialog(final BuildContext context) {
   Navigator.pop(context);
+}
+
+void showToast({
+  required final FToast fToast,
+  required final BuildContext context,
+  required final String msg,
+  final bool customPosition = false,
+  final int duration = 2,
+}) {
+  final toast = Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8.0),
+      color: secondaryColor,
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          appLogoIcon,
+          width: 24,
+          height: 24,
+        ),
+        SizedBox(
+          width: 12.0,
+        ),
+        Flexible(
+          child: Text(
+            msg,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
+  !customPosition
+      ? fToast.showToast(
+          child: toast,
+          gravity: ToastGravity.BOTTOM,
+          toastDuration: Duration(seconds: 2),
+        )
+      :
+
+      //* Custom Toast Position
+      fToast.showToast(
+          child: toast,
+          toastDuration: Duration(seconds: duration),
+          positionedToastBuilder: (final context, final child, final gravity) => Positioned(
+            bottom: 100.0,
+            left: MediaQuery.of(context).size.width * 0.25,
+            child: child,
+          ),
+        );
 }

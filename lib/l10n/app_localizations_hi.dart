@@ -324,4 +324,19 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backSide => 'पीछे की ओर';
+
+  @override
+  String get validPhoneNumberString => 'कृपया एक वैध नंबर डालें';
+
+  @override
+  String get validEnterPhoneNumberString => 'कृपया फ़ोन नंबर दर्ज करें';
+
+  @override
+  String get validNameString => 'कृपया वैध नाम दर्ज करें';
+
+  @override
+  String get valideEmailString => 'कृपया सही ईमेल पता दें';
+
+  @override
+  String get registrationFailedString => 'पंजीकरण विफल रहा';
 }

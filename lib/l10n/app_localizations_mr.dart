@@ -323,4 +323,19 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get backSide => 'मागची बाजू';
+
+  @override
+  String get validPhoneNumberString => 'कृपया वैध फोन नंबर एंटर करा.';
+
+  @override
+  String get validEnterPhoneNumberString => 'कृपया फोन नंबर प्रविष्ट करा.';
+
+  @override
+  String get validNameString => 'कृपया वैध नाव प्रविष्ट करा.';
+
+  @override
+  String get valideEmailString => 'कृपया वैध ईमेल पत्ता प्रविष्ट करा.';
+
+  @override
+  String get registrationFailedString => 'नोंदणी अयशस्वी';
 }
