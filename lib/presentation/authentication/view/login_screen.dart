@@ -168,6 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 });
               } else {
                 await _storage.saveValue(value: data?.data?.userType.toString(), key: userTypeKey);
+                customPrint("GET User type from api: ${data?.data?.userType.toString()}");
                 context.pushNamed(otpScreen, extra: {
                   'countryCode': _selectedCountryCode,
                   'email': data?.data?.email,

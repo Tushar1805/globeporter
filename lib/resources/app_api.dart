@@ -16,3 +16,5 @@ const String deleteUserUrl = '$_baseUrl/delete_user_account';
 const String getUserUrl = '$_baseUrl/get_user';
 const String logoutUrl = '$_baseUrl/logout';
 const String updateUserTypeUrl = '$_baseUrl/user_type_update';
+const String getVehicleTypeUrl = '$_baseUrl/get_vehicle_type';
+const String submitOwnerVehicleDriverDetailsUrl = '$_baseUrl/update_user_vehicle_details';

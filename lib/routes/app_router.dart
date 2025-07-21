@@ -128,7 +128,6 @@ final GoRouter router = GoRouter(
             phoneNumber: params?['phoneNumber'] as String,
             userId: params?['userId'] as int,
             otp: params?['otp'] as int?,
-            
           ),
         );
       },
@@ -328,6 +327,7 @@ final GoRouter router = GoRouter(
           child: DocumentCameraScreen(
             title: params?['title'] as String,
             hintText: params?['hintText'] as String,
+            imageList: params?['imageList'] as List<File?>,
             onImageCaptured: onCaptured,
             type: params?['type'] as String,
             front: params?['front'] as bool?,
@@ -347,6 +347,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: SelfieCameraScreen(
             title: params?['title'] as String,
+            image: params?['image'] as File?,
             onImageCaptured: onCaptured,
           ),
         );

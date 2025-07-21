@@ -15,6 +15,7 @@ class DocumentCameraScreen extends StatefulWidget {
   final String type; // aadhaar, pan, licence, rc, other
   final Function(File? file, bool? front) onImageCaptured;
   final bool? front;
+  final List<File?> imageList;
 
   const DocumentCameraScreen({
     super.key,
@@ -22,6 +23,7 @@ class DocumentCameraScreen extends StatefulWidget {
     required this.hintText,
     required this.type,
     required this.onImageCaptured,
+    required this.imageList,
     this.front,
   });
 
@@ -272,10 +274,13 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
                           ),
                         ),
                         // Preview thumbnail
-                        if ((_isFront ? _frontImage : _backImage) != null)
+                        if ((_isFront ? _frontImage : _backImage) != null ||
+                            (_isFront ? widget.imageList[0] : widget.imageList[1]) != null)
                           GestureDetector(
                             onTap: () {
-                              final file = _isFront ? _frontImage : _backImage;
+                              final file = _isFront
+                                  ? _frontImage ?? widget.imageList[0]
+                                  : _backImage ?? widget.imageList[1];
                               if (file != null) {
                                 context.pushNamed(
                                   fullImagePreviewScreen,
@@ -286,7 +291,13 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(6),
                               child: Image.file(
-                                _isFront ? _frontImage! : _backImage!,
+                                _isFront
+                                    ? _frontImage == null
+                                        ? widget.imageList[0]!
+                                        : _frontImage!
+                                    : _backImage == null
+                                        ? widget.imageList[1]!
+                                        : _backImage!,
                                 width: 60,
                                 height: 60,
                                 fit: BoxFit.cover,

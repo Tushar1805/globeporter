@@ -9,10 +9,12 @@ import 'package:image_picker/image_picker.dart';
 class SelfieCameraScreen extends StatefulWidget {
   final Function(File file) onImageCaptured;
   final String title;
+  final File? image;
 
   const SelfieCameraScreen({
     super.key,
     required this.onImageCaptured,
+    required this.image,
     this.title = 'Capture Photo',
   });
 
@@ -166,6 +168,24 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
                               borderRadius: BorderRadius.circular(6),
                               child: Image.file(
                                 _capturedImage!,
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        else if (widget.image != null)
+                          GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                fullImagePreviewScreen,
+                                extra: {'imageFile': widget.image},
+                              );
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Image.file(
+                                widget.image!,
                                 width: 60,
                                 height: 60,
                                 fit: BoxFit.cover,

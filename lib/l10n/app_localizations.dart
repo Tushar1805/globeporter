@@ -622,6 +622,12 @@ abstract class AppLocalizations {
   /// **'Driver'**
   String get driverString;
 
+  /// No description provided for @photoString.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get photoString;
+
   /// No description provided for @ownerDetailsString.
   ///
   /// In en, this message translates to:
@@ -747,6 +753,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Registration Failed'**
   String get registrationFailedString;
+
+  /// No description provided for @notADriverString.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a Driver'**
+  String get notADriverString;
+
+  /// No description provided for @pleaseUploadString.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload'**
+  String get pleaseUploadString;
+
+  /// No description provided for @pleaseEnterString.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter'**
+  String get pleaseEnterString;
+
+  /// No description provided for @adhaarCardString.
+  ///
+  /// In en, this message translates to:
+  /// **'adhaar card'**
+  String get adhaarCardString;
+
+  /// No description provided for @panCardString.
+  ///
+  /// In en, this message translates to:
+  /// **'pan card'**
+  String get panCardString;
+
+  /// No description provided for @photoSmallString.
+  ///
+  /// In en, this message translates to:
+  /// **'photo'**
+  String get photoSmallString;
+
+  /// No description provided for @rcString.
+  ///
+  /// In en, this message translates to:
+  /// **'RC'**
+  String get rcString;
+
+  /// No description provided for @licenceString.
+  ///
+  /// In en, this message translates to:
+  /// **'Licence'**
+  String get licenceString;
 }
 
 class _AppLocalizationsDelegate

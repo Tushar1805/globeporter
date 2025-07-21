@@ -14,7 +14,7 @@ abstract class BaseRepository {
       required final String apiUrl,
       final dynamic requestModel,
       final ApiResponseType? apiResponseType,
-      final File? imageFile,
+      final Map<String, File?>? filesWithFieldNames,
       final String? accessToken}) async {
     final internetConnected = await isInternetConnected();
 
@@ -23,7 +23,7 @@ abstract class BaseRepository {
     }
 
     return _fetchApiData(
-        apiCallType, apiUrl, requestModel, apiResponseType, imageFile, accessToken);
+        apiCallType, apiUrl, requestModel, apiResponseType, filesWithFieldNames, accessToken);
   }
 
   Future<dynamic> _fetchApiData(
@@ -31,7 +31,7 @@ abstract class BaseRepository {
       final String apiUrl,
       final dynamic requestModel,
       final ApiResponseType? apiResponseType,
-      final File? imageFile,
+      final Map<String, File?>? filesWithFieldNames,
       final String? accessToken) async {
     final apiResponse = apiCallType == ApiCallType.get
         ? await _api.get(
@@ -68,12 +68,12 @@ abstract class BaseRepository {
                             apiResponseType ?? ApiResponseType.json,
                             accessToken,
                           )
-                        : apiCallType == ApiCallType.patchWithFile
-                            ? await _api.patchWithFile(
+                        : apiCallType == ApiCallType.postWithFile
+                            ? await _api.postWithFiles(
                                 apiUrl,
                                 requestModel,
                                 apiResponseType ?? ApiResponseType.json,
-                                imageFile ?? File('image'),
+                                filesWithFieldNames ?? {},
                                 accessToken,
                               )
                             : await _api.patch(

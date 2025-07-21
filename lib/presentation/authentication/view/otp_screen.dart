@@ -238,11 +238,18 @@ class _OtpScreenState extends State<OtpScreen> {
                     });
                   } else if (state is OtpVerifyLoadedState) {
                     final data = state.data as OtpResponseModel?;
-                    final userType = await storage.readValue(userTypeKey);
                     if (data?.statusCode == 200) {
-                      if (userType != null) {
-                        if (userType == '2') {
-                          context.pushNamed(driverDashboard);
+                      if (data?.userType != null) {
+                        if (data?.userType == 2) {
+                          await storage.saveValue(
+                            value: data?.detailsFilled ?? false ? '1' : '0',
+                            key: detailsFilledKey,
+                          );
+                          if (data?.detailsFilled ?? false) {
+                            context.pushNamed(driverDashboard);
+                          } else {
+                            context.pushNamed(ownerDetailsScreen);
+                          }
                         } else {
                           context.pushNamed(customerDashboard);
                         }
@@ -264,7 +271,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   } else if (state is UserTypeLoadedState) {
                     final data = state.data as UserTypeResponseModel?;
                     if (data?.statusCode == 200) {
-                      if (data?.data?.userType == "1") {
+                      if (data?.data?.userType == "2") {
                         context.pushNamed(ownerDetailsScreen);
                       } else {
                         context.push(customerDashboard);

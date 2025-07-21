@@ -279,6 +279,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get driverString => 'Driver';
 
   @override
+  String get photoString => 'Photo';
+
+  @override
   String get ownerDetailsString => 'Owner Details';
 
   @override
@@ -340,4 +343,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get registrationFailedString => 'Registration Failed';
+
+  @override
+  String get notADriverString => 'Not a Driver';
+
+  @override
+  String get pleaseUploadString => 'Please upload';
+
+  @override
+  String get pleaseEnterString => 'Please enter';
+
+  @override
+  String get adhaarCardString => 'adhaar card';
+
+  @override
+  String get panCardString => 'pan card';
+
+  @override
+  String get photoSmallString => 'photo';
+
+  @override
+  String get rcString => 'RC';
+
+  @override
+  String get licenceString => 'Licence';
 }

@@ -46,6 +46,7 @@ class OwnerDetailsScreen extends StatefulWidget {
 class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
   final PageController _pageController = PageController();
   int currentIndex = 0;
+  int maxAllowedIndex = 0;
   void animateToPage(int index) {
     setState(() => currentIndex = index);
     _pageController.animateToPage(
@@ -94,7 +95,11 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
                   bool isSelected = currentIndex == stepIndex;
 
                   return GestureDetector(
-                    onTap: () => animateToPage(stepIndex),
+                    onTap: () {
+                      if (stepIndex <= maxAllowedIndex) {
+                        animateToPage(stepIndex);
+                      }
+                    },
                     child: Column(
                       children: [
                         AnimatedContainer(
@@ -141,14 +146,42 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
 
           // Tab Content
           Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (index) => setState(() => currentIndex = index),
-              children:  [
-                OwnerTab(animateToPage: ()=>animateToPage(1)),
-                VehicleTab(animateToPage: ()=>animateToPage(2)),
-                DriverTab(),
-              ],
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollUpdateNotification && _pageController.page != null) {
+                  final double currentPage = _pageController.page!;
+                  final double nextPage =
+                      currentPage + notification.scrollDelta! / context.size!.width;
+
+                  // Block forward scroll beyond max allowed
+                  if (nextPage > maxAllowedIndex) {
+                    _pageController.jumpToPage(maxAllowedIndex);
+                    return true; // prevent default scroll
+                  }
+                }
+                return false;
+              },
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) => setState(() => currentIndex = index),
+                children: [
+                  OwnerTab(animateToPage: () {
+                    setState(() {
+                      currentIndex = 1;
+                      maxAllowedIndex = 1;
+                    });
+                    animateToPage(1);
+                  }),
+                  VehicleTab(animateToPage: () {
+                    setState(() {
+                      currentIndex = 2;
+                      maxAllowedIndex = 2;
+                    });
+                    animateToPage(2);
+                  }),
+                  DriverTab(),
+                ],
+              ),
             ),
           ),
         ],

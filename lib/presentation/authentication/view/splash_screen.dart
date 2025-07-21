@@ -30,13 +30,18 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> init() async {
     final accessToken = await storage.readValue(accessTokenKey);
     final langCode = await storage.readValue(languageCodeKey);
+    final detailsFilled = await storage.readValue(detailsFilledKey);
     await Future.delayed(const Duration(seconds: 2), () {});
 
     if (accessToken != null) {
       await authCubit.getUserDetails(lang: langCode ?? 'en').then((final response) {
-        if (response?.data?.userType != null && response?.data?.userType == 1) {
-          context.pushNamed(driverDashboard);
-        } else if (response?.data?.userType != null && response?.data?.userType == 2) {
+        if (response?.data?.userType != null && response?.data?.userType == 2) {
+          if (detailsFilled == '1') {
+            context.pushNamed(driverDashboard);
+          } else {
+            context.pushNamed(ownerDetailsScreen);
+          }
+        } else if (response?.data?.userType != null && response?.data?.userType == 1) {
           context.pushNamed(customerDashboard);
         } else {
           context.pushNamed(loginScreen);

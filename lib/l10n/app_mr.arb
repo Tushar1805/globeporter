@@ -93,6 +93,7 @@
     "ownerString": "मालक",
     "vehicleString": "वाहन",
     "driverString": "चालक",
+    "photoString": "फोटो",
     "ownerDetailsString": "मालकाचे तपशील",
     "uploadTheFollowingString": "खालील अपलोड करा",
     "ownerAdhaarCardString": "मालकाचा आधार कार्ड",
@@ -113,5 +114,13 @@
     "validEnterPhoneNumberString": "कृपया फोन नंबर प्रविष्ट करा.",
     "validNameString": "कृपया वैध नाव प्रविष्ट करा.",
     "valideEmailString": "कृपया वैध ईमेल पत्ता प्रविष्ट करा.",
-    "registrationFailedString": "नोंदणी अयशस्वी"
+    "registrationFailedString": "नोंदणी अयशस्वी",
+    "notADriverString": "मी ड्रायव्हर नाहीये.",
+    "pleaseUploadString": "कृपया अपलोड करा",
+    "pleaseEnterString": "कृपया प्रविष्ट करा",
+    "adhaarCardString": "आधार कार्ड",
+    "panCardString": "पॅन कार्ड",
+    "photoSmallString": "छायाचित्र",
+    "rcString": "आर.सी",
+    "licenceString": "परवाना"
 }

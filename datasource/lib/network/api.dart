@@ -172,8 +172,8 @@ class Api {
     return responseJson;
   }
 
-  Future<dynamic> patchWithFile(
-      String url, dynamic requestModel, ApiResponseType apiResponseType, File imageFile,
+  Future<dynamic> postWithFiles(String url, dynamic requestModel, ApiResponseType apiResponseType,
+      Map<String, File?>? filesWithFieldNames,
       [String? token]) async {
     dynamic responseJson;
 
@@ -193,32 +193,48 @@ class Api {
     logYellowText(_apiLogStart + _apiLogHeaders + headers.toString() + _apiLogEnd);
 
     // Create a multipart request
-    var request = https.MultipartRequest('PATCH', uri);
+    var request = https.MultipartRequest('POST', uri);
     request.headers.addAll(headers);
 
-    // Add text fields from requestModel to the request as form data
+    // Add form fields
     requestModel.forEach((key, value) {
       request.fields[key] = value.toString();
     });
 
-    logYellowText(_apiLogStart + _apiLogRequest + request.fields.toString() + _apiLogEnd);
+    // Log fields
+    String fieldLog = request.fields.toString();
 
-    // Add the file to the request
-    var multipartFile = await https.MultipartFile.fromPath(
-      'user_image',
-      imageFile.path,
-    );
+// Log files
+    String fileLog = filesWithFieldNames!.entries.map((entry) {
+      final fieldName = entry.key;
+      final file = entry.value;
+      return '{field: $fieldName, path: ${file?.path}}';
+    }).join(', ');
 
-    request.files.add(multipartFile);
+    logYellowText(
+        _apiLogStart + _apiLogRequest + 'Fields: $fieldLog\nFiles: [$fileLog]' + _apiLogEnd);
+
+    // Add all files with dynamic field names
+    for (final entry in filesWithFieldNames.entries) {
+      final fieldName = entry.key;
+      final file = entry.value;
+
+      final multipartFile = await https.MultipartFile.fromPath(
+        fieldName,
+        file!.path,
+      );
+
+      request.files.add(multipartFile);
+    }
 
     // Send the request and handle the response
     final streamedResponse = await request.send();
     final response = await https.Response.fromStream(streamedResponse);
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 201 || response.statusCode == 200) {
       logGreenText(_apiLogStart + _apiLogResponse + utf8.decode(response.bodyBytes) + _apiLogEnd);
     } else {
-      logRedText("Failed to upload file: ${response.statusCode}");
+      logRedText("Failed to upload file(s): ${response.statusCode}");
     }
 
     responseJson = _response(response, apiResponseType);

@@ -1,7 +1,14 @@
 import 'dart:io';
 
+import 'package:core/app_widgets.dart';
+import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -16,16 +23,41 @@ class DriverTab extends StatefulWidget {
 }
 
 class _DriverTabState extends State<DriverTab> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController licenceNumberController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController licenceNumberController = TextEditingController();
   File? frontAdhaar;
   File? backAdhaar;
   File? frontPan;
   File? backPan;
   File? frontLicence;
-  File? backLincece;
+  File? backLicence;
   File? driverPhoto;
+
+  final authCubit = sl<AuthCubit>();
+  FToast? fToast;
+  bool loading = false;
+  String? errorMessage;
+
+  @override
+  void initState() {
+    fToast = FToast();
+    fToast!.init(context);
+
+    nameController.text = authCubit.driverName ?? '';
+    phoneNumberController.text = authCubit.driverPhoneNumber ?? '';
+    licenceNumberController.text = authCubit.driverLicenceNumber ?? '';
+    frontAdhaar = authCubit.driverFrontAdhaar;
+    backAdhaar = authCubit.driverBackAdhaar;
+    frontPan = authCubit.driverFrontPan;
+    backPan = authCubit.driverBackPan;
+    frontLicence = authCubit.driverFrontLicence;
+    backLicence = authCubit.driverBackLicence;
+    driverPhoto = authCubit.driverPhoto;
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,6 +109,7 @@ class _DriverTabState extends State<DriverTab> {
                     'title': AppLocalizations.of(context)!.driverAdhaarCardString,
                     'hintText':
                         '${AppLocalizations.of(context)!.driverAdhaarCardString} (${AppLocalizations.of(context)!.frontSideString})',
+                    'imageList': [frontAdhaar, backAdhaar],
                     'onImageCaptured': (File? file, bool? front) {
                       if (front ?? false) {
                         setState(() {
@@ -101,6 +134,9 @@ class _DriverTabState extends State<DriverTab> {
             UploadWidget(
               text: AppLocalizations.of(context)!.driverPanCardString,
               onTap: () {
+                setState(() {
+                  loading = false;
+                });
                 context.pushNamed(
                   uploadDocumentScreen,
                   extra: {
@@ -108,6 +144,7 @@ class _DriverTabState extends State<DriverTab> {
                     'title': AppLocalizations.of(context)!.driverPanCardString,
                     'hintText':
                         '${AppLocalizations.of(context)!.driverPanCardString} (${AppLocalizations.of(context)!.frontSideString})',
+                    'imageList': [frontPan, backPan],
                     'onImageCaptured': (File? file, bool? front) {
                       if (front ?? false) {
                         setState(() {
@@ -139,6 +176,7 @@ class _DriverTabState extends State<DriverTab> {
                     'title': AppLocalizations.of(context)!.driverLicenceString,
                     'hintText':
                         '${AppLocalizations.of(context)!.driverLicenceString} (${AppLocalizations.of(context)!.frontSideString})',
+                    'imageList': [frontLicence, backLicence],
                     'onImageCaptured': (File? file, bool? front) {
                       if (front ?? false) {
                         setState(() {
@@ -146,11 +184,11 @@ class _DriverTabState extends State<DriverTab> {
                         });
                       } else {
                         setState(() {
-                          backLincece = file;
+                          backLicence = file;
                         });
                       }
                       debugPrint(
-                          "Captured file path: Front:  ${frontLicence?.path} : back: ${backLincece?.path}");
+                          "Captured file path: Front:  ${frontLicence?.path} : back: ${backLicence?.path}");
                     },
                     'front': true,
                   },
@@ -167,6 +205,7 @@ class _DriverTabState extends State<DriverTab> {
                   normalUploadScreen,
                   extra: {
                     'title': AppLocalizations.of(context)!.driverPhotoString,
+                    'image': driverPhoto,
                     'onImageCaptured': (File? file) {
                       setState(() {
                         driverPhoto = file;
@@ -180,17 +219,174 @@ class _DriverTabState extends State<DriverTab> {
             const SizedBox(
               height: 20,
             ),
-            CustomElevatedButton(
-              name: AppLocalizations.of(context)!.submitString,
-              borderRadius: 25,
-              alignment: Alignment.bottomCenter,
-              onPressed: () {
-                context.push(driverDashboard);
+            BlocListener(
+              bloc: authCubit,
+              listener: (final context, final state) {
+                if (state is AllDetailsLoadingState) {
+                  setState(() {
+                    loading = true;
+                  });
+                } else if (state is AllDetailsLoadedState) {
+                  context.push(driverDashboard);
+                  setState(() {
+                    loading = false;
+                  });
+                } else if (state is ErrorState) {
+                  setState(() {
+                    loading = false;
+                  });
+                  setState(() {
+                    errorMessage = state.errorMessage;
+                  });
+                }
               },
-              textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              nameSize: 22,
+              child: loading
+                  ? SizedBox.shrink()
+                  : CustomElevatedButton(
+                      name: AppLocalizations.of(context)!.submitString,
+                      borderRadius: 25,
+                      alignment: Alignment.bottomCenter,
+                      onPressed: () async {
+                        var uploadMsg =
+                            '${AppLocalizations.of(context)!.pleaseUploadString} ${AppLocalizations.of(context)!.driverString.toLowerCase()}';
+                        var enterMsg = AppLocalizations.of(context)!.pleaseEnterString;
+                        if (nameController.text.isEmpty) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$enterMsg ${AppLocalizations.of(context)!.nameString.toLowerCase()}',
+                            duration: 3,
+                          );
+                        } else if (phoneNumberController.text.isEmpty) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$enterMsg ${AppLocalizations.of(context)!.phoneNumberString.toLowerCase()}',
+                            duration: 3,
+                          );
+                        } else if (licenceNumberController.text.isEmpty) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$enterMsg ${AppLocalizations.of(context)!.licenceNumberString.toLowerCase()}',
+                            duration: 3,
+                          );
+                        } else if (frontAdhaar == null && backAdhaar == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg: '$uploadMsg ${AppLocalizations.of(context)!.adhaarCardString}',
+                            duration: 3,
+                          );
+                        } else if (frontAdhaar == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.adhaarCardString}',
+                            duration: 3,
+                          );
+                        } else if (backAdhaar == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()} ${AppLocalizations.of(context)!.adhaarCardString}',
+                            duration: 3,
+                          );
+                        } else if (frontPan == null && backPan == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg: '$uploadMsg ${AppLocalizations.of(context)!.panCardString}',
+                            duration: 3,
+                          );
+                        } else if (frontPan == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.panCardString}',
+                            duration: 3,
+                          );
+                        } else if (backPan == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()} ${AppLocalizations.of(context)!.panCardString}',
+                            duration: 3,
+                          );
+                        } else if (frontLicence == null && backLicence == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg: '$uploadMsg ${AppLocalizations.of(context)!.licenceString}',
+                            duration: 3,
+                          );
+                        } else if (frontLicence == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.licenceString}',
+                            duration: 3,
+                          );
+                        } else if (backLicence == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg:
+                                '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()}  ${AppLocalizations.of(context)!.licenceString}',
+                            duration: 3,
+                          );
+                        } else if (driverPhoto == null) {
+                          showToast(
+                            context: context,
+                            fToast: fToast!,
+                            msg: '$uploadMsg  ${AppLocalizations.of(context)!.photoString}',
+                            duration: 3,
+                          );
+                        } else {
+                          authCubit.saveDriverDetails(
+                            driverName: nameController.text,
+                            driverPhoneNumber: phoneNumberController.text,
+                            driverLicenceNumber: licenceNumberController.text,
+                            driverFrontAdhaar: frontAdhaar ?? File(''),
+                            driverBackAdhaar: backAdhaar ?? File(''),
+                            driverFrontPan: frontPan ?? File(''),
+                            driverBackPan: backPan ?? File(''),
+                            driverFrontLicence: frontLicence ?? File(''),
+                            driverBackLicence: backLicence ?? File(''),
+                            driverPhoto: driverPhoto ?? File(''),
+                          );
+
+                          await authCubit.submitOwnerDriverVehiclDetails();
+                        }
+                      },
+                      textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      nameSize: 22,
+                    ),
             ),
             const SizedBox(height: 20),
+            loading ? LoadingWithoutText() : SizedBox.shrink(),
+            errorMessage != null
+                ? Padding(
+                    padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
+                    child: Center(
+                      child: Text(
+                        errorMessage ?? '',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.red,
+                            ),
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),

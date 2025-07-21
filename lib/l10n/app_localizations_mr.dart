@@ -277,6 +277,9 @@ class AppLocalizationsMr extends AppLocalizations {
   String get driverString => 'चालक';
 
   @override
+  String get photoString => 'फोटो';
+
+  @override
   String get ownerDetailsString => 'मालकाचे तपशील';
 
   @override
@@ -338,4 +341,28 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get registrationFailedString => 'नोंदणी अयशस्वी';
+
+  @override
+  String get notADriverString => 'मी ड्रायव्हर नाहीये.';
+
+  @override
+  String get pleaseUploadString => 'कृपया अपलोड करा';
+
+  @override
+  String get pleaseEnterString => 'कृपया प्रविष्ट करा';
+
+  @override
+  String get adhaarCardString => 'आधार कार्ड';
+
+  @override
+  String get panCardString => 'पॅन कार्ड';
+
+  @override
+  String get photoSmallString => 'छायाचित्र';
+
+  @override
+  String get rcString => 'आर.सी';
+
+  @override
+  String get licenceString => 'परवाना';
 }

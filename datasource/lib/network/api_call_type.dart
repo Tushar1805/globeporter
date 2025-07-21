@@ -1,1 +1,1 @@
-enum ApiCallType { get, post, put, patch, delete, postNoCookie, patchWithFile}
+enum ApiCallType { get, post, put, patch, delete, postNoCookie, postWithFile}
