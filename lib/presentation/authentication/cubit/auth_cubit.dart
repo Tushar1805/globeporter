@@ -293,6 +293,8 @@ class AuthCubit extends BaseCubit {
   Future<void> logout() async {
     try {
       await storage.clearAll();
+      userDetails = null;
+      emit(GeneralState('logout'));
     } catch (e) {
       handleExceptions(e);
     }

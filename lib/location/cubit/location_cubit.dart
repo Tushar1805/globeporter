@@ -7,6 +7,7 @@ import 'package:globeporter/location/model/route_direction_response.dart';
 import 'package:globeporter/location/repository/location_repository.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/location/states/location_states.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:uuid/uuid.dart';
@@ -15,6 +16,7 @@ class LocationCubit extends BaseCubit {
   final LocationRepository _locationRepository;
   LocationCubit(this._locationRepository);
   final storage = sl<SecureStorage>();
+  final authCubit = sl<AuthCubit>();
   Position? position;
   String? currentLocation;
   final DatabaseReference _dbRef = FirebaseDatabase.instance.ref().child('locations');
@@ -135,14 +137,17 @@ class LocationCubit extends BaseCubit {
     required final double lat,
     required final double lng,
   }) async {
-    final userId = await storage.readValue(userIdKey);
+    final userId = authCubit.userDetails?.data?.id.toString();
+    // final type = authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeData?.nameEn;
     try {
-      await _dbRef.child(userId ?? '').set({
-        "latitude": lat,
-        "longitude": lng,
-        "last_updated": ServerValue.timestamp,
-        "type": "truck",
-      });
+      if (userId != null && userId != '') {
+        await _dbRef.child(userId).set({
+          "latitude": lat,
+          "longitude": lng,
+          "last_updated": ServerValue.timestamp,
+          "type": "truck",
+        });
+      }
       debugPrint('Location Updaget: lat: $lat Lng: $lng');
     } catch (e) {
       debugPrint('Something went wrong: $e');

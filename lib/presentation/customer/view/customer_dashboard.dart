@@ -1,11 +1,14 @@
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 
 class CustomerDashboard extends StatefulWidget {
@@ -23,10 +26,17 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
   int pageIndex = 1;
   late PageController pageController;
   final customerCubit = sl<CustomerCubit>();
+  final authCubit = sl<AuthCubit>();
+  final storage = sl<SecureStorage>();
+  void getUserDetails() async {
+    final lang = await storage.readValue(languageCodeKey);
+    await authCubit.getUserDetails(lang: lang ?? 'en');
+  }
 
   @override
   void initState() {
     super.initState();
+    getUserDetails();
     pageController = PageController(initialPage: pageIndex);
   }
 

@@ -1,5 +1,7 @@
+import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -12,6 +14,7 @@ class CustomerProfileScreen extends StatefulWidget {
 }
 
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
+  final authCubit = sl<AuthCubit>();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -79,7 +82,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
           ),
           ProfileEditCard(
             label: AppLocalizations.of(context)!.nameString,
-            value: 'Vinod Sharma',
+            value: authCubit.userDetails?.data?.name ?? 'User Name',
             onTap: () {},
           ),
           const SizedBox(
@@ -87,7 +90,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
           ),
           ProfileEditCard(
             label: AppLocalizations.of(context)!.emailString,
-            value: 'vinodsharma214@gmail.com',
+            value: authCubit.userDetails?.data?.email ?? 'email@test.com',
             onTap: () {},
           ),
           const SizedBox(

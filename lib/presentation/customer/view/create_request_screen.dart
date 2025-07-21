@@ -13,6 +13,7 @@ import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/location/model/search_places_response.dart';
 import 'package:globeporter/location/states/location_states.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_keys.dart';
@@ -37,6 +38,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   final TextEditingController currentLocationController = TextEditingController();
   final Completer<GoogleMapController> _controller = Completer();
   final locationCubit = sl<LocationCubit>();
+  final authCubit = sl<AuthCubit>();
   final storage = sl<SecureStorage>();
   SearchPlacesResponse? searchPlacesResponse;
   late final List<geocoding.Placemark> placemarks;
@@ -48,6 +50,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   bool _suppressOnChange = true;
   final loc.Location _location = loc.Location();
   LatLng? _currentPosition;
+  StreamSubscription<loc.LocationData>? _locationSubscription;
 
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(20.5574253, 78.8386951),
@@ -100,7 +103,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       return;
     }
 
-    _location.onLocationChanged.listen((locationData) {
+    _locationSubscription = _location.onLocationChanged.listen((locationData) {
       if (locationData.latitude == null || locationData.longitude == null) return;
 
       final lat = locationData.latitude!;
@@ -184,6 +187,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   void dispose() {
     _debounce?.cancel();
     currentLocationController.dispose();
+    _locationSubscription?.cancel();
     super.dispose();
   }
 
@@ -258,8 +262,8 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                             radius: size.width * 0.12,
                             child: CircleAvatar(
                               radius: size.width * 0.116,
-                              backgroundImage: AssetImage(
-                                profileImage,
+                              backgroundImage: NetworkImage(
+                                authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage,
                               ),
                               backgroundColor: Colors.white,
                             ),
@@ -280,7 +284,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                                   textAlign: TextAlign.end,
                                 ),
                                 Text(
-                                  'Ravi Gupta',
+                                  authCubit.userDetails?.data?.name ?? 'User name',
                                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                       color: Colors.white,
                                       fontSize: 20,
