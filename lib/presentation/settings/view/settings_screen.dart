@@ -52,8 +52,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         radius: size.width * 0.08,
                         child: CircleAvatar(
                           radius: size.width * 0.076,
-                          backgroundImage: AssetImage(
-                            profileImage,
+                          backgroundImage: NetworkImage(
+                            authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage,
                           ),
                           backgroundColor: Colors.white,
                         ),
@@ -93,14 +93,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Vinod Kumar',
+                          authCubit.userDetails?.data?.name ?? 'User Name',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 color: Colors.white,
                                 fontSize: 22,
                               ),
                         ),
                         Text(
-                          'vinodsharma44@gmail.com',
+                          authCubit.userDetails?.data?.email ?? 'email@test.com',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                           textAlign: TextAlign.end,

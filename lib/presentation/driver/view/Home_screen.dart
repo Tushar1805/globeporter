@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -51,6 +52,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     }
   ];
   final driverCubit = sl<DriverCubit>();
+  final authCubit = sl<AuthCubit>();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -95,8 +97,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       radius: size.width * 0.1,
                       child: CircleAvatar(
                         radius: size.width * 0.097,
-                        backgroundImage: AssetImage(
-                          profileImage,
+                        backgroundImage: NetworkImage(
+                          authCubit.userDetails?.data?.profilePhotoUrl ??
+                              sampleNetworkImage,
                         ),
                         backgroundColor: Colors.white,
                       ),
@@ -114,7 +117,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           textAlign: TextAlign.end,
                         ),
                         Text(
-                          'Vinod Kumar',
+                          authCubit.userDetails?.data?.name ?? 'User Name',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
                           textAlign: TextAlign.end,

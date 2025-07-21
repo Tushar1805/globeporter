@@ -1,11 +1,14 @@
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/view/Home_screen.dart';
 import 'package:globeporter/presentation/driver/view/my_trips_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 
 class DriverDashboard extends StatefulWidget {
@@ -19,6 +22,8 @@ class _DriverDashboardState extends State<DriverDashboard> {
   int pageIndex = 1;
   late PageController pageController;
   final driverCubit = sl<DriverCubit>();
+  final authCubit = sl<AuthCubit>();
+  final storage = sl<SecureStorage>();
   String amount = '500';
 
   final screens = [
@@ -29,9 +34,15 @@ class _DriverDashboardState extends State<DriverDashboard> {
     ),
   ];
 
+  void getUserDetails() async {
+    final lang = await storage.readValue(languageCodeKey);
+    await authCubit.getUserDetails(lang: lang ?? 'en');
+  }
+
   @override
   void initState() {
     super.initState();
+    getUserDetails();
     pageController = PageController(initialPage: pageIndex);
   }
 

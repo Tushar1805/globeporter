@@ -17,6 +17,7 @@ class AuthCubit extends BaseCubit {
   bool isOtpScreen = false;
   AuthCubit(this._authRepository) : super();
   final storage = sl<SecureStorage>();
+  UserDetailsResponseModel? userDetails;
 
   // Owner Fields
   String? ownerName;
@@ -133,6 +134,7 @@ class AuthCubit extends BaseCubit {
   }
 
   Future<UserDetailsResponseModel?> getUserDetails({required final String lang}) async {
+    if (userDetails != null) return userDetails;
     try {
       emit(UserDetailsLoadingState('Getting User details'));
       final accessToken = await storage.readValue(accessTokenKey);
@@ -140,6 +142,7 @@ class AuthCubit extends BaseCubit {
         accessToken: accessToken ?? '',
         lang: lang,
       );
+      userDetails = response;
       emit(UserDetailsLoadedState(data: response));
       return response;
     } catch (e) {

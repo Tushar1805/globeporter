@@ -27,6 +27,8 @@ final String termsConditionIcon = "assets/images/terms_condition_icon.png";
 final String cashAndCoinImage = "assets/images/cash_and_coin.png";
 final String appLogoLarge = "assets/images/logo_large.png";
 final String truckIcon = "assets/images/truck_icon.png";
+final String sampleNetworkImage =
+    'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
 
 // SVG Images
 
