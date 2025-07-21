@@ -83,6 +83,22 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               ),
             ),
             Positioned(
+              top: size.width * 0.15,
+              right: size.width * 0.32,
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    context.pushNamed(notificationScreen);
+                  },
+                  child: Icon(
+                    Icons.notifications_active_outlined,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
               top: size.height * 0.05,
               left: size.width * 0.05,
               child: Row(
@@ -98,8 +114,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       child: CircleAvatar(
                         radius: size.width * 0.097,
                         backgroundImage: NetworkImage(
-                          authCubit.userDetails?.data?.profilePhotoUrl ??
-                              sampleNetworkImage,
+                          authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage,
                         ),
                         backgroundColor: Colors.white,
                       ),
@@ -116,11 +131,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                               color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
                           textAlign: TextAlign.end,
                         ),
-                        Text(
-                          authCubit.userDetails?.data?.name ?? 'User Name',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
-                          textAlign: TextAlign.end,
+                        SizedBox(
+                          width: size.width * 0.35,
+                          child: Text(
+                            authCubit.userDetails?.data?.name ?? 'User Name',
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),

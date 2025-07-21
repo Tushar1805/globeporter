@@ -248,7 +248,23 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                     ),
                   ),
                   Positioned(
-                    top: size.height * 0.068,
+                    top: size.width * 0.18,
+                    right: size.width * 0.15,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          context.pushNamed(notificationScreen);
+                        },
+                        child: Icon(
+                          Icons.notifications_active_outlined,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: size.width * 0.13,
                     left: size.width * 0.043,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,7 +287,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                         ),
                         SizedBox(width: 15),
                         SizedBox(
-                          height: size.width * 0.125,
+                          height: size.width * 0.15,
                           child: Center(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
