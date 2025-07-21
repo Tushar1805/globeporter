@@ -10,6 +10,7 @@ const String routeDirectionUrl = '$_directionsbaseUrl?origin=';
 //* Authentication
 
 const String loginUrl = '$_baseUrl/login';
+const String googleLoginUrl = '$_baseUrl/google_login_register';
 const String registerUrl = '$_baseUrl/register';
 const String otpVerificationUrl = '$_baseUrl/otp_verify';
 const String deleteUserUrl = '$_baseUrl/delete_user_account';

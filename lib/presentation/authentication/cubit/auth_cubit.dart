@@ -171,6 +171,33 @@ class AuthCubit extends BaseCubit {
     }
   }
 
+  Future<void> googleLogin({
+    required final String googleId,
+    required final String name,
+    required final String email,
+  }) async {
+    try {
+      emit(GoogleLoginLoadingState('Login in process'));
+      final lang = await storage.readValue(languageCodeKey);
+      final fcmToken = '_test';
+
+      final response = await _authRepository.googleLogin(
+        lang: lang ?? 'en',
+        googleId: googleId,
+        name: name,
+        email: email,
+        fcmToken: fcmToken,
+      );
+
+      await storage.saveValue(value: response?.token, key: accessTokenKey);
+      customPrint("Token: ${response?.token}");
+
+      emit(GoogleLoginLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
   Future<void> register({
     required final int userId,
     required final String langCode,

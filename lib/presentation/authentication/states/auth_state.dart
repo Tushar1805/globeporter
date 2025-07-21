@@ -24,6 +24,15 @@ class LoginLoadedState extends LoadedState {
   LoginLoadedState({required super.data});
 }
 
+class GoogleLoginLoadingState extends LoadingState {
+  GoogleLoginLoadingState(super.loadingMessage);
+}
+
+class GoogleLoginLoadedState extends LoadedState {
+  GoogleLoginLoadedState({required super.data});
+}
+
+
 class RegisterLoadingState extends LoadingState {
   RegisterLoadingState(super.loadingMessage);
 }

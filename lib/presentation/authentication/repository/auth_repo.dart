@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:datasource/base_repository.dart';
 import 'package:datasource/network/api_call_type.dart';
+import 'package:globeporter/presentation/authentication/model/google_login_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/login_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/otp_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/register_response_model.dart';
@@ -25,6 +26,29 @@ class AuthRepository extends BaseRepository {
     );
 
     return UserDetailsResponseModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<GoogleLoginResponseModel?> googleLogin({
+    required final String lang,
+    required final String googleId,
+    required final String name,
+    required final String email,
+    required final String fcmToken,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: googleLoginUrl,
+      requestModel: {
+        "lang": lang, // en, mr, hi
+        "google_id": googleId,
+        "name": name,
+        "email": email,
+        "fcm_token": fcmToken,
+      },
+    );
+    return GoogleLoginResponseModel.fromJson(
       responseData as Map<String, dynamic>?,
     );
   }

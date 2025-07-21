@@ -13,7 +13,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/authentication/model/google_login_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/login_response_model.dart';
+import 'package:globeporter/presentation/authentication/model/user_type_response_model.dart';
+import 'package:globeporter/presentation/widgets/driver_dialog_widget.dart';
 import 'package:globeporter/resources/app_api_keys.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -152,7 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
         body: BlocListener(
           bloc: authCubit,
           listener: (final context, final state) async {
-            if (state is LoginLoadingState) {
+            if (state is LoginLoadingState ||
+                state is GoogleLoginLoadingState ||
+                state is UserTypeLoadingState) {
               setState(() {
                 loading = true;
               });
@@ -181,6 +186,49 @@ class _LoginScreenState extends State<LoginScreen> {
               setState(() {
                 loading = false;
               });
+            } else if (state is GoogleLoginLoadedState) {
+              final data = state.data as GoogleLoginResponseModel?;
+              if (data?.statusCode == 200 && _isAuthorized) {
+                if (data?.userType != null) {
+                  if (data?.userType == 2) {
+                    await _storage.saveValue(
+                      value: data?.detailsFilled ?? false ? '1' : '0',
+                      key: detailsFilledKey,
+                    );
+                    if (data?.detailsFilled ?? false) {
+                      context.go(driverDashboard);
+                    } else {
+                      context.go(ownerDetailsScreen);
+                    }
+                  } else {
+                    context.go(customerDashboard);
+                  }
+                } else {
+                  DriverDialog.show(context, authCubit);
+                }
+              } else {
+                showToast(
+                  context: context,
+                  fToast: fToast!,
+                  msg: 'Google Authentication Failed',
+                  duration: 3,
+                );
+              }
+              setState(() {
+                loading = false;
+              });
+            } else if (state is UserTypeLoadedState) {
+              final data = state.data as UserTypeResponseModel?;
+              if (data?.statusCode == 200) {
+                setState(() {
+                  loading = false;
+                });
+                if (data?.data?.userType == "2") {
+                  context.go(ownerDetailsScreen);
+                } else {
+                  context.go(customerDashboard);
+                }
+              }
             }
           },
           child: SingleChildScrollView(
@@ -375,15 +423,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           } else {
                             throw Exception("Invalid authentication. No tokens returned.");
                           }
+
+                          await authCubit.googleLogin(
+                            googleId: _currentUser?.id ?? '',
+                            name: _currentUser?.displayName ?? '',
+                            email: _currentUser?.email ?? '',
+                          );
                           customPrint(
                             'Text: ${_currentUser?.displayName}, ${_currentUser?.email}, ${_currentUser?.id}, ${_currentUser?.photoUrl}',
                           );
                         } catch (e) {
                           customPrint('Something went wrong');
-                        }
-
-                        if (_isAuthorized) {
-                          context.pushNamed(signUpScreen);
                         }
                       },
                       child: Image.asset(

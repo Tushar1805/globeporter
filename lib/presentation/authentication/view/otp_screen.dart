@@ -246,12 +246,12 @@ class _OtpScreenState extends State<OtpScreen> {
                             key: detailsFilledKey,
                           );
                           if (data?.detailsFilled ?? false) {
-                            context.pushNamed(driverDashboard);
+                            context.go(driverDashboard);
                           } else {
-                            context.pushNamed(ownerDetailsScreen);
+                            context.go(ownerDetailsScreen);
                           }
                         } else {
-                          context.pushNamed(customerDashboard);
+                          context.go(customerDashboard);
                         }
                       } else {
                         DriverDialog.show(context, authCubit);
@@ -272,9 +272,9 @@ class _OtpScreenState extends State<OtpScreen> {
                     final data = state.data as UserTypeResponseModel?;
                     if (data?.statusCode == 200) {
                       if (data?.data?.userType == "2") {
-                        context.pushNamed(ownerDetailsScreen);
+                        context.go(ownerDetailsScreen);
                       } else {
-                        context.push(customerDashboard);
+                        context.go(customerDashboard);
                       }
                     }
                   }

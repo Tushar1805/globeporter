@@ -37,14 +37,14 @@ class _SplashScreenState extends State<SplashScreen> {
       await authCubit.getUserDetails(lang: langCode ?? 'en').then((final response) {
         if (response?.data?.userType != null && response?.data?.userType == 2) {
           if (detailsFilled == '1') {
-            context.pushNamed(driverDashboard);
+            context.go(driverDashboard);
           } else {
-            context.pushNamed(ownerDetailsScreen);
+            context.go(ownerDetailsScreen);
           }
         } else if (response?.data?.userType != null && response?.data?.userType == 1) {
-          context.pushNamed(customerDashboard);
+          context.go(customerDashboard);
         } else {
-          context.pushNamed(loginScreen);
+          context.go(loginScreen);
         }
       });
     } else {

@@ -274,6 +274,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                           height: size.width * 0.125,
                           child: Center(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   AppLocalizations.of(context)!.onboarding1Title,
