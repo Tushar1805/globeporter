@@ -20,9 +20,19 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final authCubit = sl<AuthCubit>();
+  final double profilePercent = 0.78; // 78%
+
+  Color _getProgressColor(int percent) {
+    if (percent < 25) return Colors.red;
+    if (percent < 75) return Colors.orange;
+    return Colors.green;
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final int percent = (profilePercent * 100).round();
+    final Color barColor = _getProgressColor(percent);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(size.width * 0.35),
@@ -119,6 +129,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "$percent% Complete",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: barColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: LinearProgressIndicator(
+                      minHeight: 12,
+                      value: profilePercent,
+                      valueColor: AlwaysStoppedAnimation<Color>(barColor),
+                      backgroundColor: Colors.grey.shade300,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(
               height: 20,
             ),
