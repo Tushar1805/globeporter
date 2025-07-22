@@ -365,4 +365,16 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get licenceString => 'परवाना';
+
+  @override
+  String get homeString => 'होम';
+
+  @override
+  String get myTripsString => 'माझ्या सहली';
+
+  @override
+  String get chatsString => 'गप्पा';
+
+  @override
+  String get profileString => 'प्रोफाइल';
 }

@@ -366,4 +366,16 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get licenceString => 'लाइसेंस';
+
+  @override
+  String get homeString => 'होम';
+
+  @override
+  String get myTripsString => 'मेरे सुझाव';
+
+  @override
+  String get chatsString => 'चैट';
+
+  @override
+  String get profileString => 'प्रोफ़ाइल';
 }

@@ -119,5 +119,9 @@
     "panCardString": "पैन कार्ड",
     "photoSmallString": "फोटो",
     "rcString": "आर.सी",
-    "licenceString": "लाइसेंस"
+    "licenceString": "लाइसेंस",
+    "homeString": "होम",
+    "myTripsString": "मेरे सुझाव",
+    "chatsString": "चैट",
+    "profileString": "प्रोफ़ाइल"
 }

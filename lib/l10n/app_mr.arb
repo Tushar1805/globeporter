@@ -122,5 +122,9 @@
     "panCardString": "पॅन कार्ड",
     "photoSmallString": "छायाचित्र",
     "rcString": "आर.सी",
-    "licenceString": "परवाना"
+    "licenceString": "परवाना",
+    "homeString": "होम",
+    "myTripsString": "माझ्या सहली",
+    "chatsString": "गप्पा",
+    "profileString": "प्रोफाइल"
 }

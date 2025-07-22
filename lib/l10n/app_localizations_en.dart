@@ -367,4 +367,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenceString => 'Licence';
+
+  @override
+  String get homeString => 'Home';
+
+  @override
+  String get myTripsString => 'My Trips';
+
+  @override
+  String get chatsString => 'Chats';
+
+  @override
+  String get profileString => 'Profile';
 }

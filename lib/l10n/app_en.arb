@@ -237,5 +237,13 @@
     "rcString": "RC",
     "@rcString": {},
     "licenceString": "Licence",
-    "@licenceString": {}
+    "@licenceString": {},
+    "homeString": "Home",
+    "@homeString": {},
+    "myTripsString": "My Trips",
+    "@myTripsString": {},
+    "chatsString" : "Chats",
+    "@chatsString": {},
+    "profileString": "Profile",
+    "@profileString": {}
 }

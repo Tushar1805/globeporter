@@ -801,6 +801,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licence'**
   String get licenceString;
+
+  /// No description provided for @homeString.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeString;
+
+  /// No description provided for @myTripsString.
+  ///
+  /// In en, this message translates to:
+  /// **'My Trips'**
+  String get myTripsString;
+
+  /// No description provided for @chatsString.
+  ///
+  /// In en, this message translates to:
+  /// **'Chats'**
+  String get chatsString;
+
+  /// No description provided for @profileString.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileString;
 }
 
 class _AppLocalizationsDelegate

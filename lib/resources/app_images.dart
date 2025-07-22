@@ -9,6 +9,7 @@ final String coinImage = "assets/images/coin_image.png";
 final String requestIcon = "assets/images/request_icon.png";
 final String myRequestIcon = "assets/images/my_requests_icon.png";
 final String homeIcon = "assets/images/home_icon.png";
+final String chatIcon = "assets/images/chat_icon.png";
 final String profileIcon = "assets/images/profile_icon.png";
 final String phoneCallIcon = "assets/images/phone_call.png";
 final String walletImage = "assets/images/wallet_image.png";

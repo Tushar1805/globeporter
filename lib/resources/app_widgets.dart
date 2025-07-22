@@ -162,7 +162,7 @@ class CustomTextField extends StatelessWidget {
         cursorColor: cursorColor,
         maxLines: maxLines ?? 1,
         readOnly: readOnly ?? false,
-        onChanged: onChanged ?? (val){},
+        onChanged: onChanged ?? (val) {},
         decoration: InputDecoration(
           prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),
           border: OutlineInputBorder(
@@ -294,6 +294,7 @@ class BottomNavBarIcon extends StatelessWidget {
     required this.onTap,
     required this.pageIndex,
     required this.itemIndex,
+    required this.title,
     super.key,
   });
 
@@ -301,6 +302,7 @@ class BottomNavBarIcon extends StatelessWidget {
   final VoidCallback onTap;
   final int pageIndex;
   final int itemIndex;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -317,19 +319,27 @@ class BottomNavBarIcon extends StatelessWidget {
                   icon,
                   height: size.width * 0.0587,
                 ),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: primaryColor),
+                ),
               ],
             )
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Opacity(
-                  opacity: 0.5,
-                  child: Image.asset(
+          : Opacity(
+              opacity: 0.5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
                     icon,
                     height: size.width * 0.0587,
                   ),
-                ),
-              ],
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: primaryColor),
+                  ),
+                ],
+              ),
             ),
     );
   }
