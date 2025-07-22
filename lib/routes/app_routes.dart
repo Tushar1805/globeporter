@@ -27,6 +27,10 @@ const tripInfoScreen = '/trip_info_screen';
 const startTripScreen = '/start_trip_screen';
 const driverProfileScreen = '/driver_profile_screen';
 
+//* Chat Routes
+
+const chatScreen = '/chat_screen';
+
 //* All other routes
 const notificationScreen = '/notification_screen';
 const referAndEarnScreen = '/refer_screen';

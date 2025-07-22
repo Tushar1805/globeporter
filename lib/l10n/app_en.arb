@@ -245,5 +245,7 @@
     "chatsString" : "Chats",
     "@chatsString": {},
     "profileString": "Profile",
-    "@profileString": {}
+    "@profileString": {},
+    "typeAMessageString": "Type a message",
+    "@typeAMessageString": {}
 }

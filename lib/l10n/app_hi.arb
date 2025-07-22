@@ -123,5 +123,6 @@
     "homeString": "होम",
     "myTripsString": "मेरे सुझाव",
     "chatsString": "चैट",
-    "profileString": "प्रोफ़ाइल"
+    "profileString": "प्रोफ़ाइल",
+    "typeAMessageString": "एक संदेश टाइप करें"
 }

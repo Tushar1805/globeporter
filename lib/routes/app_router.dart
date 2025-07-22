@@ -10,6 +10,7 @@ import 'package:globeporter/presentation/authentication/view/onboarding/onboardi
 import 'package:globeporter/presentation/authentication/view/otp_screen.dart';
 import 'package:globeporter/presentation/authentication/view/select_lang_screen.dart';
 import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart';
+import 'package:globeporter/presentation/chats/view/chat_screen.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
 import 'package:globeporter/presentation/customer/view/customer_profile_screen.dart';
@@ -365,6 +366,14 @@ final GoRouter router = GoRouter(
           ),
         );
       },
+    ),
+    GoRoute(
+      name: chatScreen,
+      path: chatScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const ChatScreen(),
+      ),
     ),
   ],
 );

@@ -825,6 +825,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile'**
   String get profileString;
+
+  /// No description provided for @typeAMessageString.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message'**
+  String get typeAMessageString;
 }
 
 class _AppLocalizationsDelegate

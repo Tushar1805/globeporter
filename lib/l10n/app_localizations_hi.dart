@@ -378,4 +378,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get profileString => 'प्रोफ़ाइल';
+
+  @override
+  String get typeAMessageString => 'एक संदेश टाइप करें';
 }

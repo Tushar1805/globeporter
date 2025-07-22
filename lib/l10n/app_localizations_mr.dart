@@ -377,4 +377,7 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get profileString => 'प्रोफाइल';
+
+  @override
+  String get typeAMessageString => 'एक संदेश टाइप करा';
 }

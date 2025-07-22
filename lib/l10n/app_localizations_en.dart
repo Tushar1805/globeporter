@@ -379,4 +379,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileString => 'Profile';
+
+  @override
+  String get typeAMessageString => 'Type a message';
 }
