@@ -26,6 +26,7 @@ const walletScreen = '/wallet_screen';
 const tripInfoScreen = '/trip_info_screen';
 const startTripScreen = '/start_trip_screen';
 const driverProfileScreen = '/driver_profile_screen';
+const newRideScreen = '/new_ride_screen';
 
 //* Chat Routes
 

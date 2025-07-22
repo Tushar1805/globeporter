@@ -382,4 +382,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get typeAMessageString => 'Type a message';
+
+  @override
+  String get newRideString => 'New Ride';
+
+  @override
+  String get offerRideString => 'OFFER RIDE';
+
+  @override
+  String get newString => 'NEW';
 }

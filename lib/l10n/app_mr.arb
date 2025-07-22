@@ -127,5 +127,8 @@
     "myTripsString": "माझ्या सहली",
     "chatsString": "गप्पा",
     "profileString": "प्रोफाइल",
-    "typeAMessageString": "एक संदेश टाइप करा"
+    "typeAMessageString": "एक संदेश टाइप करा",
+    "newRideString": "नवीन राइड",
+    "offerRideString": "राइड ऑफर करा",
+    "newString": "नवीन"
 }

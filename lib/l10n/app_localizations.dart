@@ -831,6 +831,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type a message'**
   String get typeAMessageString;
+
+  /// No description provided for @newRideString.
+  ///
+  /// In en, this message translates to:
+  /// **'New Ride'**
+  String get newRideString;
+
+  /// No description provided for @offerRideString.
+  ///
+  /// In en, this message translates to:
+  /// **'OFFER RIDE'**
+  String get offerRideString;
+
+  /// No description provided for @newString.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW'**
+  String get newString;
 }
 
 class _AppLocalizationsDelegate

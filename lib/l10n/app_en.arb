@@ -232,7 +232,7 @@
     "@adhaarCardString": {},
     "panCardString": "pan card",
     "@panCardString": {},
-    "photoSmallString": "photo",    
+    "photoSmallString": "photo",
     "@photoSmallString": {},
     "rcString": "RC",
     "@rcString": {},
@@ -242,10 +242,16 @@
     "@homeString": {},
     "myTripsString": "My Trips",
     "@myTripsString": {},
-    "chatsString" : "Chats",
+    "chatsString": "Chats",
     "@chatsString": {},
     "profileString": "Profile",
     "@profileString": {},
     "typeAMessageString": "Type a message",
-    "@typeAMessageString": {}
+    "@typeAMessageString": {},
+    "newRideString": "New Ride",
+    "@newRideString": {},
+    "offerRideString": "OFFER RIDE",
+    "@offerRideString": {},
+    "newString": "NEW",
+    "@newString": {}
 }

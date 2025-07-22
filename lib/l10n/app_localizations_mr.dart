@@ -380,4 +380,13 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get typeAMessageString => 'एक संदेश टाइप करा';
+
+  @override
+  String get newRideString => 'नवीन राइड';
+
+  @override
+  String get offerRideString => 'राइड ऑफर करा';
+
+  @override
+  String get newString => 'नवीन';
 }

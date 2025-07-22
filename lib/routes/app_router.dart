@@ -17,6 +17,7 @@ import 'package:globeporter/presentation/customer/view/customer_profile_screen.d
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
+import 'package:globeporter/presentation/driver/view/new_ride_screen.dart';
 import 'package:globeporter/presentation/driver/widgets/document_upload_screen.dart';
 import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
 import 'package:globeporter/presentation/driver/view/driver_profile_screen.dart';
@@ -373,6 +374,14 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const ChatScreen(),
+      ),
+    ),
+    GoRoute(
+      name: newRideScreen,
+      path: newRideScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const NewRideScreen(),
       ),
     ),
   ],

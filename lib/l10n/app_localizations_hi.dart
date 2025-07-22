@@ -381,4 +381,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get typeAMessageString => 'एक संदेश टाइप करें';
+
+  @override
+  String get newRideString => 'नई सवारी';
+
+  @override
+  String get offerRideString => 'सवारी की पेशकश करें';
+
+  @override
+  String get newString => 'नया';
 }

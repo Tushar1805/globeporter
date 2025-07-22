@@ -124,5 +124,8 @@
     "myTripsString": "मेरे सुझाव",
     "chatsString": "चैट",
     "profileString": "प्रोफ़ाइल",
-    "typeAMessageString": "एक संदेश टाइप करें"
+    "typeAMessageString": "एक संदेश टाइप करें",
+    "newRideString": "नई सवारी",
+    "offerRideString": "सवारी की पेशकश करें",
+    "newString": "नया"
 }
