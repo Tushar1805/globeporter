@@ -110,7 +110,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       final lng = locationData.longitude!;
       _currentPosition = LatLng(lat, lng);
 
-      locationCubit.updateMyLocation(lat: lat, lng: lng);
+      // locationCubit.updateMyLocation(lat: lat, lng: lng, role: 'customer');
       _fetchAndShowNearbyUsers();
     });
   }
@@ -137,6 +137,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
 
     data.forEach((key, value) {
       if (key == userId) return; // skip own marker
+      if (value['role'] == 'customer') return;
 
       final lat = value['latitude'] * 1.0;
       final lng = value['longitude'] * 1.0;

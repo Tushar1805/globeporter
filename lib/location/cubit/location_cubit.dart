@@ -136,6 +136,7 @@ class LocationCubit extends BaseCubit {
   Future<void> updateMyLocation({
     required final double lat,
     required final double lng,
+    required final String role,
   }) async {
     final userId = authCubit.userDetails?.data?.id.toString();
     // final type = authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeData?.nameEn;
@@ -146,6 +147,7 @@ class LocationCubit extends BaseCubit {
           "longitude": lng,
           "last_updated": ServerValue.timestamp,
           "type": "truck",
+          "role": role,
         });
       }
       debugPrint('Location Updaget: lat: $lat Lng: $lng');

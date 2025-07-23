@@ -31,7 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
     final accessToken = await storage.readValue(accessTokenKey);
     final langCode = await storage.readValue(languageCodeKey);
     final detailsFilled = await storage.readValue(detailsFilledKey);
-    await Future.delayed(const Duration(seconds: 2), () {});
+    await Future.delayed(const Duration(seconds: 2), () {
+      locationCubit.determinePosition();
+    });
 
     if (accessToken != null) {
       await authCubit.getUserDetails(lang: langCode ?? 'en').then((final response) {

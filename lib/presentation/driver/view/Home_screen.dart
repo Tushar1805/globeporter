@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
@@ -11,6 +14,7 @@ import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:location/location.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -20,7 +24,15 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
+  final driverCubit = sl<DriverCubit>();
+  final authCubit = sl<AuthCubit>();
+  final locationCubit = sl<LocationCubit>();
   String amount = '500';
+
+  // LatLng? _currentPosition;
+  final Location _location = Location();
+  StreamSubscription<LocationData>? _locationSubscription;
+
   final myTrips = [
     {
       'name': 'Vinod Sharma',
@@ -51,8 +63,38 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       'type': 'urban',
     }
   ];
-  final driverCubit = sl<DriverCubit>();
-  final authCubit = sl<AuthCubit>();
+
+  Future<void> startTracking() async {
+    final permissionGranted = await _location.requestPermission();
+    final serviceEnabled = await _location.serviceEnabled() || await _location.requestService();
+
+    if (permissionGranted != PermissionStatus.granted || !serviceEnabled) {
+      return;
+    }
+
+    _locationSubscription = _location.onLocationChanged.listen((locationData) {
+      if (locationData.latitude == null || locationData.longitude == null) return;
+
+      final lat = locationData.latitude!;
+      final lng = locationData.longitude!;
+      // _currentPosition = LatLng(lat, lng);
+
+      locationCubit.updateMyLocation(lat: lat, lng: lng, role: 'driver');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startTracking();
+  }
+
+  @override
+  void dispose() {
+    _locationSubscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
