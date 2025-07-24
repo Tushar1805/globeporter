@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:globeporter/presentation/authentication/view/driver_details_screen.dart';
 import 'package:globeporter/presentation/authentication/view/login_screen.dart';
 import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_1_screen.dart';
 import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_2_screen.dart';
@@ -151,14 +150,6 @@ final GoRouter router = GoRouter(
           ),
         );
       },
-    ),
-    GoRoute(
-      name: driverDetailsScreen,
-      path: driverDetailsScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const DriverDetailsScreen(),
-      ),
     ),
     GoRoute(
       name: customerDashboard,

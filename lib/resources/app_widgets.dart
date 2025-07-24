@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -142,6 +143,7 @@ class CustomTextField extends StatelessWidget {
     this.cursorColor,
     this.readOnly,
     this.onChanged,
+    this.inputFormatters,
   });
   final TextEditingController textEditingController;
   final int? maxLines;
@@ -151,12 +153,14 @@ class CustomTextField extends StatelessWidget {
   final Color? cursorColor;
   final bool? readOnly;
   final Function(String)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
         style: textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
+        inputFormatters: inputFormatters ?? [],
         controller: textEditingController,
         keyboardType: inputType ?? TextInputType.name,
         cursorColor: cursorColor,

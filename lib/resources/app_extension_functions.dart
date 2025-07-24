@@ -3,7 +3,6 @@
 import 'package:globeporter/resources/app_regex.dart';
 
 extension StringExtension on String {
-  bool isValidPhoneNumber() => phoneNumberRegex.hasMatch(this);
 
   bool isValidEmail() => emailRegex.hasMatch(this);
 

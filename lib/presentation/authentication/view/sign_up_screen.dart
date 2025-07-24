@@ -5,6 +5,7 @@ import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,6 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+
   final authCubit = sl<AuthCubit>();
   String _selectedCountryCode = '+91';
   final storage = sl<SecureStorage>();
@@ -170,6 +172,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               CustomTextField(
                 textEditingController: nameController,
+                inputType: TextInputType.name,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
+                ],
               ),
 
               const SizedBox(
