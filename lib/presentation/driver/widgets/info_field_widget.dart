@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 
 class InfoFieldWidget extends StatelessWidget {
@@ -6,9 +7,13 @@ class InfoFieldWidget extends StatelessWidget {
     super.key,
     required this.title,
     required this.controller,
+    this.inputFormatter,
+    this.inputType,
   });
   final String title;
   final TextEditingController controller;
+  final List<TextInputFormatter>? inputFormatter;
+  final TextInputType? inputType;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +43,8 @@ class InfoFieldWidget extends StatelessWidget {
         ),
         CustomTextField(
           textEditingController: controller,
+          inputFormatters: inputFormatter,
+          inputType: inputType,
         ),
         const SizedBox(
           height: 20,

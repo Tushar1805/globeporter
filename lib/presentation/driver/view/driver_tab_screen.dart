@@ -5,12 +5,14 @@ import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
+import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -69,10 +71,18 @@ class _DriverTabState extends State<DriverTab> {
             InfoFieldWidget(
               title: AppLocalizations.of(context)!.nameString,
               controller: nameController,
+              inputFormatter: [
+                FilteringTextInputFormatter.allow(nameRegex),
+              ],
+              inputType: TextInputType.name,
             ),
             InfoFieldWidget(
               title: AppLocalizations.of(context)!.phoneNumberString,
               controller: phoneNumberController,
+              inputFormatter: [
+                FilteringTextInputFormatter.allow(phoneNumberRegex),
+              ],
+              inputType: TextInputType.number,
             ),
             InfoFieldWidget(
               title: AppLocalizations.of(context)!.licenceNumberString,

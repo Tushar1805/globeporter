@@ -5,12 +5,14 @@ import 'dart:io';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -82,7 +84,9 @@ class _OwnerTabState extends State<OwnerTab> {
                   msg: AppLocalizations.of(context)!.validNameString,
                   duration: 3,
                 );
-              } else if (phoneNumberController.text.isEmpty) {
+              } else if (phoneNumberController.text.isEmpty ||
+                  phoneNumberController.text.length < 10 ||
+                  phoneNumberController.text.length > 10) {
                 showToast(
                   context: context,
                   fToast: fToast!,
@@ -170,10 +174,18 @@ class _OwnerTabState extends State<OwnerTab> {
             InfoFieldWidget(
               title: AppLocalizations.of(context)!.nameString,
               controller: nameController,
+              inputFormatter: [
+                FilteringTextInputFormatter.allow(nameRegex),
+              ],
+              inputType: TextInputType.name,
             ),
             InfoFieldWidget(
               title: AppLocalizations.of(context)!.phoneNumberString,
               controller: phoneNumberController,
+              inputFormatter: [
+                FilteringTextInputFormatter.allow(phoneNumberRegex),
+              ],
+              inputType: TextInputType.number,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(

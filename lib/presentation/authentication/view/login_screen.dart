@@ -22,6 +22,7 @@ import 'package:globeporter/resources/app_api_keys.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -349,7 +350,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Expanded(
                         child: TextField(
                           inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp('[0-9]')),
+                            FilteringTextInputFormatter.allow(phoneNumberRegex),
                           ],
                           style: Theme.of(context).textTheme.bodyMedium,
                           controller: phoneController,

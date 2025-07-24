@@ -17,6 +17,7 @@ import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -174,7 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 textEditingController: nameController,
                 inputType: TextInputType.name,
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
+                  FilteringTextInputFormatter.allow(nameRegex),
                 ],
               ),
 

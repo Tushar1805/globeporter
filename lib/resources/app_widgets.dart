@@ -160,7 +160,7 @@ class CustomTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
         style: textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
-        inputFormatters: inputFormatters ?? [],
+        inputFormatters: inputFormatters,
         controller: textEditingController,
         keyboardType: inputType ?? TextInputType.name,
         cursorColor: cursorColor,
