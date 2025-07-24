@@ -86,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
     required final String phone,
     required final String dialCode,
   }) {
+    customPrint("Entered to validate phone number");
     final isValid = CountryUtils.validatePhoneNumber(phone, dialCode);
 
     customPrint("$dialCode $phone : isValid: $isValid");
@@ -123,6 +124,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           duration: 3,
                         );
                       } else {
+                        final country = CountryUtils.getCountryByDialCode(_selectedCountryCode);
+                        customPrint(
+                            "Country: ${country?.dialCode} : ${country?.phoneMaxLength}: ${country?.phoneMinLength}");
                         final validPhone = isPhoneValid(
                           phone: phoneController.text,
                           dialCode: _selectedCountryCode,
