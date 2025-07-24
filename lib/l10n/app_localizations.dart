@@ -502,6 +502,12 @@ abstract class AppLocalizations {
   /// **'Upload'**
   String get uploadString;
 
+  /// No description provided for @uploadedString.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get uploadedString;
+
   /// No description provided for @updateString.
   ///
   /// In en, this message translates to:
@@ -849,6 +855,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NEW'**
   String get newString;
+
+  /// No description provided for @retakeString.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get retakeString;
 }
 
 class _AppLocalizationsDelegate

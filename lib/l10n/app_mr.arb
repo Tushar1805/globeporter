@@ -73,6 +73,7 @@
     "orSignUpString": "किंवा सह साइन अप करा",
     "uploadDocumentString": "दस्तऐवज अपलोड करा",
     "uploadString": "अपलोड करा",
+    "uploadedString": "अपलोड केले",
     "updateString": "अपडेट करा",
     "notificationString": "सूचना",
     "todayString": "आज",
@@ -130,5 +131,6 @@
     "typeAMessageString": "एक संदेश टाइप करा",
     "newRideString": "नवीन राइड",
     "offerRideString": "राइड ऑफर करा",
-    "newString": "नवीन"
+    "newString": "नवीन",
+    "retakeString": "पुन्हा घ्या"
 }

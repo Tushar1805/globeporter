@@ -8,9 +8,11 @@ class UploadWidget extends StatelessWidget {
     super.key,
     required this.text,
     required this.onTap,
+    required this.uploaded,
   });
   final String text;
   final VoidCallback onTap;
+  final bool uploaded;
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +29,21 @@ class UploadWidget extends StatelessWidget {
               onPressed: onTap,
               child: Row(
                 children: [
-                  Icon(Icons.camera_alt_outlined),
+                  Icon(
+                    Icons.camera_alt_outlined,
+                    color: uploaded ? primaryColor : greyTextColor,
+                  ),
                   const SizedBox(
                     width: 5,
                   ),
                   Text(
-                    AppLocalizations.of(context)!.uploadString,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: primaryColor),
+                    uploaded
+                        ? AppLocalizations.of(context)!.uploadedString
+                        : AppLocalizations.of(context)!.uploadString,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: uploaded ? primaryColor : greyTextColor),
                   )
                 ],
               ),

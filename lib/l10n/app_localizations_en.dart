@@ -218,6 +218,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadString => 'Upload';
 
   @override
+  String get uploadedString => 'Uploaded';
+
+  @override
   String get updateString => 'Update';
 
   @override
@@ -391,4 +394,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newString => 'NEW';
+
+  @override
+  String get retakeString => 'Retake';
 }

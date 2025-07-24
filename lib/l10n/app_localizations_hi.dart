@@ -217,6 +217,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get uploadString => 'अपलोड करें';
 
   @override
+  String get uploadedString => 'अपलोड किए गए';
+
+  @override
   String get updateString => 'अद्यतन करें';
 
   @override
@@ -390,4 +393,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get newString => 'नया';
+
+  @override
+  String get retakeString => 'फिर से ले';
 }

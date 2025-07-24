@@ -25,6 +25,7 @@ import 'package:globeporter/presentation/driver/view/owner_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/start_trip_screen.dart';
 import 'package:globeporter/presentation/driver/view/trip_info_screen.dart';
 import 'package:globeporter/presentation/driver/widgets/full_image_preview.dart';
+import 'package:globeporter/presentation/driver/widgets/image_review_screen.dart';
 import 'package:globeporter/presentation/driver/widgets/normal_upload_screen.dart';
 import 'package:globeporter/presentation/settings/view/wallet_screen.dart';
 import 'package:globeporter/presentation/notification/view/notification_screen.dart';
@@ -355,6 +356,24 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: FullImagePreviewScreen(
             imageFile: params?['imageFile'] as File,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      name: imageReviewScreen,
+      path: imageReviewScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        // Ensure function is present
+        final void Function(File?, bool?) onCaptured =
+            (params?['onSubmit'] as void Function(File?, bool?));
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: ImageReviewScreen(
+            imageFile: params?['imageFile'] as File,
+            isFront: params?['isFront'] as bool,
+            onSubmit: onCaptured,
           ),
         );
       },

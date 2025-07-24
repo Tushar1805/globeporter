@@ -210,6 +210,7 @@ class _OwnerTabState extends State<OwnerTab> {
             ),
             UploadWidget(
               text: AppLocalizations.of(context)!.ownerAdhaarCardString,
+              uploaded: (frontAdhaar != null && backAdhaar != null),
               onTap: () {
                 context.pushNamed(
                   uploadDocumentScreen,
@@ -243,6 +244,7 @@ class _OwnerTabState extends State<OwnerTab> {
             ),
             UploadWidget(
               text: AppLocalizations.of(context)!.ownerPanCardString,
+              uploaded: (frontPan != null && backPan != null),
               onTap: () {
                 context.pushNamed(
                   uploadDocumentScreen,
@@ -276,6 +278,7 @@ class _OwnerTabState extends State<OwnerTab> {
             UploadWidget(
               text:
                   '${AppLocalizations.of(context)!.ownerString} ${AppLocalizations.of(context)!.photoString}',
+              uploaded: ownerPhoto != null,
               onTap: () {
                 context.pushNamed(
                   normalUploadScreen,

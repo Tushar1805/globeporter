@@ -216,6 +216,9 @@ class AppLocalizationsMr extends AppLocalizations {
   String get uploadString => 'अपलोड करा';
 
   @override
+  String get uploadedString => 'अपलोड केले';
+
+  @override
   String get updateString => 'अपडेट करा';
 
   @override
@@ -389,4 +392,7 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get newString => 'नवीन';
+
+  @override
+  String get retakeString => 'पुन्हा घ्या';
 }

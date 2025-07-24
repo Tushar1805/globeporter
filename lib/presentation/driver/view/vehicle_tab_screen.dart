@@ -258,6 +258,7 @@ class _VehicleTabState extends State<VehicleTab> {
               ),
               UploadWidget(
                 text: AppLocalizations.of(context)!.uploadRcString,
+                uploaded: (frontRc != null && backRc != null),
                 onTap: () {
                   context.pushNamed(
                     uploadDocumentScreen,
@@ -290,6 +291,7 @@ class _VehicleTabState extends State<VehicleTab> {
               ),
               UploadWidget(
                 text: AppLocalizations.of(context)!.vehiclePhotoString,
+                uploaded: (vehiclePhoto != null),
                 onTap: () {
                   context.pushNamed(
                     normalUploadScreen,

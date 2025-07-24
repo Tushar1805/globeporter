@@ -136,6 +136,8 @@
     "@orSignUpString": {},
     "uploadDocumentString": "Upload Document",
     "uploadString": "Upload",
+    "uploadedString": "Uploaded",
+    "@uploadedString": {},
     "@uploadString": {},
     "@uploadDocumentString": {},
     "updateString": "Update",
@@ -253,5 +255,7 @@
     "offerRideString": "OFFER RIDE",
     "@offerRideString": {},
     "newString": "NEW",
-    "@newString": {}
+    "@newString": {},
+    "retakeString": "Retake",
+    "@retakeString": {}
 }

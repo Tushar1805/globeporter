@@ -111,6 +111,7 @@ class _DriverTabState extends State<DriverTab> {
             ),
             UploadWidget(
               text: AppLocalizations.of(context)!.driverAdhaarCardString,
+              uploaded: (frontAdhaar != null && backAdhaar != null),
               onTap: () {
                 context.pushNamed(
                   uploadDocumentScreen,
@@ -143,6 +144,7 @@ class _DriverTabState extends State<DriverTab> {
             ),
             UploadWidget(
               text: AppLocalizations.of(context)!.driverPanCardString,
+              uploaded: (frontPan != null && backPan != null),
               onTap: () {
                 setState(() {
                   loading = false;
@@ -178,6 +180,7 @@ class _DriverTabState extends State<DriverTab> {
             ),
             UploadWidget(
               text: AppLocalizations.of(context)!.driverLicenceString,
+              uploaded: (frontLicence != null && backLicence != null),
               onTap: () {
                 context.pushNamed(
                   uploadDocumentScreen,
@@ -210,6 +213,7 @@ class _DriverTabState extends State<DriverTab> {
             ),
             UploadWidget(
               text: AppLocalizations.of(context)!.driverPhotoString,
+              uploaded: driverPhoto != null,
               onTap: () {
                 context.pushNamed(
                   normalUploadScreen,

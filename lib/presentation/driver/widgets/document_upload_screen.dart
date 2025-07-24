@@ -64,12 +64,47 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
 
   Future<void> _pickFromGallery() async {
     final XFile? pic = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pic != null) _storeCapturedImage(File(pic.path));
+    final file = pic != null ? File(pic.path) : null;
+    // if (pic != null) _storeCapturedImage(File(pic.path));
+    if (file != null) {
+      _openImagePreview(file);
+    }
   }
 
   Future<void> _capture() async {
     final XFile pic = await _controller.takePicture();
-    _storeCapturedImage(File(pic.path));
+    final file = File(pic.path);
+    // _storeCapturedImage(File(pic.path));
+    _openImagePreview(file);
+  }
+
+  void _openImagePreview(File file) async {
+    final result = await context.pushNamed(imageReviewScreen, extra: {
+      'imageFile': file,
+      'isFront': _isFront,
+      'onSubmit': (submittedFile, isFront) {},
+    });
+
+    if (result != null && result is Map) {
+      _storeCapturedImage(result['file']);
+
+      // Auto-switch to back side if front image was just captured
+      if (result['isFront'] == true) {
+        setState(() {
+          _isFront = false;
+
+          // Update hint text
+          if (hint!.contains(AppLocalizations.of(context)!.frontSideString)) {
+            hint = widget.hintText.replaceAll(
+              AppLocalizations.of(context)!.frontSideString,
+              AppLocalizations.of(context)!.backSide,
+            );
+          }
+        });
+      } else {
+        context.pop();
+      }
+    }
   }
 
   void _storeCapturedImage(File file) {
@@ -87,6 +122,7 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black54,

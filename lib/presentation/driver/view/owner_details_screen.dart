@@ -1,5 +1,7 @@
+import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/view/driver_tab_screen.dart';
 import 'package:globeporter/presentation/driver/view/owner_tab_screen.dart';
 import 'package:globeporter/presentation/driver/view/vehicle_tab_screen.dart';
@@ -45,6 +47,7 @@ class OwnerDetailsScreen extends StatefulWidget {
 
 class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
   final PageController _pageController = PageController();
+  final authCubit = sl<AuthCubit>();
   int currentIndex = 0;
   int maxAllowedIndex = 0;
   void animateToPage(int index) {
@@ -93,6 +96,11 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
                 } else {
                   int stepIndex = index ~/ 2;
                   bool isSelected = currentIndex == stepIndex;
+                  final isUploaded = stepIndex == 0
+                      ? authCubit.ownerDetailsFilled
+                      : stepIndex == 1
+                          ? authCubit.vehicleDetailsFilled
+                          : authCubit.driverDetailsFilled;
 
                   return GestureDetector(
                     onTap: () {
@@ -107,18 +115,28 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
                           width: 30,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: isSelected ? primaryColor : Colors.white,
-                            border: Border.all(color: isSelected ? primaryColor : greyTextColor),
+                            color: isUploaded ? primaryColor : Colors.white,
+                            border: Border.all(
+                                color: isUploaded
+                                    ? primaryColor
+                                    : isSelected
+                                        ? primaryColor
+                                        : greyTextColor),
                             shape: BoxShape.circle,
                           ),
                           child: Center(
-                            child: Text(
-                              '${stepIndex + 1}',
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : greyTextColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: isUploaded
+                                ? Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                  )
+                                : Text(
+                                    '${stepIndex + 1}',
+                                    style: TextStyle(
+                                      color: isSelected ? primaryColor : greyTextColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 6),
