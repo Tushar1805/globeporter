@@ -271,20 +271,20 @@ class _NewRideScreenState extends State<NewRideScreen> {
                           ],
                         ),
                       ),
-                      const Spacer(),
-                      const Icon(Icons.chair, size: 18),
-                      const SizedBox(width: 5),
-                      IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: () => setState(() {
-                          if (seats > 1) seats--;
-                        }),
-                      ),
-                      Text("$seats"),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () => setState(() => seats++),
-                      ),
+                      // const Spacer(),
+                      // const Icon(Icons.chair, size: 18),
+                      // const SizedBox(width: 5),
+                      // IconButton(
+                      //   icon: const Icon(Icons.remove),
+                      //   onPressed: () => setState(() {
+                      //     if (seats > 1) seats--;
+                      //   }),
+                      // ),
+                      // Text("$seats"),
+                      // IconButton(
+                      //   icon: const Icon(Icons.add),
+                      //   onPressed: () => setState(() => seats++),
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -292,17 +292,17 @@ class _NewRideScreenState extends State<NewRideScreen> {
                   // Fare and Offer Button
                   Row(
                     children: [
-                      const Icon(Icons.currency_rupee, size: 20),
-                      const Text("104",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                      const SizedBox(width: 10),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                            color: primaryColor, borderRadius: BorderRadius.circular(6)),
-                        child: Text(AppLocalizations.of(context)!.newString,
-                            style: TextStyle(color: Colors.white, fontSize: 12)),
-                      ),
+                      // const Icon(Icons.currency_rupee, size: 20),
+                      // const Text("104",
+                      //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      // const SizedBox(width: 10),
+                      // Container(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      //   decoration: BoxDecoration(
+                      //       color: primaryColor, borderRadius: BorderRadius.circular(6)),
+                      //   child: Text(AppLocalizations.of(context)!.newString,
+                      //       style: TextStyle(color: Colors.white, fontSize: 12)),
+                      // ),
                       const Spacer(),
                       ElevatedButton(
                         onPressed: () {},
