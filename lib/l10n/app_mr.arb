@@ -132,5 +132,14 @@
     "newRideString": "नवीन राइड",
     "offerRideString": "राइड ऑफर करा",
     "newString": "नवीन",
-    "retakeString": "पुन्हा घ्या"
+    "retakeString": "पुन्हा घ्या",
+    "hiString": "नमस्कार",
+    "welecomeToString": "मध्ये आपले स्वागत आहे",
+    "fewStepsAwayString": "तुम्ही तुमचा पहिला प्रवास सुरू करण्याच्या अगदी काही पावलांवर आहात",
+    "etcString": "इत्यादी",
+    "verifiedString": "✔ सत्यापित",
+    "pendingString": "प्रलंबित",
+    "verificationString": "सत्यापन",
+    "verificationInProcessString": "पडताळणी प्रक्रियेत आहे",
+    "validString": "वैध"
 }

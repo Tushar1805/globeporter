@@ -9,7 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
 import 'package:globeporter/resources/app_regex.dart';
@@ -36,7 +37,7 @@ class _DriverTabState extends State<DriverTab> {
   File? backLicence;
   File? driverPhoto;
 
-  final authCubit = sl<AuthCubit>();
+  final driverCubit = sl<DriverCubit>();
   FToast? fToast;
   bool loading = false;
   String? errorMessage;
@@ -46,16 +47,16 @@ class _DriverTabState extends State<DriverTab> {
     fToast = FToast();
     fToast!.init(context);
 
-    nameController.text = authCubit.driverName ?? '';
-    phoneNumberController.text = authCubit.driverPhoneNumber ?? '';
-    licenceNumberController.text = authCubit.driverLicenceNumber ?? '';
-    frontAdhaar = authCubit.driverFrontAdhaar;
-    backAdhaar = authCubit.driverBackAdhaar;
-    frontPan = authCubit.driverFrontPan;
-    backPan = authCubit.driverBackPan;
-    frontLicence = authCubit.driverFrontLicence;
-    backLicence = authCubit.driverBackLicence;
-    driverPhoto = authCubit.driverPhoto;
+    nameController.text = driverCubit.driverName ?? '';
+    phoneNumberController.text = driverCubit.driverPhoneNumber ?? '';
+    licenceNumberController.text = driverCubit.driverLicenceNumber ?? '';
+    frontAdhaar = driverCubit.driverFrontAdhaar;
+    backAdhaar = driverCubit.driverBackAdhaar;
+    frontPan = driverCubit.driverFrontPan;
+    backPan = driverCubit.driverBackPan;
+    frontLicence = driverCubit.driverFrontLicence;
+    backLicence = driverCubit.driverBackLicence;
+    driverPhoto = driverCubit.driverPhoto;
 
     super.initState();
   }
@@ -75,12 +76,15 @@ class _DriverTabState extends State<DriverTab> {
                 FilteringTextInputFormatter.allow(nameRegex),
               ],
               inputType: TextInputType.name,
+              hint: 'eg. Jon Doe',
             ),
             InfoFieldWidget(
               title: AppLocalizations.of(context)!.phoneNumberString,
               controller: phoneNumberController,
+              hint: '91XXXXXXXX',
               inputFormatter: [
                 FilteringTextInputFormatter.allow(phoneNumberRegex),
+                LengthLimitingTextInputFormatter(10),
               ],
               inputType: TextInputType.number,
             ),
@@ -234,14 +238,14 @@ class _DriverTabState extends State<DriverTab> {
               height: 20,
             ),
             BlocListener(
-              bloc: authCubit,
+              bloc: driverCubit,
               listener: (final context, final state) {
-                if (state is AllDetailsLoadingState) {
+                if (state is DriverDetailsLoadingState) {
                   setState(() {
                     loading = true;
                   });
-                } else if (state is AllDetailsLoadedState) {
-                  context.push(driverDashboard);
+                } else if (state is DriverDetailsLoadedState) {
+                  context.push(documentVerificationScreen);
                   setState(() {
                     loading = false;
                   });
@@ -365,7 +369,7 @@ class _DriverTabState extends State<DriverTab> {
                             duration: 3,
                           );
                         } else {
-                          authCubit.saveDriverDetails(
+                          driverCubit.saveDriverDetails(
                             driverName: nameController.text,
                             driverPhoneNumber: phoneNumberController.text,
                             driverLicenceNumber: licenceNumberController.text,
@@ -378,7 +382,7 @@ class _DriverTabState extends State<DriverTab> {
                             driverPhoto: driverPhoto ?? File(''),
                           );
 
-                          await authCubit.submitOwnerDriverVehiclDetails();
+                          await driverCubit.submitDriverDetails();
                         }
                       },
                       textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

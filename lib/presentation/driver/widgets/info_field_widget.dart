@@ -9,11 +9,15 @@ class InfoFieldWidget extends StatelessWidget {
     required this.controller,
     this.inputFormatter,
     this.inputType,
+    this.hint,
+    this.textCapitalization
   });
   final String title;
   final TextEditingController controller;
   final List<TextInputFormatter>? inputFormatter;
   final TextInputType? inputType;
+  final String? hint;
+  final TextCapitalization? textCapitalization;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +49,8 @@ class InfoFieldWidget extends StatelessWidget {
           textEditingController: controller,
           inputFormatters: inputFormatter,
           inputType: inputType,
+          hint: hint,
+          textCapitalization: textCapitalization,
         ),
         const SizedBox(
           height: 20,

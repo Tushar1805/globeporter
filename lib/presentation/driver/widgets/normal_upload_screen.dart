@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -64,12 +66,33 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
 
   Future<void> _capture() async {
     final XFile pic = await _controller.takePicture();
-    _storeImage(File(pic.path));
+    final file = File(pic.path);
+    _openImagePreview(file);
   }
 
   Future<void> _pickFromGallery() async {
     final XFile? pic = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pic != null) _storeImage(File(pic.path));
+    final file = pic != null ? File(pic.path) : null;
+    if (file != null) {
+      _openImagePreview(file);
+    }
+  }
+
+  void _openImagePreview(File file) async {
+    final result = await context.pushNamed(imageReviewScreen, extra: {
+      'imageFile': file,
+      'isFront': true,
+      'onSubmit': (submittedFile, isFront) {},
+    });
+
+    if (result != null && result is Map) {
+      _storeImage(result['file']);
+
+      // Here isFront true means the the image is submitted
+      if (result['isFront'] == true) {
+        context.pop();
+      }
+    }
   }
 
   void _storeImage(File file) {

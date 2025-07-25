@@ -5,6 +5,9 @@ class OtpResponseModel {
   final String? token;
   final int? userType;
   final bool? detailsFilled;
+  final int? ownerDetailsFilled;
+  final int? vehicleDetailsFilled;
+  final int? driverDetailsFilled;
 
   OtpResponseModel({
     this.status,
@@ -13,6 +16,9 @@ class OtpResponseModel {
     this.token,
     this.userType,
     this.detailsFilled,
+    this.ownerDetailsFilled,
+    this.vehicleDetailsFilled,
+    this.driverDetailsFilled,
   });
 
   OtpResponseModel.fromJson(final Map<String, dynamic>? json)
@@ -21,7 +27,10 @@ class OtpResponseModel {
         message = json?['message'] as String?,
         token = json?['token'] as String?,
         userType = json?['userType'] as int?,
-        detailsFilled = json?['details_filled'] as bool?;
+        detailsFilled = json?['details_filled'] as bool?,
+        ownerDetailsFilled = json?['vehicleDetail_owner'] as int?,
+        vehicleDetailsFilled = json?['vehicleDetail_vehicle'] as int?,
+        driverDetailsFilled = json?['vehicleDetail_driver'] as int?;
 
   Map<String, dynamic> toJson() => {
         'status': status,
@@ -29,6 +38,9 @@ class OtpResponseModel {
         'message': message,
         'token': token,
         'userType': userType,
-        'details_filled': detailsFilled
+        'details_filled': detailsFilled,
+        'vehicleDetail_owner': ownerDetailsFilled,
+        'vehicleDetail_vehicle': vehicleDetailsFilled,
+        'vehicleDetail_driver': driverDetailsFilled,
       };
 }

@@ -1,17 +1,21 @@
 import 'dart:io';
 
+import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -35,26 +39,27 @@ class _VehicleTabState extends State<VehicleTab> {
   File? vehiclePhoto;
   VehicleTypeResponseModel? vehicleTypeResponse;
 
-  final authCubit = sl<AuthCubit>();
+  final driverCubit = sl<DriverCubit>();
   FToast? fToast;
+  bool loading = false;
 
   void getVehicleType() async {
-    await authCubit.getVehicleType();
+    await driverCubit.getVehicleType();
   }
 
   @override
   void initState() {
     fToast = FToast();
     fToast!.init(context);
-    vehicleNumberController.text = authCubit.vehicleNo ?? '';
-    vehicleRcController.text = authCubit.vehicleRC ?? '';
+    vehicleNumberController.text = driverCubit.vehicleNo ?? '';
+    vehicleRcController.text = driverCubit.vehicleRC ?? '';
     selectedVehicleType = vehicleTypeResponse?.data?.firstWhere(
-      (d) => d?.id.toString() == authCubit.vehicleTypeId,
+      (d) => d?.id.toString() == driverCubit.vehicleTypeId,
       orElse: () => null,
     );
-    frontRc = authCubit.vehicleFrontRC;
-    backRc = authCubit.vehicleBackRC;
-    vehiclePhoto = authCubit.vehiclePhoto;
+    frontRc = driverCubit.vehicleFrontRC;
+    backRc = driverCubit.vehicleBackRC;
+    vehiclePhoto = driverCubit.vehiclePhoto;
 
     getVehicleType();
     super.initState();
@@ -65,94 +70,114 @@ class _VehicleTabState extends State<VehicleTab> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white60,
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          CustomElevatedButton(
-            name: 'Next',
-            borderRadius: 4,
-            alignment: Alignment.bottomRight,
-            onPressed: () {
-              var uploadMsg =
-                  '${AppLocalizations.of(context)!.pleaseUploadString} ${AppLocalizations.of(context)!.vehicleString.toLowerCase()}';
-              var enterMsg = AppLocalizations.of(context)!.pleaseEnterString;
-              if (vehicleNumberController.text.isEmpty) {
-                showToast(
-                  context: context,
-                  fToast: fToast!,
-                  msg: '$enterMsg ${AppLocalizations.of(context)!.vehicleNo.toLowerCase()}',
-                  duration: 3,
-                );
-              } else if (vehicleRcController.text.isEmpty) {
-                showToast(
-                  context: context,
-                  fToast: fToast!,
-                  msg: '$enterMsg ${AppLocalizations.of(context)!.vehicleRcString.toLowerCase()}',
-                  duration: 3,
-                );
-              } else if (selectedVehicleType == null) {
-                showToast(
-                  context: context,
-                  fToast: fToast!,
-                  msg: '$enterMsg ${AppLocalizations.of(context)!.vehicleTypeString.toLowerCase()}',
-                  duration: 3,
-                );
-              } else if (frontRc == null && backRc == null) {
-                showToast(
-                  context: context,
-                  fToast: fToast!,
-                  msg: '$uploadMsg ${AppLocalizations.of(context)!.rcString}',
-                  duration: 3,
-                );
-              } else if (frontRc == null) {
-                showToast(
-                  context: context,
-                  fToast: fToast!,
-                  msg:
-                      '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.rcString}',
-                  duration: 3,
-                );
-              } else if (backRc == null) {
-                showToast(
-                  context: context,
-                  fToast: fToast!,
-                  msg:
-                      '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()} ${AppLocalizations.of(context)!.rcString}',
-                  duration: 3,
-                );
-              } else if (vehiclePhoto == null) {
-                showToast(
-                  context: context,
-                  fToast: fToast!,
-                  msg: '$uploadMsg  ${AppLocalizations.of(context)!.photoString}',
-                  duration: 3,
-                );
-              } else {
-                authCubit.saveVehicleDetails(
-                  vehicleNo: vehicleNumberController.text,
-                  vehicleRC: vehicleRcController.text,
-                  vehicleTypeId: selectedVehicleType!.id.toString(),
-                  vehicleFrontRC: frontRc ?? File(''),
-                  vehicleBackRC: backRc ?? File(''),
-                  vehiclePhoto: vehiclePhoto ?? File(''),
-                );
-                widget.animateToPage();
-              }
-            },
-            textWidget: Image.asset(
-              arrowForward,
-              width: size.width * 0.13,
-              height: size.height * 0.017,
+      floatingActionButton: loading
+          ? SizedBox(
+              height: size.width * 0.15,
+              child: Align(alignment: Alignment.bottomCenter, child: LoadingWithoutText()),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CustomElevatedButton(
+                  name: AppLocalizations.of(context)!.goString,
+                  borderRadius: 4,
+                  alignment: Alignment.bottomRight,
+                  onPressed: () async {
+                    var uploadMsg =
+                        '${AppLocalizations.of(context)!.pleaseUploadString} ${AppLocalizations.of(context)!.vehicleString.toLowerCase()}';
+                    var enterMsg =
+                        '${AppLocalizations.of(context)!.pleaseEnterString} ${AppLocalizations.of(context)!.validString}';
+                    if (vehicleNumberController.text.isEmpty ||
+                        !vehicleNumberController.text.isValidVehicleNumber()) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: '$enterMsg ${AppLocalizations.of(context)!.vehicleNo.toLowerCase()}',
+                        duration: 3,
+                      );
+                    } else if (vehicleRcController.text.isEmpty ||
+                        !vehicleRcController.text.isValidRCNumber()) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg:
+                            '$enterMsg ${AppLocalizations.of(context)!.vehicleRcString.toLowerCase()}',
+                        duration: 3,
+                      );
+                    } else if (selectedVehicleType == null) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg:
+                            '$enterMsg ${AppLocalizations.of(context)!.vehicleTypeString.toLowerCase()}',
+                        duration: 3,
+                      );
+                    } else if (frontRc == null && backRc == null) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: '$uploadMsg ${AppLocalizations.of(context)!.rcString}',
+                        duration: 3,
+                      );
+                    } else if (frontRc == null) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg:
+                            '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.rcString}',
+                        duration: 3,
+                      );
+                    } else if (backRc == null) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg:
+                            '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()} ${AppLocalizations.of(context)!.rcString}',
+                        duration: 3,
+                      );
+                    } else if (vehiclePhoto == null) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: '$uploadMsg  ${AppLocalizations.of(context)!.photoString}',
+                        duration: 3,
+                      );
+                    } else {
+                      driverCubit.saveVehicleDetails(
+                        vehicleNo: vehicleNumberController.text,
+                        vehicleRC: vehicleRcController.text,
+                        vehicleTypeId: selectedVehicleType!.id.toString(),
+                        vehicleFrontRC: frontRc ?? File(''),
+                        vehicleBackRC: backRc ?? File(''),
+                        vehiclePhoto: vehiclePhoto ?? File(''),
+                      );
+                      await driverCubit.submitVehicleDetails();
+                    }
+                  },
+                  textWidget: Image.asset(
+                    arrowForward,
+                    width: size.width * 0.13,
+                    height: size.height * 0.017,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
       body: BlocListener(
-        bloc: authCubit,
+        bloc: driverCubit,
         listener: (final context, final state) {
           if (state is VehicleTypeLoadedState) {
             setState(() {
               vehicleTypeResponse = state.data as VehicleTypeResponseModel?;
+            });
+            customPrint("Vehicle type data: ${vehicleTypeResponse?.data?[0]?.name}");
+          } else if (state is VehicleDetailsLoadedState) {
+            widget.animateToPage();
+            setState(() {
+              loading = false;
+            });
+          } else if (state is VehicleDetailsLoadingState) {
+            setState(() {
+              loading = true;
             });
           }
         },
@@ -163,10 +188,22 @@ class _VehicleTabState extends State<VehicleTab> {
               InfoFieldWidget(
                 title: AppLocalizations.of(context)!.vehicleNo,
                 controller: vehicleNumberController,
+                hint: 'MP20VSXXXX',
+                textCapitalization: TextCapitalization.characters,
+                inputFormatter: [
+                  FilteringTextInputFormatter.allow(RegExp('[A-Z0-9]')),
+                  LengthLimitingTextInputFormatter(10), // Max length for format like MP20VS1234
+                ],
               ),
               InfoFieldWidget(
                 title: AppLocalizations.of(context)!.vehicleRcString,
                 controller: vehicleRcController,
+                hint: 'FSSDGGSA3XXXXX',
+                textCapitalization: TextCapitalization.characters,
+                inputFormatter: [
+                  FilteringTextInputFormatter.allow(RegExp('[A-Z0-9]')),
+                  LengthLimitingTextInputFormatter(17),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),

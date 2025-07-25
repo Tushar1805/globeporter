@@ -4,3 +4,6 @@ const userIdKey = 'user_id';
 const accessTokenKey = 'access_token';
 const userTypeKey = 'user_type';
 const detailsFilledKey = 'details_filled';
+const ownerDetailsFilledKey = 'owner_details_filled';
+const vehicleDetailsFilledKey = 'vehicle_details_filled';
+const driverDetailsFilledKey = 'driver_details_filled';

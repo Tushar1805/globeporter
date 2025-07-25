@@ -397,4 +397,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retakeString => 'Retake';
+
+  @override
+  String get hiString => 'Hi';
+
+  @override
+  String get welecomeToString => 'welcome to';
+
+  @override
+  String get fewStepsAwayString =>
+      'You are now a few steps away from getting your first trip';
+
+  @override
+  String get etcString => 'etc.';
+
+  @override
+  String get verifiedString => '✔ Verified';
+
+  @override
+  String get pendingString => 'Pending';
+
+  @override
+  String get verificationString => 'Verification';
+
+  @override
+  String get verificationInProcessString => 'Verification is in process';
+
+  @override
+  String get validString => 'valid';
 }

@@ -245,9 +245,30 @@ class _OtpScreenState extends State<OtpScreen> {
                             value: data?.detailsFilled ?? false ? '1' : '0',
                             key: detailsFilledKey,
                           );
-                          if (data?.detailsFilled ?? false) {
-                            context.go(driverDashboard);
+                          await storage.saveValue(
+                            value: data?.ownerDetailsFilled.toString(),
+                            key: ownerDetailsFilledKey,
+                          );
+                          await storage.saveValue(
+                            value: data?.vehicleDetailsFilled.toString(),
+                            key: vehicleDetailsFilledKey,
+                          );
+                          await storage.saveValue(
+                            value: data?.driverDetailsFilled.toString(),
+                            key: driverDetailsFilledKey,
+                          );
+
+                          if (data?.ownerDetailsFilled == 1 &&
+                              data?.vehicleDetailsFilled == 1 &&
+                              data?.driverDetailsFilled == 1) {
+                            // navigate to verify screen
+                          } else if (data?.ownerDetailsFilled == 1 &&
+                              data?.vehicleDetailsFilled == 1) {
+                            // navigate to driver tab
+                          } else if (data?.ownerDetailsFilled == 1) {
+                            // navigate to vehicle tab
                           } else {
+                            // naviage to owner tab
                             context.go(ownerDetailsScreen);
                           }
                         } else {

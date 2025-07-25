@@ -16,6 +16,7 @@ import 'package:globeporter/presentation/customer/view/customer_profile_screen.d
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
+import 'package:globeporter/presentation/driver/view/document_verification_screen.dart';
 import 'package:globeporter/presentation/driver/view/new_ride_screen.dart';
 import 'package:globeporter/presentation/driver/widgets/document_upload_screen.dart';
 import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
@@ -303,10 +304,15 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: ownerDetailsScreen,
       path: ownerDetailsScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const OwnerDetailsScreen(),
-      ),
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: OwnerDetailsScreen(
+            currentScreenIndex: params?['currentIndex'] as int?,
+          ),
+        );
+      },
     ),
     GoRoute(
       name: uploadDocumentScreen,
@@ -392,6 +398,14 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const NewRideScreen(),
+      ),
+    ),
+    GoRoute(
+      name: documentVerificationScreen,
+      path: documentVerificationScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child:  DocumentVerificationScreen(),
       ),
     ),
   ],

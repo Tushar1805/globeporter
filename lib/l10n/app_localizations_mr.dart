@@ -395,4 +395,32 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get retakeString => 'पुन्हा घ्या';
+
+  @override
+  String get hiString => 'नमस्कार';
+
+  @override
+  String get welecomeToString => 'मध्ये आपले स्वागत आहे';
+
+  @override
+  String get fewStepsAwayString =>
+      'तुम्ही तुमचा पहिला प्रवास सुरू करण्याच्या अगदी काही पावलांवर आहात';
+
+  @override
+  String get etcString => 'इत्यादी';
+
+  @override
+  String get verifiedString => '✔ सत्यापित';
+
+  @override
+  String get pendingString => 'प्रलंबित';
+
+  @override
+  String get verificationString => 'सत्यापन';
+
+  @override
+  String get verificationInProcessString => 'पडताळणी प्रक्रियेत आहे';
+
+  @override
+  String get validString => 'वैध';
 }

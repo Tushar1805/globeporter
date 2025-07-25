@@ -396,4 +396,32 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get retakeString => 'फिर से ले';
+
+  @override
+  String get hiString => 'नमस्ते';
+
+  @override
+  String get welecomeToString => 'में आपका स्वागत है';
+
+  @override
+  String get fewStepsAwayString =>
+      'आप अपनी पहली यात्रा शुरू करने से बस कुछ कदम दूर हैं';
+
+  @override
+  String get etcString => 'आदि';
+
+  @override
+  String get verifiedString => '✔ सत्यापित';
+
+  @override
+  String get pendingString => 'विचाराधीन';
+
+  @override
+  String get verificationString => 'सत्यापन';
+
+  @override
+  String get verificationInProcessString => 'सत्यापन प्रक्रिया में है';
+
+  @override
+  String get validString => 'वैध';
 }

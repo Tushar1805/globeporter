@@ -133,18 +133,18 @@ class CustomLocationBox extends StatelessWidget {
 }
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({
-    super.key,
-    required this.textEditingController,
-    this.maxLines,
-    this.inputType,
-    this.borderRadius,
-    this.textStyle,
-    this.cursorColor,
-    this.readOnly,
-    this.onChanged,
-    this.inputFormatters,
-  });
+  const CustomTextField(
+      {super.key,
+      required this.textEditingController,
+      this.maxLines,
+      this.inputType,
+      this.borderRadius,
+      this.textStyle,
+      this.cursorColor,
+      this.readOnly,
+      this.onChanged,
+      this.inputFormatters,
+      this.hint, this.textCapitalization,});
   final TextEditingController textEditingController;
   final int? maxLines;
   final TextInputType? inputType;
@@ -154,31 +154,38 @@ class CustomTextField extends StatelessWidget {
   final bool? readOnly;
   final Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
+  final String? hint;
+  final TextCapitalization? textCapitalization;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
+        textCapitalization: textCapitalization ?? TextCapitalization.none,
         style: textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
         inputFormatters: inputFormatters,
         controller: textEditingController,
         keyboardType: inputType ?? TextInputType.name,
-        cursorColor: cursorColor,
+        cursorColor: cursorColor ?? primaryColor,
         maxLines: maxLines ?? 1,
         readOnly: readOnly ?? false,
         onChanged: onChanged ?? (val) {},
         decoration: InputDecoration(
-          prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.green),
-            borderRadius: BorderRadius.circular(borderRadius ?? 4),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.green),
-            borderRadius: BorderRadius.circular(borderRadius ?? 4),
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        ),
+            prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),
+            border: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.green),
+              borderRadius: BorderRadius.circular(borderRadius ?? 4),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.green),
+              borderRadius: BorderRadius.circular(borderRadius ?? 4),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            hint: Text(
+              hint ?? '',
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 14),
+            )),
       ),
     );
   }

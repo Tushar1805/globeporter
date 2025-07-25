@@ -10,6 +10,7 @@ const signUpScreen = '/signup_screen';
 const otpScreen = '/otp_screen';
 const driverDetailsScreen = '/driver_details_screen';
 const ownerDetailsScreen = '/owner_details_screen';
+const documentVerificationScreen = '/document_verification_screen';
 
 //* Customer Routes
 const customerDashboard = '/customer_dashboard';

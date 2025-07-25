@@ -30,7 +30,11 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> init() async {
     final accessToken = await storage.readValue(accessTokenKey);
     final langCode = await storage.readValue(languageCodeKey);
+    // TODO: this will change to isVerify
     final detailsFilled = await storage.readValue(detailsFilledKey);
+    final ownerDetailsFilled = await storage.readValue(ownerDetailsFilledKey);
+    final vehiclDetailsFilled = await storage.readValue(vehicleDetailsFilledKey);
+    final driverDetailsFilled = await storage.readValue(driverDetailsFilledKey);
     await Future.delayed(const Duration(seconds: 2), () {
       locationCubit.determinePosition();
     });
@@ -38,10 +42,27 @@ class _SplashScreenState extends State<SplashScreen> {
     if (accessToken != null) {
       await authCubit.getUserDetails(lang: langCode ?? 'en').then((final response) {
         if (response?.data?.userType != null && response?.data?.userType == 2) {
-          if (detailsFilled == '1') {
+          if (!(detailsFilled == '1')) {
             context.go(driverDashboard);
           } else {
-            context.go(ownerDetailsScreen);
+            if (ownerDetailsFilled == '1' &&
+                vehiclDetailsFilled == '1' &&
+                driverDetailsFilled == '1') {
+              context.go(documentVerificationScreen);
+            } else if (ownerDetailsFilled == '1' && vehiclDetailsFilled == '1') {
+              // navigate to driver tab
+              context.go(ownerDetailsScreen, extra: {
+                'currentIndex': 2,
+              });
+            } else if (ownerDetailsFilled == '1') {
+              // navigate to vehicle tab
+              context.go(ownerDetailsScreen, extra: {
+                'currentIndex': 1,
+              });
+            } else {
+              // naviage to owner tab
+              context.go(ownerDetailsScreen);
+            }
           }
         } else if (response?.data?.userType != null && response?.data?.userType == 1) {
           context.go(customerDashboard);

@@ -1,7 +1,7 @@
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
-import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/view/driver_tab_screen.dart';
 import 'package:globeporter/presentation/driver/view/owner_tab_screen.dart';
 import 'package:globeporter/presentation/driver/view/vehicle_tab_screen.dart';
@@ -39,7 +39,8 @@ class DottedLinePainter extends CustomPainter {
 }
 
 class OwnerDetailsScreen extends StatefulWidget {
-  const OwnerDetailsScreen({super.key});
+  const OwnerDetailsScreen({super.key, this.currentScreenIndex});
+  final int? currentScreenIndex;
 
   @override
   State<OwnerDetailsScreen> createState() => _OwnerDetailsScreenState();
@@ -47,7 +48,7 @@ class OwnerDetailsScreen extends StatefulWidget {
 
 class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
   final PageController _pageController = PageController();
-  final authCubit = sl<AuthCubit>();
+  final driverCubit = sl<DriverCubit>();
   int currentIndex = 0;
   int maxAllowedIndex = 0;
   void animateToPage(int index) {
@@ -57,6 +58,20 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.currentScreenIndex != null) {
+      setState(() {
+        currentIndex = widget.currentScreenIndex ?? 0;
+        maxAllowedIndex = currentIndex;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        animateToPage(currentIndex);
+      });
+    }
   }
 
   @override
@@ -73,7 +88,7 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
           '${labels[currentIndex]} ${AppLocalizations.of(context)!.detailsString}',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 18),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: whiteColor,
       ),
       body: Column(
         children: [
@@ -97,10 +112,10 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
                   int stepIndex = index ~/ 2;
                   bool isSelected = currentIndex == stepIndex;
                   final isUploaded = stepIndex == 0
-                      ? authCubit.ownerDetailsFilled
+                      ? driverCubit.ownerDetailsFilled
                       : stepIndex == 1
-                          ? authCubit.vehicleDetailsFilled
-                          : authCubit.driverDetailsFilled;
+                          ? driverCubit.vehicleDetailsFilled
+                          : driverCubit.driverDetailsFilled;
 
                   return GestureDetector(
                     onTap: () {

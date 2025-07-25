@@ -861,6 +861,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retake'**
   String get retakeString;
+
+  /// No description provided for @hiString.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi'**
+  String get hiString;
+
+  /// No description provided for @welecomeToString.
+  ///
+  /// In en, this message translates to:
+  /// **'welcome to'**
+  String get welecomeToString;
+
+  /// No description provided for @fewStepsAwayString.
+  ///
+  /// In en, this message translates to:
+  /// **'You are now a few steps away from getting your first trip'**
+  String get fewStepsAwayString;
+
+  /// No description provided for @etcString.
+  ///
+  /// In en, this message translates to:
+  /// **'etc.'**
+  String get etcString;
+
+  /// No description provided for @verifiedString.
+  ///
+  /// In en, this message translates to:
+  /// **'✔ Verified'**
+  String get verifiedString;
+
+  /// No description provided for @pendingString.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pendingString;
+
+  /// No description provided for @verificationString.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get verificationString;
+
+  /// No description provided for @verificationInProcessString.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification is in process'**
+  String get verificationInProcessString;
+
+  /// No description provided for @validString.
+  ///
+  /// In en, this message translates to:
+  /// **'valid'**
+  String get validString;
 }
 
 class _AppLocalizationsDelegate
