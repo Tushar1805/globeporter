@@ -82,6 +82,8 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
     final result = await context.pushNamed(imageReviewScreen, extra: {
       'imageFile': file,
       'isFront': _isFront,
+      'title':
+          '${widget.title} ${_isFront ? AppLocalizations.of(context)!.frontSideString : AppLocalizations.of(context)!.backSide}',
       'onSubmit': (submittedFile, isFront) {},
     });
 

@@ -4,6 +4,7 @@ import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -53,6 +54,7 @@ class _OtpScreenState extends State<OtpScreen> {
   final authCubit = sl<AuthCubit>();
   bool loading = false;
   FToast? fToast;
+  String errorMessage = '';
 
   @override
   void initState() {
@@ -298,6 +300,11 @@ class _OtpScreenState extends State<OtpScreen> {
                         context.go(customerDashboard);
                       }
                     }
+                  } else if (state is ErrorState) {
+                    setState(() {
+                      errorMessage = state.errorMessage;
+                      loading = false;
+                    });
                   }
                 },
                 child: loading
@@ -317,6 +324,19 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
               ),
               const SizedBox(height: 20),
+
+              errorMessage != ''
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Center(
+                        child: Text(
+                          errorMessage,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
 
               loading ? LoadingWithoutText() : SizedBox.shrink(),
             ],

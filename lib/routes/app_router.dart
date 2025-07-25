@@ -378,6 +378,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: ImageReviewScreen(
             imageFile: params?['imageFile'] as File,
+            title: params?['title'] as String,
             isFront: params?['isFront'] as bool,
             onSubmit: onCaptured,
           ),

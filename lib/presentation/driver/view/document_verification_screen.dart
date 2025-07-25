@@ -40,7 +40,7 @@ class DocumentVerificationScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          '${AppLocalizations.of(context)!.hiString} ${authCubit.userDetails?.data?.name}, ${AppLocalizations.of(context)!.welecomeToString} GlobePorter',
+          '${AppLocalizations.of(context)!.hiString} ${authCubit.userDetails?.data?.name ?? 'Jon Doe'}, ${AppLocalizations.of(context)!.welecomeToString} GlobePorter',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 20),
         ),
         centerTitle: false,

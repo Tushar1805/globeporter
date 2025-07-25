@@ -203,14 +203,18 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
                       currentIndex = 1;
                       maxAllowedIndex = 1;
                     });
-                    animateToPage(1);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      animateToPage(1);
+                    });
                   }),
                   VehicleTab(animateToPage: () {
                     setState(() {
                       currentIndex = 2;
                       maxAllowedIndex = 2;
                     });
-                    animateToPage(2);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      animateToPage(2);
+                    });
                   }),
                   DriverTab(),
                 ],

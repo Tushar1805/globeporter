@@ -171,7 +171,9 @@ class _VehicleTabState extends State<VehicleTab> {
             });
             customPrint("Vehicle type data: ${vehicleTypeResponse?.data?[0]?.name}");
           } else if (state is VehicleDetailsLoadedState) {
-            widget.animateToPage();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              widget.animateToPage();
+            });
             setState(() {
               loading = false;
             });

@@ -155,6 +155,7 @@ class DriverCubit extends BaseCubit {
       customPrint(response.toString());
 
       if (response?['status_code'] == 200) {
+        customPrint("Emitting owner details loaded state");
         emit(OwnerDetailsLoadedState(data: response));
       } else {
         emit(ErrorState('Details not submitted'));

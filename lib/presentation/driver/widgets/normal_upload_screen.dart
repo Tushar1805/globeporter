@@ -82,6 +82,7 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
     final result = await context.pushNamed(imageReviewScreen, extra: {
       'imageFile': file,
       'isFront': true,
+      'title': widget.title,
       'onSubmit': (submittedFile, isFront) {},
     });
 

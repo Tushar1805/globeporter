@@ -59,44 +59,48 @@ class _OwnerTabState extends State<OwnerTab> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Colors.white60,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: loading
-          ? SizedBox(
-              height: size.width * 0.15,
-              child: Align(alignment: Alignment.bottomCenter, child: LoadingWithoutText()),
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 30.0),
-                  child: CustomElevatedButton(
-                    name: AppLocalizations.of(context)!.notADriverString,
-                    borderRadius: 4,
-                    alignment: Alignment.bottomRight,
-                    onPressed: () async {
-                      authCubit.updateUserType(userType: '1');
-                      context.pushNamed(customerDashboard);
-                    },
+    return BlocListener(
+      bloc: driverCubit,
+      listener: (final context, final state) {
+        if (state is OwnerDetailsLoadedState) {
+          // WidgetsBinding.instance.addPostFrameCallback((_) {
+          //   widget.animateToPage();
+          // });
+          widget.animateToPage();
+          customPrint('Owner details loaded state');
+          setState(() {
+            loading = false;
+          });
+        } else if (state is OwnerDetailsLoadingState) {
+          setState(() {
+            loading = true;
+          });
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white60,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: loading
+            ? SizedBox(
+                height: size.width * 0.15,
+                child: Align(alignment: Alignment.bottomCenter, child: LoadingWithoutText()),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30.0),
+                    child: CustomElevatedButton(
+                      name: AppLocalizations.of(context)!.notADriverString,
+                      borderRadius: 4,
+                      alignment: Alignment.bottomRight,
+                      onPressed: () async {
+                        authCubit.updateUserType(userType: '1');
+                        context.pushNamed(customerDashboard);
+                      },
+                    ),
                   ),
-                ),
-                BlocListener(
-                  bloc: driverCubit,
-                  listener: (final context, final state) {
-                    if (state is OwnerDetailsLoadedState) {
-                      widget.animateToPage();
-                      setState(() {
-                        loading = false;
-                      });
-                    } else if (state is OwnerDetailsLoadingState) {
-                      setState(() {
-                        loading = true;
-                      });
-                    }
-                  },
-                  child: CustomElevatedButton(
+                  CustomElevatedButton(
                     name: AppLocalizations.of(context)!.goString,
                     borderRadius: 4,
                     alignment: Alignment.bottomRight,
@@ -193,146 +197,146 @@ class _OwnerTabState extends State<OwnerTab> {
                       height: size.height * 0.017,
                     ),
                   ),
+                ],
+              ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              InfoFieldWidget(
+                title: AppLocalizations.of(context)!.nameString,
+                controller: nameController,
+                hint: 'eg. Jon Doe',
+                inputFormatter: [
+                  FilteringTextInputFormatter.allow(nameRegex),
+                ],
+                inputType: TextInputType.name,
+              ),
+              InfoFieldWidget(
+                title: AppLocalizations.of(context)!.phoneNumberString,
+                controller: phoneNumberController,
+                hint: '91XXXXXXXX',
+                inputFormatter: [
+                  FilteringTextInputFormatter.allow(phoneNumberRegex),
+                  LengthLimitingTextInputFormatter(10),
+                ],
+                inputType: TextInputType.number,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
                 ),
-              ],
-            ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            InfoFieldWidget(
-              title: AppLocalizations.of(context)!.nameString,
-              controller: nameController,
-              hint: 'eg. Jon Doe',
-              inputFormatter: [
-                FilteringTextInputFormatter.allow(nameRegex),
-              ],
-              inputType: TextInputType.name,
-            ),
-            InfoFieldWidget(
-              title: AppLocalizations.of(context)!.phoneNumberString,
-              controller: phoneNumberController,
-              hint: '91XXXXXXXX',
-              inputFormatter: [
-                FilteringTextInputFormatter.allow(phoneNumberRegex),
-                LengthLimitingTextInputFormatter(10),
-              ],
-              inputType: TextInputType.number,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
+                child: CustomRichText(
+                  title: AppLocalizations.of(context)!.uploadTheFollowingString,
+                  value: ' *',
+                  titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                  valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.red,
+                      ),
+                ),
               ),
-              child: CustomRichText(
-                title: AppLocalizations.of(context)!.uploadTheFollowingString,
-                value: ' *',
-                titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
-                valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.red,
-                    ),
+              const SizedBox(
+                height: 20,
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            UploadWidget(
-              text: AppLocalizations.of(context)!.ownerAdhaarCardString,
-              uploaded: (frontAdhaar != null && backAdhaar != null),
-              onTap: () {
-                context.pushNamed(
-                  uploadDocumentScreen,
-                  extra: {
-                    'type': 'own_adhaar',
-                    'title': AppLocalizations.of(context)!.ownerAdhaarCardString,
-                    'hintText':
-                        '${AppLocalizations.of(context)!.ownerAdhaarCardString} (${AppLocalizations.of(context)!.frontSideString})',
-                    'imageList': [frontAdhaar, backAdhaar],
-                    'onImageCaptured': (File? file, bool? front) {
-                      // upload to Firebase or send back to previous page
-                      if (front ?? false) {
-                        setState(() {
-                          frontAdhaar = file;
-                        });
-                      } else {
-                        setState(() {
-                          backAdhaar = file;
-                        });
-                      }
-                      debugPrint(
-                          "Captured file path: Front:  ${frontAdhaar?.path} : back: ${backAdhaar?.path}");
+              UploadWidget(
+                text: AppLocalizations.of(context)!.ownerAdhaarCardString,
+                uploaded: (frontAdhaar != null && backAdhaar != null),
+                onTap: () {
+                  context.pushNamed(
+                    uploadDocumentScreen,
+                    extra: {
+                      'type': 'own_adhaar',
+                      'title': AppLocalizations.of(context)!.ownerAdhaarCardString,
+                      'hintText':
+                          '${AppLocalizations.of(context)!.ownerAdhaarCardString} (${AppLocalizations.of(context)!.frontSideString})',
+                      'imageList': [frontAdhaar, backAdhaar],
+                      'onImageCaptured': (File? file, bool? front) {
+                        // upload to Firebase or send back to previous page
+                        if (front ?? false) {
+                          setState(() {
+                            frontAdhaar = file;
+                          });
+                        } else {
+                          setState(() {
+                            backAdhaar = file;
+                          });
+                        }
+                        debugPrint(
+                            "Captured file path: Front:  ${frontAdhaar?.path} : back: ${backAdhaar?.path}");
+                      },
+                      'front': true,
                     },
-                    'front': true,
-                  },
-                );
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            UploadWidget(
-              text: AppLocalizations.of(context)!.ownerPanCardString,
-              uploaded: (frontPan != null && backPan != null),
-              onTap: () {
-                context.pushNamed(
-                  uploadDocumentScreen,
-                  extra: {
-                    'type': 'own_pan',
-                    'title': AppLocalizations.of(context)!.ownerPanCardString,
-                    'hintText':
-                        '${AppLocalizations.of(context)!.ownerPanCardString} (${AppLocalizations.of(context)!.frontSideString})',
-                    'imageList': [frontPan, backPan],
-                    'onImageCaptured': (File? file, bool? front) {
-                      if (front ?? false) {
-                        setState(() {
-                          frontPan = file;
-                        });
-                      } else {
-                        setState(() {
-                          backPan = file;
-                        });
-                      }
-                      debugPrint(
-                          "Captured file path: Front:  ${frontPan?.path} : back: ${backPan?.path}");
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              UploadWidget(
+                text: AppLocalizations.of(context)!.ownerPanCardString,
+                uploaded: (frontPan != null && backPan != null),
+                onTap: () {
+                  context.pushNamed(
+                    uploadDocumentScreen,
+                    extra: {
+                      'type': 'own_pan',
+                      'title': AppLocalizations.of(context)!.ownerPanCardString,
+                      'hintText':
+                          '${AppLocalizations.of(context)!.ownerPanCardString} (${AppLocalizations.of(context)!.frontSideString})',
+                      'imageList': [frontPan, backPan],
+                      'onImageCaptured': (File? file, bool? front) {
+                        if (front ?? false) {
+                          setState(() {
+                            frontPan = file;
+                          });
+                        } else {
+                          setState(() {
+                            backPan = file;
+                          });
+                        }
+                        debugPrint(
+                            "Captured file path: Front:  ${frontPan?.path} : back: ${backPan?.path}");
+                      },
+                      'front': true,
                     },
-                    'front': true,
-                  },
-                );
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            UploadWidget(
-              text:
-                  '${AppLocalizations.of(context)!.ownerString} ${AppLocalizations.of(context)!.photoString}',
-              uploaded: ownerPhoto != null,
-              onTap: () {
-                context.pushNamed(
-                  normalUploadScreen,
-                  extra: {
-                    'title':
-                        '${AppLocalizations.of(context)!.ownerString} ${AppLocalizations.of(context)!.photoString}',
-                    'image': ownerPhoto,
-                    'onImageCaptured': (File? file) {
-                      setState(() {
-                        ownerPhoto = file;
-                      });
-                      debugPrint("Captured file path: Vehicle:  ${ownerPhoto?.path}");
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              UploadWidget(
+                text:
+                    '${AppLocalizations.of(context)!.ownerString} ${AppLocalizations.of(context)!.photoString}',
+                uploaded: ownerPhoto != null,
+                onTap: () {
+                  context.pushNamed(
+                    normalUploadScreen,
+                    extra: {
+                      'title':
+                          '${AppLocalizations.of(context)!.ownerString} ${AppLocalizations.of(context)!.photoString}',
+                      'image': ownerPhoto,
+                      'onImageCaptured': (File? file) {
+                        setState(() {
+                          ownerPhoto = file;
+                        });
+                        debugPrint("Captured file path: Vehicle:  ${ownerPhoto?.path}");
+                      },
                     },
-                  },
-                );
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
         ),
       ),
     );
