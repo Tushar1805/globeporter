@@ -9,7 +9,6 @@ import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
-import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 
@@ -31,8 +30,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
   final authCubit = sl<AuthCubit>();
   final storage = sl<SecureStorage>();
   void getUserDetails() async {
-    final lang = await storage.readValue(languageCodeKey);
-    await authCubit.getUserDetails(lang: lang ?? 'en');
+    await authCubit.getUserDetails();
   }
 
   @override

@@ -29,7 +29,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> init() async {
     final accessToken = await storage.readValue(accessTokenKey);
-    final langCode = await storage.readValue(languageCodeKey);
     // TODO: this will change to isVerify
     final detailsFilled = await storage.readValue(detailsFilledKey);
     final ownerDetailsFilled = await storage.readValue(ownerDetailsFilledKey);
@@ -40,10 +39,11 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     if (accessToken != null) {
-      await authCubit.getUserDetails(lang: langCode ?? 'en').then((final response) {
+      await authCubit.getUserDetails().then((final response) {
         if (response?.data?.userType != null && response?.data?.userType == 2) {
           if (!(detailsFilled == '1')) {
-            context.go(driverDashboard);
+            // context.go(driverDashboard);
+            context.go(documentVerificationScreen);
           } else {
             if (ownerDetailsFilled == '1' &&
                 vehiclDetailsFilled == '1' &&

@@ -205,23 +205,31 @@ class _NewRideScreenState extends State<NewRideScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Vehicle Tabs
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: ["Car", "Bike", "Rider"].map((v) {
-                      final isSelected = selectedVehicle == v;
-                      return GestureDetector(
-                        onTap: () => setState(() => selectedVehicle = v),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isSelected ? secondaryColor : Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children:
+                          ["Car", "Bike", "Rider", 'Truck', 'Mini Truck', 'Pickup Truck'].map((v) {
+                        final isSelected = selectedVehicle == v;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: GestureDetector(
+                            onTap: () => setState(() => selectedVehicle = v),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSelected ? secondaryColor : Colors.transparent,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(v,
+                                  style:
+                                      TextStyle(color: primaryColor, fontWeight: FontWeight.w600)),
+                            ),
                           ),
-                          child: Text(v,
-                              style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600)),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
                   const SizedBox(height: 12),
 

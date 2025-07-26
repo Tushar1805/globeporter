@@ -113,118 +113,113 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: _isReady
-            ? Column(
-                children: [
-                  // Top Bar (same style as DocumentCameraScreen)
-                  Container(
-                    color: Colors.white,
-                    height: kToolbarHeight,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () => context.pop(),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.title,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        Spacer(),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        foregroundColor: whiteColor,
+        title: Container(
+          height: kToolbarHeight,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            children: [
+              Text(
+                widget.title,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor),
+              ),
+              Spacer(),
 
-                        // Switch Camera
-                        IconButton(
-                          icon: const Icon(Icons.cameraswitch, color: primaryColor),
-                          iconSize: size.width * 0.07,
-                          onPressed: _switchCamera,
-                        ),
-                      ],
-                    ),
-                  ),
+              // Switch Camera
+              IconButton(
+                icon: const Icon(Icons.cameraswitch, color: whiteColor),
+                iconSize: size.width * 0.07,
+                onPressed: _switchCamera,
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: _isReady
+          ? Column(
+              children: [
+                // Top Bar (same style as DocumentCameraScreen)
 
-                  // Camera Preview
-                  Expanded(
-                    child: CameraPreview(_controller),
-                  ),
+                // Camera Preview
+                Expanded(
+                  child: CameraPreview(_controller),
+                ),
 
-                  // Bottom Controls
-                  Container(
-                    height: size.width * 0.215,
-                    color: Colors.black,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // Upload from Gallery
-                        IconButton(
-                          icon: const Icon(Icons.photo_library, color: Colors.white70),
-                          iconSize: size.width * 0.07,
-                          onPressed: _pickFromGallery,
-                        ),
+                // Bottom Controls
+                Container(
+                  height: size.width * 0.215,
+                  color: Colors.grey.shade900,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Upload from Gallery
+                      IconButton(
+                        icon: const Icon(Icons.photo_library, color: Colors.white70),
+                        iconSize: size.width * 0.07,
+                        onPressed: _pickFromGallery,
+                      ),
 
-                        // Capture Button
-                        GestureDetector(
-                          onTap: _capture,
-                          child: Container(
-                            width: size.width * 0.14,
-                            height: size.width * 0.14,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 4),
-                            ),
+                      // Capture Button
+                      GestureDetector(
+                        onTap: _capture,
+                        child: Container(
+                          width: size.width * 0.14,
+                          height: size.width * 0.14,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 4),
                           ),
                         ),
+                      ),
 
-                        // Preview Thumbnail
-                        if (_capturedImage != null)
-                          GestureDetector(
-                            onTap: () {
-                              context.pushNamed(
-                                fullImagePreviewScreen,
-                                extra: {'imageFile': _capturedImage},
-                              );
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: Image.file(
-                                _capturedImage!,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
+                      // Preview Thumbnail
+                      if (_capturedImage != null)
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed(
+                              fullImagePreviewScreen,
+                              extra: {'imageFile': _capturedImage},
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.file(
+                              _capturedImage!,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
                             ),
-                          )
-                        else if (widget.image != null)
-                          GestureDetector(
-                            onTap: () {
-                              context.pushNamed(
-                                fullImagePreviewScreen,
-                                extra: {'imageFile': widget.image},
-                              );
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: Image.file(
-                                widget.image!,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
+                          ),
+                        )
+                      else if (widget.image != null)
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed(
+                              fullImagePreviewScreen,
+                              extra: {'imageFile': widget.image},
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.file(
+                              widget.image!,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
                             ),
-                          )
-                        else
-                          const SizedBox(width: 60, height: 60),
-                      ],
-                    ),
+                          ),
+                        )
+                      else
+                        const SizedBox(width: 60, height: 60),
+                    ],
                   ),
-                ],
-              )
-            : const Center(child: CircularProgressIndicator()),
-      ),
+                ),
+              ],
+            )
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

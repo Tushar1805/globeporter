@@ -6,11 +6,25 @@ import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
-class DocumentVerificationScreen extends StatelessWidget {
-  DocumentVerificationScreen({super.key});
+class DocumentVerificationScreen extends StatefulWidget {
+  const DocumentVerificationScreen({super.key});
 
+  @override
+  State<DocumentVerificationScreen> createState() => _DocumentVerificationScreenState();
+}
+
+class _DocumentVerificationScreenState extends State<DocumentVerificationScreen> {
   final isVerified = false;
   final authCubit = sl<AuthCubit>();
+  void getUserDetails() async {
+    await authCubit.getUserDetails();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +129,6 @@ class DocumentVerificationScreen extends StatelessWidget {
     );
   }
 }
-
 // ---------------- Helper Widgets ----------------
 
 class _StepData {

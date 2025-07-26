@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +39,7 @@ class _VehicleTabState extends State<VehicleTab> {
   File? backRc;
   File? vehiclePhoto;
   VehicleTypeResponseModel? vehicleTypeResponse;
+  String errorMessage = '';
 
   final driverCubit = sl<DriverCubit>();
   FToast? fToast;
@@ -68,6 +70,7 @@ class _VehicleTabState extends State<VehicleTab> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    
     return Scaffold(
       backgroundColor: Colors.white60,
       floatingActionButton: loading
@@ -180,6 +183,11 @@ class _VehicleTabState extends State<VehicleTab> {
           } else if (state is VehicleDetailsLoadingState) {
             setState(() {
               loading = true;
+            });
+          } else if (state is ErrorState) {
+            setState(() {
+              loading = false;
+              errorMessage = state.errorMessage;
             });
           }
         },
@@ -350,6 +358,20 @@ class _VehicleTabState extends State<VehicleTab> {
               const SizedBox(
                 height: 20,
               ),
+              errorMessage != ''
+                  ? Padding(
+                      padding: EdgeInsetsGeometry.symmetric(vertical: 20),
+                      child: Center(
+                        child: Text(
+                          errorMessage,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.red,
+                              ),
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),

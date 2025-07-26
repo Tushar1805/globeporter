@@ -9,7 +9,6 @@ import 'package:globeporter/presentation/driver/view/my_trips_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
-import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 
@@ -40,8 +39,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
   ];
 
   void getUserDetails() async {
-    final lang = await storage.readValue(languageCodeKey);
-    await authCubit.getUserDetails(lang: lang ?? 'en');
+    await authCubit.getUserDetails();
   }
 
   @override

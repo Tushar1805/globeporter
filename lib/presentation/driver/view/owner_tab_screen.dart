@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,6 +43,7 @@ class _OwnerTabState extends State<OwnerTab> {
   final authCubit = sl<AuthCubit>();
   FToast? fToast;
   bool loading = false;
+  String errorMessage = '';
   @override
   void initState() {
     fToast = FToast();
@@ -74,6 +76,11 @@ class _OwnerTabState extends State<OwnerTab> {
         } else if (state is OwnerDetailsLoadingState) {
           setState(() {
             loading = true;
+          });
+        } else if (state is ErrorState) {
+          setState(() {
+            loading = false;
+            errorMessage = state.errorMessage;
           });
         }
       },
@@ -335,6 +342,20 @@ class _OwnerTabState extends State<OwnerTab> {
               const SizedBox(
                 height: 10,
               ),
+              errorMessage != ''
+                  ? Padding(
+                      padding: EdgeInsetsGeometry.symmetric(vertical: 20),
+                      child: Center(
+                        child: Text(
+                          errorMessage,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.red,
+                              ),
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),

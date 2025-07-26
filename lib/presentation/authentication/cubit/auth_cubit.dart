@@ -29,14 +29,15 @@ class AuthCubit extends BaseCubit {
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
-  Future<UserDetailsResponseModel?> getUserDetails({required final String lang}) async {
+  Future<UserDetailsResponseModel?> getUserDetails() async {
     if (userDetails != null) return userDetails;
     try {
       emit(UserDetailsLoadingState('Getting User details'));
       final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.readValue(languageCodeKey);
       final response = await _authRepository.getUserDetails(
         accessToken: accessToken ?? '',
-        lang: lang,
+        lang: lang ?? 'en',
       );
       userDetails = response;
       emit(UserDetailsLoadedState(data: response));

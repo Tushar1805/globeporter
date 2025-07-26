@@ -252,8 +252,6 @@ class _DriverTabState extends State<DriverTab> {
                 } else if (state is ErrorState) {
                   setState(() {
                     loading = false;
-                  });
-                  setState(() {
                     errorMessage = state.errorMessage;
                   });
                 }
@@ -276,12 +274,14 @@ class _DriverTabState extends State<DriverTab> {
                                 '$enterMsg ${AppLocalizations.of(context)!.nameString.toLowerCase()}',
                             duration: 3,
                           );
-                        } else if (phoneNumberController.text.isEmpty) {
+                        } else if (phoneNumberController.text.isEmpty ||
+                            phoneNumberController.text.length < 10 ||
+                            phoneNumberController.text.length > 10) {
                           showToast(
                             context: context,
                             fToast: fToast!,
                             msg:
-                                '$enterMsg ${AppLocalizations.of(context)!.phoneNumberString.toLowerCase()}',
+                                '$enterMsg ${AppLocalizations.of(context)!.validString} ${AppLocalizations.of(context)!.phoneNumberString.toLowerCase()}',
                             duration: 3,
                           );
                         } else if (licenceNumberController.text.isEmpty) {

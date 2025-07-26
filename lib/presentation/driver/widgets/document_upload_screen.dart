@@ -125,233 +125,216 @@ class _DocumentCameraScreenState extends State<DocumentCameraScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black54,
-        body: _isReady
-            ? Column(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        foregroundColor: whiteColor,
+        actions: [],
+        title: Container(
+          height: kToolbarHeight,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            children: [
+              Text(widget.title,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor)),
+              // Front/Back toggle
+              Spacer(),
+              Row(
                 children: [
-                  // ----------  TOP BAR ----------
-                  Container(
-                    color: Colors.white,
-                    height: kToolbarHeight,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(widget.title, style: Theme.of(context).textTheme.bodyLarge),
-                        // Front/Back toggle
-                        Spacer(),
-                        Row(
-                          children: [
-                            Text(
-                              _isFront
-                                  ? AppLocalizations.of(context)!.frontSideString
-                                  : AppLocalizations.of(context)!.backSide,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(color: primaryColor, fontSize: 16),
-                            ),
-                            Switch(
-                              value: _isFront,
-                              activeColor: primaryColor,
-                              inactiveThumbColor: secondaryColor,
-                              inactiveTrackColor: Colors.grey,
-                              onChanged: (val) {
-                                setState(() => _isFront = !_isFront);
-
-                                setState(() {
-                                  if (_isFront) {
-                                    if (hint!.contains(AppLocalizations.of(context)!.backSide)) {
-                                      hint = widget.hintText.replaceAll(
-                                          AppLocalizations.of(context)!.backSide,
-                                          AppLocalizations.of(context)!.frontSideString);
-                                    }
-                                  } else {
-                                    if (hint!
-                                        .contains(AppLocalizations.of(context)!.frontSideString)) {
-                                      hint = widget.hintText.replaceAll(
-                                        AppLocalizations.of(context)!.frontSideString,
-                                        AppLocalizations.of(context)!.backSide,
-                                      );
-                                    }
-                                  }
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                        // TextButton(
-                        //   onPressed: () {
-
-                        //   },
-                        //   child: Text(
-                        //     _isFront ? 'Switch to Back Side' : 'Switch to Front Side',
-                        //     style: Theme.of(context)
-                        //         .textTheme
-                        //         .bodyMedium
-                        //         ?.copyWith(color: primaryColor, fontSize: 16),
-                        //   ),
-                        // ),
-                      ],
-                    ),
+                  Text(
+                    _isFront
+                        ? AppLocalizations.of(context)!.frontSideString
+                        : AppLocalizations.of(context)!.backSide,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: whiteColor, fontSize: 16),
                   ),
+                  Switch(
+                    value: _isFront,
+                    activeColor: whiteColor,
+                    inactiveThumbColor: secondaryColor,
+                    inactiveTrackColor: Colors.grey,
+                    onChanged: (val) {
+                      setState(() => _isFront = !_isFront);
 
-                  // ----------  CAMERA PREVIEW with overlay ----------
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final width = constraints.maxWidth;
-                        final height = constraints.maxHeight;
-                        final boxWidth = width * 0.85;
-                        final boxHeight = boxWidth * (54 / 86); // Maintain Aadhaar/License ratio
-                        final verticalOffset = (height - boxHeight) / 2;
-                        final horizontalOffset = (width - boxWidth) / 2;
-
-                        return Stack(
-                          children: [
-                            CameraPreview(_controller),
-
-                            // Top overlay
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              right: 0,
-                              height: verticalOffset,
-                              child: Container(color: Colors.black.withOpacity(0.6)),
-                            ),
-
-                            // Bottom overlay
-                            Positioned(
-                              left: 0,
-                              bottom: 0,
-                              right: 0,
-                              height: verticalOffset,
-                              child: Container(color: Colors.black.withOpacity(0.6)),
-                            ),
-
-                            // Left overlay
-                            Positioned(
-                              left: 0,
-                              top: verticalOffset,
-                              width: horizontalOffset,
-                              height: boxHeight,
-                              child: Container(color: Colors.black.withOpacity(0.6)),
-                            ),
-
-                            // Right overlay
-                            Positioned(
-                              right: 0,
-                              top: verticalOffset,
-                              width: horizontalOffset,
-                              height: boxHeight,
-                              child: Container(color: Colors.black.withOpacity(0.6)),
-                            ),
-
-                            // Yellow corner border box
-                            Positioned(
-                              top: verticalOffset,
-                              left: horizontalOffset,
-                              width: boxWidth,
-                              height: boxHeight,
-                              child: CustomPaint(painter: _CornerBorderPainter()),
-                            ),
-
-                            // Hint text
-                            Positioned(
-                              top: verticalOffset + boxHeight + 12,
-                              left: 0,
-                              right: 0,
-                              child: Center(
-                                child: Text(
-                                  hint ?? widget.hintText,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontSize: 16,
-                                        color: Colors.white70,
-                                      ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-
-                  // ----------  BOTTOM BAR ----------
-                  Container(
-                    height: size.width * 0.215,
-                    color: Colors.black87,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // gallery
-                        IconButton(
-                          icon: Icon(
-                            Icons.photo_library,
-                            color: Colors.white70,
-                            size: size.width * 0.0704,
-                          ),
-                          onPressed: _pickFromGallery,
-                        ),
-                        // shutter
-                        GestureDetector(
-                          onTap: _capture,
-                          child: Container(
-                            width: size.width * 0.14,
-                            height: size.width * 0.14,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 4),
-                            ),
-                          ),
-                        ),
-                        // Preview thumbnail
-                        if ((_isFront ? _frontImage : _backImage) != null ||
-                            (_isFront ? widget.imageList[0] : widget.imageList[1]) != null)
-                          GestureDetector(
-                            onTap: () {
-                              final file = _isFront
-                                  ? _frontImage ?? widget.imageList[0]
-                                  : _backImage ?? widget.imageList[1];
-                              if (file != null) {
-                                context.pushNamed(
-                                  fullImagePreviewScreen,
-                                  extra: {'imageFile': file},
-                                );
-                              }
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: Image.file(
-                                _isFront
-                                    ? _frontImage == null
-                                        ? widget.imageList[0]!
-                                        : _frontImage!
-                                    : _backImage == null
-                                        ? widget.imageList[1]!
-                                        : _backImage!,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          )
-                        else
-                          const SizedBox(width: 60, height: 60),
-                        // SizedBox(width: size.width * 0.109), // spacer (for symmetry)
-                      ],
-                    ),
+                      setState(() {
+                        if (_isFront) {
+                          if (hint!.contains(AppLocalizations.of(context)!.backSide)) {
+                            hint = widget.hintText.replaceAll(
+                                AppLocalizations.of(context)!.backSide,
+                                AppLocalizations.of(context)!.frontSideString);
+                          }
+                        } else {
+                          if (hint!.contains(AppLocalizations.of(context)!.frontSideString)) {
+                            hint = widget.hintText.replaceAll(
+                              AppLocalizations.of(context)!.frontSideString,
+                              AppLocalizations.of(context)!.backSide,
+                            );
+                          }
+                        }
+                      });
+                    },
                   ),
                 ],
-              )
-            : const Center(child: CircularProgressIndicator()),
+              ),
+            ],
+          ),
+        ),
       ),
+      body: _isReady
+          ? Column(
+              children: [
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final width = constraints.maxWidth;
+                      final height = constraints.maxHeight;
+                      final boxWidth = width * 0.85;
+                      final boxHeight = boxWidth * (54 / 86); // Maintain Aadhaar/License ratio
+                      final verticalOffset = (height - boxHeight) / 2;
+                      final horizontalOffset = (width - boxWidth) / 2;
+
+                      return Stack(
+                        children: [
+                          Positioned.fill(
+                            child: CameraPreview(_controller),
+                          ),
+
+                          // Top overlay
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            right: 0,
+                            height: verticalOffset,
+                            child: Container(color: Colors.black.withOpacity(0.6)),
+                          ),
+
+                          // Bottom overlay
+                          Positioned(
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            height: verticalOffset,
+                            child: Container(color: Colors.black.withOpacity(0.6)),
+                          ),
+
+                          // Left overlay
+                          Positioned(
+                            left: 0,
+                            top: verticalOffset,
+                            width: horizontalOffset,
+                            height: boxHeight,
+                            child: Container(color: Colors.black.withOpacity(0.6)),
+                          ),
+
+                          // Right overlay
+                          Positioned(
+                            right: 0,
+                            top: verticalOffset,
+                            width: horizontalOffset,
+                            height: boxHeight,
+                            child: Container(color: Colors.black.withOpacity(0.6)),
+                          ),
+
+                          // Yellow corner border box
+                          Positioned(
+                            top: verticalOffset,
+                            left: horizontalOffset,
+                            width: boxWidth,
+                            height: boxHeight,
+                            child: CustomPaint(painter: _CornerBorderPainter()),
+                          ),
+
+                          // Hint text
+                          Positioned(
+                            top: verticalOffset + boxHeight + 12,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Text(
+                                hint ?? widget.hintText,
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontSize: 18,
+                                      color: Colors.white70,
+                                    ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+
+                // ----------  BOTTOM BAR ----------
+                Container(
+                  height: size.width * 0.215,
+                  color: Colors.grey.shade900,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // gallery
+                      IconButton(
+                        icon: Icon(
+                          Icons.photo_library,
+                          color: Colors.white70,
+                          size: size.width * 0.0704,
+                        ),
+                        onPressed: _pickFromGallery,
+                      ),
+                      // shutter
+                      GestureDetector(
+                        onTap: _capture,
+                        child: Container(
+                          width: size.width * 0.14,
+                          height: size.width * 0.14,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 4),
+                          ),
+                        ),
+                      ),
+                      // Preview thumbnail
+                      if ((_isFront ? _frontImage : _backImage) != null ||
+                          (_isFront ? widget.imageList[0] : widget.imageList[1]) != null)
+                        GestureDetector(
+                          onTap: () {
+                            final file = _isFront
+                                ? _frontImage ?? widget.imageList[0]
+                                : _backImage ?? widget.imageList[1];
+                            if (file != null) {
+                              context.pushNamed(
+                                fullImagePreviewScreen,
+                                extra: {'imageFile': file},
+                              );
+                            }
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.file(
+                              _isFront
+                                  ? _frontImage == null
+                                      ? widget.imageList[0]!
+                                      : _frontImage!
+                                  : _backImage == null
+                                      ? widget.imageList[1]!
+                                      : _backImage!,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                      else
+                        const SizedBox(width: 60, height: 60),
+                      // SizedBox(width: size.width * 0.109), // spacer (for symmetry)
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
