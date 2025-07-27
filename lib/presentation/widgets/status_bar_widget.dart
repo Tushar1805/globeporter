@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_images.dart';
 // import 'package:flutter_svg/svg.dart';
 
 class StatusBarWidget extends StatelessWidget {
@@ -21,15 +23,15 @@ class StatusBarWidget extends StatelessWidget {
             ),
           ),
         ),
-        // Positioned(
-        //   top: statusBarHeight + 60,
-        //   left: 0,
-        //   right: 0,
-        //   child: SvgPicture.asset(
-        //     'assets/svg/logo_small.svg',
-        //     width: MediaQuery.sizeOf(context).width * .4,
-        //   ),
-        // ),
+        Positioned(
+          top: size.width * 0.15,
+          left: 0,
+          right: 0,
+          child: SvgPicture.asset(
+            appLogoSmall,
+            width: MediaQuery.sizeOf(context).width * .4,
+          ),
+        ),
       ],
     );
   }

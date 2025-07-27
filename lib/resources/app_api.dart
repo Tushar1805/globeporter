@@ -22,4 +22,11 @@ const String getVehicleTypeUrl = '$_baseUrl/get_vehicle_type';
 const String submitOwnerDetailsUrl = '$_baseUrl/update_user_owner_vehicle_details';
 const String submitDriverDetailsUrl = '$_baseUrl/update_user_driver_vehicle_details';
 const String submitVehicleDetailsUrl = '$_baseUrl/update_user_vehicle_details';
+const String getVerificationStatusUrl = '$_baseUrl/get_verification_status';
 
+//* Driver
+
+const String getOwnerDetailsUrl = '$_baseUrl/get_owner_details';
+const String getVehicleDetailsUrl = '$_baseUrl/get_vehicle_details';
+const String getDriverDetailsUrl = '$_baseUrl/get_driver_details';
+const String reSubmitDocumetsUser = '$_baseUrl/common_update_user_vehicle_details';

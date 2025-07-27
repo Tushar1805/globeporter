@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:datasource/base_repository.dart';
 import 'package:datasource/network/api_call_type.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
+import 'package:globeporter/presentation/driver/model/driver_details_response_model.dart';
+import 'package:globeporter/presentation/driver/model/owner_details_response_model.dart';
+import 'package:globeporter/presentation/driver/model/vehicle_details_response_model.dart';
+import 'package:globeporter/presentation/driver/model/verification_status_response.dart';
 import 'package:globeporter/resources/app_api.dart';
 
 class DriverRepository extends BaseRepository {
-
-   Future<VehicleTypeResponseModel?> getVehicleType({
+  Future<VehicleTypeResponseModel?> getVehicleType({
     required final String lang,
   }) async {
     final responseData = await fetchData(
@@ -22,6 +25,79 @@ class DriverRepository extends BaseRepository {
       responseData as Map<String, dynamic>?,
     );
   }
+
+  Future<OwnerDetailsResponseModel?> getOwnerDetails({
+    required final String lang,
+    required final String token,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getOwnerDetailsUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return OwnerDetailsResponseModel.fromJson(
+      responseData as Map<String, dynamic>,
+    );
+  }
+
+  Future<VehicleDetailsResponseModel?> getVehicleDetails({
+    required final String lang,
+    required final String token,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getVehicleDetailsUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return VehicleDetailsResponseModel.fromJson(
+      responseData as Map<String, dynamic>,
+    );
+  }
+
+  Future<DriverDetailsResponseModel?> getDriverDetails({
+    required final String lang,
+    required final String token,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getDriverDetailsUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return DriverDetailsResponseModel.fromJson(
+      responseData as Map<String, dynamic>,
+    );
+  }
+
+  Future<VerificationStatusResponse?> getVerificationStatus({
+    required final String lang,
+    required final String token,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getVerificationStatusUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return VerificationStatusResponse.fromJson(
+      responseData as Map<String, dynamic>,
+    );
+  }
+
   Future<Map<String, dynamic>?> submitOwnerDetails({
     required final String lang,
     required final String accessToken,
@@ -126,6 +202,55 @@ class DriverRepository extends BaseRepository {
         'driver_license': driverFrontLicence,
         'driver_license_back': driverBackLicence,
         'driver_profile_image': driverPhoto,
+      },
+    );
+
+    return responseData;
+  }
+
+  Future<Map<String, dynamic>?> reSubmitDocuments({
+    required final String? token,
+    required final String? lang,
+    required final File? driverFrontAdhaar,
+    required final File? driverBackAdhaar,
+    required final File? driverFrontPan,
+    required final File? driverBackPan,
+    required final File? driverFrontLicence,
+    required final File? driverBackLicence,
+    required final File? driverPhoto,
+    required final String? vehicleTypeId,
+    required final File? vehicleFrontRC,
+    required final File? vehicleBackRC,
+    required final File? vehiclePhoto,
+    required final File? ownerFrontAdhaar,
+    required final File? ownerBackAdhaar,
+    required final File? ownerFrontPan,
+    required final File? ownerBackPan,
+    required final File? ownerPhoto,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.postWithFile,
+      apiUrl: submitDriverDetailsUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+      },
+      filesWithFieldNames: {
+        'driver_aadhar_card': driverFrontAdhaar,
+        'driver_aadhar_card_back': driverBackAdhaar,
+        'driver_pan_card': driverFrontPan,
+        'driver_pan_card_back': driverBackAdhaar,
+        'driver_license': driverFrontLicence,
+        'driver_license_back': driverBackLicence,
+        'driver_profile_image': driverPhoto,
+        'vehicle_rc': vehicleFrontRC,
+        'vehicle_rc_back': vehicleBackRC,
+        'vehicle_photo': vehiclePhoto,
+        'aadhar_card': ownerFrontAdhaar,
+        'aadhar_card_back': ownerBackAdhaar,
+        'pan_card': ownerFrontPan,
+        'pan_card_back': ownerBackAdhaar,
+        'owner_profile_photo': ownerPhoto,
       },
     );
 

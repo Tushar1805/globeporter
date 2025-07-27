@@ -55,22 +55,27 @@ class _VehicleTabState extends State<VehicleTab> {
     fToast!.init(context);
     vehicleNumberController.text = driverCubit.vehicleNo ?? '';
     vehicleRcController.text = driverCubit.vehicleRC ?? '';
-    selectedVehicleType = vehicleTypeResponse?.data?.firstWhere(
-      (d) => d?.id.toString() == driverCubit.vehicleTypeId,
-      orElse: () => null,
-    );
     frontRc = driverCubit.vehicleFrontRC;
     backRc = driverCubit.vehicleBackRC;
     vehiclePhoto = driverCubit.vehiclePhoto;
 
-    getVehicleType();
+    if (selectedVehicleType == null) {
+      getVehicleType();
+    }
     super.initState();
+  }
+
+  Data? findVehicleById(List<Data?> list, String? id) {
+    for (var item in list) {
+      if (item?.id.toString() == id) return item;
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     return Scaffold(
       backgroundColor: Colors.white60,
       floatingActionButton: loading
@@ -172,15 +177,23 @@ class _VehicleTabState extends State<VehicleTab> {
             setState(() {
               vehicleTypeResponse = state.data as VehicleTypeResponseModel?;
             });
-            customPrint("Vehicle type data: ${vehicleTypeResponse?.data?[0]?.name}");
-          } else if (state is VehicleDetailsLoadedState) {
+            final dataList = vehicleTypeResponse?.data;
+            setState(() {
+              selectedVehicleType = findVehicleById(dataList!, driverCubit.vehicleTypeId);
+              vehicleNumberController.text = driverCubit.vehicleNo ?? '';
+              vehicleRcController.text = driverCubit.vehicleRC ?? '';
+              frontRc = driverCubit.vehicleFrontRC;
+              backRc = driverCubit.vehicleBackRC;
+              vehiclePhoto = driverCubit.vehiclePhoto;
+            });
+          } else if (state is SaveVehicleDetailsLoadedState) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               widget.animateToPage();
             });
             setState(() {
               loading = false;
             });
-          } else if (state is VehicleDetailsLoadingState) {
+          } else if (state is SaveVehicleDetailsLoadingState) {
             setState(() {
               loading = true;
             });

@@ -275,5 +275,7 @@
     "verificationInProcessString": "Verification is in process",
     "@verificationInProcessString": {},
     "validString": "valid",
-    "@validString": {}
+    "@validString": {},
+    "reUploadString": "Documents Uploaded Successfully",
+    "@reUploadString": {}
 }

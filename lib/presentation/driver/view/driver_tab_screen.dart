@@ -240,11 +240,11 @@ class _DriverTabState extends State<DriverTab> {
             BlocListener(
               bloc: driverCubit,
               listener: (final context, final state) {
-                if (state is DriverDetailsLoadingState) {
+                if (state is SaveDriverDetailsLoadingState) {
                   setState(() {
                     loading = true;
                   });
-                } else if (state is DriverDetailsLoadedState) {
+                } else if (state is SaveDriverDetailsLoadedState) {
                   context.push(documentVerificationScreen);
                   setState(() {
                     loading = false;

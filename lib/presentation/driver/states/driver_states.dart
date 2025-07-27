@@ -8,24 +8,36 @@ class DetailsUpdatedState extends SuccessState {
   DetailsUpdatedState(super.message);
 }
 
-class OwnerDetailsLoadingState extends LoadingState {
-  OwnerDetailsLoadingState(super.loadingMessage);
+class LoadAllDataLoadingState extends LoadingState {
+  LoadAllDataLoadingState(super.loadingMessage);
 }
 
-class OwnerDetailsLoadedState extends LoadedState {
-  OwnerDetailsLoadedState({required super.data});
+class LoadAllDataLoadedState extends LoadedState {
+  LoadAllDataLoadedState({required super.data});
 }
 
-class DriverDetailsLoadingState extends LoadingState {
-  DriverDetailsLoadingState(super.loadingMessage);
+class SaveOwnerDetailsLoadingState extends LoadingState {
+  SaveOwnerDetailsLoadingState(super.loadingMessage);
 }
 
-class DriverDetailsLoadedState extends LoadedState {
-  DriverDetailsLoadedState({required super.data});
+class SaveOwnerDetailsLoadedState extends LoadedState {
+  SaveOwnerDetailsLoadedState({required super.data});
 }
 
-class VehicleDetailsLoadingState extends LoadingState {
-  VehicleDetailsLoadingState(super.loadingMessage);
+class SaveDriverDetailsLoadingState extends LoadingState {
+  SaveDriverDetailsLoadingState(super.loadingMessage);
+}
+
+class SaveDriverDetailsLoadedState extends LoadedState {
+  SaveDriverDetailsLoadedState({required super.data});
+}
+
+class SaveVehicleDetailsLoadingState extends LoadingState {
+  SaveVehicleDetailsLoadingState(super.loadingMessage);
+}
+
+class SaveVehicleDetailsLoadedState extends LoadedState {
+  SaveVehicleDetailsLoadedState({required super.data});
 }
 
 class AllDetailsLoadedState extends LoadedState {
@@ -36,14 +48,51 @@ class AllDetailsLoadingState extends LoadingState {
   AllDetailsLoadingState(super.loadingMessage);
 }
 
-class VehicleDetailsLoadedState extends LoadedState {
-  VehicleDetailsLoadedState({required super.data});
-}
-
 class VehicleTypeLoadingState extends LoadingState {
   VehicleTypeLoadingState(super.loadingMessage);
 }
 
 class VehicleTypeLoadedState extends LoadedState {
   VehicleTypeLoadedState({required super.data});
+}
+
+class GetOwnerDetailsLoadingState extends LoadingState {
+  GetOwnerDetailsLoadingState(super.loadingMessage);
+}
+
+class GetOwnerDetailsLoadedState extends LoadedState {
+  GetOwnerDetailsLoadedState({required super.data});
+}
+
+class GetDriverDetailsLoadingState extends LoadingState {
+  GetDriverDetailsLoadingState(super.loadingMessage);
+}
+
+class GetDriverDetailsLoadedState extends LoadedState {
+  GetDriverDetailsLoadedState({required super.data});
+}
+
+class GetVehicleDetailsLoadingState extends LoadingState {
+  GetVehicleDetailsLoadingState(super.loadingMessage);
+}
+
+class GetVehicleDetailsLoadedState extends LoadedState {
+  GetVehicleDetailsLoadedState({required super.data});
+}
+
+class VerificationStatusLoadingState extends LoadingState {
+  VerificationStatusLoadingState(super.loadingMessage);
+}
+
+class VerificationStatusLoadedState extends LoadedState {
+  VerificationStatusLoadedState({required super.data});
+}
+
+
+class ReSubmitDocumentsLoadingState extends LoadingState {
+  ReSubmitDocumentsLoadingState(super.loadingMessage);
+}
+
+class ReSubmitDocumentsLoadedState extends LoadedState {
+  ReSubmitDocumentsLoadedState({required super.data});
 }

@@ -915,6 +915,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'valid'**
   String get validString;
+
+  /// No description provided for @reUploadString.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents Uploaded Successfully'**
+  String get reUploadString;
 }
 
 class _AppLocalizationsDelegate

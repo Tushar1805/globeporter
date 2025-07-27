@@ -219,12 +219,13 @@ class Api {
       final fieldName = entry.key;
       final file = entry.value;
 
-      final multipartFile = await https.MultipartFile.fromPath(
-        fieldName,
-        file!.path,
-      );
-
-      request.files.add(multipartFile);
+      if (file != null) {
+        final multipartFile = await https.MultipartFile.fromPath(
+          fieldName,
+          file.path,
+        );
+        request.files.add(multipartFile);
+      }
     }
 
     // Send the request and handle the response

@@ -138,5 +138,6 @@
     "pendingString": "विचाराधीन",
     "verificationString": "सत्यापन",
     "verificationInProcessString": "सत्यापन प्रक्रिया में है",
-    "validString": "वैध"
+    "validString": "वैध",
+    "reUploadString": "दस्तावेज़ सफलतापूर्वक अपलोड हो गए"
 }

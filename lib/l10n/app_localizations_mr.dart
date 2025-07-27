@@ -423,4 +423,7 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get validString => 'वैध';
+
+  @override
+  String get reUploadString => 'कागदपत्रे यशस्वीरित्या अपलोड केली';
 }

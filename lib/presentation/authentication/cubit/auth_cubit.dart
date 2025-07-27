@@ -132,9 +132,13 @@ class AuthCubit extends BaseCubit {
         otp: otp,
       );
 
-      await storage.saveValue(value: response?.token, key: accessTokenKey);
-      customPrint("Token: ${response?.token}");
-      emit(OtpVerifyLoadedState(data: response));
+      if (response?.statusCode == 200) {
+        await storage.saveValue(value: response?.token, key: accessTokenKey);
+        customPrint("Token: ${response?.token}");
+        emit(OtpVerifyLoadedState(data: response));
+      } else if (response?.statusCode == 410) {
+        emit(ErrorState(response?.message ?? 'Something went wrong'));
+      }
     } catch (e) {
       handleExceptions(e);
     }
@@ -158,11 +162,12 @@ class AuthCubit extends BaseCubit {
     }
   }
 
-  
-
   Future<void> logout() async {
     try {
       await storage.clearAll();
+      await storage.saveValue(value: '0', key: ownerDetailsFilledKey);
+      await storage.saveValue(value: '0', key: vehicleDetailsFilledKey);
+      await storage.saveValue(value: '0', key: driverDetailsFilledKey);
       userDetails = null;
       emit(GeneralState('logout'));
     } catch (e) {

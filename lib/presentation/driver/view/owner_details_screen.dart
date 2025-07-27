@@ -1,7 +1,10 @@
+import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/view/driver_tab_screen.dart';
 import 'package:globeporter/presentation/driver/view/owner_tab_screen.dart';
 import 'package:globeporter/presentation/driver/view/vehicle_tab_screen.dart';
@@ -51,6 +54,7 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
   final driverCubit = sl<DriverCubit>();
   int currentIndex = 0;
   int maxAllowedIndex = 0;
+  bool isInitialNavigationDone = false;
   void animateToPage(int index) {
     setState(() => currentIndex = index);
     _pageController.animateToPage(
@@ -60,18 +64,26 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
     );
   }
 
+  void getData() async {
+    await driverCubit.getAllData();
+  }
+
   @override
   void initState() {
     super.initState();
+    getData();
     if (widget.currentScreenIndex != null) {
       setState(() {
-        currentIndex = widget.currentScreenIndex ?? 0;
+        currentIndex = widget.currentScreenIndex!;
         maxAllowedIndex = currentIndex;
       });
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        animateToPage(currentIndex);
-      });
     }
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (mounted && widget.currentScreenIndex != null) {
+    //     animateToPage(widget.currentScreenIndex!);
+    //   }
+    // });
   }
 
   @override
@@ -90,138 +102,157 @@ class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
         ),
         backgroundColor: whiteColor,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          // Custom Stepper
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(labels.length * 2 - 1, (index) {
-                if (index.isOdd) {
-                  // Dashed/dotted line between steps
-                  return Expanded(
-                    child: CustomPaint(
-                      painter: DottedLinePainter(dotRadius: 1, dotSpacing: 8),
-                      child: const SizedBox(height: 40), // height controls vertical alignment
-                    ),
-                  );
-                } else {
-                  int stepIndex = index ~/ 2;
-                  bool isSelected = currentIndex == stepIndex;
-                  final isUploaded = stepIndex == 0
-                      ? driverCubit.ownerDetailsFilled
-                      : stepIndex == 1
-                          ? driverCubit.vehicleDetailsFilled
-                          : driverCubit.driverDetailsFilled;
+      body: BlocBuilder(
+        bloc: driverCubit,
+        builder: (final context, final state) {
+          if (state is LoadAllDataLoadingState) {
+            return Center(
+              child: LoadingWithoutText(),
+            );
+          }
 
-                  return GestureDetector(
-                    onTap: () {
-                      if (stepIndex <= maxAllowedIndex) {
-                        animateToPage(stepIndex);
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: isUploaded ? primaryColor : Colors.white,
-                            border: Border.all(
-                                color: isUploaded
-                                    ? primaryColor
-                                    : isSelected
-                                        ? primaryColor
-                                        : greyTextColor),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: isUploaded
-                                ? Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                  )
-                                : Text(
-                                    '${stepIndex + 1}',
-                                    style: TextStyle(
-                                      color: isSelected ? primaryColor : greyTextColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                          ),
+          if (!isInitialNavigationDone) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              animateToPage(currentIndex);
+            });
+
+            isInitialNavigationDone = true;
+          }
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              // Custom Stepper
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(labels.length * 2 - 1, (index) {
+                    if (index.isOdd) {
+                      // Dashed/dotted line between steps
+                      return Expanded(
+                        child: CustomPaint(
+                          painter: DottedLinePainter(dotRadius: 1, dotSpacing: 8),
+                          child: const SizedBox(height: 40), // height controls vertical alignment
                         ),
-                        const SizedBox(height: 6),
-                        AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 200),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: isSelected ? primaryColor : greyTextColor,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                  ) ??
-                              TextStyle(
-                                fontSize: 14,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                color: isSelected ? primaryColor : greyTextColor,
+                      );
+                    } else {
+                      int stepIndex = index ~/ 2;
+                      bool isSelected = currentIndex == stepIndex;
+                      final isUploaded = stepIndex == 0
+                          ? driverCubit.ownerDetailsFilled
+                          : stepIndex == 1
+                              ? driverCubit.vehicleDetailsFilled
+                              : driverCubit.driverDetailsFilled;
+
+                      return GestureDetector(
+                        onTap: () {
+                          if (stepIndex <= maxAllowedIndex) {
+                            animateToPage(stepIndex);
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: isUploaded ? primaryColor : Colors.white,
+                                border: Border.all(
+                                    color: isUploaded
+                                        ? primaryColor
+                                        : isSelected
+                                            ? primaryColor
+                                            : greyTextColor),
+                                shape: BoxShape.circle,
                               ),
-                          child: Text(labels[stepIndex]),
-                        )
-                      ],
-                    ),
-                  );
-                }
-              }),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Tab Content
-          Expanded(
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (ScrollNotification notification) {
-                if (notification is ScrollUpdateNotification && _pageController.page != null) {
-                  final double currentPage = _pageController.page!;
-                  final double nextPage =
-                      currentPage + notification.scrollDelta! / context.size!.width;
-
-                  // Block forward scroll beyond max allowed
-                  if (nextPage > maxAllowedIndex) {
-                    _pageController.jumpToPage(maxAllowedIndex);
-                    return true; // prevent default scroll
-                  }
-                }
-                return false;
-              },
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) => setState(() => currentIndex = index),
-                children: [
-                  OwnerTab(animateToPage: () {
-                    setState(() {
-                      currentIndex = 1;
-                      maxAllowedIndex = 1;
-                    });
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      animateToPage(1);
-                    });
+                              child: Center(
+                                child: isUploaded
+                                    ? Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      )
+                                    : Text(
+                                        '${stepIndex + 1}',
+                                        style: TextStyle(
+                                          color: isSelected ? primaryColor : greyTextColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            AnimatedDefaultTextStyle(
+                              duration: const Duration(milliseconds: 200),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: isSelected ? primaryColor : greyTextColor,
+                                        fontWeight:
+                                            isSelected ? FontWeight.bold : FontWeight.normal,
+                                      ) ??
+                                  TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                    color: isSelected ? primaryColor : greyTextColor,
+                                  ),
+                              child: Text(labels[stepIndex]),
+                            )
+                          ],
+                        ),
+                      );
+                    }
                   }),
-                  VehicleTab(animateToPage: () {
-                    setState(() {
-                      currentIndex = 2;
-                      maxAllowedIndex = 2;
-                    });
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      animateToPage(2);
-                    });
-                  }),
-                  DriverTab(),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+              const SizedBox(height: 20),
+
+              // Tab Content
+              Expanded(
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification notification) {
+                    if (notification is ScrollUpdateNotification && _pageController.page != null) {
+                      final double currentPage = _pageController.page!;
+                      final double nextPage =
+                          currentPage + notification.scrollDelta! / context.size!.width;
+
+                      // Block forward scroll beyond max allowed
+                      if (nextPage > maxAllowedIndex) {
+                        _pageController.jumpToPage(maxAllowedIndex);
+                        return true; // prevent default scroll
+                      }
+                    }
+                    return false;
+                  },
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (index) => setState(() => currentIndex = index),
+                    children: [
+                      OwnerTab(animateToPage: () {
+                        setState(() {
+                          currentIndex = 1;
+                          maxAllowedIndex = 1;
+                        });
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          animateToPage(1);
+                        });
+                      }),
+                      VehicleTab(animateToPage: () {
+                        setState(() {
+                          currentIndex = 2;
+                          maxAllowedIndex = 2;
+                        });
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          animateToPage(2);
+                        });
+                      }),
+                      DriverTab(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

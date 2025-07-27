@@ -425,4 +425,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validString => 'valid';
+
+  @override
+  String get reUploadString => 'Documents Uploaded Successfully';
 }

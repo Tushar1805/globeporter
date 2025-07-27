@@ -29,8 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> init() async {
     final accessToken = await storage.readValue(accessTokenKey);
-    // TODO: this will change to isVerify
     final detailsFilled = await storage.readValue(detailsFilledKey);
+    final isDetailsVerified = await storage.readValue(isDetailsVerifiedKey);
     final ownerDetailsFilled = await storage.readValue(ownerDetailsFilledKey);
     final vehiclDetailsFilled = await storage.readValue(vehicleDetailsFilledKey);
     final driverDetailsFilled = await storage.readValue(driverDetailsFilledKey);
@@ -41,8 +41,9 @@ class _SplashScreenState extends State<SplashScreen> {
     if (accessToken != null) {
       await authCubit.getUserDetails().then((final response) {
         if (response?.data?.userType != null && response?.data?.userType == 2) {
-          if (!(detailsFilled == '1')) {
-            // context.go(driverDashboard);
+          if (isDetailsVerified == '1') {
+            context.go(driverDashboard);
+          } else if (detailsFilled == '1') {
             context.go(documentVerificationScreen);
           } else {
             if (ownerDetailsFilled == '1' &&

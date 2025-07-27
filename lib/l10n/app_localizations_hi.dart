@@ -424,4 +424,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get validString => 'वैध';
+
+  @override
+  String get reUploadString => 'दस्तावेज़ सफलतापूर्वक अपलोड हो गए';
 }

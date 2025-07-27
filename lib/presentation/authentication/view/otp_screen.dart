@@ -13,6 +13,7 @@ import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/authentication/model/otp_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/user_type_response_model.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/widgets/driver_dialog_widget.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -52,6 +53,7 @@ class _OtpScreenState extends State<OtpScreen> {
   String _selectedCountryCode = '+91';
   final storage = sl<SecureStorage>();
   final authCubit = sl<AuthCubit>();
+  final driverCubit = sl<DriverCubit>();
   bool loading = false;
   FToast? fToast;
   String errorMessage = '';
@@ -244,8 +246,12 @@ class _OtpScreenState extends State<OtpScreen> {
                       if (data?.userType != null) {
                         if (data?.userType == 2) {
                           await storage.saveValue(
-                            value: data?.detailsFilled ?? false ? '1' : '0',
+                            value: data?.isAllDocUpload.toString(),
                             key: detailsFilledKey,
+                          );
+                          await storage.saveValue(
+                            value: data?.isDocVerified.toString(),
+                            key: isDetailsVerifiedKey,
                           );
                           await storage.saveValue(
                             value: data?.ownerDetailsFilled.toString(),
@@ -260,18 +266,31 @@ class _OtpScreenState extends State<OtpScreen> {
                             key: driverDetailsFilledKey,
                           );
 
-                          if (data?.ownerDetailsFilled == 1 &&
-                              data?.vehicleDetailsFilled == 1 &&
-                              data?.driverDetailsFilled == 1) {
-                            // navigate to verify screen
-                          } else if (data?.ownerDetailsFilled == 1 &&
-                              data?.vehicleDetailsFilled == 1) {
-                            // navigate to driver tab
-                          } else if (data?.ownerDetailsFilled == 1) {
-                            // navigate to vehicle tab
+                          if (data?.isDocVerified == 1) {
+                            context.go(driverDashboard);
+                          } else if ((data?.isAllDocUpload == 1)) {
+                            context.go(documentVerificationScreen);
                           } else {
-                            // naviage to owner tab
-                            context.go(ownerDetailsScreen);
+                            if (data?.ownerDetailsFilled == 1 &&
+                                data?.vehicleDetailsFilled == 1 &&
+                                data?.driverDetailsFilled == 1) {
+                              // navigate to verify screen
+                              context.go(documentVerificationScreen);
+                            } else if (data?.ownerDetailsFilled == 1 &&
+                                data?.vehicleDetailsFilled == 1) {
+                              // navigate to driver tab
+                              context.go(ownerDetailsScreen, extra: {
+                                'currentIndex': 2,
+                              });
+                            } else if (data?.ownerDetailsFilled == 1) {
+                              // navigate to vehicle tab
+                              context.go(ownerDetailsScreen, extra: {
+                                'currentIndex': 1,
+                              });
+                            } else {
+                              // naviage to owner tab
+                              context.go(ownerDetailsScreen);
+                            }
                           }
                         } else {
                           context.go(customerDashboard);

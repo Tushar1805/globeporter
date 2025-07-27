@@ -141,5 +141,6 @@
     "pendingString": "प्रलंबित",
     "verificationString": "सत्यापन",
     "verificationInProcessString": "पडताळणी प्रक्रियेत आहे",
-    "validString": "वैध"
+    "validString": "वैध",
+    "reUploadString": "कागदपत्रे यशस्वीरित्या अपलोड केली"
 }
