@@ -432,4 +432,7 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get viewString => 'पहा';
+
+  @override
+  String get documentsString => 'दस्तऐवज';
 }

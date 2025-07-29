@@ -144,5 +144,6 @@
     "validString": "वैध",
     "reUploadString": "कागदपत्रे यशस्वीरित्या अपलोड केली",
     "profileUpdatedString": "प्रोफाइल यशस्वीरित्या अपडेट केले",
-    "viewString": "पहा"
+    "viewString": "पहा",
+    "documentsString": "दस्तऐवज"
 }

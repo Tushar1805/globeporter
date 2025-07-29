@@ -933,6 +933,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View'**
   String get viewString;
+
+  /// No description provided for @documentsString.
+  ///
+  /// In en, this message translates to:
+  /// **'Document'**
+  String get documentsString;
 }
 
 class _AppLocalizationsDelegate

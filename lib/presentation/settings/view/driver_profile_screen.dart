@@ -245,9 +245,12 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
               height: 20,
             ),
             ProfileEditCard(
-              label: AppLocalizations.of(context)!.uploadDocumentString,
+              label:
+                  "${AppLocalizations.of(context)!.uploadedString} ${AppLocalizations.of(context)!.documentsString}",
               value: 'ravigupta214@gmail.com',
-              onTap: () {},
+              onTap: () {
+                context.pushNamed(viewDocumentsScreen);
+              },
               icon: uploadIcon,
               widget: Row(
                 children: [

@@ -576,6 +576,7 @@ class _DocumentVerificationScreenState extends State<DocumentVerificationScreen>
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
+                        // context.go(driverDashboard);
                         if (isVerified) {
                           context.go(driverDashboard);
                         }

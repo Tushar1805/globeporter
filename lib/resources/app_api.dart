@@ -20,7 +20,7 @@ const String updateUserTypeUrl = '$_baseUrl/user_type_update';
 const String getVehicleTypeUrl = '$_baseUrl/get_vehicle_type';
 // const String submitOwnerVehicleDriverDetailsUrl = '$_baseUrl/update_user_vehicle_details';
 const String submitOwnerDetailsUrl = '$_baseUrl/update_user_owner_vehicle_details';
-const String submitDriverDetailsUrl = '$_baseUrl/update_user_driver_vehicle_details';
+const String submitDriverDetailsUrl = '$_baseUrl/common_update_user_vehicle_details';
 const String submitVehicleDetailsUrl = '$_baseUrl/update_user_vehicle_details';
 const String getVerificationStatusUrl = '$_baseUrl/get_verification_status';
 

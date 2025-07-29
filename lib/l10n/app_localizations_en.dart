@@ -434,4 +434,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewString => 'View';
+
+  @override
+  String get documentsString => 'Document';
 }

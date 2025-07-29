@@ -40,3 +40,4 @@ const uploadDocumentScreen = '/upload_document_screen';
 const normalUploadScreen = '/normal_upload_screen';
 const fullImagePreviewScreen = '/full_image_preview_screen';
 const imageReviewScreen = '/image_review_screen';
+const viewDocumentsScreen = '/view_document_screen';

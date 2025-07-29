@@ -281,5 +281,7 @@
     "profileUpdatedString": "Profile Updated Successfully",
     "@profileUpdatedString": {}, 
     "viewString": "View",
-    "@viewString": {}
+    "@viewString": {}, 
+    "documentsString": "Document",
+    "@documentsString": {}
 }

@@ -433,4 +433,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get viewString => 'देखें';
+
+  @override
+  String get documentsString => 'दस्तावेज़';
 }
