@@ -42,6 +42,18 @@ class _DriverTabState extends State<DriverTab> {
   bool loading = false;
   String? errorMessage;
 
+  void _driverNameListener() {
+    driverCubit.updateDriverName(nameController.text);
+  }
+
+  void _driverPhoneListener() {
+    driverCubit.updateDriverPhoneNumber(phoneNumberController.text);
+  }
+
+  void _driverLicenceListener() {
+    driverCubit.updateDriverLicenceNumber(licenceNumberController.text);
+  }
+
   @override
   void initState() {
     fToast = FToast();
@@ -58,7 +70,22 @@ class _DriverTabState extends State<DriverTab> {
     backLicence = driverCubit.driverBackLicence;
     driverPhoto = driverCubit.driverPhoto;
 
+    nameController.addListener(_driverNameListener);
+    phoneNumberController.addListener(_driverPhoneListener);
+    licenceNumberController.addListener(_driverLicenceListener);
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameController.removeListener(_driverNameListener);
+    phoneNumberController.removeListener(_driverPhoneListener);
+    licenceNumberController.removeListener(_driverLicenceListener);
+    nameController.dispose();
+    phoneNumberController.dispose();
+    licenceNumberController.dispose();
+    super.dispose();
   }
 
   @override
@@ -129,10 +156,12 @@ class _DriverTabState extends State<DriverTab> {
                       if (front ?? false) {
                         setState(() {
                           frontAdhaar = file;
+                          driverCubit.updateDriverFrontAdhaar(file);
                         });
                       } else {
                         setState(() {
                           backAdhaar = file;
+                          driverCubit.updateDriverBackAdhaar(file);
                         });
                       }
                       debugPrint(
@@ -165,10 +194,12 @@ class _DriverTabState extends State<DriverTab> {
                       if (front ?? false) {
                         setState(() {
                           frontPan = file;
+                          driverCubit.updateDriverFrontPan(file);
                         });
                       } else {
                         setState(() {
                           backPan = file;
+                          driverCubit.updateDriverBackPan(file);
                         });
                       }
                       debugPrint(
@@ -198,10 +229,12 @@ class _DriverTabState extends State<DriverTab> {
                       if (front ?? false) {
                         setState(() {
                           frontLicence = file;
+                          driverCubit.updateDriverFrontLicence(file);
                         });
                       } else {
                         setState(() {
                           backLicence = file;
+                          driverCubit.updateDriverBackLicence(file);
                         });
                       }
                       debugPrint(
@@ -227,6 +260,7 @@ class _DriverTabState extends State<DriverTab> {
                     'onImageCaptured': (File? file) {
                       setState(() {
                         driverPhoto = file;
+                        driverCubit.updateDriverPhoto(file);
                       });
                       debugPrint("Captured file path: Vehicle:  ${driverPhoto?.path}");
                     },

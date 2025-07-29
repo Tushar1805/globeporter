@@ -56,6 +56,144 @@ class DriverCubit extends BaseCubit {
   File? driverPhoto;
   bool driverDetailsFilled = false;
 
+  void updateOwnerName(String name) async {
+    ownerName = name;
+    await storage.saveValue(value: name, key: ownerNameKey);
+    emit(DetailsUpdatedState('Owner name updated'));
+  }
+
+  void updateOwnerPhoneNumber(String number) async {
+    ownerPhoneNumber = number;
+    await storage.saveValue(value: number, key: ownerPhoneKey);
+    emit(DetailsUpdatedState('Owner phone number updated'));
+  }
+
+  void updateOwnerFrontAdhaar(File? file) async {
+    ownerFrontAdhaar = file;
+    await storage.saveValue(value: file?.path ?? '', key: ownerAadharCardFrontKey);
+    emit(DetailsUpdatedState('Owner Aadhaar front updated'));
+  }
+
+  void updateOwnerBackAdhaar(File? file) async {
+    ownerBackAdhaar = file;
+    await storage.saveValue(value: file?.path ?? '', key: ownerAadharCardBackKey);
+    emit(DetailsUpdatedState('Owner Aadhaar back updated'));
+  }
+
+  void updateOwnerFrontPan(File? file) async {
+    ownerFrontPan = file;
+    await storage.saveValue(value: file?.path ?? '', key: ownerPanCardFrontKey);
+    emit(DetailsUpdatedState('Owner PAN front updated'));
+  }
+
+  void updateOwnerBackPan(File? file) async {
+    ownerBackPan = file;
+    await storage.saveValue(value: file?.path ?? '', key: ownerPanCardBackKey);
+    emit(DetailsUpdatedState('Owner PAN back updated'));
+  }
+
+  void updateOwnerPhoto(File? file) async {
+    ownerPhoto = file;
+    await storage.saveValue(value: file?.path ?? '', key: ownerPhotoKey);
+    emit(DetailsUpdatedState('Owner photo updated'));
+  }
+
+  void updateVehicleNo(String no) async {
+    vehicleNo = no;
+    await storage.saveValue(value: no, key: vehicleNumberKey);
+    emit(DetailsUpdatedState('vehicle no. Updated'));
+  }
+
+  void updateVehicleRC(String rc) async {
+    vehicleRC = rc;
+    await storage.saveValue(value: rc, key: vehicleRCNumberKey);
+    emit(DetailsUpdatedState('vehicle rc Updated'));
+  }
+
+  void updateVehicleTypeId(String? id) async {
+    vehicleTypeId = id;
+    await storage.saveValue(value: id, key: vehicleTypeKey);
+    emit(DetailsUpdatedState('vehicle Id Updated'));
+  }
+
+  void updateFrontRC(File? file) async {
+    vehicleFrontRC = file;
+    await storage.saveValue(value: file?.path, key: vehicleRCFrontKey);
+    emit(DetailsUpdatedState('vehicle front rc Updated'));
+  }
+
+  void updateBackRC(File? file) async {
+    vehicleBackRC = file;
+    await storage.saveValue(value: file?.path, key: vehicleRCBackKey);
+    emit(DetailsUpdatedState('vehicle back rc Updated'));
+  }
+
+  void updateVehiclePhoto(File? file) async {
+    vehiclePhoto = file;
+    await storage.saveValue(value: file?.path, key: vehiclePhotoKey);
+    emit(DetailsUpdatedState('vehicle photo Updated'));
+  }
+
+  void updateDriverName(String name) async {
+    driverName = name;
+    await storage.saveValue(value: name, key: driverNameKey);
+    emit(DetailsUpdatedState('Driver name updated'));
+  }
+
+  void updateDriverPhoneNumber(String number) async {
+    driverPhoneNumber = number;
+    await storage.saveValue(value: number, key: driverPhoneKey);
+    emit(DetailsUpdatedState('Driver phone number updated'));
+  }
+
+  void updateDriverLicenceNumber(String licence) async {
+    driverLicenceNumber = licence;
+    await storage.saveValue(value: licence, key: driverLicenceKey);
+    emit(DetailsUpdatedState('Driver licence number updated'));
+  }
+
+  void updateDriverFrontAdhaar(File? file) async {
+    driverFrontAdhaar = file;
+    await storage.saveValue(value: file?.path ?? '', key: driverAadharCardFrontKey);
+    emit(DetailsUpdatedState('Front Aadhaar updated'));
+  }
+
+  void updateDriverBackAdhaar(File? file) async {
+    driverBackAdhaar = file;
+    await storage.saveValue(value: file?.path ?? '', key: driverAadharCardBackKey);
+    emit(DetailsUpdatedState('Back Aadhaar updated'));
+  }
+
+  void updateDriverFrontPan(File? file) async {
+    driverFrontPan = file;
+    await storage.saveValue(value: file?.path ?? '', key: driverPanCardFrontKey);
+    emit(DetailsUpdatedState('Front PAN updated'));
+  }
+
+  void updateDriverBackPan(File? file) async {
+    driverBackPan = file;
+    await storage.saveValue(value: file?.path ?? '', key: driverPanCardBackKey);
+    emit(DetailsUpdatedState('Back PAN updated'));
+  }
+
+  void updateDriverFrontLicence(File? file) async {
+    driverFrontLicence = file;
+    await storage.saveValue(value: file?.path ?? '', key: driverLicenceFrontKey);
+    emit(DetailsUpdatedState('Front Licence updated'));
+  }
+
+  void updateDriverBackLicence(File? file) async {
+    driverBackLicence = file;
+    await storage.saveValue(value: file?.path ?? '', key: driverLicenceBackKey);
+    emit(DetailsUpdatedState('Back Licence updated'));
+  }
+
+  void updateDriverPhoto(File? file) async {
+    driverPhoto = file;
+    await storage.saveValue(value: file?.path ?? '', key: driverPhotoKey);
+    emit(DetailsUpdatedState('Driver photo updated'));
+  }
+
   void saveOwnerDetails({
     required final String ownerName,
     required final String ownerPhoneNumber,
@@ -100,7 +238,15 @@ class DriverCubit extends BaseCubit {
     ownerFrontPan = frontPan != null ? File(frontPan) : null;
     ownerBackPan = backPan != null ? File(backPan) : null;
     ownerPhoto = photoPath != null ? File(photoPath) : null;
-    if (ownerName != null && ownerName != '') {
+    if (ownerName != null &&
+        ownerName != '' &&
+        ownerPhoneNumber != null &&
+        ownerPhoneNumber != '' &&
+        ownerFrontAdhaar != null &&
+        ownerBackAdhaar != null &&
+        ownerFrontPan != null &&
+        ownerBackPan != null &&
+        ownerPhoto != null) {
       ownerDetailsFilled = true;
     }
     emit(DetailsUpdatedState('Owner Details Updated'));
@@ -144,7 +290,14 @@ class DriverCubit extends BaseCubit {
     vehicleFrontRC = frontRCPath != null ? File(frontRCPath) : null;
     vehicleBackRC = backRCPath != null ? File(backRCPath) : null;
     vehiclePhoto = photoPath != null ? File(photoPath) : null;
-    if (vehicleNo != null && vehicleNo != '') {
+    if (vehicleNo != null &&
+        vehicleNo != '' &&
+        vehicleRC != null &&
+        vehicleRC != '' &&
+        vehicleTypeId != null &&
+        vehicleFrontRC != null &&
+        vehicleBackRC != null &&
+        vehiclePhoto != null) {
       vehicleDetailsFilled = true;
     }
     emit(DetailsUpdatedState('Owner Details Updated'));
@@ -208,7 +361,19 @@ class DriverCubit extends BaseCubit {
     driverFrontLicence = frontLicence != null ? File(frontLicence) : null;
     driverBackLicence = backLicence != null ? File(backLicence) : null;
     driverPhoto = photoPath != null ? File(photoPath) : null;
-    if (driverName != null && driverName != '') {
+    if (driverName != null &&
+        driverName != '' &&
+        driverPhoneNumber != null &&
+        driverPhoneNumber != '' &&
+        driverLicenceNumber != null &&
+        driverLicenceNumber != '' &&
+        driverFrontAdhaar != null &&
+        driverBackAdhaar != null &&
+        driverFrontPan != null &&
+        driverBackPan != null &&
+        driverFrontLicence != null &&
+        driverBackLicence != null &&
+        driverPhoto != null) {
       driverDetailsFilled = true;
     }
     emit(DetailsUpdatedState('Owner Details Updated'));
@@ -217,8 +382,8 @@ class DriverCubit extends BaseCubit {
   Future<void> getAllData() async {
     emit(LoadAllDataLoadingState('loading'));
 
-    // final ownerDetailsFilled = await storage.readValue(ownerDetailsFilledKey);
-    // final vehiclDetailsFilled = await storage.readValue(vehicleDetailsFilledKey);
+    final ownerDetailsFilled = await storage.readValue(ownerDetailsFilledKey);
+    final vehiclDetailsFilled = await storage.readValue(vehicleDetailsFilledKey);
 
     // if (ownerDetailsFilled == '1' && vehiclDetailsFilled == '1') {
     //   ownerName = await storage.readValue(ownerNameKey);
@@ -242,9 +407,17 @@ class DriverCubit extends BaseCubit {
     //     await getOwnerDetailsData();
     //   }
     // }
-    await getOwnerDetailsData();
-    await getVehicleDetailsData();
-    await getDriverDetailsData();
+
+    if (ownerDetailsFilled == '1' && vehiclDetailsFilled == '1') {
+      await getDriverDetailsData();
+      await getVehicleDetailsData();
+      await getOwnerDetailsData();
+    } else {
+      await getOwnerDetailsData();
+      await getVehicleDetailsData();
+      await getDriverDetailsData();
+    }
+
     emit(LoadAllDataLoadedState(data: null));
   }
 

@@ -49,6 +49,14 @@ class _VehicleTabState extends State<VehicleTab> {
     await driverCubit.getVehicleType();
   }
 
+  void _vehicleNumberListener() {
+    driverCubit.updateVehicleNo(vehicleNumberController.text);
+  }
+
+  void _vehicleRcListener() {
+    driverCubit.updateVehicleRC(vehicleRcController.text);
+  }
+
   @override
   void initState() {
     fToast = FToast();
@@ -58,6 +66,9 @@ class _VehicleTabState extends State<VehicleTab> {
     frontRc = driverCubit.vehicleFrontRC;
     backRc = driverCubit.vehicleBackRC;
     vehiclePhoto = driverCubit.vehiclePhoto;
+
+    vehicleNumberController.addListener(_vehicleNumberListener);
+    vehicleRcController.addListener(_vehicleRcListener);
 
     if (selectedVehicleType == null) {
       getVehicleType();
@@ -70,6 +81,15 @@ class _VehicleTabState extends State<VehicleTab> {
       if (item?.id.toString() == id) return item;
     }
     return null;
+  }
+
+  @override
+  void dispose() {
+    vehicleNumberController.removeListener(_vehicleNumberListener);
+    vehicleRcController.removeListener(_vehicleRcListener);
+    vehicleNumberController.dispose();
+    vehicleRcController.dispose();
+    super.dispose();
   }
 
   @override
@@ -288,6 +308,7 @@ class _VehicleTabState extends State<VehicleTab> {
                   onChanged: (val) {
                     setState(() {
                       selectedVehicleType = val;
+                      driverCubit.updateVehicleTypeId(val?.id.toString());
                     });
                   },
                 ),
@@ -332,10 +353,12 @@ class _VehicleTabState extends State<VehicleTab> {
                         if (front ?? false) {
                           setState(() {
                             frontRc = file;
+                            driverCubit.updateFrontRC(file);
                           });
                         } else {
                           setState(() {
                             backRc = file;
+                            driverCubit.updateBackRC(file);
                           });
                         }
                         debugPrint(
@@ -361,6 +384,7 @@ class _VehicleTabState extends State<VehicleTab> {
                       'onImageCaptured': (File? file) {
                         setState(() {
                           vehiclePhoto = file;
+                          driverCubit.updateVehiclePhoto(file);
                         });
                         debugPrint("Captured file path: Vehicle:  ${vehiclePhoto?.path}");
                       },

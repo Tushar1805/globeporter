@@ -44,6 +44,15 @@ class _OwnerTabState extends State<OwnerTab> {
   FToast? fToast;
   bool loading = false;
   String errorMessage = '';
+
+  void _ownerNameListener() {
+    driverCubit.updateOwnerName(nameController.text);
+  }
+
+  void _ownerPhoneListener() {
+    driverCubit.updateOwnerPhoneNumber(phoneNumberController.text);
+  }
+
   @override
   void initState() {
     fToast = FToast();
@@ -55,7 +64,19 @@ class _OwnerTabState extends State<OwnerTab> {
     frontPan = driverCubit.ownerFrontPan;
     backPan = driverCubit.ownerBackPan;
     ownerPhoto = driverCubit.ownerPhoto;
+
+    nameController.addListener(_ownerNameListener);
+    phoneNumberController.addListener(_ownerPhoneListener);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameController.removeListener(_ownerNameListener);
+    phoneNumberController.removeListener(_ownerPhoneListener);
+    nameController.dispose();
+    phoneNumberController.dispose();
+    super.dispose();
   }
 
   @override
@@ -271,10 +292,12 @@ class _OwnerTabState extends State<OwnerTab> {
                         if (front ?? false) {
                           setState(() {
                             frontAdhaar = file;
+                            driverCubit.updateOwnerFrontAdhaar(file);
                           });
                         } else {
                           setState(() {
                             backAdhaar = file;
+                            driverCubit.updateOwnerBackAdhaar(file);
                           });
                         }
                         debugPrint(
@@ -304,10 +327,12 @@ class _OwnerTabState extends State<OwnerTab> {
                         if (front ?? false) {
                           setState(() {
                             frontPan = file;
+                            driverCubit.updateOwnerFrontPan(file);
                           });
                         } else {
                           setState(() {
                             backPan = file;
+                            driverCubit.updateOwnerBackPan(file);
                           });
                         }
                         debugPrint(
@@ -335,6 +360,7 @@ class _OwnerTabState extends State<OwnerTab> {
                       'onImageCaptured': (File? file) {
                         setState(() {
                           ownerPhoto = file;
+                          driverCubit.updateOwnerPhoto(file);
                         });
                         debugPrint("Captured file path: Vehicle:  ${ownerPhoto?.path}");
                       },
