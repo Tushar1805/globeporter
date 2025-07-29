@@ -421,6 +421,59 @@ class DriverCubit extends BaseCubit {
     emit(LoadAllDataLoadedState(data: null));
   }
 
+  Future<void> getAllDocs() async {
+    final ownerFrontAadharpath = await storage.readValue(ownerAadharCardFrontKey);
+    final ownerBackAadharpath = await storage.readValue(ownerAadharCardBackKey);
+    final ownerFrontPanpath = await storage.readValue(ownerPanCardFrontKey);
+    final ownerBackPanpath = await storage.readValue(ownerPanCardBackKey);
+    final ownerPhotoPath = await storage.readValue(ownerPhotoKey);
+    final vehicleFrontRCPath = await storage.readValue(vehicleRCFrontKey);
+    final vehicleBackRCPath = await storage.readValue(vehicleRCBackKey);
+    final vehiclePhotoPath = await storage.readValue(vehiclePhotoKey);
+    final driverFrontAadharPath = await storage.readValue(driverAadharCardFrontKey);
+    final driverBackAadharPath = await storage.readValue(driverAadharCardBackKey);
+    final driverFrontPanPath = await storage.readValue(driverPanCardFrontKey);
+    final driverBackPanPath = await storage.readValue(driverPanCardBackKey);
+    final driverFrontLicencePath = await storage.readValue(driverLicenceFrontKey);
+    final driverBackLicencePath = await storage.readValue(driverLicenceBackKey);
+    final drierPhotoPathPath = await storage.readValue(driverPhotoKey);
+
+    ownerFrontAdhaar = ownerFrontAadharpath != null ? File(ownerFrontAadharpath) : null;
+    ownerBackAdhaar = ownerBackAadharpath != null ? File(ownerBackAadharpath) : null;
+    ownerFrontPan = ownerFrontPanpath != null ? File(ownerFrontPanpath) : null;
+    ownerBackPan = ownerBackPanpath != null ? File(ownerBackPanpath) : null;
+    ownerPhoto = ownerPhotoPath != null ? File(ownerPhotoPath) : null;
+    vehicleFrontRC = vehicleFrontRCPath != null ? File(vehicleFrontRCPath) : null;
+    vehicleBackRC = vehicleBackRCPath != null ? File(vehicleBackRCPath) : null;
+    vehiclePhoto = vehiclePhotoPath != null ? File(vehiclePhotoPath) : null;
+    driverFrontAdhaar = driverFrontAadharPath != null ? File(driverFrontAadharPath) : null;
+    driverBackAdhaar = driverBackAadharPath != null ? File(driverBackAadharPath) : null;
+    driverFrontPan = driverFrontPanPath != null ? File(driverFrontPanPath) : null;
+    driverBackPan = driverBackPanPath != null ? File(driverBackPanPath) : null;
+    driverFrontLicence = driverFrontLicencePath != null ? File(driverFrontLicencePath) : null;
+    driverBackLicence = driverBackLicencePath != null ? File(driverBackLicencePath) : null;
+    driverPhoto = drierPhotoPathPath != null ? File(drierPhotoPathPath) : null;
+
+    final list = [
+      ownerFrontAdhaar,
+      ownerBackAdhaar,
+      ownerFrontPan,
+      ownerBackPan,
+      ownerPhoto,
+      vehicleFrontRC,
+      vehicleBackRC,
+      vehiclePhoto,
+      driverFrontAdhaar,
+      driverBackAdhaar,
+      driverFrontPan,
+      driverBackPan,
+      driverFrontLicence,
+      driverBackLicence,
+      driverPhoto,
+    ];
+    emit(AllDocumentsLoadedState(data: list));
+  }
+
   Future<File> urlToFile(String imageUrl) async {
     final Directory tempDir = await getTemporaryDirectory();
 

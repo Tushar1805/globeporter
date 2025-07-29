@@ -927,6 +927,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile Updated Successfully'**
   String get profileUpdatedString;
+
+  /// No description provided for @viewString.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get viewString;
 }
 
 class _AppLocalizationsDelegate

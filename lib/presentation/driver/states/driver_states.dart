@@ -96,3 +96,11 @@ class ReSubmitDocumentsLoadingState extends LoadingState {
 class ReSubmitDocumentsLoadedState extends LoadedState {
   ReSubmitDocumentsLoadedState({required super.data});
 }
+
+class AllDocumentsLoadingState extends LoadingState {
+  AllDocumentsLoadingState(super.loadingMessage);
+}
+
+class AllDocumentsLoadedState extends LoadedState {
+  AllDocumentsLoadedState({required super.data});
+}

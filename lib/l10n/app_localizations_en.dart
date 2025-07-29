@@ -431,4 +431,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileUpdatedString => 'Profile Updated Successfully';
+
+  @override
+  String get viewString => 'View';
 }

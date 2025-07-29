@@ -279,5 +279,7 @@
     "reUploadString": "Documents Uploaded Successfully",
     "@reUploadString": {},
     "profileUpdatedString": "Profile Updated Successfully",
-    "@profileUpdatedString": {}
+    "@profileUpdatedString": {}, 
+    "viewString": "View",
+    "@viewString": {}
 }

@@ -430,4 +430,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get profileUpdatedString => 'प्रोफ़ाइल सफलतापूर्वक अपडेट की गई';
+
+  @override
+  String get viewString => 'देखें';
 }

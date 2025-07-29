@@ -279,7 +279,7 @@ class _DriverTabState extends State<DriverTab> {
                     loading = true;
                   });
                 } else if (state is SaveDriverDetailsLoadedState) {
-                  context.push(documentVerificationScreen);
+                  context.go(documentVerificationScreen);
                   setState(() {
                     loading = false;
                   });
