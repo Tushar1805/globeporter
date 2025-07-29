@@ -427,4 +427,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get reUploadString => 'दस्तावेज़ सफलतापूर्वक अपलोड हो गए';
+
+  @override
+  String get profileUpdatedString => 'प्रोफ़ाइल सफलतापूर्वक अपडेट की गई';
 }

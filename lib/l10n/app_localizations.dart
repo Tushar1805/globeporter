@@ -921,6 +921,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Documents Uploaded Successfully'**
   String get reUploadString;
+
+  /// No description provided for @profileUpdatedString.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Updated Successfully'**
+  String get profileUpdatedString;
 }
 
 class _AppLocalizationsDelegate

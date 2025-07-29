@@ -7,6 +7,8 @@ import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/repository/customer_repository.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/repository/driver_repository.dart';
+import 'package:globeporter/presentation/settings/cubit/settings_cubit.dart';
+import 'package:globeporter/presentation/settings/repository/settings_repository.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/authentication/repository/auth_repo.dart';
@@ -20,6 +22,7 @@ void setupServiceLocator() async {
   sl.registerFactory<CustomerRepository>(CustomerRepository.new);
   sl.registerFactory<DriverRepository>(DriverRepository.new);
   sl.registerFactory<LocationRepository>(LocationRepository.new);
+  sl.registerFactory<SettingsRepository>(SettingsRepository.new);
 
   //* Cubits
   sl.registerLazySingleton<ThemeCubit>(
@@ -39,5 +42,8 @@ void setupServiceLocator() async {
   );
   sl.registerSingleton<LocationCubit>(
     LocationCubit(sl<LocationRepository>()),
+  );
+  sl.registerSingleton<SettingsCubit>(
+    SettingsCubit(sl<SettingsRepository>()),
   );
 }

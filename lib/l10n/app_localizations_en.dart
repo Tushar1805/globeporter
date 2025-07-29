@@ -428,4 +428,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reUploadString => 'Documents Uploaded Successfully';
+
+  @override
+  String get profileUpdatedString => 'Profile Updated Successfully';
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
@@ -8,6 +10,9 @@ import 'package:globeporter/resources/app_storage.dart';
 import '../repository/auth_repo.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 part '../states/auth_state.dart';
 
 class AuthCubit extends BaseCubit {
@@ -29,8 +34,10 @@ class AuthCubit extends BaseCubit {
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
-  Future<UserDetailsResponseModel?> getUserDetails() async {
-    if (userDetails != null) return userDetails;
+  Future<UserDetailsResponseModel?> getUserDetails({final bool force = false}) async {
+    if (!force) {
+      if (userDetails != null) return userDetails;
+    }
     try {
       emit(UserDetailsLoadingState('Getting User details'));
       final accessToken = await storage.readValue(accessTokenKey);
@@ -46,6 +53,19 @@ class AuthCubit extends BaseCubit {
       handleExceptions(e);
       return null;
     }
+  }
+
+  Future<File> urlToFile(String imageUrl) async {
+    final Directory tempDir = await getTemporaryDirectory();
+
+    final String fileName = basename(imageUrl);
+    final File file = File('${tempDir.path}/$fileName');
+
+    final http.Response response = await http.get(Uri.parse(imageUrl));
+
+    await file.writeAsBytes(response.bodyBytes);
+
+    return file;
   }
 
   Future<void> login({

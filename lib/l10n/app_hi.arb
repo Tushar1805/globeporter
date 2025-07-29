@@ -139,5 +139,6 @@
     "verificationString": "सत्यापन",
     "verificationInProcessString": "सत्यापन प्रक्रिया में है",
     "validString": "वैध",
-    "reUploadString": "दस्तावेज़ सफलतापूर्वक अपलोड हो गए"
+    "reUploadString": "दस्तावेज़ सफलतापूर्वक अपलोड हो गए",
+    "profileUpdatedString": "प्रोफ़ाइल सफलतापूर्वक अपडेट की गई"
 }

@@ -30,3 +30,7 @@ const String getOwnerDetailsUrl = '$_baseUrl/get_owner_details';
 const String getVehicleDetailsUrl = '$_baseUrl/get_vehicle_details';
 const String getDriverDetailsUrl = '$_baseUrl/get_driver_details';
 const String reSubmitDocumetsUser = '$_baseUrl/common_update_user_vehicle_details';
+
+//* Settings
+
+const String updateProfileUrl = '$_baseUrl/update_profile_data';

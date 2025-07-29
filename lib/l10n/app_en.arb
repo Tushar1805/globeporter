@@ -277,5 +277,7 @@
     "validString": "valid",
     "@validString": {},
     "reUploadString": "Documents Uploaded Successfully",
-    "@reUploadString": {}
+    "@reUploadString": {},
+    "profileUpdatedString": "Profile Updated Successfully",
+    "@profileUpdatedString": {}
 }

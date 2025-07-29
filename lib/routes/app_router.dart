@@ -12,7 +12,7 @@ import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart
 import 'package:globeporter/presentation/chats/view/chat_screen.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
-import 'package:globeporter/presentation/customer/view/customer_profile_screen.dart';
+import 'package:globeporter/presentation/settings/view/customer_profile_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
@@ -20,7 +20,7 @@ import 'package:globeporter/presentation/driver/view/document_verification_scree
 import 'package:globeporter/presentation/driver/view/new_ride_screen.dart';
 import 'package:globeporter/presentation/driver/widgets/document_upload_screen.dart';
 import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
-import 'package:globeporter/presentation/driver/view/driver_profile_screen.dart';
+import 'package:globeporter/presentation/settings/view/driver_profile_screen.dart';
 import 'package:globeporter/presentation/driver/view/item_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/owner_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/start_trip_screen.dart';

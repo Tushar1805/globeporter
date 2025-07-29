@@ -110,7 +110,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                         ),
                         Text(
-                          authCubit.userDetails?.data?.email ?? 'email@test.com',
+                          authCubit.userDetails?.data?.email ?? '',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                           textAlign: TextAlign.end,

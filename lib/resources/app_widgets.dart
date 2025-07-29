@@ -133,18 +133,20 @@ class CustomLocationBox extends StatelessWidget {
 }
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField(
-      {super.key,
-      required this.textEditingController,
-      this.maxLines,
-      this.inputType,
-      this.borderRadius,
-      this.textStyle,
-      this.cursorColor,
-      this.readOnly,
-      this.onChanged,
-      this.inputFormatters,
-      this.hint, this.textCapitalization,});
+  const CustomTextField({
+    super.key,
+    required this.textEditingController,
+    this.maxLines,
+    this.inputType,
+    this.borderRadius,
+    this.textStyle,
+    this.cursorColor,
+    this.readOnly,
+    this.onChanged,
+    this.inputFormatters,
+    this.hint,
+    this.textCapitalization,
+  });
   final TextEditingController textEditingController;
   final int? maxLines;
   final TextInputType? inputType;
@@ -776,12 +778,14 @@ class ProfileEditCard extends StatelessWidget {
       required this.value,
       required this.onTap,
       this.icon,
+      this.isEditing = false,
       this.widget});
   final String label;
   final String value;
   final VoidCallback onTap;
   final String? icon;
   final Widget? widget;
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -798,33 +802,43 @@ class ProfileEditCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  widget ??
-                      Text(
-                        value,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 16,
-                            ),
-                      ),
-                ],
-              ),
-              IconButton(
-                onPressed: onTap,
-                icon: Image.asset(
-                  icon ?? editIcon,
-                  height: 24,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      label,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    widget ??
+                        Text(
+                          value,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontSize: 16,
+                              ),
+                        ),
+                  ],
                 ),
               ),
+              isEditing
+                  ? IconButton(
+                      onPressed: onTap,
+                      icon: Icon(
+                        Icons.close,
+                        size: 24,
+                      ),
+                    )
+                  : IconButton(
+                      onPressed: onTap,
+                      icon: Image.asset(
+                        icon ?? editIcon,
+                        height: 24,
+                      ),
+                    ),
             ],
           ),
         ),

@@ -237,6 +237,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     }
                     setState(() {
                       loading = false;
+                      errorMessage = '';
                     });
                   } else if (state is ErrorState) {
                     setState(() {
