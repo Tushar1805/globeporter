@@ -260,7 +260,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               msg: AppLocalizations.of(context)!.validNameString,
                               duration: 3,
                             );
-                          } else if (!isValidEmail) {
+                          } else if (emailController.text.isNotEmpty && !isValidEmail) {
                             showToast(
                               context: context,
                               fToast: fToast!,
