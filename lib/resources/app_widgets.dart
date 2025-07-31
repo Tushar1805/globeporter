@@ -147,6 +147,9 @@ class CustomTextField extends StatelessWidget {
     this.hint,
     this.textCapitalization,
     this.suffixIcon,
+    this.focusNode,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
   final TextEditingController textEditingController;
   final int? maxLines;
@@ -160,11 +163,15 @@ class CustomTextField extends StatelessWidget {
   final String? hint;
   final TextCapitalization? textCapitalization;
   final Widget? suffixIcon;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final Function(String)? onFieldSubmitted;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
+        focusNode: focusNode,
         textCapitalization: textCapitalization ?? TextCapitalization.none,
         style: textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),
         inputFormatters: inputFormatters,
@@ -174,6 +181,8 @@ class CustomTextField extends StatelessWidget {
         maxLines: maxLines ?? 1,
         readOnly: readOnly ?? false,
         onChanged: onChanged ?? (val) {},
+        textInputAction: textInputAction,
+        onSubmitted: onFieldSubmitted,
         decoration: InputDecoration(
             suffixIcon: suffixIcon,
             prefixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 24),

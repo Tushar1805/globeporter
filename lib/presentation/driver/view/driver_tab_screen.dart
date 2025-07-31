@@ -37,6 +37,10 @@ class _DriverTabState extends State<DriverTab> {
   File? backLicence;
   File? driverPhoto;
 
+  FocusNode nameFocusNode = FocusNode();
+  FocusNode phoneFocusNode = FocusNode();
+  FocusNode licenceFocusNode = FocusNode();
+
   final driverCubit = sl<DriverCubit>();
   FToast? fToast;
   bool loading = false;
@@ -85,6 +89,9 @@ class _DriverTabState extends State<DriverTab> {
     nameController.dispose();
     phoneNumberController.dispose();
     licenceNumberController.dispose();
+    nameFocusNode.dispose();
+    phoneFocusNode.dispose();
+    licenceFocusNode.dispose();
     super.dispose();
   }
 
@@ -97,6 +104,7 @@ class _DriverTabState extends State<DriverTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InfoFieldWidget(
+              focusNode: nameFocusNode,
               title: AppLocalizations.of(context)!.nameString,
               controller: nameController,
               inputFormatter: [
@@ -104,8 +112,13 @@ class _DriverTabState extends State<DriverTab> {
               ],
               inputType: TextInputType.name,
               hint: 'eg. Jon Doe',
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(phoneFocusNode);
+              },
             ),
             InfoFieldWidget(
+              focusNode: phoneFocusNode,
               title: AppLocalizations.of(context)!.phoneNumberString,
               controller: phoneNumberController,
               hint: '91XXXXXXXX',
@@ -114,10 +127,16 @@ class _DriverTabState extends State<DriverTab> {
                 LengthLimitingTextInputFormatter(10),
               ],
               inputType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(licenceFocusNode);
+              },
             ),
             InfoFieldWidget(
+              focusNode: licenceFocusNode,
               title: AppLocalizations.of(context)!.licenceNumberString,
               controller: licenceNumberController,
+              textInputAction: TextInputAction.done,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(

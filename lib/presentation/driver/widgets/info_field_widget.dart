@@ -10,7 +10,10 @@ class InfoFieldWidget extends StatelessWidget {
     this.inputFormatter,
     this.inputType,
     this.hint,
-    this.textCapitalization
+    this.textCapitalization,
+    this.focusNode,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
   final String title;
   final TextEditingController controller;
@@ -18,6 +21,9 @@ class InfoFieldWidget extends StatelessWidget {
   final TextInputType? inputType;
   final String? hint;
   final TextCapitalization? textCapitalization;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final Function(String)? onFieldSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +52,14 @@ class InfoFieldWidget extends StatelessWidget {
           height: 10,
         ),
         CustomTextField(
+          focusNode: focusNode,
           textEditingController: controller,
           inputFormatters: inputFormatter,
           inputType: inputType,
           hint: hint,
           textCapitalization: textCapitalization,
+          textInputAction: textInputAction,
+          onFieldSubmitted: onFieldSubmitted,
         ),
         const SizedBox(
           height: 20,

@@ -41,6 +41,9 @@ class _VehicleTabState extends State<VehicleTab> {
   VehicleTypeResponseModel? vehicleTypeResponse;
   String errorMessage = '';
 
+  FocusNode vehicleNumberFocusNode = FocusNode();
+  FocusNode vehicleRcFocusNode = FocusNode();
+
   final driverCubit = sl<DriverCubit>();
   FToast? fToast;
   bool loading = false;
@@ -89,6 +92,8 @@ class _VehicleTabState extends State<VehicleTab> {
     vehicleRcController.removeListener(_vehicleRcListener);
     vehicleNumberController.dispose();
     vehicleRcController.dispose();
+    vehicleNumberFocusNode.dispose();
+    vehicleRcFocusNode.dispose();
     super.dispose();
   }
 
@@ -229,6 +234,7 @@ class _VehicleTabState extends State<VehicleTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InfoFieldWidget(
+                focusNode: vehicleNumberFocusNode,
                 title: AppLocalizations.of(context)!.vehicleNo,
                 controller: vehicleNumberController,
                 hint: 'MP20VSXXXX',
@@ -237,8 +243,13 @@ class _VehicleTabState extends State<VehicleTab> {
                   FilteringTextInputFormatter.allow(RegExp('[A-Z0-9]')),
                   LengthLimitingTextInputFormatter(10), // Max length for format like MP20VS1234
                 ],
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(vehicleRcFocusNode);
+                },
               ),
               InfoFieldWidget(
+                focusNode: vehicleRcFocusNode,
                 title: AppLocalizations.of(context)!.vehicleRcString,
                 controller: vehicleRcController,
                 hint: 'FSSDGGSA3XXXXX',
@@ -247,6 +258,7 @@ class _VehicleTabState extends State<VehicleTab> {
                   FilteringTextInputFormatter.allow(RegExp('[A-Z0-9]')),
                   LengthLimitingTextInputFormatter(17),
                 ],
+                textInputAction: TextInputAction.done,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),

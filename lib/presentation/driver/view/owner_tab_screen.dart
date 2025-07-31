@@ -39,6 +39,9 @@ class _OwnerTabState extends State<OwnerTab> {
   File? backPan;
   File? ownerPhoto;
 
+  FocusNode nameFocusNode = FocusNode();
+  FocusNode phoneFocusNode = FocusNode();
+
   final driverCubit = sl<DriverCubit>();
   final authCubit = sl<AuthCubit>();
   FToast? fToast;
@@ -76,6 +79,8 @@ class _OwnerTabState extends State<OwnerTab> {
     phoneNumberController.removeListener(_ownerPhoneListener);
     nameController.dispose();
     phoneNumberController.dispose();
+    nameFocusNode.dispose();
+    phoneFocusNode.dispose();
     super.dispose();
   }
 
@@ -236,6 +241,7 @@ class _OwnerTabState extends State<OwnerTab> {
             mainAxisSize: MainAxisSize.max,
             children: [
               InfoFieldWidget(
+                focusNode: nameFocusNode,
                 title: AppLocalizations.of(context)!.nameString,
                 controller: nameController,
                 hint: 'eg. Jon Doe',
@@ -243,8 +249,13 @@ class _OwnerTabState extends State<OwnerTab> {
                   FilteringTextInputFormatter.allow(nameRegex),
                 ],
                 inputType: TextInputType.name,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(phoneFocusNode);
+                },
               ),
               InfoFieldWidget(
+                focusNode: phoneFocusNode,
                 title: AppLocalizations.of(context)!.phoneNumberString,
                 controller: phoneNumberController,
                 hint: '91XXXXXXXX',
@@ -253,6 +264,7 @@ class _OwnerTabState extends State<OwnerTab> {
                   LengthLimitingTextInputFormatter(10),
                 ],
                 inputType: TextInputType.number,
+                textInputAction: TextInputAction.done,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
