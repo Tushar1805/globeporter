@@ -120,6 +120,7 @@ class _DocumentVerificationScreenState extends State<DocumentVerificationScreen>
         subtitle: AppLocalizations.of(context)!.verificationInProcessString,
         isCompleted: isVerified,
         isCurrent: true,
+        isVerified: isVerified,
       ),
     ];
 
@@ -683,12 +684,14 @@ class _StepData {
   final String subtitle;
   final bool isCompleted;
   final bool isCurrent;
+  final bool isVerified;
 
   _StepData({
     required this.title,
     required this.subtitle,
     required this.isCompleted,
     this.isCurrent = false,
+    this.isVerified = false,
   });
 }
 
@@ -744,7 +747,10 @@ class _StepItem extends StatelessWidget {
                   step.isCompleted
                       ? Padding(
                           padding: EdgeInsets.only(top: 4),
-                          child: Text(AppLocalizations.of(context)!.uploadedString,
+                          child: Text(
+                              step.isVerified
+                                  ? AppLocalizations.of(context)!.verifiedString
+                                  : AppLocalizations.of(context)!.uploadedString,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
