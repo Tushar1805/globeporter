@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -14,6 +16,8 @@ import 'package:globeporter/presentation/driver/model/verification_status_respon
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -33,6 +37,7 @@ class _DocumentVerificationScreenState extends State<DocumentVerificationScreen>
   String? errorMessage = '';
   final authCubit = sl<AuthCubit>();
   final driverCubit = sl<DriverCubit>();
+  final storage = sl<SecureStorage>();
   VerificationStatusResponse? verificationStatus;
   List<String?> failedTypes = [];
   List<String?> localFailedTypes = [];
@@ -575,9 +580,13 @@ class _DocumentVerificationScreenState extends State<DocumentVerificationScreen>
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () {
+                      onPressed: () async {
                         // context.go(driverDashboard);
                         if (isVerified) {
+                          await storage.saveValue(
+                            value: '1',
+                            key: isDetailsVerifiedKey,
+                          );
                           context.go(driverDashboard);
                         }
                       },
