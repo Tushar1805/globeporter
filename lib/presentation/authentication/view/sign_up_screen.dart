@@ -4,6 +4,7 @@ import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:country_phone_validator/country_phone_validator.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_storage.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -45,6 +47,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
 
+  FocusNode phoneFocusNode = FocusNode();
+
   final authCubit = sl<AuthCubit>();
   String _selectedCountryCode = '+91';
   final storage = sl<SecureStorage>();
@@ -52,6 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FToast? fToast;
   bool loading = false;
   String errorMessage = '';
+  bool isMobileEditing = false;
 
   @override
   void initState() {
@@ -60,6 +65,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     fToast!.init(context);
     phoneController.text = widget.phoneNumber;
     _selectedCountryCode = widget.countryCode;
+  }
+
+  @override
+  void dispose() {
+    phoneController.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    phoneFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -133,11 +147,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
+                        focusNode: phoneFocusNode,
                         style: Theme.of(context).textTheme.bodyMedium,
                         controller: phoneController,
                         keyboardType: TextInputType.phone,
-                        readOnly: true,
+                        readOnly: !isMobileEditing,
                         decoration: InputDecoration(
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              phoneFocusNode.requestFocus();
+                              setState(() {
+                                isMobileEditing = true;
+                              });
+                            },
+                            child: Icon(
+                              Icons.edit,
+                              color: primaryColor,
+                            ),
+                          ),
                           hintText: AppLocalizations.of(context)!.enterMobileHint,
                           hintStyle: Theme.of(context)
                               .textTheme
@@ -231,7 +258,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       showToast(
                         context: context,
                         fToast: fToast!,
-                        msg: AppLocalizations.of(context)!.registrationFailedString,
+                        msg:
+                            data?.message ?? AppLocalizations.of(context)!.registrationFailedString,
                         duration: 3,
                       );
                     }
@@ -254,7 +282,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         alignment: Alignment.bottomCenter,
                         onPressed: () async {
                           final langCode = await storage.readValue(languageCodeKey);
-                          if (nameController.text.isEmpty && nameController.text.length < 5) {
+                          final country = CountryUtils.getCountryByDialCode(_selectedCountryCode);
+                          customPrint(
+                              "Country: ${country?.dialCode} : ${country?.phoneMaxLength}: ${country?.phoneMinLength}");
+                          final validPhone = isPhoneValid(
+                            phone: phoneController.text,
+                            dialCode: _selectedCountryCode,
+                          );
+                          if (isMobileEditing && !validPhone) {
+                            if (!validPhone) {
+                              showToast(
+                                context: context,
+                                fToast: fToast!,
+                                msg: AppLocalizations.of(context)!.validPhoneNumberString,
+                                duration: 3,
+                              );
+                            }
+                          } else if (nameController.text.isEmpty ||
+                              nameController.text.length < 5) {
                             showToast(
                               context: context,
                               fToast: fToast!,

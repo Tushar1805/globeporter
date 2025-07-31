@@ -24,6 +24,7 @@ import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_storage.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -82,17 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
           .onError(_handleAuthenticationError);
     }));
     super.initState();
-  }
-
-  bool isPhoneValid({
-    required final String phone,
-    required final String dialCode,
-  }) {
-    customPrint("Entered to validate phone number");
-    final isValid = CountryUtils.validatePhoneNumber(phone, dialCode);
-
-    customPrint("$dialCode $phone : isValid: $isValid");
-    return isValid;
   }
 
   @override
@@ -170,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
             } else if (state is LoginLoadedState) {
               final data = state.data as LoginResponseModel?;
 
-              if (data?.data?.email == null) {
+              if (data?.data?.name == null) {
                 context.pushNamed(signUpScreen, extra: {
                   'countryCode': _selectedCountryCode,
                   'phoneNumber': phoneController.text,
@@ -178,11 +168,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   'otp': data?.otp,
                 });
               } else {
-                await _storage.saveValue(value: data?.data?.userType.toString(), key: userTypeKey);
-                customPrint("GET User type from api: ${data?.data?.userType.toString()}");
+                if (data?.data?.userType != null) {
+                  await _storage.saveValue(
+                      value: data?.data?.userType.toString(), key: userTypeKey);
+                  customPrint("GET User type from api: ${data?.data?.userType.toString()}");
+                }
                 context.pushNamed(otpScreen, extra: {
                   'countryCode': _selectedCountryCode,
-                  'email': data?.data?.email,
+                  'email': data?.data?.email ?? '',
                   'phone': phoneController.text,
                   'name': data?.data?.name,
                   'userId': data?.data?.id,

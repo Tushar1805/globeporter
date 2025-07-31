@@ -14,7 +14,7 @@ final ThemeData primaryTheme = ThemeData(
     backgroundColor: Colors.white,
   ),
   textSelectionTheme: const TextSelectionThemeData(
-    cursorColor: Colors.white,
+    cursorColor: primaryColor,
   ),
   buttonTheme: ButtonThemeData(
     textTheme: ButtonTextTheme.primary,

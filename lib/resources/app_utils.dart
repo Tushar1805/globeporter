@@ -1,5 +1,7 @@
 import 'dart:ui' as ui;
 
+import 'package:core/utils/core_utils.dart';
+import 'package:country_phone_validator/country_phone_validator.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -40,4 +42,15 @@ List<LatLng> decodePolyline(String encoded) {
   }
 
   return points;
+}
+
+bool isPhoneValid({
+  required final String phone,
+  required final String dialCode,
+}) {
+  customPrint("Entered to validate phone number");
+  final isValid = CountryUtils.validatePhoneNumber(phone, dialCode);
+
+  customPrint("$dialCode $phone : isValid: $isValid");
+  return isValid;
 }

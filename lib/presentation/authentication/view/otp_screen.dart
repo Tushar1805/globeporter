@@ -6,6 +6,7 @@ import 'package:core/utils/core_utils.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,8 +18,10 @@ import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/widgets/driver_dialog_widget.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -50,6 +53,12 @@ class _OtpScreenState extends State<OtpScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController otpController = TextEditingController();
+  FocusNode nameFocusNode = FocusNode();
+  FocusNode emailFocusNode = FocusNode();
+
+  bool isNameEditing = false;
+  bool isEmailEditing = false;
+  bool isValidEmail = false;
   String _selectedCountryCode = '+91';
   final storage = sl<SecureStorage>();
   final authCubit = sl<AuthCubit>();
@@ -68,6 +77,17 @@ class _OtpScreenState extends State<OtpScreen> {
     emailController.text = widget.email;
     otpController.text = widget.otp.toString();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    phoneController.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    otpController.dispose();
+    nameFocusNode.dispose();
+    emailFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -186,7 +206,23 @@ class _OtpScreenState extends State<OtpScreen> {
 
               CustomTextField(
                 textEditingController: nameController,
-                readOnly: true,
+                readOnly: !isNameEditing,
+                inputType: TextInputType.name,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(nameRegex),
+                ],
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    nameFocusNode.requestFocus();
+                    setState(() {
+                      isNameEditing = true;
+                    });
+                  },
+                  child: Icon(
+                    Icons.edit,
+                    color: primaryColor,
+                  ),
+                ),
               ),
 
               const SizedBox(
@@ -207,7 +243,24 @@ class _OtpScreenState extends State<OtpScreen> {
 
               CustomTextField(
                 textEditingController: emailController,
-                readOnly: true,
+                readOnly: !isEmailEditing,
+                onChanged: (final value) {
+                  setState(() {
+                    isValidEmail = value.isValidEmail();
+                  });
+                },
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    emailFocusNode.requestFocus();
+                    setState(() {
+                      isEmailEditing = true;
+                    });
+                  },
+                  child: Icon(
+                    Icons.edit,
+                    color: primaryColor,
+                  ),
+                ),
               ),
 
               const SizedBox(
@@ -333,10 +386,28 @@ class _OtpScreenState extends State<OtpScreen> {
                         borderRadius: 25,
                         alignment: Alignment.bottomCenter,
                         onPressed: () async {
-                          await authCubit.verifyOtp(
-                            otp: widget.otp.toString(),
-                            userId: widget.userId,
-                          );
+                          if (isNameEditing &&
+                              (nameController.text.isEmpty || nameController.text.length < 5)) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: AppLocalizations.of(context)!.validNameString,
+                              duration: 3,
+                            );
+                          } else if (isEmailEditing &&
+                              (emailController.text.isNotEmpty && !isValidEmail)) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: AppLocalizations.of(context)!.valideEmailString,
+                              duration: 3,
+                            );
+                          } else {
+                            await authCubit.verifyOtp(
+                              otp: widget.otp.toString(),
+                              userId: widget.userId,
+                            );
+                          }
                         },
                         textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                         nameSize: 22,
