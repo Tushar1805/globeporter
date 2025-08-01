@@ -389,10 +389,18 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: chatScreen,
       path: chatScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const ChatScreen(),
-      ),
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: ChatScreen(
+            customerId: params?['customerId'] as String,
+            driverId: params?['driverId'] as String,
+            type: params?['type'] as String,
+            name: params?['name'] as String,
+          ),
+        );
+      },
     ),
     GoRoute(
       name: newRideScreen,
@@ -407,7 +415,7 @@ final GoRouter router = GoRouter(
       path: documentVerificationScreen,
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
-        child:  DocumentVerificationScreen(),
+        child: DocumentVerificationScreen(),
       ),
     ),
     GoRoute(
@@ -415,7 +423,7 @@ final GoRouter router = GoRouter(
       path: viewDocumentsScreen,
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
-        child:  ViewUploadedDocuments(),
+        child: ViewUploadedDocuments(),
       ),
     ),
   ],

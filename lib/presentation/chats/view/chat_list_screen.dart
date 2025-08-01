@@ -107,7 +107,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     ),
               ),
               onTap: () {
-                context.pushNamed(chatScreen);
+                context.pushNamed(chatScreen, extra: {
+                  'customerId': '1',
+                  'driverId': '43',
+                  'name': chat["name"],
+                  'type': widget.role,
+                });
               },
             );
           },
