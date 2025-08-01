@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
@@ -12,6 +14,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/authentication/model/login_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/otp_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/user_type_response_model.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
@@ -66,6 +69,9 @@ class _OtpScreenState extends State<OtpScreen> {
   bool loading = false;
   FToast? fToast;
   String errorMessage = '';
+  Timer? _resendTimer;
+  int _remainingSeconds = 30;
+  bool _canResend = false;
 
   @override
   void initState() {
@@ -76,11 +82,34 @@ class _OtpScreenState extends State<OtpScreen> {
     nameController.text = widget.name;
     emailController.text = widget.email;
     otpController.text = widget.otp.toString();
+    _startResendOtpTimer();
     super.initState();
+  }
+
+  void _startResendOtpTimer() {
+    setState(() {
+      _remainingSeconds = 30;
+      _canResend = false;
+    });
+
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingSeconds > 1) {
+        setState(() {
+          _remainingSeconds--;
+        });
+      } else {
+        timer.cancel();
+        setState(() {
+          _canResend = true;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
+    _resendTimer?.cancel();
     phoneController.dispose();
     nameController.dispose();
     emailController.dispose();
@@ -284,14 +313,71 @@ class _OtpScreenState extends State<OtpScreen> {
                 inputType: TextInputType.number,
               ),
 
+              const SizedBox(
+                height: 8,
+              ),
+
+              loading
+                  ? SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: _canResend
+                          ? GestureDetector(
+                              onTap: () async {
+                                await authCubit.resendOtp(
+                                  dialCode: _selectedCountryCode.replaceAll('+', ''),
+                                  phoneNumber: phoneController.text,
+                                );
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .resendOtpString, // Make sure this exists
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: primaryColor),
+                              ),
+                            )
+                          : CustomRichText(
+                              title: AppLocalizations.of(context)!.resendOtpIn,
+                              value: ' $_remainingSeconds sec',
+                              titleStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: greyTextColor),
+                              valueStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: primaryColor, fontSize: 16),
+                            )
+                      //  Text(
+                      //     '${AppLocalizations.of(context)!.resendOtpIn} $_remainingSeconds sec',
+                      //     style:
+                      //         Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
+                      //   ),
+                      ),
+
               const SizedBox(height: 30),
 
               BlocListener(
                 bloc: authCubit,
                 listener: (final context, final state) async {
-                  if (state is OtpVerifyLoadingState || state is UserTypeLoadingState) {
+                  if (state is OtpVerifyLoadingState ||
+                      state is UserTypeLoadingState ||
+                      state is ResendOtpLoadingState) {
                     setState(() {
                       loading = true;
+                    });
+                  } else if (state is ResendOtpLoadedState) {
+                    final data = state.data as LoginResponseModel?;
+                    setState(() {
+                      otpController.text = data?.otp.toString() ?? '';
+                    });
+                    _startResendOtpTimer();
+
+                    setState(() {
+                      errorMessage = '';
+                      loading = false;
                     });
                   } else if (state is OtpVerifyLoadedState) {
                     final data = state.data as OtpResponseModel?;
@@ -362,6 +448,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
                     setState(() {
                       loading = false;
+                      errorMessage = '';
                     });
                   } else if (state is UserTypeLoadedState) {
                     final data = state.data as UserTypeResponseModel?;
@@ -411,7 +498,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               );
                             }
                             await authCubit.verifyOtp(
-                              otp: widget.otp.toString(),
+                              otp: otpController.text,
                               userId: widget.userId,
                             );
                           }

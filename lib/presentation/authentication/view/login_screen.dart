@@ -107,7 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: const EdgeInsets.all(14),
                     ),
                     onPressed: () async {
-                      final langCode = await _storage.readValue(languageCodeKey);
                       if (phoneController.text.isEmpty) {
                         showToast(
                           context: context,
@@ -133,7 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         } else {
                           await authCubit.login(
-                            langCode: langCode ?? 'en',
                             dialCode: _selectedCountryCode.replaceAll('+', ''),
                             phoneNumber: phoneController.text,
                           );

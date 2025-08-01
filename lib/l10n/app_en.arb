@@ -287,5 +287,9 @@
     "confirmNotADriverString": "Are you not Vehicle Owner/Driver?",
     "@confirmNotADriverString": {},
     "confirmString": "Confirm",
-    "@confirmString": {}
+    "@confirmString": {},
+    "resendOtpString": "Resend OTP",
+    "@resendOtpString": {},
+    "resendOtpIn": "Resend OTP in",
+    "@resendOtpIn": {}
 }

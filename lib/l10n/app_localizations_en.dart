@@ -443,4 +443,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmString => 'Confirm';
+
+  @override
+  String get resendOtpString => 'Resend OTP';
+
+  @override
+  String get resendOtpIn => 'Resend OTP in';
 }

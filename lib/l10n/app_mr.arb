@@ -147,5 +147,7 @@
     "viewString": "पहा",
     "documentsString": "दस्तऐवज",
     "confirmNotADriverString": "तुम्ही वाहन मालक/चालक नाही का?",
-    "confirmString": "पुष्टी करा"
+    "confirmString": "पुष्टी करा",
+    "resendOtpString": "ओटीपी पुन्हा पाठवा",
+    "resendOtpIn": "ओटीपी पुन्हा पाठवण्यासाठी उर्वरित वेळ"
 }

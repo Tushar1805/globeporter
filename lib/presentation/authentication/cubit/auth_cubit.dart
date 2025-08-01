@@ -69,20 +69,42 @@ class AuthCubit extends BaseCubit {
   }
 
   Future<void> login({
-    required final String langCode,
     required final String dialCode,
     required final String phoneNumber,
   }) async {
     try {
       emit(LoginLoadingState('Login in process'));
 
+      final lang = await storage.readValue(languageCodeKey);
+
       final response = await _authRepository.login(
-        lang: langCode,
+        lang: lang ?? 'en',
         dialCode: dialCode,
         phoneNumber: phoneNumber,
       );
 
       emit(LoginLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> resendOtp({
+    required final String dialCode,
+    required final String phoneNumber,
+  }) async {
+    try {
+      emit(ResendOtpLoadingState('Resending OTP'));
+
+      final lang = await storage.readValue(languageCodeKey);
+
+      final response = await _authRepository.login(
+        lang: lang ?? 'en',
+        dialCode: dialCode,
+        phoneNumber: phoneNumber,
+      );
+
+      emit(ResendOtpLoadedState(data: response));
     } catch (e) {
       handleExceptions(e);
     }
@@ -124,7 +146,7 @@ class AuthCubit extends BaseCubit {
     try {
       emit(RegisterLoadingState('Registration in progress'));
       final fcmToken = '_test';
-       final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.readValue(languageCodeKey);
 
       final response = await _authRepository.register(
         userId: userId,

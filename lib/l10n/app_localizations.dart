@@ -951,6 +951,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm'**
   String get confirmString;
+
+  /// No description provided for @resendOtpString.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP'**
+  String get resendOtpString;
+
+  /// No description provided for @resendOtpIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP in'**
+  String get resendOtpIn;
 }
 
 class _AppLocalizationsDelegate

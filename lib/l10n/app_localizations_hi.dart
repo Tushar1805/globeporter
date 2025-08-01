@@ -442,4 +442,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get confirmString => 'पुष्टि करें';
+
+  @override
+  String get resendOtpString => 'ओटीपी फिर से भेजें';
+
+  @override
+  String get resendOtpIn => 'ओटीपी फिर से भेजने में';
 }

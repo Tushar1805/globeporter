@@ -57,5 +57,13 @@ class UserTypeLoadedState extends LoadedState {
   UserTypeLoadedState({required super.data});
 }
 
+class ResendOtpLoadingState extends LoadingState {
+  ResendOtpLoadingState(super.loadingMessage);
+}
+
+class ResendOtpLoadedState extends LoadedState {
+  ResendOtpLoadedState({required super.data});
+}
+
 
 

@@ -441,4 +441,10 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get confirmString => 'पुष्टी करा';
+
+  @override
+  String get resendOtpString => 'ओटीपी पुन्हा पाठवा';
+
+  @override
+  String get resendOtpIn => 'ओटीपी पुन्हा पाठवण्यासाठी उर्वरित वेळ';
 }

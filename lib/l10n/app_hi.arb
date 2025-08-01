@@ -144,5 +144,7 @@
     "viewString": "देखें",
     "documentsString": "दस्तावेज़",
     "confirmNotADriverString": "क्या आप वाहन मालिक/चालक नहीं हैं?",
-    "confirmString": "पुष्टि करें"
+    "confirmString": "पुष्टि करें",
+    "resendOtpString": "ओटीपी फिर से भेजें",
+    "resendOtpIn": "ओटीपी फिर से भेजने में"
 }
