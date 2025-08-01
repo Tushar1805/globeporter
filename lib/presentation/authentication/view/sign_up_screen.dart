@@ -18,7 +18,6 @@ import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
-import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_utils.dart';
@@ -281,7 +280,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderRadius: 25,
                         alignment: Alignment.bottomCenter,
                         onPressed: () async {
-                          final langCode = await storage.readValue(languageCodeKey);
                           final country = CountryUtils.getCountryByDialCode(_selectedCountryCode);
                           customPrint(
                               "Country: ${country?.dialCode} : ${country?.phoneMaxLength}: ${country?.phoneMinLength}");
@@ -315,8 +313,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                           } else {
                             await authCubit.register(
+                              mobile: phoneController.text,
                               userId: widget.userId,
-                              langCode: langCode ?? 'en',
                               name: nameController.text,
                               email: emailController.text,
                             );

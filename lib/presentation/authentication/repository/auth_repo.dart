@@ -77,6 +77,7 @@ class AuthRepository extends BaseRepository {
     required final String name,
     required final String email,
     required final String fcmToken,
+    final String? mobile,
   }) async {
     final responseData = await fetchData(
       apiCallType: ApiCallType.post,
@@ -87,6 +88,7 @@ class AuthRepository extends BaseRepository {
         'name': name,
         'email': email,
         'fcm_token': fcmToken,
+        'mobile': mobile,
       },
     );
 

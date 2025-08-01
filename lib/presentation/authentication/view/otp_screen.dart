@@ -403,6 +403,13 @@ class _OtpScreenState extends State<OtpScreen> {
                               duration: 3,
                             );
                           } else {
+                            if (isNameEditing || isEmailEditing) {
+                              await authCubit.register(
+                                userId: widget.userId,
+                                name: nameController.text,
+                                email: emailController.text,
+                              );
+                            }
                             await authCubit.verifyOtp(
                               otp: widget.otp.toString(),
                               userId: widget.userId,

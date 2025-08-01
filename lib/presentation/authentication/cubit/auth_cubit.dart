@@ -117,20 +117,22 @@ class AuthCubit extends BaseCubit {
 
   Future<void> register({
     required final int userId,
-    required final String langCode,
     required final String name,
     required final String email,
+    final String? mobile,
   }) async {
     try {
       emit(RegisterLoadingState('Registration in progress'));
       final fcmToken = '_test';
+       final lang = await storage.readValue(languageCodeKey);
 
       final response = await _authRepository.register(
         userId: userId,
-        lang: langCode,
+        lang: lang ?? 'en',
         name: name,
         email: email,
         fcmToken: fcmToken,
+        mobile: mobile,
       );
 
       emit(RegisterLoadedState(data: response));
