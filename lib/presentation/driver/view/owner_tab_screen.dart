@@ -122,6 +122,9 @@ class _OwnerTabState extends State<OwnerTab> {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // (driverCubit.ownerDetailsFilled)
+                  //     ? SizedBox.shrink()
+                  //     :
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 30.0, bottom: 10),
