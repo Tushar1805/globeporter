@@ -448,4 +448,8 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get resendOtpIn => 'ओटीपी फिर से भेजने में';
+
+  @override
+  String get userDeactivatedString =>
+      'उपयोगकर्ता अक्षम कृपया व्यवस्थापक से संपर्क करें';
 }

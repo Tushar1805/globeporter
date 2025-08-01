@@ -291,5 +291,7 @@
     "resendOtpString": "Resend OTP",
     "@resendOtpString": {},
     "resendOtpIn": "Resend OTP in",
-    "@resendOtpIn": {}
+    "@resendOtpIn": {},
+    "userDeactivatedString": "User disabled please contact to administrator",
+    "@userDeactivatedString": {}
 }

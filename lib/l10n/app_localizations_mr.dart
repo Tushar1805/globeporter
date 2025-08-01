@@ -447,4 +447,8 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get resendOtpIn => 'ओटीपी पुन्हा पाठवण्यासाठी उर्वरित वेळ';
+
+  @override
+  String get userDeactivatedString =>
+      'वापरकर्ता अक्षम आहे कृपया प्रशासकाशी संपर्क साधा.';
 }

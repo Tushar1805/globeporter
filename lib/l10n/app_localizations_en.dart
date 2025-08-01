@@ -449,4 +449,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resendOtpIn => 'Resend OTP in';
+
+  @override
+  String get userDeactivatedString =>
+      'User disabled please contact to administrator';
 }

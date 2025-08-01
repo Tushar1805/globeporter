@@ -1,4 +1,3 @@
-
 import 'package:datasource/base_repository.dart';
 import 'package:datasource/network/api_call_type.dart';
 import 'package:globeporter/presentation/authentication/model/google_login_response_model.dart';
@@ -137,21 +136,19 @@ class AuthRepository extends BaseRepository {
     );
   }
 
- 
-
-  
-
-  Future<UserTypeResponseModel?> logout({
+  Future<Map<String, dynamic>> logout({
     required final String accessToken,
+    required final String lang,
   }) async {
     final responseData = await fetchData(
       apiCallType: ApiCallType.post,
       apiUrl: logoutUrl,
       accessToken: accessToken,
+       requestModel: {
+        'lang': lang,
+      },
     );
 
-    return UserTypeResponseModel.fromJson(
-      responseData as Map<String, dynamic>?,
-    );
+    return responseData as Map<String, dynamic>;
   }
 }

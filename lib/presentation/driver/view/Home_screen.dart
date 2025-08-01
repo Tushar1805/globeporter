@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:core/di/service_locator.dart';
-import 'package:core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -82,6 +80,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
       locationCubit.updateMyLocation(lat: lat, lng: lng, role: 'driver');
     });
+  }
+
+  void buildUserDetails() {
+    setState(() {});
   }
 
   @override

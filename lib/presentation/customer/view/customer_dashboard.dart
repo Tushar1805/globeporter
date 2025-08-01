@@ -1,7 +1,9 @@
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/authentication/model/user_details_response_model.dart';
 import 'package:globeporter/presentation/chats/view/chat_list_screen.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
@@ -11,6 +13,8 @@ import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomerDashboard extends StatefulWidget {
   const CustomerDashboard({
@@ -30,7 +34,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
   final authCubit = sl<AuthCubit>();
   final storage = sl<SecureStorage>();
   void getUserDetails() async {
-    await authCubit.getUserDetails();
+    await authCubit.getUserDetails(force: true);
   }
 
   @override
@@ -82,65 +86,82 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
         role: 'customer',
       ),
     ];
-    return SafeArea(
-      top: false,
-      child: Scaffold(
-        backgroundColor: whiteColor,
-        body: screens[pageIndex],
-        //  PageView(
-        //   controller: pageController,
-        //   children: screens,
-        //   onPageChanged: (index) {
-        //     setState(() {
-        //       pageIndex = index;
-        //     });
-        //   },
-        // ),
-        bottomNavigationBar: Container(
-          height: size.width * 0.18,
-          padding: const EdgeInsets.only(bottom: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(12),
-            ),
-            border: Border.all(
-              color: const Color(
-                0xFFCDCDCD,
+    return BlocListener(
+      bloc: authCubit,
+      listener: (final context, final state) async {
+        if (state is UserDetailsLoadedState) {
+          final data = state.data as UserDetailsResponseModel?;
+
+          if (data?.data?.status == 0) {
+            await authCubit.logout();
+            // ignore: use_build_context_synchronously
+            context.go(loginScreen, extra: {
+              'status': data?.data?.status,
+            });
+          }
+          setState(() {});
+        }
+      },
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          backgroundColor: whiteColor,
+          body: screens[pageIndex],
+          //  PageView(
+          //   controller: pageController,
+          //   children: screens,
+          //   onPageChanged: (index) {
+          //     setState(() {
+          //       pageIndex = index;
+          //     });
+          //   },
+          // ),
+          bottomNavigationBar: Container(
+            height: size.width * 0.18,
+            padding: const EdgeInsets.only(bottom: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
+              border: Border.all(
+                color: const Color(
+                  0xFFCDCDCD,
+                ),
               ),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              BottomNavBarIcon(
-                title: AppLocalizations.of(context)!.myRequestString,
-                icon: myRequestIcon,
-                onTap: () => onNavBarTap(0),
-                pageIndex: pageIndex,
-                itemIndex: 0,
-              ),
-              BottomNavBarIcon(
-                title: AppLocalizations.of(context)!.homeString,
-                icon: homeIcon,
-                onTap: () => onNavBarTap(1),
-                pageIndex: pageIndex,
-                itemIndex: 1,
-              ),
-              BottomNavBarIcon(
-                title: AppLocalizations.of(context)!.chatsString,
-                icon: chatIcon,
-                onTap: () => onNavBarTap(2),
-                pageIndex: pageIndex,
-                itemIndex: 2,
-              ),
-              BottomNavBarIcon(
-                title: AppLocalizations.of(context)!.profileString,
-                icon: profileIcon,
-                onTap: () => onNavBarTap(3),
-                pageIndex: pageIndex,
-                itemIndex: 3,
-              ),
-            ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                BottomNavBarIcon(
+                  title: AppLocalizations.of(context)!.myRequestString,
+                  icon: myRequestIcon,
+                  onTap: () => onNavBarTap(0),
+                  pageIndex: pageIndex,
+                  itemIndex: 0,
+                ),
+                BottomNavBarIcon(
+                  title: AppLocalizations.of(context)!.homeString,
+                  icon: homeIcon,
+                  onTap: () => onNavBarTap(1),
+                  pageIndex: pageIndex,
+                  itemIndex: 1,
+                ),
+                BottomNavBarIcon(
+                  title: AppLocalizations.of(context)!.chatsString,
+                  icon: chatIcon,
+                  onTap: () => onNavBarTap(2),
+                  pageIndex: pageIndex,
+                  itemIndex: 2,
+                ),
+                BottomNavBarIcon(
+                  title: AppLocalizations.of(context)!.profileString,
+                  icon: profileIcon,
+                  onTap: () => onNavBarTap(3),
+                  pageIndex: pageIndex,
+                  itemIndex: 3,
+                ),
+              ],
+            ),
           ),
         ),
       ),

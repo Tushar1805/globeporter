@@ -39,8 +39,13 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     if (accessToken != null) {
-      await authCubit.getUserDetails().then((final response) {
-        if (response?.data?.userType != null && response?.data?.userType == 2) {
+      await authCubit.getUserDetails(force: true).then((final response) async {
+        if (response?.data?.status == 0) {
+          await authCubit.logout();
+          context.go(loginScreen, extra: {
+            'status': response?.data?.status,
+          });
+        } else if (response?.data?.userType != null && response?.data?.userType == 2) {
           if (isDetailsVerified == '1') {
             context.go(driverDashboard);
           } else if (detailsFilled == '1') {

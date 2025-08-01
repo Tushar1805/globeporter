@@ -6,6 +6,7 @@ import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:country_phone_validator/country_phone_validator.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,12 +26,15 @@ import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_utils.dart';
+import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.status});
+
+  final int? status;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -47,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isAuthorized = false;
   bool loading = false;
+  String errorMessage = '';
 
   Future<void> _handleAuthenticationError(Object e) async {
     setState(() {
@@ -82,6 +87,21 @@ class _LoginScreenState extends State<LoginScreen> {
           .listen(_handleAuthenticationEvent)
           .onError(_handleAuthenticationError);
     }));
+
+    // Check for deactivated user
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.status == 0) {
+        showCustomDialogOneButton(
+          context: context,
+          borderRadius: 18,
+          title: AppLocalizations.of(context)!.userDeactivatedString,
+          buttonTitle: AppLocalizations.of(context)!.okString,
+          onTap: () {
+            context.pop();
+          },
+        );
+      }
+    });
     super.initState();
   }
 
@@ -182,6 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
               }
               setState(() {
                 loading = false;
+                errorMessage = '';
               });
             } else if (state is GoogleLoginLoadedState) {
               final data = state.data as GoogleLoginResponseModel?;
@@ -219,6 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (data?.statusCode == 200) {
                 setState(() {
                   loading = false;
+                  errorMessage = '';
                 });
                 if (data?.data?.userType == "2") {
                   context.go(ownerDetailsScreen);
@@ -226,6 +248,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   context.go(customerDashboard);
                 }
               }
+            } else if (state is ErrorState) {
+              setState(() {
+                loading = false;
+                errorMessage = state.errorMessage;
+              });
             }
           },
           child: SingleChildScrollView(
@@ -460,6 +487,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 20,
                 ),
                 loading ? LoadingWithoutText() : SizedBox.shrink(),
+
+                errorMessage != ''
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Center(
+                          child: Text(
+                            errorMessage,
+                            style:
+                                Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+                          ),
+                        ),
+                      )
+                    : SizedBox.shrink(),
                 const SizedBox(
                   height: 20,
                 ),

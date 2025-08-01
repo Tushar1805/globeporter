@@ -277,7 +277,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   prefixIcon: logoutIcon,
                   onTap: () async {
                     await authCubit.logout();
-                    context.pushNamed(loginScreen);
+                    context.go(loginScreen);
                   },
                 )
               ],

@@ -146,5 +146,6 @@
     "confirmNotADriverString": "क्या आप वाहन मालिक/चालक नहीं हैं?",
     "confirmString": "पुष्टि करें",
     "resendOtpString": "ओटीपी फिर से भेजें",
-    "resendOtpIn": "ओटीपी फिर से भेजने में"
+    "resendOtpIn": "ओटीपी फिर से भेजने में",
+    "userDeactivatedString": "उपयोगकर्ता अक्षम कृपया व्यवस्थापक से संपर्क करें"
 }

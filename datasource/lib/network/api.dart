@@ -70,7 +70,6 @@ class Api {
     var requestBody = json.encode(requestModel);
     logYellowText(_apiLogStart + _apiLogRequest + requestBody + _apiLogEnd);
     final response = await http.post(uri, headers: headers, body: requestBody);
-    print(response);
     /* logGreenText(_apiLogStart +
         _apiLogResponse +
         utf8.decode(response.bodyBytes) +
@@ -285,7 +284,8 @@ class Api {
         break;
       case 401:
       case 403:
-        throw UnauthorisedException(response.body.toString());
+        _checkApiErrors(response, apiResponseType);
+        break;
       case 500:
         throw InternalServerException(response.body.toString());
       default:

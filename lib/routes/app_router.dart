@@ -115,10 +115,15 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: loginScreen,
       path: loginScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const LoginScreen(),
-      ),
+       pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: LoginScreen(
+            status: params?['status'] as int?,
+          ),
+        );
+      },
     ),
     GoRoute(
       name: signUpScreen,

@@ -208,11 +208,16 @@ class AuthCubit extends BaseCubit {
 
   Future<void> logout() async {
     try {
+      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.readValue(languageCodeKey);
+
       await storage.clearAll();
       await storage.saveValue(value: '0', key: ownerDetailsFilledKey);
       await storage.saveValue(value: '0', key: vehicleDetailsFilledKey);
       await storage.saveValue(value: '0', key: driverDetailsFilledKey);
       userDetails = null;
+
+      _authRepository.logout(accessToken: accessToken ?? '', lang: lang ?? 'en');
       emit(GeneralState('logout'));
     } catch (e) {
       handleExceptions(e);

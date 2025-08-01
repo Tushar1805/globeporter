@@ -149,5 +149,6 @@
     "confirmNotADriverString": "तुम्ही वाहन मालक/चालक नाही का?",
     "confirmString": "पुष्टी करा",
     "resendOtpString": "ओटीपी पुन्हा पाठवा",
-    "resendOtpIn": "ओटीपी पुन्हा पाठवण्यासाठी उर्वरित वेळ"
+    "resendOtpIn": "ओटीपी पुन्हा पाठवण्यासाठी उर्वरित वेळ",
+    "userDeactivatedString": "वापरकर्ता अक्षम आहे कृपया प्रशासकाशी संपर्क साधा."
 }

@@ -963,6 +963,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Resend OTP in'**
   String get resendOtpIn;
+
+  /// No description provided for @userDeactivatedString.
+  ///
+  /// In en, this message translates to:
+  /// **'User disabled please contact to administrator'**
+  String get userDeactivatedString;
 }
 
 class _AppLocalizationsDelegate
