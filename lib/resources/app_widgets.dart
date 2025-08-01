@@ -455,6 +455,7 @@ void showCustomDialog({
   required final String? title,
   required final VoidCallback onTapYes,
   required final VoidCallback onTapNo,
+  final Padding? description,
 }) {
   showDialog(
     context: context,
@@ -483,6 +484,7 @@ void showCustomDialog({
                       color: whiteColor,
                     ),
               ),
+              description ?? SizedBox.shrink(),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

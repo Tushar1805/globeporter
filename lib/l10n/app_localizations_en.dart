@@ -348,7 +348,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationFailedString => 'Registration Failed';
 
   @override
-  String get notADriverString => 'Not a Driver';
+  String get notADriverString => 'Not a Vehicle Owner/Driver';
 
   @override
   String get pleaseUploadString => 'Please upload';
@@ -437,4 +437,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get documentsString => 'Document';
+
+  @override
+  String get confirmNotADriverString => 'Are you not Vehicle Owner/Driver?';
+
+  @override
+  String get confirmString => 'Confirm';
 }

@@ -763,7 +763,7 @@ abstract class AppLocalizations {
   /// No description provided for @notADriverString.
   ///
   /// In en, this message translates to:
-  /// **'Not a Driver'**
+  /// **'Not a Vehicle Owner/Driver'**
   String get notADriverString;
 
   /// No description provided for @pleaseUploadString.
@@ -939,6 +939,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Document'**
   String get documentsString;
+
+  /// No description provided for @confirmNotADriverString.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you not Vehicle Owner/Driver?'**
+  String get confirmNotADriverString;
+
+  /// No description provided for @confirmString.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirmString;
 }
 
 class _AppLocalizationsDelegate

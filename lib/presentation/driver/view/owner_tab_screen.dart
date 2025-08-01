@@ -16,6 +16,7 @@ import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
+import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -121,115 +122,140 @@ class _OwnerTabState extends State<OwnerTab> {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30.0, bottom: 10),
-                    child: CustomElevatedButton(
-                      name: AppLocalizations.of(context)!.notADriverString,
-                      borderRadius: 4,
-                      alignment: Alignment.bottomRight,
-                      onPressed: () async {
-                        authCubit.updateUserType(userType: '1');
-                        context.pushNamed(customerDashboard);
-                      },
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 30.0, bottom: 10),
+                      child: CustomElevatedButton(
+                        name: AppLocalizations.of(context)!.notADriverString,
+                        borderRadius: 4,
+                        alignment: Alignment.bottomRight,
+                        onPressed: () async {
+                          showCustomDialog(
+                            context: context,
+                            borderRadius: 18,
+                            title: AppLocalizations.of(context)!.confirmString,
+                            description: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                AppLocalizations.of(context)!.confirmNotADriverString,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      fontSize: 18,
+                                      color: whiteColor,
+                                    ),
+                              ),
+                            ),
+                            onTapYes: () {
+                              authCubit.updateUserType(userType: '1');
+                              context.pushNamed(customerDashboard);
+                            },
+                            onTapNo: () {
+                              context.pop();
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 30.0, bottom: 10),
-                    child: CustomElevatedButton(
-                      name: AppLocalizations.of(context)!.goString,
-                      borderRadius: 4,
-                      alignment: Alignment.bottomRight,
-                      onPressed: () async {
-                        var uploadMsg =
-                            '${AppLocalizations.of(context)!.pleaseUploadString} ${AppLocalizations.of(context)!.ownerString.toLowerCase()}';
-                        if (nameController.text.isEmpty && nameController.text.length < 5) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg: AppLocalizations.of(context)!.validNameString,
-                            duration: 3,
-                          );
-                        } else if (phoneNumberController.text.isEmpty ||
-                            phoneNumberController.text.length < 10 ||
-                            phoneNumberController.text.length > 10) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg: AppLocalizations.of(context)!.validPhoneNumberString,
-                            duration: 3,
-                          );
-                        } else if (frontAdhaar == null && backAdhaar == null) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg:
-                                '$uploadMsg ${AppLocalizations.of(context)!.adhaarCardString.toLowerCase()}',
-                            duration: 3,
-                          );
-                        } else if (frontAdhaar == null) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg:
-                                '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.adhaarCardString}',
-                            duration: 3,
-                          );
-                        } else if (backAdhaar == null) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg:
-                                '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()} ${AppLocalizations.of(context)!.adhaarCardString}',
-                            duration: 3,
-                          );
-                        } else if (frontPan == null && backPan == null) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg: '$uploadMsg  ${AppLocalizations.of(context)!.panCardString}',
-                            duration: 3,
-                          );
-                        } else if (frontPan == null) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg:
-                                '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.panCardString}',
-                            duration: 3,
-                          );
-                        } else if (backPan == null) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg:
-                                '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()} ${AppLocalizations.of(context)!.panCardString}',
-                            duration: 3,
-                          );
-                        } else if (ownerPhoto == null) {
-                          showToast(
-                            context: context,
-                            fToast: fToast!,
-                            msg: '$uploadMsg ${AppLocalizations.of(context)!.photoString}',
-                            duration: 3,
-                          );
-                        } else {
-                          driverCubit.saveOwnerDetails(
-                            ownerName: nameController.text,
-                            ownerPhoneNumber: phoneNumberController.text,
-                            ownerFrontAdhaar: frontAdhaar ?? File(''),
-                            ownerBackAdhaar: backAdhaar ?? File(''),
-                            ownerFrontPan: frontPan ?? File(''),
-                            ownerBackPan: backPan ?? File(''),
-                            ownerPhoto: ownerPhoto ?? File(''),
-                          );
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 30.0, bottom: 10),
+                      child: CustomElevatedButton(
+                        name: AppLocalizations.of(context)!.goString,
+                        borderRadius: 4,
+                        alignment: Alignment.bottomRight,
+                        onPressed: () async {
+                          var uploadMsg =
+                              '${AppLocalizations.of(context)!.pleaseUploadString} ${AppLocalizations.of(context)!.ownerString.toLowerCase()}';
+                          if (nameController.text.isEmpty && nameController.text.length < 5) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: AppLocalizations.of(context)!.validNameString,
+                              duration: 3,
+                            );
+                          } else if (phoneNumberController.text.isEmpty ||
+                              phoneNumberController.text.length < 10 ||
+                              phoneNumberController.text.length > 10) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: AppLocalizations.of(context)!.validPhoneNumberString,
+                              duration: 3,
+                            );
+                          } else if (frontAdhaar == null && backAdhaar == null) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg:
+                                  '$uploadMsg ${AppLocalizations.of(context)!.adhaarCardString.toLowerCase()}',
+                              duration: 3,
+                            );
+                          } else if (frontAdhaar == null) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg:
+                                  '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.adhaarCardString}',
+                              duration: 3,
+                            );
+                          } else if (backAdhaar == null) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg:
+                                  '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()} ${AppLocalizations.of(context)!.adhaarCardString}',
+                              duration: 3,
+                            );
+                          } else if (frontPan == null && backPan == null) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: '$uploadMsg  ${AppLocalizations.of(context)!.panCardString}',
+                              duration: 3,
+                            );
+                          } else if (frontPan == null) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg:
+                                  '$uploadMsg ${AppLocalizations.of(context)!.frontSideString.toLowerCase()} ${AppLocalizations.of(context)!.panCardString}',
+                              duration: 3,
+                            );
+                          } else if (backPan == null) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg:
+                                  '$uploadMsg ${AppLocalizations.of(context)!.backSide.toLowerCase()} ${AppLocalizations.of(context)!.panCardString}',
+                              duration: 3,
+                            );
+                          } else if (ownerPhoto == null) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: '$uploadMsg ${AppLocalizations.of(context)!.photoString}',
+                              duration: 3,
+                            );
+                          } else {
+                            driverCubit.saveOwnerDetails(
+                              ownerName: nameController.text,
+                              ownerPhoneNumber: phoneNumberController.text,
+                              ownerFrontAdhaar: frontAdhaar ?? File(''),
+                              ownerBackAdhaar: backAdhaar ?? File(''),
+                              ownerFrontPan: frontPan ?? File(''),
+                              ownerBackPan: backPan ?? File(''),
+                              ownerPhoto: ownerPhoto ?? File(''),
+                            );
 
-                          await driverCubit.submitOwnerDetails();
-                        }
-                      },
-                      textWidget: Image.asset(
-                        arrowForward,
-                        width: size.width * 0.13,
-                        height: size.height * 0.017,
+                            await driverCubit.submitOwnerDetails();
+                          }
+                        },
+                        textWidget: Image.asset(
+                          arrowForward,
+                          width: size.width * 0.13,
+                          height: size.height * 0.017,
+                        ),
                       ),
                     ),
                   ),

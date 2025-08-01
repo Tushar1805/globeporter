@@ -346,7 +346,7 @@ class AppLocalizationsMr extends AppLocalizations {
   String get registrationFailedString => 'नोंदणी अयशस्वी';
 
   @override
-  String get notADriverString => 'मी ड्रायव्हर नाहीये.';
+  String get notADriverString => 'वाहन मालक/चालक नाही';
 
   @override
   String get pleaseUploadString => 'कृपया अपलोड करा';
@@ -435,4 +435,10 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get documentsString => 'दस्तऐवज';
+
+  @override
+  String get confirmNotADriverString => 'तुम्ही वाहन मालक/चालक नाही का?';
+
+  @override
+  String get confirmString => 'पुष्टी करा';
 }

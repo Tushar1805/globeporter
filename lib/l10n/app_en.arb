@@ -224,7 +224,7 @@
     "@valideEmailString": {},
     "registrationFailedString": "Registration Failed",
     "@registrationFailedString": {},
-    "notADriverString": "Not a Driver",
+    "notADriverString": "Not a Vehicle Owner/Driver",
     "@notADriverString": {},
     "pleaseUploadString": "Please upload",
     "@pleaseUploadString": {},
@@ -279,9 +279,13 @@
     "reUploadString": "Documents Uploaded Successfully",
     "@reUploadString": {},
     "profileUpdatedString": "Profile Updated Successfully",
-    "@profileUpdatedString": {}, 
+    "@profileUpdatedString": {},
     "viewString": "View",
-    "@viewString": {}, 
+    "@viewString": {},
     "documentsString": "Document",
-    "@documentsString": {}
+    "@documentsString": {},
+    "confirmNotADriverString": "Are you not Vehicle Owner/Driver?",
+    "@confirmNotADriverString": {},
+    "confirmString": "Confirm",
+    "@confirmString": {}
 }

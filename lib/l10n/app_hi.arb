@@ -113,7 +113,7 @@
     "validNameString": "कृपया वैध नाम दर्ज करें",
     "valideEmailString": "कृपया सही ईमेल पता दें",
     "registrationFailedString": "पंजीकरण विफल रहा",
-    "notADriverString": "मैं ड्राइवर नहीं हूँ",
+    "notADriverString": "वाहन मालिक/चालक नहीं",
     "pleaseUploadString": "कृपया अपलोड करें",
     "pleaseEnterString": "कृपया दर्ज करें",
     "adhaarCardString": "आधार कार्ड",
@@ -142,5 +142,7 @@
     "reUploadString": "दस्तावेज़ सफलतापूर्वक अपलोड हो गए",
     "profileUpdatedString": "प्रोफ़ाइल सफलतापूर्वक अपडेट की गई",
     "viewString": "देखें",
-    "documentsString": "दस्तावेज़"
+    "documentsString": "दस्तावेज़",
+    "confirmNotADriverString": "क्या आप वाहन मालिक/चालक नहीं हैं?",
+    "confirmString": "पुष्टि करें"
 }
