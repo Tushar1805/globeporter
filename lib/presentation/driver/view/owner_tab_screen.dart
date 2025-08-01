@@ -150,7 +150,7 @@ class _OwnerTabState extends State<OwnerTab> {
                             ),
                             onTapYes: () {
                               authCubit.updateUserType(userType: '1');
-                              context.pushNamed(customerDashboard);
+                              context.go(customerDashboard);
                             },
                             onTapNo: () {
                               context.pop();
