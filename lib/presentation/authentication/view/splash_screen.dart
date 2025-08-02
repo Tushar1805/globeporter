@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:core/di/service_locator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
+import 'package:globeporter/notifications/notification_service.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_keys.dart';
@@ -21,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   final locationCubit = sl<LocationCubit>();
   final storage = sl<SecureStorage>();
   final authCubit = sl<AuthCubit>();
+  final NotificationServices notificationServices = NotificationServices();
   @override
   void initState() {
     init();
@@ -37,6 +40,10 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 2), () {
       locationCubit.determinePosition();
     });
+
+    FirebaseMessaging.instance.getToken();
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit(context);
 
     if (accessToken != null) {
       await authCubit.getUserDetails(force: true).then((final response) async {

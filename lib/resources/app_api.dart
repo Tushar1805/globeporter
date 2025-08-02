@@ -23,6 +23,7 @@ const String submitOwnerDetailsUrl = '$_baseUrl/update_user_owner_vehicle_detail
 const String submitDriverDetailsUrl = '$_baseUrl/common_update_user_vehicle_details';
 const String submitVehicleDetailsUrl = '$_baseUrl/update_user_vehicle_details';
 const String getVerificationStatusUrl = '$_baseUrl/get_verification_status';
+const String fcmTokenUpdateUrl = '$_baseUrl/user_token_update';
 
 //* Driver
 

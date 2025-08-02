@@ -3,6 +3,7 @@ const languageCodeKey = 'language_code';
 const userIdKey = 'user_id';
 const accessTokenKey = 'access_token';
 const userTypeKey = 'user_type';
+const fcmTokenKey = 'fcm_token';
 const detailsFilledKey = 'details_filled';
 const isDetailsVerifiedKey = 'details_verified_key';
 const ownerDetailsFilledKey = 'owner_details_filled';

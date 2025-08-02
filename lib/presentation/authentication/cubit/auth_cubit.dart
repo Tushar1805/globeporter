@@ -4,6 +4,7 @@ import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
+import 'package:globeporter/notifications/notification_service.dart';
 import 'package:globeporter/presentation/authentication/model/user_details_response_model.dart';
 import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_storage.dart';
@@ -21,6 +22,7 @@ class AuthCubit extends BaseCubit {
   AuthCubit(this._authRepository) : super();
   final storage = sl<SecureStorage>();
   UserDetailsResponseModel? userDetails;
+  final notificationService = NotificationServices();
 
   Future<UserCredential> signInWithFacebook() async {
     // Trigger the sign-in flow
@@ -118,7 +120,13 @@ class AuthCubit extends BaseCubit {
     try {
       emit(GoogleLoginLoadingState('Login in process'));
       final lang = await storage.readValue(languageCodeKey);
-      final fcmToken = '_test';
+      var fcmToken = await storage.readValue(fcmTokenKey);
+      if (fcmToken == null || fcmToken == '') {
+        final token = await notificationService.getDeviceToken() ?? '_test';
+
+        await storage.saveValue(value: token, key: fcmTokenKey);
+        fcmToken = token;
+      }
 
       final response = await _authRepository.googleLogin(
         lang: lang ?? 'en',
@@ -145,8 +153,15 @@ class AuthCubit extends BaseCubit {
   }) async {
     try {
       emit(RegisterLoadingState('Registration in progress'));
-      final fcmToken = '_test';
+
       final lang = await storage.readValue(languageCodeKey);
+      var fcmToken = await storage.readValue(fcmTokenKey);
+      if (fcmToken == null || fcmToken == '') {
+        final token = await notificationService.getDeviceToken() ?? '_test';
+
+        await storage.saveValue(value: token, key: fcmTokenKey);
+        fcmToken = token;
+      }
 
       final response = await _authRepository.register(
         userId: userId,
@@ -177,7 +192,22 @@ class AuthCubit extends BaseCubit {
       );
 
       if (response?.statusCode == 200) {
-        await storage.saveValue(value: response?.token, key: accessTokenKey);
+        final authToken = response?.token;
+        await storage.saveValue(value: authToken, key: accessTokenKey);
+        var fcmToken = await storage.readValue(fcmTokenKey);
+
+        customPrint('FcM Token: $fcmToken');
+
+        if (fcmToken == null || fcmToken == '') {
+          final token = await notificationService.getDeviceToken() ?? '';
+          await _authRepository.updateFcmToken(
+            lang: lang ?? 'en',
+            accessToken: authToken ?? '',
+            fcmToken: token,
+          );
+          await storage.saveValue(value: token, key: fcmTokenKey);
+          fcmToken = token;
+        }
         customPrint("Token: ${response?.token}");
         emit(OtpVerifyLoadedState(data: response));
       } else if (response?.statusCode == 410) {

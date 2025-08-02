@@ -136,6 +136,24 @@ class AuthRepository extends BaseRepository {
     );
   }
 
+  Future<Map<String, dynamic>> updateFcmToken({
+    required final String fcmToken,
+    required final String lang,
+    required final String accessToken,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: fcmTokenUpdateUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'fcm_token': fcmToken,
+        'lang': lang,
+      },
+    );
+
+    return responseData;
+  }
+
   Future<Map<String, dynamic>> logout({
     required final String accessToken,
     required final String lang,
@@ -144,7 +162,7 @@ class AuthRepository extends BaseRepository {
       apiCallType: ApiCallType.post,
       apiUrl: logoutUrl,
       accessToken: accessToken,
-       requestModel: {
+      requestModel: {
         'lang': lang,
       },
     );
