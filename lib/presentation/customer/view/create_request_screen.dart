@@ -267,53 +267,61 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                   Positioned(
                     top: size.width * 0.13,
                     left: size.width * 0.043,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            context.pushNamed(customerProfileScreen);
-                          },
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: size.width * 0.12,
-                            child: CircleAvatar(
-                              radius: size.width * 0.116,
-                              backgroundImage: NetworkImage(
-                                authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage,
+                    child: BlocBuilder(
+                      bloc: authCubit,
+                      builder: (final context, final state) {
+                        final name = authCubit.userDetails?.data?.name ?? 'User Name';
+                        final profileUrl =
+                            authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage;
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                context.pushNamed(customerProfileScreen);
+                              },
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                radius: size.width * 0.12,
+                                child: CircleAvatar(
+                                  radius: size.width * 0.116,
+                                  backgroundImage: NetworkImage(
+                                    profileUrl,
+                                  ),
+                                  backgroundColor: Colors.white,
+                                ),
                               ),
-                              backgroundColor: Colors.white,
                             ),
-                          ),
-                        ),
-                        SizedBox(width: 15),
-                        SizedBox(
-                          height: size.width * 0.15,
-                          child: Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.onboarding1Title,
-                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                      ),
-                                  textAlign: TextAlign.end,
+                            SizedBox(width: 15),
+                            SizedBox(
+                              height: size.width * 0.15,
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.onboarding1Title,
+                                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 24,
+                                          ),
+                                      textAlign: TextAlign.end,
+                                    ),
+                                    Text(
+                                      name,
+                                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700),
+                                      textAlign: TextAlign.end,
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  authCubit.userDetails?.data?.name ?? 'User name',
-                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.end,
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ],

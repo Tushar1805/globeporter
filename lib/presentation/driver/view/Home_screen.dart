@@ -146,50 +146,58 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             Positioned(
               top: size.height * 0.05,
               left: size.width * 0.05,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      context.pushNamed(driverProfileScreen);
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: size.width * 0.1,
-                      child: CircleAvatar(
-                        radius: size.width * 0.097,
-                        backgroundImage: NetworkImage(
-                          authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage,
-                        ),
-                        backgroundColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.onboarding1Title,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
-                          textAlign: TextAlign.end,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.35,
-                          child: Text(
-                            authCubit.userDetails?.data?.name ?? 'User Name',
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
+              child: BlocBuilder(
+                bloc: authCubit,
+                builder: (final context, final state) {
+                  final name = authCubit.userDetails?.data?.name ?? 'User Name';
+                  final profileUrl =
+                      authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage;
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          context.pushNamed(driverProfileScreen);
+                        },
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: size.width * 0.1,
+                          child: CircleAvatar(
+                            radius: size.width * 0.097,
+                            backgroundImage: NetworkImage(
+                              profileUrl,
+                            ),
+                            backgroundColor: Colors.white,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
+                      SizedBox(width: 15),
+                      Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.onboarding1Title,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
+                              textAlign: TextAlign.end,
+                            ),
+                            SizedBox(
+                              width: size.width * 0.35,
+                              child: Text(
+                                name,
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
             Positioned(
