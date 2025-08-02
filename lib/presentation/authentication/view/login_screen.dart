@@ -195,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   'countryCode': _selectedCountryCode,
                   'email': data?.data?.email ?? '',
                   'phone': phoneController.text,
-                  'name': data?.data?.name,
+                  'name': data?.data?.name ?? '',
                   'userId': data?.data?.id,
                   'otp': data?.otp
                 });
