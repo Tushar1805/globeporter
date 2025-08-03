@@ -140,6 +140,13 @@ class LocationCubit extends BaseCubit {
   }) async {
     final userId = authCubit.userDetails?.data?.id.toString();
     // final type = authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeData?.nameEn;
+    final lang = await storage.readValue(languageCodeKey);
+    final accessToken = await storage.readValue(accessTokenKey);
+    await _locationRepository.updateUserLocation(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+        logitude: lng.toString(),
+        latitude: lat.toString());
     try {
       if (userId != null && userId != '') {
         await _dbRef.child(userId).set({

@@ -24,6 +24,7 @@ const String submitDriverDetailsUrl = '$_baseUrl/update_user_driver_vehicle_deta
 const String submitVehicleDetailsUrl = '$_baseUrl/update_user_vehicle_details';
 const String getVerificationStatusUrl = '$_baseUrl/get_verification_status';
 const String fcmTokenUpdateUrl = '$_baseUrl/user_token_update';
+const String updateUserLocationUrl = '$_baseUrl/update_lat_lng';
 
 //* Driver
 

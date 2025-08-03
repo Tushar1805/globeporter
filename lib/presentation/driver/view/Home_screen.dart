@@ -14,6 +14,7 @@ import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -71,12 +72,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       return;
     }
 
-    _locationSubscription = _location.onLocationChanged.listen((locationData) {
+    _locationSubscription?.cancel(); // cancel previous listener if any
+
+    _locationSubscription = _location.onLocationChanged
+        .throttleTime(const Duration(seconds: 10))
+        .listen((locationData) {
       if (locationData.latitude == null || locationData.longitude == null) return;
 
       final lat = locationData.latitude!;
       final lng = locationData.longitude!;
-      // _currentPosition = LatLng(lat, lng);
 
       locationCubit.updateMyLocation(lat: lat, lng: lng, role: 'driver');
     });

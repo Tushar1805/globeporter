@@ -7,6 +7,26 @@ import 'package:globeporter/resources/app_api.dart';
 import 'package:globeporter/resources/app_api_keys.dart';
 
 class LocationRepository extends BaseRepository {
+  Future<Map<String, dynamic>> updateUserLocation({
+    required final String lang,
+    required final String token,
+    required final String logitude,
+    required final String latitude,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: updateUserLocationUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+        'longitude': logitude,
+        'latitude': latitude,
+      },
+    );
+
+    return responseData;
+  }
+
   Future<SearchPlacesResponse?> searchPlaces({
     required final String input,
     required final String? sessionToken,
