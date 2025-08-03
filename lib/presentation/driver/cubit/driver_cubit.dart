@@ -19,7 +19,7 @@ class DriverCubit extends BaseCubit {
 
   //* Get Pending Bookings
 
-  Future<void> getVehicleType() async {
+  Future<void> getPendingBookings() async {
     try {
       emit(PendingBookingsLoadingState('Loading vehicle types'));
       final lang = await storage.readValue(languageCodeKey);

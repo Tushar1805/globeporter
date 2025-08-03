@@ -9,10 +9,10 @@ import 'package:globeporter/presentation/customer/model/customer_ride_response.d
 import 'package:globeporter/presentation/customer/states/customer_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 class MyRequestScreen extends StatefulWidget {
   const MyRequestScreen({super.key, this.onCreateRequestTap});
@@ -223,13 +223,8 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                           value: request?.rideType,
                         ),
                         CustomRichText(
-                          title: '${AppLocalizations.of(context)!.dateString}: ',
-                          value: DateFormat('dd MMMM').format(
-                            DateTime.parse(
-                              request?.createdAt ?? '',
-                            ),
-                          ),
-                        ),
+                            title: '${AppLocalizations.of(context)!.dateString}: ',
+                            value: formatDate(date: request?.createdAt ?? '')),
                       ],
                     )
                   ],

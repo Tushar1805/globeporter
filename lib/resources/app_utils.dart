@@ -4,6 +4,7 @@ import 'package:core/utils/core_utils.dart';
 import 'package:country_phone_validator/country_phone_validator.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
 Future<Uint8List> getBytesFromAssets({required final String path, required final int width}) async {
   ByteData data = await rootBundle.load(path);
@@ -53,4 +54,12 @@ bool isPhoneValid({
 
   customPrint("$dialCode $phone : isValid: $isValid");
   return isValid;
+}
+
+String formatDate({required final String date}) {
+  return DateFormat('dd MMMM').format(
+    DateTime.parse(
+      date,
+    ),
+  );
 }
