@@ -13,6 +13,7 @@ import 'package:globeporter/presentation/chats/view/chat_screen.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
 import 'package:globeporter/presentation/settings/view/customer_profile_screen.dart';
+import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
@@ -115,7 +116,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: loginScreen,
       path: loginScreen,
-       pageBuilder: (final context, final state) {
+      pageBuilder: (final context, final state) {
         final params = state.extra as Map<String, dynamic>?;
         return slideTransitionPage(
           key: state.pageKey,
@@ -197,13 +198,9 @@ final GoRouter router = GoRouter(
       name: myRequestScreen,
       path: myRequestScreen,
       pageBuilder: (final context, final state) {
-        final params = state.extra as Map<String, dynamic>?;
         return slideTransitionPage(
           key: state.pageKey,
-          child: MyRequestScreen(
-            type: params?['type'] as String?,
-            show: params?['show'] as bool?,
-          ),
+          child: MyRequestScreen(),
         );
       },
     ),
@@ -216,6 +213,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: MyRequestDetailsScreen(
             type: params?['type'] as String?,
+            requestData: params?['requestData'] as customer.Data?,
           ),
         );
       },

@@ -1,14 +1,143 @@
+import 'package:core/di/service_locator.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
 import 'package:globeporter/presentation/customer/repository/customer_repository.dart';
 import 'package:globeporter/presentation/customer/states/customer_states.dart';
+import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 
 class CustomerCubit extends BaseCubit {
   final CustomerRepository _customerRepository;
   CustomerCubit(this._customerRepository);
-  bool show = false;
+  final storage = sl<SecureStorage>();
 
-  void switchShow() {
-    show = true;
-    emit(CustomerGeneralState('Switched'));
+
+
+  Future<void> getPackagingType() async {
+    try {
+      emit(PackagingTypeLoadingState('Loading vehicle types'));
+      final lang = await storage.readValue(languageCodeKey);
+      final response = await _customerRepository.getPackagingType(lang: lang ?? 'en');
+
+      emit(PackagingTypeLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> getVehicleType() async {
+    try {
+      emit(VehicleTypeLoadingState('Loading vehicle types'));
+      final lang = await storage.readValue(languageCodeKey);
+      final response = await _customerRepository.getVehicleType(lang: lang ?? 'en');
+
+      emit(VehicleTypeLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> getCustomerRideBookings() async {
+    try {
+      emit(CustomerRideBookingsLoadingState('Loading customer ride bookings'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _customerRepository.getCustomerRideBookings(
+        lang: lang ?? 'en',
+        accessToken: accessToken ?? '',
+      );
+
+      emit(CustomerRideBookingsLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> createRuralRequest({
+    required final int vehicleTypeId,
+    required final int packageTypeId,
+    required final String receiverName,
+    required final String receiverContact,
+    required final String quantiry,
+    required final String pickupAddress,
+    required final String dropAddress,
+    required final String pickupLat,
+    required final String pickupLng,
+    required final String dropLat,
+    required final String dropLng,
+  }) async {
+    try {
+      emit(CustomerRequestLoadingState('Creating Rural Request'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _customerRepository.createRuralRequest(
+        lang: lang ?? 'en',
+        accessToken: accessToken ?? '',
+        vehicleTypeId: vehicleTypeId,
+        packageTypeId: packageTypeId,
+        receiverName: receiverName,
+        receiverContact: receiverContact,
+        quantiry: quantiry,
+        pickupAddress: pickupAddress,
+        dropAddress: dropAddress,
+        pickupLat: pickupLat,
+        pickupLng: pickupLng,
+        dropLat: dropLat,
+        dropLng: dropLng,
+      );
+
+      if (response['status_code'] == 200) {
+        emit(CustomerRequestLoadedState(data: response));
+      } else {
+        emit(ErrorState(response['message']));
+      }
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> createUrbanRequest({
+    required final int vehicleTypeId,
+    required final String receiverName,
+    required final String receiverContact,
+    required final String pickupAddress,
+    required final String dropAddress,
+    required final String pickupLat,
+    required final String pickupLng,
+    required final String dropLat,
+    required final String dropLng,
+    required final List<ItemEntry> itemEntries,
+  }) async {
+    try {
+      emit(CustomerRequestLoadingState('Creating Rural Request'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _customerRepository.createUrbanRequest(
+        lang: lang ?? 'en',
+        accessToken: accessToken ?? '',
+        vehicleTypeId: vehicleTypeId,
+        receiverName: receiverName,
+        receiverContact: receiverContact,
+        pickupAddress: pickupAddress,
+        dropAddress: dropAddress,
+        pickupLat: pickupLat,
+        pickupLng: pickupLng,
+        dropLat: dropLat,
+        dropLng: dropLng,
+        itemEntries: itemEntries,
+      );
+
+      if (response['status_code'] == 200) {
+        emit(CustomerRequestLoadedState(data: response));
+      } else {
+        emit(ErrorState(response['message']));
+      }
+    } catch (e) {
+      handleExceptions(e);
+    }
   }
 }

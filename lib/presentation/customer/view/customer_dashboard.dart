@@ -72,9 +72,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
     final size = MediaQuery.of(context).size;
     final screens = [
       MyRequestScreen(
-        type: widget.type,
         onCreateRequestTap: () => onNavBarTap(1),
-        show: customerCubit.show,
       ),
       CreateRequestScreen(
         onSubmitTap: () => onNavBarTap(0),

@@ -31,6 +31,13 @@ const String getOwnerDetailsUrl = '$_baseUrl/get_owner_details';
 const String getVehicleDetailsUrl = '$_baseUrl/get_vehicle_details';
 const String getDriverDetailsUrl = '$_baseUrl/get_driver_details';
 const String reSubmitDocumetsUser = '$_baseUrl/common_update_user_vehicle_details';
+const String getDriverBookingsUrl = '$_baseUrl/get_driver_bookings';
+
+//* Customer
+const String createUrbanRequestUrl = '$_baseUrl/add_urban_booking';
+const String createRuralRequestUrl = '$_baseUrl/add_rural_booking';
+const String getCustomerBookingsUrl = '$_baseUrl/get_customer_bookings';
+const String getPackagingTypeUrl = '$_baseUrl/get_package_type';
 
 //* Settings
 
