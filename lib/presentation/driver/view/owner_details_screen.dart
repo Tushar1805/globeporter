@@ -3,7 +3,7 @@ import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
-import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/view/driver_tab_screen.dart';
 import 'package:globeporter/presentation/driver/view/owner_tab_screen.dart';
@@ -51,7 +51,7 @@ class OwnerDetailsScreen extends StatefulWidget {
 
 class _OwnerDetailsScreenState extends State<OwnerDetailsScreen> {
   final PageController _pageController = PageController();
-  final driverCubit = sl<DriverCubit>();
+  final driverCubit = sl<DriverDetailsCubit>();
   int currentIndex = 0;
   int maxAllowedIndex = 0;
   bool isInitialNavigationDone = false;

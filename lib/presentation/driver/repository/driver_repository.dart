@@ -5,6 +5,7 @@ import 'package:datasource/network/api_call_type.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
 import 'package:globeporter/presentation/driver/model/driver_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/owner_details_response_model.dart';
+import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart';
 import 'package:globeporter/presentation/driver/model/vehicle_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/verification_status_response.dart';
 import 'package:globeporter/resources/app_api.dart';
@@ -94,6 +95,25 @@ class DriverRepository extends BaseRepository {
     );
 
     return VerificationStatusResponse.fromJson(
+      responseData as Map<String, dynamic>,
+    );
+  }
+
+  //* Get Pending Bookings
+  Future<PendingBookingsResponse?> getPendingBookings({
+    required final String lang,
+    required final String token,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getPendingBookingsUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return PendingBookingsResponse.fromJson(
       responseData as Map<String, dynamic>,
     );
   }

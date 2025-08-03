@@ -5,7 +5,7 @@ import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
-import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -20,7 +20,7 @@ class ViewUploadedDocuments extends StatefulWidget {
 }
 
 class _ViewUploadedDocumentsState extends State<ViewUploadedDocuments> {
-  final driverCubit = sl<DriverCubit>();
+  final driverCubit = sl<DriverDetailsCubit>();
   bool loading = false;
 
   void getDetails() async {

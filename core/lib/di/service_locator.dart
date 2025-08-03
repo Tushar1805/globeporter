@@ -5,6 +5,7 @@ import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/location/repository/location_repository.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/repository/customer_repository.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/repository/driver_repository.dart';
 import 'package:globeporter/presentation/settings/cubit/settings_cubit.dart';
@@ -36,6 +37,9 @@ void setupServiceLocator() async {
   );
   sl.registerSingleton<CustomerCubit>(
     CustomerCubit(sl<CustomerRepository>()),
+  );
+  sl.registerSingleton<DriverDetailsCubit>(
+    DriverDetailsCubit(sl<DriverRepository>()),
   );
   sl.registerSingleton<DriverCubit>(
     DriverCubit(sl<DriverRepository>()),

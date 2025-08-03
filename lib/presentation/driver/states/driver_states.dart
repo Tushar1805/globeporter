@@ -88,7 +88,6 @@ class VerificationStatusLoadedState extends LoadedState {
   VerificationStatusLoadedState({required super.data});
 }
 
-
 class ReSubmitDocumentsLoadingState extends LoadingState {
   ReSubmitDocumentsLoadingState(super.loadingMessage);
 }
@@ -103,4 +102,12 @@ class AllDocumentsLoadingState extends LoadingState {
 
 class AllDocumentsLoadedState extends LoadedState {
   AllDocumentsLoadedState({required super.data});
+}
+
+class PendingBookingsLoadingState extends LoadingState {
+  PendingBookingsLoadingState(super.loadingMessage);
+}
+
+class PendingBookingsLoadedState extends LoadedState {
+  PendingBookingsLoadedState({required super.data});
 }

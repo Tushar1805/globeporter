@@ -5,7 +5,7 @@ import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/authentication/model/user_details_response_model.dart';
 import 'package:globeporter/presentation/chats/view/chat_list_screen.dart';
-import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart';
 import 'package:globeporter/presentation/driver/view/Home_screen.dart';
 import 'package:globeporter/presentation/driver/view/my_trips_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
@@ -26,7 +26,7 @@ class DriverDashboard extends StatefulWidget {
 class _DriverDashboardState extends State<DriverDashboard> {
   int pageIndex = 1;
   late PageController pageController;
-  final driverCubit = sl<DriverCubit>();
+  final driverCubit = sl<DriverDetailsCubit>();
   final authCubit = sl<AuthCubit>();
   final storage = sl<SecureStorage>();
   String amount = '500';

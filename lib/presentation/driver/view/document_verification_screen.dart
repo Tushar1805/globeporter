@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
-import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart';
 import 'package:globeporter/presentation/driver/model/verification_status_response.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
@@ -36,7 +36,7 @@ class _DocumentVerificationScreenState extends State<DocumentVerificationScreen>
   bool loading = false;
   String? errorMessage = '';
   final authCubit = sl<AuthCubit>();
-  final driverCubit = sl<DriverCubit>();
+  final driverCubit = sl<DriverDetailsCubit>();
   final storage = sl<SecureStorage>();
   VerificationStatusResponse? verificationStatus;
   List<String?> failedTypes = [];

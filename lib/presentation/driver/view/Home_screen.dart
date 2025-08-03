@@ -86,8 +86,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     });
   }
 
-  void buildUserDetails() {
-    setState(() {});
+  void loadPendingBookings() async{
+
   }
 
   @override

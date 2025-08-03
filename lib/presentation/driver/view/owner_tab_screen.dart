@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
-import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
@@ -43,7 +43,7 @@ class _OwnerTabState extends State<OwnerTab> {
   FocusNode nameFocusNode = FocusNode();
   FocusNode phoneFocusNode = FocusNode();
 
-  final driverCubit = sl<DriverCubit>();
+  final driverCubit = sl<DriverDetailsCubit>();
   final authCubit = sl<AuthCubit>();
   FToast? fToast;
   bool loading = false;

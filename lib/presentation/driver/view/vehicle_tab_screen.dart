@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
-import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart';
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
@@ -44,7 +44,7 @@ class _VehicleTabState extends State<VehicleTab> {
   FocusNode vehicleNumberFocusNode = FocusNode();
   FocusNode vehicleRcFocusNode = FocusNode();
 
-  final driverCubit = sl<DriverCubit>();
+  final driverCubit = sl<DriverDetailsCubit>();
   FToast? fToast;
   bool loading = false;
 

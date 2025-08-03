@@ -17,7 +17,6 @@ import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/authentication/model/login_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/otp_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/user_type_response_model.dart';
-import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/widgets/driver_dialog_widget.dart';
 import 'package:globeporter/presentation/widgets/status_bar_widget.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -65,7 +64,6 @@ class _OtpScreenState extends State<OtpScreen> {
   String _selectedCountryCode = '+91';
   final storage = sl<SecureStorage>();
   final authCubit = sl<AuthCubit>();
-  final driverCubit = sl<DriverCubit>();
   bool loading = false;
   FToast? fToast;
   String errorMessage = '';

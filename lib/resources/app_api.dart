@@ -33,6 +33,7 @@ const String getVehicleDetailsUrl = '$_baseUrl/get_vehicle_details';
 const String getDriverDetailsUrl = '$_baseUrl/get_driver_details';
 const String reSubmitDocumetsUser = '$_baseUrl/common_update_user_vehicle_details';
 const String getDriverBookingsUrl = '$_baseUrl/get_driver_bookings';
+const String getPendingBookingsUrl = '$_baseUrl/get_pending_bookings';
 
 //* Customer
 const String createUrbanRequestUrl = '$_baseUrl/add_urban_booking';
