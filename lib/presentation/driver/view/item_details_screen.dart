@@ -5,10 +5,12 @@ import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
-  const ItemDetailsScreen({super.key, required this.type});
+  const ItemDetailsScreen({super.key, required this.type, required this.data});
   final String? type;
+  final Data? data;
 
   @override
   State<ItemDetailsScreen> createState() => _ItemDetailsScreenState();
@@ -46,8 +48,8 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     radius: size.width * 0.1,
                     child: CircleAvatar(
                       radius: size.width * 0.097,
-                      backgroundImage: AssetImage(
-                        profileImage,
+                      backgroundImage: NetworkImage(
+                        widget.data?.userData?.profilePhotoUrl ?? sampleNetworkImage,
                       ),
                       backgroundColor: Colors.white,
                     ),
@@ -55,7 +57,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   SizedBox(width: 15),
                   Center(
                     child: Text(
-                      'Vinod Kumar',
+                      widget.data?.userData?.name ?? '',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
                       textAlign: TextAlign.end,
@@ -88,7 +90,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               height: 4,
             ),
             ShowLocationWidget(
-              address: 'Flat No. 203, Sai Residency, Indore',
+              address: widget.data?.pickupAddress,
             ),
             const SizedBox(
               height: 12,
@@ -98,7 +100,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               height: 4,
             ),
             ShowLocationWidget(
-              address: 'Flat No. 203, Sai Residency, Indore',
+              address: widget.data?.dropAddress,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

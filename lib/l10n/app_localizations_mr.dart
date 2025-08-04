@@ -451,4 +451,8 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get userDeactivatedString =>
       'वापरकर्ता अक्षम आहे कृपया प्रशासकाशी संपर्क साधा.';
+
+  @override
+  String get cancellationWarningString =>
+      'तुम्हाला खात्री आहे का? \nतुम्ही कारणाची पुष्टी केल्यास तुमचे खाते निष्क्रिय केले जाईल.';
 }

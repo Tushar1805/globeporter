@@ -969,6 +969,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User disabled please contact to administrator'**
   String get userDeactivatedString;
+
+  /// No description provided for @cancellationWarningString.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure?\nYour account will be deactivated if you confirm the reason'**
+  String get cancellationWarningString;
 }
 
 class _AppLocalizationsDelegate

@@ -1,8 +1,5 @@
 import 'package:datasource/states/data_state.dart';
 
-class AmountDeductedState extends SuccessState {
-  AmountDeductedState(super.message);
-}
 
 class DetailsUpdatedState extends SuccessState {
   DetailsUpdatedState(super.message);
@@ -104,10 +101,4 @@ class AllDocumentsLoadedState extends LoadedState {
   AllDocumentsLoadedState({required super.data});
 }
 
-class PendingBookingsLoadingState extends LoadingState {
-  PendingBookingsLoadingState(super.loadingMessage);
-}
 
-class PendingBookingsLoadedState extends LoadedState {
-  PendingBookingsLoadedState({required super.data});
-}

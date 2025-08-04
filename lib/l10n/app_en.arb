@@ -293,5 +293,7 @@
     "resendOtpIn": "Resend OTP in",
     "@resendOtpIn": {},
     "userDeactivatedString": "User disabled please contact to administrator",
-    "@userDeactivatedString": {}
+    "@userDeactivatedString": {},
+    "cancellationWarningString": "Are you sure?\nYour account will be deactivated if you confirm the reason",
+    "@cancellationWarningString": {}
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -372,14 +373,11 @@ class BottomNavBarIcon extends StatelessWidget {
 
 void showReasonDialog({
   required final BuildContext context,
-  required final VoidCallback onTap,
+  required final Future Function(String id) onTap,
+  required final RideCancellationReasonResponse? reasons,
+  final bool? loading,
 }) {
   String? selectedReason;
-  final List<String> reasons = [
-    'Reason 1',
-    'Reason 2',
-    'Reason 3',
-  ];
 
   showDialog(
     context: context,
@@ -413,11 +411,11 @@ void showReasonDialog({
                       ),
                       dropdownColor: Colors.green.shade700,
                       icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                      items: reasons.map((reason) {
+                      items: reasons?.data?.map((reason) {
                         return DropdownMenuItem(
-                          value: reason,
+                          value: reason.id.toString(),
                           child: Text(
-                            reason,
+                            reason.reason ?? '',
                             style:
                                 Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor),
                           ),
@@ -431,14 +429,18 @@ void showReasonDialog({
                     ),
                   ),
                   const SizedBox(height: 20),
-                  CustomElevatedButton(
-                    name: AppLocalizations.of(context)!.submitString,
-                    borderRadius: 25,
-                    alignment: Alignment.center,
-                    onPressed: onTap,
-                    backgroundColor: whiteColor,
-                    nameColor: primaryColor,
-                  ),
+                  (loading ?? false)
+                      ? CircularProgressIndicator(
+                          color: whiteColor,
+                        )
+                      : CustomElevatedButton(
+                          name: AppLocalizations.of(context)!.submitString,
+                          borderRadius: 25,
+                          alignment: Alignment.center,
+                          onPressed: () async => await onTap(selectedReason ?? ''),
+                          backgroundColor: whiteColor,
+                          nameColor: primaryColor,
+                        ),
                 ],
               );
             },
@@ -456,6 +458,7 @@ void showCustomDialog({
   required final VoidCallback onTapYes,
   required final VoidCallback onTapNo,
   final Padding? description,
+  final bool? loading,
 }) {
   showDialog(
     context: context,

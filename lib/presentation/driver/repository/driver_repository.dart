@@ -6,6 +6,7 @@ import 'package:globeporter/presentation/authentication/model/vehicle_type_respo
 import 'package:globeporter/presentation/driver/model/driver_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/owner_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart';
+import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/presentation/driver/model/vehicle_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/verification_status_response.dart';
 import 'package:globeporter/resources/app_api.dart';
@@ -25,6 +26,62 @@ class DriverRepository extends BaseRepository {
     return VehicleTypeResponseModel.fromJson(
       responseData as Map<String, dynamic>?,
     );
+  }
+
+  Future<RideCancellationReasonResponse?> getRideCancellationReasons({
+    required final String lang,
+    required final String userType,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getRideCancellationReasonsUrl,
+      requestModel: {
+        'lang': lang,
+        "user_type": userType,
+      },
+    );
+
+    return RideCancellationReasonResponse.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<Map<String, dynamic>> cancelRideByDriver({
+    required final String lang,
+    required final String accessToken,
+    required final int bookingId,
+    required final int reasonId,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: cancelRideDriverUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'lang': lang,
+        "booking_id": bookingId,
+        "booking_cancellation_reason_id": reasonId,
+      },
+    );
+
+    return responseData;
+  }
+
+  Future<Map<String, dynamic>> checkCancelRideByDriver({
+    required final String lang,
+    required final String accessToken,
+    required final int reasonId,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: checkCancelRideDriverUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'lang': lang,
+        "booking_cancellation_reason_id": reasonId,
+      },
+    );
+
+    return responseData;
   }
 
   Future<OwnerDetailsResponseModel?> getOwnerDetails({
@@ -116,6 +173,27 @@ class DriverRepository extends BaseRepository {
     return PendingBookingsResponse.fromJson(
       responseData as Map<String, dynamic>,
     );
+  }
+
+  //* Accept or Reject rides
+  Future<Map<String, dynamic>> acceptOrRejectRide({
+    required final String lang,
+    required final String token,
+    required final int bookingId,
+    required final String status,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: acceptRejectRideUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+        'booking_id': bookingId,
+        'status': status,
+      },
+    );
+
+    return responseData;
   }
 
   Future<Map<String, dynamic>?> submitOwnerDetails({
