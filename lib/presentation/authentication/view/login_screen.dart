@@ -369,6 +369,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextField(
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(phoneNumberRegex),
+                            LengthLimitingTextInputFormatter(10),
                           ],
                           style: Theme.of(context).textTheme.bodyMedium,
                           controller: phoneController,

@@ -190,6 +190,10 @@ class _OtpScreenState extends State<OtpScreen> {
                     Expanded(
                       child: TextField(
                         style: Theme.of(context).textTheme.bodyMedium,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(phoneNumberRegex),
+                          LengthLimitingTextInputFormatter(10),
+                        ],
                         controller: phoneController,
                         keyboardType: TextInputType.phone,
                         readOnly: true,

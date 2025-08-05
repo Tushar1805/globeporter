@@ -146,6 +146,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(phoneNumberRegex),
+                          LengthLimitingTextInputFormatter(10),
+                        ],
                         focusNode: phoneFocusNode,
                         style: Theme.of(context).textTheme.bodyMedium,
                         controller: phoneController,
@@ -154,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                             onTap: () {
-                              phoneFocusNode.requestFocus();
+                              FocusScope.of(context).requestFocus(phoneFocusNode);
                               setState(() {
                                 isMobileEditing = true;
                               });
