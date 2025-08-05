@@ -141,6 +141,7 @@
     "pendingString": "प्रलंबित",
     "verificationString": "सत्यापन",
     "verificationInProcessString": "पडताळणी प्रक्रियेत आहे",
+    "verificationDoneString": "पडताळणी केली जाते",
     "validString": "वैध",
     "reUploadString": "कागदपत्रे यशस्वीरित्या अपलोड केली",
     "profileUpdatedString": "प्रोफाइल यशस्वीरित्या अपडेट केले",

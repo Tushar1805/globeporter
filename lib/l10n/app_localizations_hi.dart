@@ -423,6 +423,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get verificationInProcessString => 'सत्यापन प्रक्रिया में है';
 
   @override
+  String get verificationDoneString => 'सत्यापन हो चुका है';
+
+  @override
   String get validString => 'वैध';
 
   @override

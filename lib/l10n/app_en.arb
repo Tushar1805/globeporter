@@ -273,6 +273,8 @@
     "verificationString": "Verification",
     "@verificationString": {},
     "verificationInProcessString": "Verification is in process",
+    "verificationDoneString": "Verification is done",
+    "@verificationDoneString": {},
     "@verificationInProcessString": {},
     "validString": "valid",
     "@validString": {},

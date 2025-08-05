@@ -422,6 +422,9 @@ class AppLocalizationsMr extends AppLocalizations {
   String get verificationInProcessString => 'पडताळणी प्रक्रियेत आहे';
 
   @override
+  String get verificationDoneString => 'पडताळणी केली जाते';
+
+  @override
   String get validString => 'वैध';
 
   @override

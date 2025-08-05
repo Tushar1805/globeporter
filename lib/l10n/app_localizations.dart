@@ -910,6 +910,12 @@ abstract class AppLocalizations {
   /// **'Verification is in process'**
   String get verificationInProcessString;
 
+  /// No description provided for @verificationDoneString.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification is done'**
+  String get verificationDoneString;
+
   /// No description provided for @validString.
   ///
   /// In en, this message translates to:

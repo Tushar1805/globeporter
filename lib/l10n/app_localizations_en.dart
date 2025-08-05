@@ -424,6 +424,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get verificationInProcessString => 'Verification is in process';
 
   @override
+  String get verificationDoneString => 'Verification is done';
+
+  @override
   String get validString => 'valid';
 
   @override

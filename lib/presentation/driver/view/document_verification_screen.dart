@@ -117,7 +117,9 @@ class _DocumentVerificationScreenState extends State<DocumentVerificationScreen>
       ),
       _StepData(
         title: AppLocalizations.of(context)!.verificationString,
-        subtitle: AppLocalizations.of(context)!.verificationInProcessString,
+        subtitle: isVerified
+            ? AppLocalizations.of(context)!.verificationDoneString
+            : AppLocalizations.of(context)!.verificationInProcessString,
         isCompleted: isVerified,
         isCurrent: true,
         isVerified: isVerified,
