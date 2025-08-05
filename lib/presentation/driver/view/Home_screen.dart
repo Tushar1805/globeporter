@@ -58,14 +58,20 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     _locationSubscription?.cancel(); // cancel previous listener if any
 
     _locationSubscription = _location.onLocationChanged
-        .throttleTime(const Duration(seconds: 10))
+        .throttleTime(const Duration(seconds: 30))
         .listen((locationData) {
       if (locationData.latitude == null || locationData.longitude == null) return;
 
       final lat = locationData.latitude!;
       final lng = locationData.longitude!;
 
-      locationCubit.updateMyLocation(lat: lat, lng: lng, role: 'driver');
+      locationCubit.updateMyLocation(
+        lat: lat,
+        lng: lng,
+        role: 'driver',
+        userId: authCubit.userDetails?.data?.id.toString(),
+        type: authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeName,
+      );
     });
   }
 

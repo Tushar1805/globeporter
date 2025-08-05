@@ -137,27 +137,30 @@ class LocationCubit extends BaseCubit {
     required final double lat,
     required final double lng,
     required final String role,
+    final String? userId,
+    final String? type,
   }) async {
-    final userId = authCubit.userDetails?.data?.id.toString();
+    final id = userId ?? authCubit.userDetails?.data?.id.toString();
     // final type = authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeData?.nameEn;
     final lang = await storage.readValue(languageCodeKey);
     final accessToken = await storage.readValue(accessTokenKey);
     await _locationRepository.updateUserLocation(
-        lang: lang ?? 'en',
-        token: accessToken ?? '',
-        logitude: lng.toString(),
-        latitude: lat.toString());
+      lang: lang ?? 'en',
+      token: accessToken ?? '',
+      logitude: lng.toString(),
+      latitude: lat.toString(),
+    );
     try {
-      if (userId != null && userId != '') {
-        await _dbRef.child(userId).set({
+      if (id != null && id != '') {
+        await _dbRef.child(id).set({
           "latitude": lat,
           "longitude": lng,
           "last_updated": ServerValue.timestamp,
-          "type": "truck",
+          "type": type??"truck",
           "role": role,
         });
       }
-      debugPrint('Location Updaget: lat: $lat Lng: $lng');
+      customPrint('Location Update for RTDB: lat: $lat Lng: $lng');
     } catch (e) {
       debugPrint('Something went wrong: $e');
     }

@@ -115,7 +115,12 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       final lng = locationData.longitude!;
       _currentPosition = LatLng(lat, lng);
 
-      locationCubit.updateMyLocation(lat: lat, lng: lng, role: 'driver');
+      locationCubit.updateMyLocation(
+        lat: lat,
+        lng: lng,
+        role: 'customer',
+        userId: authCubit.userDetails?.data?.id.toString(),
+      );
       _fetchAndShowNearbyUsers();
     });
   }
@@ -138,7 +143,8 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   Future<void> _fetchAndShowNearbyUsers() async {
     final data = await locationCubit.fetchNearbyUsers();
     final userId = await storage.readValue(userIdKey);
-    final icon = await getBytesFromAssets(path: truckIcon, width: 50);
+    final truck = await getBytesFromAssets(path: truckIcon, width: 50);
+    final auto = await getBytesFromAssets(path: autoIcon, width: 50);
 
     if (data == null || _currentPosition == null) return;
 
@@ -158,17 +164,19 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
         lng,
       );
 
+      final String type = value['type'];
+
       if (dist <= 20) {
-        if (value['type'] == 'truck') {
+        if (type.toLowerCase().contains('auto')) {
           nearbyMarkers.add(Marker(
-            icon: BitmapDescriptor.bytes(icon),
+            icon: BitmapDescriptor.bytes(auto),
             markerId: MarkerId(key),
             position: LatLng(lat, lng),
             infoWindow: InfoWindow(title: "Nearby User ($dist km)"),
           ));
         } else {
           nearbyMarkers.add(Marker(
-            icon: BitmapDescriptor.bytes(icon),
+            icon: BitmapDescriptor.bytes(truck),
             markerId: MarkerId(key),
             position: LatLng(lat, lng),
             infoWindow: InfoWindow(title: "Nearby User ($dist km)"),
