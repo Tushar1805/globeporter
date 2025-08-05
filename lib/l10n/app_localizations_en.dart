@@ -457,4 +457,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cancellationWarningString =>
       'Are you sure?\nYour account will be deactivated if you confirm the reason';
+
+  @override
+  String get selectContactString => 'Select Contact';
 }

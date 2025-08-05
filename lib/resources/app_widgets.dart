@@ -151,6 +151,7 @@ class CustomTextField extends StatelessWidget {
     this.focusNode,
     this.textInputAction,
     this.onFieldSubmitted,
+    this.onTap,
   });
   final TextEditingController textEditingController;
   final int? maxLines;
@@ -167,11 +168,13 @@ class CustomTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final TextInputAction? textInputAction;
   final Function(String)? onFieldSubmitted;
+  final Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
+        onTap: onTap,
         focusNode: focusNode,
         textCapitalization: textCapitalization ?? TextCapitalization.none,
         style: textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor2),

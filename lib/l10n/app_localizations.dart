@@ -975,6 +975,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure?\nYour account will be deactivated if you confirm the reason'**
   String get cancellationWarningString;
+
+  /// No description provided for @selectContactString.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Contact'**
+  String get selectContactString;
 }
 
 class _AppLocalizationsDelegate

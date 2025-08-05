@@ -35,6 +35,7 @@ import 'package:globeporter/presentation/settings/view/view_documents_screen.dar
 import 'package:globeporter/presentation/settings/view/wallet_screen.dart';
 import 'package:globeporter/presentation/notification/view/notification_screen.dart';
 import 'package:globeporter/presentation/settings/view/refer_screen.dart';
+import 'package:globeporter/presentation/widgets/contact_picker_widget.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import '../presentation/authentication/view/splash_screen.dart';
 import 'error_screen.dart';
@@ -430,6 +431,14 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: ViewUploadedDocuments(),
+      ),
+    ),
+    GoRoute(
+      name: contactPickerScreen,
+      path: contactPickerScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const ContactPickerScreen(),
       ),
     ),
   ],

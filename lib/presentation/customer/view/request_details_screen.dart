@@ -20,6 +20,7 @@ import 'package:globeporter/location/model/route_direction_response.dart'
     show RouteDirectionsResponse;
 import 'package:globeporter/location/model/search_places_response.dart';
 import 'package:globeporter/location/states/location_states.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart'
     as vehicle;
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
@@ -57,14 +58,15 @@ class RequestDetailsScreen extends StatefulWidget {
 class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   final TextEditingController currentLocationController = TextEditingController();
   final TextEditingController destinationLocationController = TextEditingController();
-  final TextEditingController receiverNameController = TextEditingController();
-  final TextEditingController contactNumberController = TextEditingController();
+  TextEditingController receiverNameController = TextEditingController();
+  TextEditingController contactNumberController = TextEditingController();
   final TextEditingController packagingTypeController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
   late final List<Placemark> placemarks;
   List<ItemEntry> itemEntries = [];
   final customerCubit = sl<CustomerCubit>();
   final locationCubit = sl<LocationCubit>();
+  final authCubit = sl<AuthCubit>();
 
   SearchPlacesResponse? searchPlacesResponse;
   RouteDirectionsResponse? routeDirectionsResponse;
@@ -151,6 +153,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void initState() {
     fToast = FToast();
     fToast!.init(context);
+    receiverNameController = TextEditingController(text: authCubit.userDetails?.data?.name);
+    contactNumberController = TextEditingController(text: authCubit.userDetails?.data?.mobile);
     getCurrentLocation();
     getPackagingType();
     getVehicleType();
@@ -227,6 +231,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   void getSuggestion(String input) async {
     locationCubit.searchDestinationPlaces(input: input, sesssionToken: _sessionToken);
+  }
+
+  void openContactPicker() async {
+    customPrint("Opening contact picker");
+    final result = await context.pushNamed<Map<String, dynamic>>(contactPickerScreen);
+
+    if (result != null) {
+      setState(() {
+        receiverNameController.text = result['name'] ?? '';
+        contactNumberController.text = result['phone'] ?? '';
+      });
+    }
   }
 
   @override
@@ -501,6 +517,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     height: 8,
                   ),
                   CustomTextField(
+                    readOnly: true,
+                    onTap: openContactPicker,
                     textEditingController: receiverNameController,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(nameRegex),
@@ -520,6 +538,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     height: 8,
                   ),
                   CustomTextField(
+                    readOnly: true,
                     textEditingController: contactNumberController,
                     hint: '91XXXXXXXX',
                     inputType: TextInputType.number,

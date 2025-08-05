@@ -455,4 +455,7 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get cancellationWarningString =>
       'तुम्हाला खात्री आहे का? \nतुम्ही कारणाची पुष्टी केल्यास तुमचे खाते निष्क्रिय केले जाईल.';
+
+  @override
+  String get selectContactString => 'संपर्क निवडा';
 }
