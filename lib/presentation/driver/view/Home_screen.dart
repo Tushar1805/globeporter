@@ -308,6 +308,21 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             return Center(
               child: LoadingWithoutText(),
             );
+          } else if (state is ErrorState) {
+            return Center(
+              child: Padding(
+                padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
+                child: Center(
+                  child: Text(
+                    errorMessage ?? '',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.red,
+                        ),
+                  ),
+                ),
+              ),
+            );
           }
           return Column(
             children: [

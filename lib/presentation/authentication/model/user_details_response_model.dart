@@ -37,8 +37,8 @@ class Data {
   final String? city;
   final String? state;
   final String? postalCode;
-  final String? longitude;
-  final String? latitude;
+  final double? longitude;
+  final double? latitude;
   final dynamic photo;
   final dynamic otp;
   final dynamic otpExpireAt;
@@ -104,8 +104,8 @@ class Data {
         city = json['city'] as String?,
         state = json['state'] as String?,
         postalCode = json['postal_code'] as String?,
-        longitude = json['longitude'] as String?,
-        latitude = json['latitude'] as String?,
+        longitude = json['longitude'] as double?,
+        latitude = json['latitude'] as double?,
         photo = json['photo'],
         otp = json['otp'],
         otpExpireAt = json['otp_expire_at'],
