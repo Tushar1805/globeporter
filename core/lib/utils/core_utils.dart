@@ -2,7 +2,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -85,7 +84,7 @@ void showToast({
   required final FToast fToast,
   required final BuildContext context,
   required final String msg,
-  final bool customPosition = false,
+  final ToastGravity? gravity,
   final int duration = 2,
 }) {
   final toast = Container(
@@ -115,22 +114,9 @@ void showToast({
       ],
     ),
   );
-  !customPosition
-      ? fToast.showToast(
-          child: toast,
-          gravity: ToastGravity.BOTTOM,
-          toastDuration: Duration(seconds: 2),
-        )
-      :
-
-      //* Custom Toast Position
-      fToast.showToast(
-          child: toast,
-          toastDuration: Duration(seconds: duration),
-          positionedToastBuilder: (final context, final child, final gravity) => Positioned(
-            bottom: 100.0,
-            left: MediaQuery.of(context).size.width * 0.25,
-            child: child,
-          ),
-        );
+  fToast.showToast(
+    child: toast,
+    gravity: gravity ?? ToastGravity.BOTTOM,
+    toastDuration: Duration(seconds: 2),
+  );
 }

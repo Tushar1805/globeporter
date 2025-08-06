@@ -22,6 +22,7 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -36,7 +37,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   final locationCubit = sl<LocationCubit>();
   String amount = '500';
   bool loading = false;
-  String? errorMessage = '';
   bool dialogLoading = false;
   int? currentBookingId;
   int? currentReasonId;
@@ -46,6 +46,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   StreamSubscription<LocationData>? _locationSubscription;
   PendingBookingsResponse? pendingBookingsResponse;
   RideCancellationReasonResponse? rideCancellationReasonsResponse;
+  FToast? fToast;
 
   Future<void> startTracking() async {
     final permissionGranted = await _location.requestPermission();
@@ -85,10 +86,13 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   @override
   void initState() {
-    super.initState();
+    fToast = FToast();
+    fToast!.init(context);
+
     startTracking();
     loadPendingBookings();
     loadCancellationReasons();
+    super.initState();
   }
 
   @override
@@ -293,19 +297,23 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             pendingBookingsResponse = state.data as PendingBookingsResponse?;
             setState(() {
               loading = false;
-              errorMessage = '';
             });
           } else if (state is RideCancellationReasonsLoadedState) {
             rideCancellationReasonsResponse = state.data as RideCancellationReasonResponse?;
             setState(() {
               loading = false;
-              errorMessage = '';
             });
           } else if (state is ErrorState) {
             setState(() {
               loading = false;
-              errorMessage = state.errorMessage;
             });
+            showToast(
+              gravity: ToastGravity.CENTER,
+              context: context,
+              fToast: fToast!,
+              msg: state.errorMessage,
+              duration: 5,
+            );
           }
         },
         builder: (final context, final state) {
@@ -320,7 +328,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
                 child: Center(
                   child: Text(
-                    errorMessage ?? '',
+                    '',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.red,
@@ -330,160 +338,162 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               ),
             );
           }
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: pendingBookingsResponse?.data?.length,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  itemBuilder: (final context, final index) {
-                    final trip = pendingBookingsResponse?.data?[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: secondaryColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(9),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    trip?.receiverName ?? '',
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                          fontSize: 20,
+          return pendingBookingsResponse == null
+              ? SizedBox.shrink()
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: pendingBookingsResponse?.data?.length,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        itemBuilder: (final context, final index) {
+                          final trip = pendingBookingsResponse?.data?[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: secondaryColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(9),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          trip?.receiverName ?? '',
+                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                                fontSize: 20,
+                                              ),
+                                        ),
+                                      ),
+                                      Text(
+                                        // formatDate(date: trip?.bookingDate ?? ''),
+                                        trip?.bookingDate ?? '',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(fontSize: 15, color: greyTextColor),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.pickupLocationString,
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                   ),
-                                ),
-                                Text(
-                                  // formatDate(date: trip?.bookingDate ?? ''),
-                                  trip?.bookingDate ?? '',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(fontSize: 15, color: greyTextColor),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              AppLocalizations.of(context)!.pickupLocationString,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
+                                  const SizedBox(
+                                    height: 4,
                                   ),
-                            ),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            addressRow(address: trip?.pickupAddress),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              AppLocalizations.of(context)!.destinationLocationString,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
+                                  addressRow(address: trip?.pickupAddress),
+                                  const SizedBox(
+                                    height: 8,
                                   ),
-                            ),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            addressRow(address: trip?.dropAddress),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomElevatedButton(
-                                  name: AppLocalizations.of(context)!.acceptString,
-                                  borderRadius: 5,
-                                  alignment: Alignment.centerLeft,
-                                  onPressed: () {
-                                    showCustomDialog(
-                                      context: context,
-                                      borderRadius: 18,
-                                      title:
-                                          '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
-                                      onTapYes: () async {
-                                        driverCubit.deductAmount();
-                                        await driverCubit.acceptOrRejectRide(
-                                          bookingId: trip?.id ?? 1,
-                                          status: 'Accept',
-                                        );
+                                  Text(
+                                    AppLocalizations.of(context)!.destinationLocationString,
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  addressRow(address: trip?.dropAddress),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CustomElevatedButton(
+                                        name: AppLocalizations.of(context)!.acceptString,
+                                        borderRadius: 5,
+                                        alignment: Alignment.centerLeft,
+                                        onPressed: () {
+                                          showCustomDialog(
+                                            context: context,
+                                            borderRadius: 18,
+                                            title:
+                                                '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
+                                            onTapYes: () async {
+                                              driverCubit.deductAmount();
+                                              await driverCubit.acceptOrRejectRide(
+                                                bookingId: trip?.id ?? 1,
+                                                status: 'Accept',
+                                              );
 
-                                        context.pop();
-                                        context.pushNamed(
-                                          itemDetailsScreen,
-                                          extra: {'type': trip?.rideType, 'data': trip},
-                                        );
-                                      },
-                                      onTapNo: () {
-                                        context.pop();
-                                      },
-                                    );
-                                  },
-                                  textPadding:
-                                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                ),
-                                SizedBox(
-                                  width: size.width * 0.06,
-                                ),
-                                CustomElevatedButton(
-                                  name: AppLocalizations.of(context)!.declineString,
-                                  borderRadius: 5,
-                                  alignment: Alignment.centerLeft,
-                                  backgroundColor: Colors.red,
-                                  onPressed: () {
-                                    showReasonDialog(
-                                      context: context,
-                                      reasons: rideCancellationReasonsResponse,
-                                      loading: dialogLoading,
-                                      onTap: (final reasonId) async {
-                                        setState(() {
-                                          currentReasonId = int.parse(reasonId);
-                                          currentBookingId = trip?.id ?? 1;
-                                        });
-                                        customPrint(
-                                            "Booking Id: $currentBookingId \n ReasonId: $currentReasonId");
-                                        await driverCubit.acceptOrRejectRide(
-                                          bookingId: trip?.id ?? 1,
-                                          status: 'Reject',
-                                        );
+                                              context.pop();
+                                              context.pushNamed(
+                                                itemDetailsScreen,
+                                                extra: {'type': trip?.rideType, 'data': trip},
+                                              );
+                                            },
+                                            onTapNo: () {
+                                              context.pop();
+                                            },
+                                          );
+                                        },
+                                        textPadding:
+                                            const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                      ),
+                                      SizedBox(
+                                        width: size.width * 0.06,
+                                      ),
+                                      CustomElevatedButton(
+                                        name: AppLocalizations.of(context)!.declineString,
+                                        borderRadius: 5,
+                                        alignment: Alignment.centerLeft,
+                                        backgroundColor: Colors.red,
+                                        onPressed: () {
+                                          showReasonDialog(
+                                            context: context,
+                                            reasons: rideCancellationReasonsResponse,
+                                            loading: dialogLoading,
+                                            onTap: (final reasonId) async {
+                                              setState(() {
+                                                currentReasonId = int.parse(reasonId);
+                                                currentBookingId = trip?.id ?? 1;
+                                              });
+                                              customPrint(
+                                                  "Booking Id: $currentBookingId \n ReasonId: $currentReasonId");
+                                              await driverCubit.acceptOrRejectRide(
+                                                bookingId: trip?.id ?? 1,
+                                                status: 'Reject',
+                                              );
 
-                                        await driverCubit.checkCancelRideByDriver(
-                                          bookingId: trip?.id ?? 1,
-                                          reasonId: int.parse(reasonId),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  textPadding:
-                                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
+                                              await driverCubit.checkCancelRideByDriver(
+                                                bookingId: trip?.id ?? 1,
+                                                reasonId: int.parse(reasonId),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        textPadding:
+                                            const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
+                    ),
+                  ],
+                );
         },
       ),
     );
