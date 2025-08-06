@@ -288,6 +288,7 @@ class Api {
         break;
       case 500:
         // throw InternalServerException(response.body.toString());
+        logRedText(response.body.toString());
         throw ApiErrorException('Something went wrong');
       default:
         throw FetchDataException('Communication Error : ${response.statusCode}');

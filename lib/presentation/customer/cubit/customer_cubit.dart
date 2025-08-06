@@ -12,8 +12,6 @@ class CustomerCubit extends BaseCubit {
   CustomerCubit(this._customerRepository);
   final storage = sl<SecureStorage>();
 
-
-
   Future<void> getPackagingType() async {
     try {
       emit(PackagingTypeLoadingState('Loading vehicle types'));
@@ -133,8 +131,8 @@ class CustomerCubit extends BaseCubit {
 
       if (response['status_code'] == 200) {
         emit(CustomerRequestLoadedState(data: response));
-      } else {
-        emit(ErrorState(response['message']));
+      } else if (response['status_code'] == 500) {
+        emit(ErrorState('Something went wrong'));
       }
     } catch (e) {
       handleExceptions(e);

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:core/custom_exception.dart';
+import 'package:core/log_helper.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:datasource/base_repository.dart';
 import 'package:datasource/network/api_call_type.dart';
@@ -194,7 +195,8 @@ class CustomerRepository extends BaseRepository {
         _checkApiErrors(response, apiResponseType);
         break;
       case 500:
-        throw InternalServerException(response.body.toString());
+        logRedText(response.body.toString());
+        throw ApiErrorException('Something went wrong');
       default:
         throw FetchDataException('Communication Error : ${response.statusCode}');
     }

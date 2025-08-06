@@ -75,7 +75,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   package.Data? selectedPackageType;
   vehicle.Data? selectedVehicleType;
   bool loading = false;
-  String? errorMessage = '';
 
   FToast? fToast;
   String? _sessionToken;
@@ -293,13 +292,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
                 setState(() {
                   loading = false;
-                  errorMessage = '';
                 });
               } else if (state is ErrorState) {
                 setState(() {
                   loading = false;
-                  errorMessage = state.errorMessage;
                 });
+                showToast(
+                  context: context,
+                  fToast: fToast!,
+                  msg: state.errorMessage,
+                  duration: 5,
+                );
               }
             },
             child: SingleChildScrollView(
@@ -869,25 +872,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                           nameSize: 22,
                         ),
-
-                  const SizedBox(
-                    height: 15,
-                  ),
-
-                  errorMessage != null
-                      ? Padding(
-                          padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
-                          child: Center(
-                            child: Text(
-                              errorMessage ?? '',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.red,
-                                  ),
-                            ),
-                          ),
-                        )
-                      : SizedBox.shrink(),
 
                   const SizedBox(
                     height: 24,
