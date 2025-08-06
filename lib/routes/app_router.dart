@@ -193,6 +193,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: RequestDetailsScreen(
             type: params?['type'] as String?,
+            onSubmitTap: params?['onSubmitTap'] as VoidCallback?,
           ),
         );
       },

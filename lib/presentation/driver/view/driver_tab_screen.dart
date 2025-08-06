@@ -13,6 +13,7 @@ import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart'
 import 'package:globeporter/presentation/driver/states/driver_states.dart';
 import 'package:globeporter/presentation/driver/widgets/info_field_widget.dart';
 import 'package:globeporter/presentation/driver/widgets/upload_widget.dart';
+import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_regex.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -136,7 +137,13 @@ class _DriverTabState extends State<DriverTab> {
               focusNode: licenceFocusNode,
               title: AppLocalizations.of(context)!.licenceNumberString,
               controller: licenceNumberController,
+              hint: 'MH1220190000001',
               textInputAction: TextInputAction.done,
+              textCapitalization: TextCapitalization.characters,
+              inputFormatter: [
+                FilteringTextInputFormatter.allow(RegExp('[A-Z0-9]')),
+                LengthLimitingTextInputFormatter(16),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -337,12 +344,13 @@ class _DriverTabState extends State<DriverTab> {
                                 '$enterMsg ${AppLocalizations.of(context)!.validString} ${AppLocalizations.of(context)!.phoneNumberString.toLowerCase()}',
                             duration: 3,
                           );
-                        } else if (licenceNumberController.text.isEmpty) {
+                        } else if (licenceNumberController.text.isEmpty ||
+                            !licenceNumberController.text.isValidLicenceNumber()) {
                           showToast(
                             context: context,
                             fToast: fToast!,
                             msg:
-                                '$enterMsg ${AppLocalizations.of(context)!.licenceNumberString.toLowerCase()}',
+                                '$enterMsg ${AppLocalizations.of(context)!.validString} ${AppLocalizations.of(context)!.licenceNumberString.toLowerCase()}',
                             duration: 3,
                           );
                         } else if (frontAdhaar == null && backAdhaar == null) {

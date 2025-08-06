@@ -134,7 +134,6 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                         )
                       ],
                     ),
-              SizedBox(height: size.width * 0.1),
             ],
           );
         },

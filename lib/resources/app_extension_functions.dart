@@ -10,4 +10,6 @@ extension StringExtension on String {
   bool isValidVehicleNumber() => vehicleNumberRegex.hasMatch(this);
 
   bool isValidRCNumber() => vehicleRCRegex.hasMatch(this);
+
+  bool isValidLicenceNumber() => licenseRegex.hasMatch(this);
 }

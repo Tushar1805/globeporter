@@ -48,8 +48,9 @@ class ItemEntry {
 }
 
 class RequestDetailsScreen extends StatefulWidget {
-  const RequestDetailsScreen({super.key, required this.type});
+  const RequestDetailsScreen({super.key, required this.type, required this.onSubmitTap});
   final String? type;
+  final VoidCallback? onSubmitTap;
 
   @override
   State<RequestDetailsScreen> createState() => _RequestDetailsScreenState();
@@ -284,10 +285,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               } else if (state is CustomerRequestLoadedState) {
                 final data = state.data as Map<String, dynamic>;
                 if (data['status_code'] == 200) {
-                  context.pushReplacementNamed(myRequestScreen, extra: {
-                    'type': 'urban',
-                    'show': true,
-                  });
+                  // context.pushReplacementNamed(myRequestScreen, extra: {
+                  //   'type': 'urban',
+                  //   'show': true,
+                  // });
+                  widget.onSubmitTap?.call();
+                  context.pop();
                 }
 
                 setState(() {

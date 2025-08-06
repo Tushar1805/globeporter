@@ -513,6 +513,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
               onPressed: () {
                 context.push(requestDetailsScreen, extra: {
                   'type': isUrban ? 'urban' : 'rural',
+                  'onSubmitTap': widget.onSubmitTap,
                 });
               },
               nameSize: 20,

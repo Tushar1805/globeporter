@@ -51,3 +51,4 @@ final String videoSvg = "assets/svg/video.svg";
 final String editSvg = "assets/svg/edit_icon.svg";
 final String realtimeTracking = "assets/svg/realtime_tracking.svg";
 final String emptyBoxImage = "assets/svg/empty_box.svg";
+final String autoSvgImage = "assets/svg/auto_image.svg";

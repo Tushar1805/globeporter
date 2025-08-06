@@ -40,11 +40,11 @@ class Data {
   final String? bookingDate;
   final dynamic rideCompletedTiming;
   final String? pickupAddress;
-  final String? pickupLat;
-  final String? pickupLng;
+  final double? pickupLat;
+  final double? pickupLng;
   final String? dropAddress;
-  final String? dropLat;
-  final String? dropLng;
+  final double? dropLat;
+  final double? dropLng;
   final dynamic startDate;
   final String? startTime;
   final dynamic endDate;
@@ -109,11 +109,11 @@ class Data {
         bookingDate = json['booking_date'] as String?,
         rideCompletedTiming = json['ride_completed_timing'],
         pickupAddress = json['pickup_address'] as String?,
-        pickupLat = json['pickup_lat'] as String?,
-        pickupLng = json['pickup_lng'] as String?,
+        pickupLat = json['pickup_lat'] as double?,
+        pickupLng = json['pickup_lng'] as double?,
         dropAddress = json['drop_address'] as String?,
-        dropLat = json['drop_lat'] as String?,
-        dropLng = json['drop_lng'] as String?,
+        dropLat = json['drop_lat'] as double?,
+        dropLng = json['drop_lng'] as double?,
         startDate = json['start_date'],
         startTime = json['start_time'] as String?,
         endDate = json['end_date'],
