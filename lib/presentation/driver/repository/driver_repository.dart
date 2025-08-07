@@ -46,6 +46,26 @@ class DriverRepository extends BaseRepository {
     );
   }
 
+  Future<Map<String, dynamic>> declineRideByDriver({
+    required final String lang,
+    required final String accessToken,
+    required final int bookingId,
+    required final int reasonId,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: declineRideByDriverUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'lang': lang,
+        "booking_id": bookingId,
+        "booking_cancellation_reason_id": reasonId,
+      },
+    );
+
+    return responseData;
+  }
+
   Future<Map<String, dynamic>> cancelRideByDriver({
     required final String lang,
     required final String accessToken,

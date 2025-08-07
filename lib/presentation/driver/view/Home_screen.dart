@@ -81,7 +81,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   }
 
   void loadCancellationReasons() async {
-    await driverCubit.getCancellationReasons();
+    await driverCubit.getCancellationReasons(userType: '2');
   }
 
   @override
@@ -271,9 +271,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             if (data['status'] == false) {
               //* blocking user here
               showCustomDialogOneButton(
+                barrierDismissible: false,
                 context: context,
                 borderRadius: 18,
-                title: AppLocalizations.of(context)!.cancellationWarningString,
+                title: AppLocalizations.of(context)!.cancelledAccountString,
                 buttonTitle: AppLocalizations.of(context)!.confirmString,
                 onTap: () async {
                   context.pop();
@@ -283,12 +284,24 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   });
                 },
               );
+            } else if (data['count'] == 3) {
+              showCustomDialogOneButton(
+                barrierDismissible: false,
+                context: context,
+                borderRadius: 18,
+                title: AppLocalizations.of(context)!.cancellationWarningString,
+                buttonTitle: AppLocalizations.of(context)!.okString,
+                onTap: () async {
+                  context.pop();
+                },
+              );
             } else {
               context.pop();
-              await driverCubit.cancelRideByDriver(
+              await driverCubit.declineRideByDriver(
                 bookingId: currentBookingId ?? 1,
                 reasonId: currentReasonId ?? 1,
               );
+              loadPendingBookings();
             }
             setState(() {
               dialogLoading = false;

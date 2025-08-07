@@ -296,7 +296,9 @@
     "@resendOtpIn": {},
     "userDeactivatedString": "User disabled please contact to administrator",
     "@userDeactivatedString": {},
-    "cancellationWarningString": "Are you sure?\nYour account will be deactivated if you confirm the reason",
+    "cancellationWarningString": "Are you sure?\nRepeating the same reason may result in your account being deactivated in the future.",
+    "cancelledAccountString": "Your account is disabled, please contact admin",
+    "@cancelledAccountString": {},
     "@cancellationWarningString": {},
     "selectContactString": "Select Contact",
     "@selectContactString": {}

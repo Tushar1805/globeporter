@@ -17,16 +17,37 @@ class DriverCubit extends BaseCubit {
     emit(AmountDeductedState(amount.toString()));
   }
 
-  Future<void> getCancellationReasons() async {
+  Future<void> getCancellationReasons({required final String userType}) async {
     try {
       emit(RideCancellationReasonsLoadingState('Loading Cancellation Reasons'));
       final lang = await storage.readValue(languageCodeKey);
       final response = await _driverRepository.getRideCancellationReasons(
         lang: lang ?? 'en',
-        userType: '2',
+        userType: userType,
       );
 
       emit(RideCancellationReasonsLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> declineRideByDriver({
+    required final int bookingId,
+    required final int reasonId,
+  }) async {
+    try {
+      emit(DeclineRideByDriverLoadingState('Cancelling Ride'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.declineRideByDriver(
+        lang: lang ?? 'en',
+        accessToken: accessToken ?? '',
+        bookingId: bookingId,
+        reasonId: reasonId,
+      );
+
+      emit(DeclineRideByDriverLoadedState(data: response));
     } catch (e) {
       handleExceptions(e);
     }

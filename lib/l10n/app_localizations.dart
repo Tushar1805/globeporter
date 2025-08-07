@@ -979,8 +979,14 @@ abstract class AppLocalizations {
   /// No description provided for @cancellationWarningString.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure?\nYour account will be deactivated if you confirm the reason'**
+  /// **'Are you sure?\nRepeating the same reason may result in your account being deactivated in the future.'**
   String get cancellationWarningString;
+
+  /// No description provided for @cancelledAccountString.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is disabled, please contact admin'**
+  String get cancelledAccountString;
 
   /// No description provided for @selectContactString.
   ///

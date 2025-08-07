@@ -459,7 +459,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancellationWarningString =>
-      'Are you sure?\nYour account will be deactivated if you confirm the reason';
+      'Are you sure?\nRepeating the same reason may result in your account being deactivated in the future.';
+
+  @override
+  String get cancelledAccountString =>
+      'Your account is disabled, please contact admin';
 
   @override
   String get selectContactString => 'Select Contact';

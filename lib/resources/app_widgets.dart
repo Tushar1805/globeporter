@@ -561,10 +561,11 @@ void showCustomDialogOneButton({
   required final VoidCallback onTap,
   required final String? buttonTitle,
   final Widget? text,
+  final bool? barrierDismissible,
 }) {
   showDialog(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: barrierDismissible ?? true,
     builder: (context) {
       return Dialog(
         shape: RoundedRectangleBorder(

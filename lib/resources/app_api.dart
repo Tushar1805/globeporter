@@ -18,7 +18,6 @@ const String getUserUrl = '$_baseUrl/get_user';
 const String logoutUrl = '$_baseUrl/logout';
 const String updateUserTypeUrl = '$_baseUrl/user_type_update';
 const String getVehicleTypeUrl = '$_baseUrl/get_vehicle_type';
-// const String submitOwnerVehicleDriverDetailsUrl = '$_baseUrl/update_user_vehicle_details';
 const String submitOwnerDetailsUrl = '$_baseUrl/update_user_owner_vehicle_details';
 const String submitDriverDetailsUrl = '$_baseUrl/update_user_driver_vehicle_details';
 const String submitVehicleDetailsUrl = '$_baseUrl/update_user_vehicle_details';
@@ -38,6 +37,7 @@ const String acceptRejectRideUrl = '$_baseUrl/accept_reject_ride_status';
 const String cancelRideDriverUrl = '$_baseUrl/cancel_ride_by_driver';
 const String checkCancelRideDriverUrl = '$_baseUrl/check_cancellation_reason_on_driver';
 const String getRideCancellationReasonsUrl = '$_baseUrl/get_cancellation_reason';
+const String declineRideByDriverUrl = '$_baseUrl/decline_ride_by_driver';
 
 //* Customer
 const String createUrbanRequestUrl = '$_baseUrl/add_urban_booking';

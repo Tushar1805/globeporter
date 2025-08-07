@@ -458,7 +458,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get cancellationWarningString =>
-      'क्या आप निश्चित हैं? \nयदि आप कारण की पुष्टि करते हैं तो आपका खाता निष्क्रिय कर दिया जाएगा';
+      'क्या आप निश्चित हैं?\nयही कारण दोहराने पर भविष्य में आपका खाता निष्क्रिय किया जा सकता है।';
+
+  @override
+  String get cancelledAccountString =>
+      'आपका खाता अक्षम कर दिया गया है, कृपया व्यवस्थापक से संपर्क करें';
 
   @override
   String get selectContactString => 'संपर्क चुनें';

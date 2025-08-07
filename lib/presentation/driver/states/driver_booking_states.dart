@@ -35,6 +35,13 @@ class CancleRideByDriverLoadingState extends LoadingState {
 class CancleRideByDriverLoadedState extends LoadedState {
   CancleRideByDriverLoadedState({required super.data});
 }
+class DeclineRideByDriverLoadingState extends LoadingState {
+  DeclineRideByDriverLoadingState(super.loadingMessage);
+}
+
+class DeclineRideByDriverLoadedState extends LoadedState {
+  DeclineRideByDriverLoadedState({required super.data});
+}
 class CheckCancleRideByDriverLoadingState extends LoadingState {
   CheckCancleRideByDriverLoadingState(super.loadingMessage);
 }
