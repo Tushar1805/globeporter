@@ -993,6 +993,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Contact'**
   String get selectContactString;
+
+  /// No description provided for @cancelString.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelString;
+
+  /// No description provided for @unableToMakePhoneCallString.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to make phone call at the moment'**
+  String get unableToMakePhoneCallString;
+
+  /// No description provided for @phoneCallPermissionDeniedString.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone call permission denied'**
+  String get phoneCallPermissionDeniedString;
 }
 
 class _AppLocalizationsDelegate

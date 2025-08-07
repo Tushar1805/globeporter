@@ -13,3 +13,31 @@ extension StringExtension on String {
 
   bool isValidLicenceNumber() => licenseRegex.hasMatch(this);
 }
+
+enum RideStatus {
+  onTheWay,
+  arrivedAtPickup,
+  rideStarted,
+  arrivedAtDestination,
+  driverNotFound,
+  rideClosed,
+}
+
+extension RideStatusExtension on RideStatus {
+  String get value {
+    switch (this) {
+      case RideStatus.onTheWay:
+        return 'On The Way';
+      case RideStatus.arrivedAtPickup:
+        return 'Arrived At Pickup Point';
+      case RideStatus.rideStarted:
+        return 'Ride Started';
+      case RideStatus.arrivedAtDestination:
+        return 'Arrived At Destination';
+      case RideStatus.driverNotFound:
+        return 'Driver Not Found';
+      case RideStatus.rideClosed:
+        return 'Ride Closed';
+    }
+  }
+}

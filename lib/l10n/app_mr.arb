@@ -154,5 +154,8 @@
     "userDeactivatedString": "वापरकर्ता अक्षम आहे कृपया प्रशासकाशी संपर्क साधा.",
     "cancellationWarningString": "तुम्हाला खात्री आहे का?\nतेच कारण पुन्हा पुन्हा दिल्यास भविष्यात तुमचे खाते निष्क्रिय केले जाऊ शकते.",
     "cancelledAccountString": "तुमचे खाते बंद केले आहे, कृपया प्रशासकाशी संपर्क साधा.",
-    "selectContactString": "संपर्क निवडा"
+    "selectContactString": "संपर्क निवडा",
+    "cancelString": "रद्द करा",
+    "unableToMakePhoneCallString": "सध्या फोन कॉल करता येत नाही.",
+    "phoneCallPermissionDeniedString": "फोन कॉलची परवानगी नाकारली"
 }

@@ -467,4 +467,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectContactString => 'Select Contact';
+
+  @override
+  String get cancelString => 'Cancel';
+
+  @override
+  String get unableToMakePhoneCallString =>
+      'Unable to make phone call at the moment';
+
+  @override
+  String get phoneCallPermissionDeniedString => 'Phone call permission denied';
 }

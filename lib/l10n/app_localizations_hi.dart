@@ -466,4 +466,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get selectContactString => 'संपर्क चुनें';
+
+  @override
+  String get cancelString => 'रद्द करो';
+
+  @override
+  String get unableToMakePhoneCallString => 'इस समय फ़ोन कॉल करने में असमर्थ';
+
+  @override
+  String get phoneCallPermissionDeniedString => 'फ़ोन कॉल की अनुमति अस्वीकृत';
 }

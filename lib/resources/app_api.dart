@@ -38,6 +38,7 @@ const String cancelRideDriverUrl = '$_baseUrl/cancel_ride_by_driver';
 const String checkCancelRideDriverUrl = '$_baseUrl/check_cancellation_reason_on_driver';
 const String getRideCancellationReasonsUrl = '$_baseUrl/get_cancellation_reason';
 const String declineRideByDriverUrl = '$_baseUrl/decline_ride_by_driver';
+const String changeRideStatusUrl = '$_baseUrl/ride_status_changed';
 
 //* Customer
 const String createUrbanRequestUrl = '$_baseUrl/add_urban_booking';

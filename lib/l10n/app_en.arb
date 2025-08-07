@@ -301,5 +301,11 @@
     "@cancelledAccountString": {},
     "@cancellationWarningString": {},
     "selectContactString": "Select Contact",
-    "@selectContactString": {}
+    "@selectContactString": {},
+    "cancelString": "Cancel",
+    "@cancelString": {},
+    "unableToMakePhoneCallString": "Unable to make phone call at the moment",
+    "@unableToMakePhoneCallString": {},
+    "phoneCallPermissionDeniedString": "Phone call permission denied",
+    "@phoneCallPermissionDeniedString": {}
 }

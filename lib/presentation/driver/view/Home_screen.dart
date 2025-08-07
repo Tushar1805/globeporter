@@ -262,7 +262,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               loading = true;
             });
           } else if (state is CheckCancleRideByDriverLoadingState ||
-              state is CancleRideByDriverLoadingState) {
+              state is CancleRideByDriverLoadingState ||
+              state is DeclineRideByDriverLoadingState) {
             setState(() {
               dialogLoading = true;
             });
@@ -452,6 +453,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                                 itemDetailsScreen,
                                                 extra: {'type': trip?.rideType, 'data': trip},
                                               );
+                                              loadPendingBookings();
                                             },
                                             onTapNo: () {
                                               context.pop();

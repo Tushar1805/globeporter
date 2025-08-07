@@ -176,6 +176,24 @@ class DriverRepository extends BaseRepository {
     );
   }
 
+  Future<PendingBookingsResponse?> getDriverBookings({
+    required final String lang,
+    required final String token,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getDriverBookingsUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return PendingBookingsResponse.fromJson(
+      responseData as Map<String, dynamic>,
+    );
+  }
+
   //* Get Pending Bookings
   Future<PendingBookingsResponse?> getPendingBookings({
     required final String lang,
@@ -194,6 +212,28 @@ class DriverRepository extends BaseRepository {
       responseData as Map<String, dynamic>,
     );
   }
+
+  //* Change Ride Status
+  Future<Map<String, dynamic>> changeRideStatus({
+    required final String lang,
+    required final String token,
+    required final int bookingId,
+    required final String status,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: changeRideStatusUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+        'booking_id': bookingId,
+        'status': status,
+      },
+    );
+
+    return responseData;
+  }
+
 
   //* Accept or Reject rides
   Future<Map<String, dynamic>> acceptOrRejectRide({

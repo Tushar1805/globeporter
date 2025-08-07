@@ -465,4 +465,13 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get selectContactString => 'संपर्क निवडा';
+
+  @override
+  String get cancelString => 'रद्द करा';
+
+  @override
+  String get unableToMakePhoneCallString => 'सध्या फोन कॉल करता येत नाही.';
+
+  @override
+  String get phoneCallPermissionDeniedString => 'फोन कॉलची परवानगी नाकारली';
 }

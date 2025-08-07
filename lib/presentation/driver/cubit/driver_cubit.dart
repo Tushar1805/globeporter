@@ -1,4 +1,5 @@
 import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
 import 'package:globeporter/presentation/driver/repository/driver_repository.dart';
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
@@ -94,11 +95,27 @@ class DriverCubit extends BaseCubit {
     }
   }
 
+  Future<void> getDriverBookings() async {
+    try {
+      emit(DriverBookingsLoadingState('Loading driving bookings'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.getDriverBookings(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+      );
+
+      emit(DriverBookingsLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
   //* Get Pending Bookings
 
   Future<void> getPendingBookings() async {
     try {
-      emit(PendingBookingsLoadingState('Loading vehicle types'));
+      emit(PendingBookingsLoadingState('Loading pending bookings'));
       final lang = await storage.readValue(languageCodeKey);
       final accessToken = await storage.readValue(accessTokenKey);
       final response = await _driverRepository.getPendingBookings(
@@ -112,6 +129,30 @@ class DriverCubit extends BaseCubit {
     }
   }
 
+  //* change ride status
+  Future<void> changeRideStatus({
+    required final int bookingId,
+    required final String status,
+  }) async {
+    try {
+      emit(ChangeRideStatusLoadingState('Changin ride status'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.changeRideStatus(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+        bookingId: bookingId,
+        status: status,
+      );
+
+      customPrint(response.toString());
+
+      emit(ChangeRideStatusLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
   //* Accept or reject the ride
 
   Future<void> acceptOrRejectRide({
@@ -119,7 +160,7 @@ class DriverCubit extends BaseCubit {
     required final String status,
   }) async {
     try {
-      emit(AcceptOrRejectLoadingState('Loading vehicle types'));
+      emit(AcceptOrRejectLoadingState('Loading'));
       final lang = await storage.readValue(languageCodeKey);
       final accessToken = await storage.readValue(accessTokenKey);
       final response = await _driverRepository.acceptOrRejectRide(

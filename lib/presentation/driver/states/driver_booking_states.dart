@@ -12,12 +12,28 @@ class PendingBookingsLoadedState extends LoadedState {
   PendingBookingsLoadedState({required super.data});
 }
 
+class DriverBookingsLoadingState extends LoadingState {
+  DriverBookingsLoadingState(super.loadingMessage);
+}
+
+class DriverBookingsLoadedState extends LoadedState {
+  DriverBookingsLoadedState({required super.data});
+}
+
 class AcceptOrRejectLoadingState extends LoadingState {
   AcceptOrRejectLoadingState(super.loadingMessage);
 }
 
 class AcceptOrRejectLoadedState extends LoadedState {
   AcceptOrRejectLoadedState({required super.data});
+}
+
+class ChangeRideStatusLoadingState extends LoadingState {
+  ChangeRideStatusLoadingState(super.loadingMessage);
+}
+
+class ChangeRideStatusLoadedState extends LoadedState {
+  ChangeRideStatusLoadedState({required super.data});
 }
 
 class RideCancellationReasonsLoadingState extends LoadingState {
@@ -35,6 +51,7 @@ class CancleRideByDriverLoadingState extends LoadingState {
 class CancleRideByDriverLoadedState extends LoadedState {
   CancleRideByDriverLoadedState({required super.data});
 }
+
 class DeclineRideByDriverLoadingState extends LoadingState {
   DeclineRideByDriverLoadingState(super.loadingMessage);
 }
@@ -42,6 +59,7 @@ class DeclineRideByDriverLoadingState extends LoadingState {
 class DeclineRideByDriverLoadedState extends LoadedState {
   DeclineRideByDriverLoadedState({required super.data});
 }
+
 class CheckCancleRideByDriverLoadingState extends LoadingState {
   CheckCancleRideByDriverLoadingState(super.loadingMessage);
 }
