@@ -10,6 +10,7 @@ import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart';
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -203,13 +204,25 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                               borderRadius: 5,
                                               alignment: Alignment.centerLeft,
                                               onPressed: () {
-                                                context.pushNamed(
-                                                  itemDetailsScreen,
-                                                  extra: {
-                                                    'type': trip?.rideType?.toLowerCase(),
-                                                    'data': trip,
-                                                  },
-                                                );
+                                                if (RideStatus.accepted.value ==
+                                                    trip?.bookingStatus) {
+                                                  context.pushNamed(
+                                                    itemDetailsScreen,
+                                                    extra: {
+                                                      'type': trip?.rideType?.toLowerCase(),
+                                                      'data': trip,
+                                                    },
+                                                  );
+                                                } else if (RideStatus.onTheWay.value ==
+                                                    trip?.bookingStatus) {
+                                                  context.pushNamed(
+                                                    tripInfoScreen,
+                                                    extra: {
+                                                      'type': trip?.rideType?.toLowerCase(),
+                                                      'data': trip
+                                                    },
+                                                  );
+                                                }
                                               },
                                               textPadding: const EdgeInsets.symmetric(
                                                   horizontal: 10, vertical: 4),

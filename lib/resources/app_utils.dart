@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:core/utils/core_utils.dart';
 import 'package:country_phone_validator/country_phone_validator.dart';
 import 'package:flutter/services.dart';
+import 'package:globeporter/resources/app_images.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -62,4 +63,28 @@ String formatDate({required final String date}) {
       date,
     ),
   );
+}
+
+Future<Marker> getMarker(
+    {required final String vehicleType,
+    required final MarkerId markerId,
+    required final LatLng position,
+    required final String info}) async {
+  final truck = await getBytesFromAssets(path: truckIcon, width: 50);
+  final auto = await getBytesFromAssets(path: autoIcon, width: 50);
+  if (vehicleType.toLowerCase().contains('auto')) {
+    return Marker(
+      markerId: markerId,
+      position: position,
+      icon: BitmapDescriptor.bytes(auto),
+      infoWindow: InfoWindow(title: info),
+    );
+  } else {
+    return Marker(
+      markerId: markerId,
+      position: position,
+      icon: BitmapDescriptor.bytes(truck),
+      infoWindow: InfoWindow(title: info),
+    );
+  }
 }

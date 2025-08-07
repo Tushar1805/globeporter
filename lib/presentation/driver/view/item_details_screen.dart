@@ -139,7 +139,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               bottom: size.width * 0.1,
               child: GestureDetector(
                 onTap: () {
-                  makePhoneCall(widget.data?.userData?.mobile ?? '');
+                  makePhoneCall(widget.data?.receiverContactNo ?? '');
                 },
                 child: Image.asset(
                   phoneCallIcon,
@@ -198,7 +198,10 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                 } else if (state is ChangeRideStatusLoadedState) {
                   context.pushNamed(
                     tripInfoScreen,
-                    extra: {'type': widget.type},
+                    extra: {
+                      'type': widget.type,
+                      'data': widget.data,
+                    },
                   );
                   setState(() {
                     loading = false;

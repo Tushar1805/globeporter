@@ -253,6 +253,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: TripInfoScreen(
             type: params?['type'] as String?,
+            data: params?['data'] as pendingBookings.Data?,
           ),
         );
       },

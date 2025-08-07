@@ -1,24 +1,216 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:async';
+
+import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
+import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart' as pending;
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as loc;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rxdart/rxdart.dart';
 
 class TripInfoScreen extends StatefulWidget {
-  const TripInfoScreen({super.key, required this.type});
+  const TripInfoScreen({super.key, required this.type, required this.data});
   final String? type;
+  final pending.Data? data;
 
   @override
   State<TripInfoScreen> createState() => _TripInfoScreenState();
 }
 
 class _TripInfoScreenState extends State<TripInfoScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(seconds: 2), () {
+  final Completer<GoogleMapController> _controller = Completer();
+  final locationCubit = sl<LocationCubit>();
+  Position? position;
+  final loc.Location _location = loc.Location();
+  StreamSubscription<loc.LocationData>? _locationSubscription;
+  Set<Polyline> polylines = {};
+  List<LatLng> polylineCoordinates = [];
+  FToast? fToast;
+  Marker? driverMarker;
+
+  CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(20.5574253, 78.8386951),
+    zoom: 14,
+  );
+
+  List<Marker>? _markers;
+
+  void getCurrentLocation() async {
+    try {
+      final GoogleMapController controller = await _controller.future;
+
+      _kGooglePlex = CameraPosition(
+        target: LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLat ?? 20.5574253),
+        zoom: 14,
+      );
+      _markers = <Marker>[
+        Marker(
+          markerId: MarkerId('1'),
+          position:
+              LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLat ?? 20.5574253),
+          // infoWindow: InfoWindow(title: 'The title of the marker'),
+        )
+      ];
+      controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
+
+      final latLng = LatLng(
+        widget.data?.dropLat ?? 20.5574253,
+        widget.data?.dropLng ?? 78.838695,
+      );
+      await locationCubit
+          .routeDirection(
+        pickupLat: widget.data?.pickupLat ?? 20.5574253,
+        pickupLng: widget.data?.pickupLng ?? 78.838695,
+        dropLat: widget.data?.dropLat ?? 20.5574253,
+        dropLng: widget.data?.dropLng ?? 78.838695,
+      )
+          .then((final response) {
+        final points = response?.routes?[0].overviewPolyline?.points ?? '';
+        polylineCoordinates = decodePolyline(points);
+
+        polylines.add(
+          Polyline(
+            polylineId: PolylineId("route"),
+            points: polylineCoordinates,
+            color: Colors.black,
+            width: 5,
+          ),
+        );
+        _markers?.add(
+          Marker(
+            markerId: MarkerId('drop'),
+            position: latLng,
+            infoWindow: InfoWindow(title: 'Destination'),
+          ),
+        );
+
+        setState(() {});
+      });
+
+      final GoogleMapController mapController = await _controller.future;
+      mapController.animateCamera(CameraUpdate.newLatLng(latLng));
+    } catch (e) {
+      debugPrint("Error: Getting Location: $e");
+    }
+  }
+
+  Future<void> makePhoneCall(String phoneNumber) async {
+    final status = await Permission.phone.request();
+
+    if (status.isGranted) {
+      FlutterPhoneDirectCaller.callNumber(phoneNumber);
+    } else {
+      showToast(
+        context: context,
+        fToast: fToast!,
+        msg: AppLocalizations.of(context)!.phoneCallPermissionDeniedString,
+        duration: 5,
+      );
+    }
+  }
+
+  Future<void> startTracking() async {
+    final permissionGranted = await _location.requestPermission();
+    final serviceEnabled = await _location.serviceEnabled() || await _location.requestService();
+
+    if (permissionGranted != loc.PermissionStatus.granted || !serviceEnabled) {
+      return;
+    }
+
+    _locationSubscription?.cancel(); // cancel previous listener if any
+
+    _locationSubscription = _location.onLocationChanged
+        .throttleTime(const Duration(seconds: 5))
+        .listen((locationData) async {
+      if (locationData.latitude == null || locationData.longitude == null) return;
+
+      final currentLat = locationData.latitude!;
+      final currentLng = locationData.longitude!;
+      final dropLat = widget.data?.dropLat ?? 0.0;
+      final dropLng = widget.data?.dropLng ?? 0.0;
+
+      // Update backend
+      locationCubit.updateMyLocation(
+        lat: currentLat,
+        lng: currentLng,
+        role: 'customer',
+        userId: widget.data?.userId.toString(),
+      );
+
+      // Update route polyline
+      await locationCubit
+          .routeDirection(
+        pickupLat: currentLat,
+        pickupLng: currentLng,
+        dropLat: dropLat,
+        dropLng: dropLng,
+      )
+          .then((response) {
+        final points = response?.routes?[0].overviewPolyline?.points ?? '';
+        polylineCoordinates = decodePolyline(points);
+
+        polylines.clear(); // clear previous route
+        polylines.add(
+          Polyline(
+            polylineId: PolylineId("route"),
+            points: polylineCoordinates,
+            color: Colors.black,
+            width: 5,
+          ),
+        );
+      });
+
+      // Update driver marker
+      final currentLatLng = LatLng(currentLat, currentLng);
+      driverMarker = await getMarker(
+          vehicleType: widget.data?.vehicleTypeData?.nameEn ?? '',
+          markerId: const MarkerId('driver'),
+          position: currentLatLng,
+          info: "You");
+
+      // Update marker list
+      _markers = [
+        driverMarker!,
+        Marker(
+          markerId: const MarkerId('drop'),
+          position: LatLng(dropLat, dropLng),
+          infoWindow: const InfoWindow(title: 'Destination'),
+        ),
+      ];
+
+      setState(() {});
+
+      // Move camera
+      final controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newLatLng(currentLatLng));
+
+      // Check if driver reached destination
+      final distance = Geolocator.distanceBetween(currentLat, currentLng, dropLat, dropLng);
+      if (distance <= 50) {
+        _locationSubscription?.cancel();
+        popUp();
+      }
+    });
+  }
+
+  void popUp() {
+    Future.delayed(Duration(seconds: 1), () {
       widget.type == 'urban'
           ? showCustomDialogOneButton(
               context: context,
@@ -37,6 +229,21 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
               type: widget.type,
             );
     });
+  }
+
+  @override
+  void initState() {
+    fToast = FToast();
+    fToast!.init(context);
+    getCurrentLocation();
+    startTracking();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _locationSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -70,8 +277,8 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                     radius: size.width * 0.1,
                     child: CircleAvatar(
                       radius: size.width * 0.097,
-                      backgroundImage: AssetImage(
-                        profileImage,
+                      backgroundImage: NetworkImage(
+                        widget.data?.userData?.profilePhotoUrl ?? sampleNetworkImage,
                       ),
                       backgroundColor: Colors.white,
                     ),
@@ -79,17 +286,22 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                   const SizedBox(width: 15),
                   Center(
                     child: Text(
-                      'Vinod Kumar',
+                      widget.data?.userData?.name ?? '',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
                       textAlign: TextAlign.end,
                     ),
                   ),
                   SizedBox(width: size.width * 0.09),
-                  Image.asset(
-                    phoneCallIcon,
-                    width: 24,
-                    color: whiteColor,
+                  GestureDetector(
+                    onTap: () {
+                      makePhoneCall(widget.data?.receiverContactNo ?? '');
+                    },
+                    child: Image.asset(
+                      phoneCallIcon,
+                      width: 24,
+                      color: whiteColor,
+                    ),
                   ),
                 ],
               ),
@@ -122,7 +334,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
               height: 4,
             ),
             ShowLocationWidget(
-              address: 'Flat No. 203, Sai Residency, Indore',
+              address: widget.data?.pickupAddress,
             ),
             const SizedBox(
               height: 12,
@@ -132,7 +344,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
               height: 4,
             ),
             ShowLocationWidget(
-              address: 'Flat No. 203, Sai Residency, Indore',
+              address: widget.data?.dropAddress,
             ),
             const SizedBox(
               height: 24,
@@ -145,11 +357,21 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
               height: 24,
             ),
             SizedBox(
-              width: size.width,
-              height: size.width * 0.9,
-              child: Image.asset(
-                mapImage,
-                fit: BoxFit.cover,
+              height: size.width * 0.8,
+              child: GoogleMap(
+                initialCameraPosition: _kGooglePlex,
+                markers: Set<Marker>.of(_markers ?? []),
+                mapToolbarEnabled: false,
+                myLocationEnabled: true,
+                onMapCreated: (final controller) {
+                  _controller.complete(controller);
+                },
+                polylines: polylines,
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+                  ),
+                },
               ),
             ),
             const SizedBox(
