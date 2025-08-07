@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
 import 'package:globeporter/resources/app_colors.dart';
-import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -148,7 +147,6 @@ class UrbanItemsSection extends StatelessWidget {
                 const SizedBox(height: 10),
                 imageUrl?.isNotEmpty == true
                     ? FutureBuilder<File>(
-                        // 🧠 Use cached future
                         future: _fileCache.putIfAbsent(imageUrl!, () => urlToFile(imageUrl)),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -158,7 +156,6 @@ class UrbanItemsSection extends StatelessWidget {
                           }
 
                           final File file = snapshot.data!;
-                          final String fileName = basename(file.path);
 
                           return GestureDetector(
                             onTap: () {
@@ -168,26 +165,18 @@ class UrbanItemsSection extends StatelessWidget {
                               );
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(vertical: size.width * 0.1),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: secondaryColor,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Image.asset(
-                                      imageIcon,
-                                      height: 38,
-                                      width: 38,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      fileName,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.file(
+                                  file,
+                                  height: size.width * 0.6,
+                                  width: double.infinity,
+                                  fit: BoxFit.fitHeight,
                                 ),
                               ),
                             ),
