@@ -37,9 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final ownerDetailsFilled = await storage.readValue(ownerDetailsFilledKey);
     final vehiclDetailsFilled = await storage.readValue(vehicleDetailsFilledKey);
     final driverDetailsFilled = await storage.readValue(driverDetailsFilledKey);
-    await Future.delayed(const Duration(seconds: 2), () {
-      locationCubit.determinePosition();
-    });
+    await locationCubit.determinePosition();
 
     FirebaseMessaging.instance.getToken();
     notificationServices.requestNotificationPermission();

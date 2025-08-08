@@ -391,63 +391,74 @@ void showReasonDialog({
           borderRadius: BorderRadius.circular(18),
           side: BorderSide(color: primaryColor),
         ),
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.circular(18),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8, // Prevents overflow
+            maxWidth: MediaQuery.of(context).size.width,
           ),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: selectedReason,
-                      hint: Text(
-                        AppLocalizations.of(context)!.selectReasonString,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontSize: 28,
-                              color: whiteColor,
-                            ),
-                      ),
-                      dropdownColor: Colors.green.shade700,
-                      icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                      items: reasons?.data?.map((reason) {
-                        return DropdownMenuItem(
-                          value: reason.id.toString(),
-                          child: Text(
-                            reason.reason ?? '',
-                            style:
-                                Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor),
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isExpanded: true, // Forces items to wrap within dialog width
+                          value: selectedReason,
+                          hint: Text(
+                            AppLocalizations.of(context)!.selectReasonString,
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  fontSize: 22,
+                                  color: whiteColor,
+                                ),
+                            textAlign: TextAlign.center,
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedReason = value;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  (loading ?? false)
-                      ? CircularProgressIndicator(
-                          color: whiteColor,
-                        )
-                      : CustomElevatedButton(
-                          name: AppLocalizations.of(context)!.submitString,
-                          borderRadius: 25,
-                          alignment: Alignment.center,
-                          onPressed: () async => await onTap(selectedReason ?? ''),
-                          backgroundColor: whiteColor,
-                          nameColor: primaryColor,
+                          dropdownColor: Colors.green.shade700,
+                          icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+                          items: reasons?.data?.map((reason) {
+                            return DropdownMenuItem(
+                              value: reason.id.toString(),
+                              child: Text(
+                                reason.reason ?? '',
+                                softWrap: true,
+                                overflow: TextOverflow.visible, // Wrap text instead of cutting
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: whiteColor),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedReason = value;
+                            });
+                          },
                         ),
-                ],
-              );
-            },
+                      ),
+                      const SizedBox(height: 20),
+                      (loading ?? false)
+                          ? CircularProgressIndicator(color: whiteColor)
+                          : CustomElevatedButton(
+                              name: AppLocalizations.of(context)!.submitString,
+                              borderRadius: 25,
+                              alignment: Alignment.center,
+                              onPressed: () async => await onTap(selectedReason ?? ''),
+                              backgroundColor: whiteColor,
+                              nameColor: primaryColor,
+                            ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ),
       );

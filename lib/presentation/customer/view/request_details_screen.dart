@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
@@ -28,7 +29,9 @@ import 'package:globeporter/presentation/customer/model/packaging_type_reponse.d
 import 'package:globeporter/presentation/customer/states/customer_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_keys.dart';
 import 'package:globeporter/resources/app_regex.dart';
+import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -68,6 +71,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   final customerCubit = sl<CustomerCubit>();
   final locationCubit = sl<LocationCubit>();
   final authCubit = sl<AuthCubit>();
+  final storage = sl<SecureStorage>();
 
   SearchPlacesResponse? searchPlacesResponse;
   RouteDirectionsResponse? routeDirectionsResponse;
@@ -76,6 +80,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   package.Data? selectedPackageType;
   vehicle.Data? selectedVehicleType;
   bool loading = false;
+  LatLng? _currentPosition;
 
   FToast? fToast;
   String? _sessionToken;
@@ -103,13 +108,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     try {
       pickupPosition = locationCubit.position;
       debugPrint("Position: ${pickupPosition?.latitude} :: ${pickupPosition?.longitude}");
-      // placemarks = await placemarkFromCoordinates(
-      //     position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951);
-      // currentLocationController.text = placemarks.isNotEmpty
-      //     ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
-      //     : "";
+      placemarks = await placemarkFromCoordinates(
+          pickupPosition?.latitude ?? 20.5574253, pickupPosition?.longitude ?? 78.8386951);
+      currentLocationController.text = placemarks.isNotEmpty
+          ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
+          : "";
 
-      currentLocationController.text = locationCubit.currentLocation ?? '';
+      _currentPosition =
+          LatLng(pickupPosition?.latitude ?? 20.5574253, pickupPosition?.longitude ?? 78.8386951);
+
       final GoogleMapController controller = await _controller.future;
       final icon = await getBytesFromAssets(path: truckIcon, width: 50);
       setState(() {
@@ -159,6 +166,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     getPackagingType();
     getVehicleType();
     addNewItem();
+    _fetchAndShowNearbyUsers();
     destinationLocationController.addListener(() {
       onChange();
     });
@@ -196,6 +204,67 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void deleteImage() {
     setState(() {
       image = null;
+    });
+  }
+
+  double _calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // km
+    final dLat = (lat2 - lat1) * pi / 180;
+    final dLon = (lon2 - lon1) * pi / 180;
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1 * pi / 180) * cos(lat2 * pi / 180) * sin(dLon / 2) * sin(dLon / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return R * c;
+  }
+
+  Future<void> _fetchAndShowNearbyUsers() async {
+    final data = await locationCubit.fetchNearbyUsers();
+    final userId = await storage.readValue(userIdKey);
+    final truck = await getBytesFromAssets(path: truckIcon, width: 50);
+    final auto = await getBytesFromAssets(path: autoIcon, width: 50);
+
+    if (data == null || _currentPosition == null) return;
+
+    final nearbyMarkers = <Marker>[];
+
+    data.forEach((key, value) {
+      if (key == userId) return; // skip own marker
+      if (value['role'] == 'customer') return;
+
+      final lat = value['latitude'] * 1.0;
+      final lng = value['longitude'] * 1.0;
+
+      final dist = _calculateDistance(
+        _currentPosition!.latitude,
+        _currentPosition!.longitude,
+        lat,
+        lng,
+      );
+
+      final String type = value['type'];
+
+      if (dist <= 20) {
+        if (type.toLowerCase().contains('auto')) {
+          nearbyMarkers.add(Marker(
+            icon: BitmapDescriptor.bytes(auto),
+            markerId: MarkerId(key),
+            position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: "Nearby User ($dist km)"),
+          ));
+        } else {
+          nearbyMarkers.add(Marker(
+            icon: BitmapDescriptor.bytes(truck),
+            markerId: MarkerId(key),
+            position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: "Nearby User ($dist km)"),
+          ));
+        }
+      }
+    });
+
+    setState(() {
+      _markers?.addAll(nearbyMarkers);
     });
   }
 
