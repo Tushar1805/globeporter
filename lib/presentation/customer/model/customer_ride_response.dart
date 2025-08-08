@@ -65,7 +65,7 @@ class Data {
   final dynamic deletedAt;
   final String? createdAt;
   final String? updatedAt;
-  final dynamic driverData;
+  final DriverData? driverData;
   final VehicleTypeData? vehicleTypeData;
   final PackageTypeData? packageTypeData;
   final List<BookingRideItem>? bookingRideItem;
@@ -152,7 +152,9 @@ class Data {
         deletedAt = json['deleted_at'],
         createdAt = json['created_at'] as String?,
         updatedAt = json['updated_at'] as String?,
-        driverData = json['driver_data'],
+        driverData = (json['driver_data'] as Map<String, dynamic>?) != null
+            ? DriverData.fromJson(json['driver_data'] as Map<String, dynamic>)
+            : null,
         vehicleTypeData = (json['vehicle_type_data'] as Map<String, dynamic>?) != null
             ? VehicleTypeData.fromJson(json['vehicle_type_data'] as Map<String, dynamic>)
             : null,
@@ -204,7 +206,7 @@ class Data {
         'deleted_at': deletedAt,
         'created_at': createdAt,
         'updated_at': updatedAt,
-        'driver_data': driverData,
+        'driver_data': driverData?.toJson(),
         'vehicle_type_data': vehicleTypeData?.toJson(),
         'package_type_data': packageTypeData?.toJson(),
         'booking_ride_item': bookingRideItem?.map((e) => e.toJson()).toList()
@@ -349,5 +351,152 @@ class BookingRideItem {
         'created_at': createdAt,
         'updated_at': updatedAt,
         'item_image_url': itemImageUrl
+      };
+}
+
+class DriverData {
+  final int? id;
+  final String? name;
+  final String? email;
+  final dynamic emailVerifiedAt;
+  final String? dialCode;
+  final String? mobile;
+  final dynamic gender;
+  final dynamic cityType;
+  final dynamic fullAddress;
+  final dynamic address;
+  final dynamic city;
+  final dynamic state;
+  final dynamic postalCode;
+  final double? longitude;
+  final double? latitude;
+  final String? photo;
+  final dynamic otp;
+  final dynamic otpExpireAt;
+  final int? userType;
+  final int? registrationDone;
+  final int? status;
+  final String? fcmToken;
+  final dynamic googleId;
+  final dynamic facebookId;
+  final String? lang;
+  final int? isDriverVerified;
+  final int? isDriverOnRide;
+  final int? isCustomerOnRide;
+  final int? isBonusDone;
+  final dynamic deletedAt;
+  final String? createdAt;
+  final String? updatedAt;
+  final String? profilePhotoUrl;
+  final String? profilePhotoThumbUrl;
+
+  DriverData({
+    this.id,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dialCode,
+    this.mobile,
+    this.gender,
+    this.cityType,
+    this.fullAddress,
+    this.address,
+    this.city,
+    this.state,
+    this.postalCode,
+    this.longitude,
+    this.latitude,
+    this.photo,
+    this.otp,
+    this.otpExpireAt,
+    this.userType,
+    this.registrationDone,
+    this.status,
+    this.fcmToken,
+    this.googleId,
+    this.facebookId,
+    this.lang,
+    this.isDriverVerified,
+    this.isDriverOnRide,
+    this.isCustomerOnRide,
+    this.isBonusDone,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.profilePhotoUrl,
+    this.profilePhotoThumbUrl,
+  });
+
+  DriverData.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int?,
+        name = json['name'] as String?,
+        email = json['email'] as String?,
+        emailVerifiedAt = json['email_verified_at'],
+        dialCode = json['dial_code'] as String?,
+        mobile = json['mobile'] as String?,
+        gender = json['gender'],
+        cityType = json['city_type'],
+        fullAddress = json['full_address'],
+        address = json['address'],
+        city = json['city'],
+        state = json['state'],
+        postalCode = json['postal_code'],
+        longitude = json['longitude'] as double?,
+        latitude = json['latitude'] as double?,
+        photo = json['photo'] as String?,
+        otp = json['otp'],
+        otpExpireAt = json['otp_expire_at'],
+        userType = json['user_type'] as int?,
+        registrationDone = json['registration_done'] as int?,
+        status = json['status'] as int?,
+        fcmToken = json['fcm_token'] as String?,
+        googleId = json['google_id'],
+        facebookId = json['facebook_id'],
+        lang = json['lang'] as String?,
+        isDriverVerified = json['is_driver_verified'] as int?,
+        isDriverOnRide = json['is_driver_on_ride'] as int?,
+        isCustomerOnRide = json['is_customer_on_ride'] as int?,
+        isBonusDone = json['is_bonus_done'] as int?,
+        deletedAt = json['deleted_at'],
+        createdAt = json['created_at'] as String?,
+        updatedAt = json['updated_at'] as String?,
+        profilePhotoUrl = json['profile_photo_url'] as String?,
+        profilePhotoThumbUrl = json['profile_photo_thumb_url'] as String?;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'email': email,
+        'email_verified_at': emailVerifiedAt,
+        'dial_code': dialCode,
+        'mobile': mobile,
+        'gender': gender,
+        'city_type': cityType,
+        'full_address': fullAddress,
+        'address': address,
+        'city': city,
+        'state': state,
+        'postal_code': postalCode,
+        'longitude': longitude,
+        'latitude': latitude,
+        'photo': photo,
+        'otp': otp,
+        'otp_expire_at': otpExpireAt,
+        'user_type': userType,
+        'registration_done': registrationDone,
+        'status': status,
+        'fcm_token': fcmToken,
+        'google_id': googleId,
+        'facebook_id': facebookId,
+        'lang': lang,
+        'is_driver_verified': isDriverVerified,
+        'is_driver_on_ride': isDriverOnRide,
+        'is_customer_on_ride': isCustomerOnRide,
+        'is_bonus_done': isBonusDone,
+        'deleted_at': deletedAt,
+        'created_at': createdAt,
+        'updated_at': updatedAt,
+        'profile_photo_url': profilePhotoUrl,
+        'profile_photo_thumb_url': profilePhotoThumbUrl
       };
 }

@@ -1011,6 +1011,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone call permission denied'**
   String get phoneCallPermissionDeniedString;
+
+  /// No description provided for @trackString.
+  ///
+  /// In en, this message translates to:
+  /// **'Track'**
+  String get trackString;
 }
 
 class _AppLocalizationsDelegate

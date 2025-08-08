@@ -475,4 +475,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get phoneCallPermissionDeniedString => 'फ़ोन कॉल की अनुमति अस्वीकृत';
+
+  @override
+  String get trackString => 'ट्रैक करें';
 }

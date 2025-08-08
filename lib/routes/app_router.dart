@@ -12,6 +12,7 @@ import 'package:globeporter/presentation/authentication/view/sign_up_screen.dart
 import 'package:globeporter/presentation/chats/view/chat_screen.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
+import 'package:globeporter/presentation/customer/view/track_driver_screen.dart';
 import 'package:globeporter/presentation/settings/view/customer_profile_screen.dart';
 import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
 import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart'
@@ -218,6 +219,20 @@ final GoRouter router = GoRouter(
           child: MyRequestDetailsScreen(
             type: params?['type'] as String?,
             requestData: params?['requestData'] as customer.Data?,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      name: trackDriverScreen,
+      path: trackDriverScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: TrackDriverScreen(
+            type: params?['type'] as String?,
+            data: params?['data'] as customer.Data?,
           ),
         );
       },

@@ -477,4 +477,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get phoneCallPermissionDeniedString => 'Phone call permission denied';
+
+  @override
+  String get trackString => 'Track';
 }

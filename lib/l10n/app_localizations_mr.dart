@@ -474,4 +474,7 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get phoneCallPermissionDeniedString => 'फोन कॉलची परवानगी नाकारली';
+
+  @override
+  String get trackString => 'ट्रॅक करा';
 }

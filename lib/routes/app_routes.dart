@@ -17,8 +17,9 @@ const customerDashboard = '/customer_dashboard';
 const createRequestScreen = '/create_request_screen';
 const requestDetailsScreen = '/request__details_screen';
 const myRequestScreen = '/my_request_screen';
-const myRequestDetailsScreen = '/my_request_details_screeen';
-const customerProfileScreen = '/customer_profile_screeen';
+const myRequestDetailsScreen = '/my_request_details_screen';
+const customerProfileScreen = '/customer_profile_screen';
+const trackDriverScreen = '/track_driver_screen';
 
 //* Driver Routes
 const driverDashboard = '/driver_dashboard';

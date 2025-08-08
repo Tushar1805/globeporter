@@ -1,15 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 
 class MyRequestDetailsScreen extends StatelessWidget {
   const MyRequestDetailsScreen({
@@ -21,6 +24,17 @@ class MyRequestDetailsScreen extends StatelessWidget {
   final String? type;
   final customer.Data? requestData;
 
+  Future<void> makePhoneCall(String phoneNumber, BuildContext context) async {
+    final status = await Permission.phone.request();
+
+    if (status.isGranted) {
+      FlutterPhoneDirectCaller.callNumber(phoneNumber);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.phoneCallPermissionDeniedString)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -30,20 +44,55 @@ class MyRequestDetailsScreen extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(size.width * 0.25),
         child: CustomStatusBarWidget(
-          title: AppLocalizations.of(context)!.myRequestString,
-          text: CustomRichText(
-            title: '${AppLocalizations.of(context)!.myRequestString}: ',
-            value: type == 'urban'
-                ? AppLocalizations.of(context)!.urbanString
-                : AppLocalizations.of(context)!.ruralString,
-            titleStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 20,
-                  color: whiteColor,
-                ),
-            valueStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 22,
-                  color: whiteColor,
-                ),
+          title: '',
+          text: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CustomRichText(
+                title: '',
+                value: type == 'urban'
+                    ? AppLocalizations.of(context)!.urbanString
+                    : AppLocalizations.of(context)!.ruralString,
+                titleStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 20,
+                      color: whiteColor,
+                    ),
+                valueStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 22,
+                      color: whiteColor,
+                    ),
+              ),
+              SizedBox(
+                width: size.width * 0.1,
+              ),
+              requestData?.status == 1
+                  ? GestureDetector(
+                      onTap: () {
+                        makePhoneCall(requestData?.receiverContactNo ?? '', context);
+                      },
+                      child: Image.asset(
+                        phoneCallIcon,
+                        width: 24,
+                        color: whiteColor,
+                      ),
+                    )
+                  : SizedBox.shrink(),
+              const SizedBox(
+                width: 20,
+              ),
+              requestData?.status == 1
+                  ? GestureDetector(
+                      onTap: () {
+                        makePhoneCall(requestData?.driverData?.mobile ?? '', context);
+                      },
+                      child: Icon(
+                        Icons.chat,
+                        color: whiteColor,
+                        size: 24,
+                      ),
+                    )
+                  : SizedBox.shrink(),
+            ],
           ),
         ),
       ),
@@ -89,6 +138,21 @@ class MyRequestDetailsScreen extends StatelessWidget {
             const SizedBox(height: 20),
             if (type == 'urban') UrbanItemsSection(requestData: requestData, size: size),
             if (type == 'rural') RuralDetailsSection(requestData: requestData, size: size),
+            const SizedBox(height: 20),
+            requestData?.status == 1
+                ? CustomElevatedButton(
+                    name:
+                        "${AppLocalizations.of(context)!.trackString} ${AppLocalizations.of(context)!.driverString}",
+                    borderRadius: 25,
+                    alignment: Alignment.bottomCenter,
+                    onPressed: () async {
+                      context.pushNamed(trackDriverScreen, extra: {
+                        'type': requestData?.rideType?.toLowerCase(),
+                        'data': requestData,
+                      });
+                    },
+                  )
+                : SizedBox.shrink(),
             const SizedBox(height: 20),
           ],
         ),

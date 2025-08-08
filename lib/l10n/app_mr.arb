@@ -157,5 +157,6 @@
     "selectContactString": "संपर्क निवडा",
     "cancelString": "रद्द करा",
     "unableToMakePhoneCallString": "सध्या फोन कॉल करता येत नाही.",
-    "phoneCallPermissionDeniedString": "फोन कॉलची परवानगी नाकारली"
+    "phoneCallPermissionDeniedString": "फोन कॉलची परवानगी नाकारली",
+    "trackString": "ट्रॅक करा"
 }
