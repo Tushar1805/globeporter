@@ -49,6 +49,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   var uuid = Uuid();
   Timer? _debounce;
   bool _suppressOnChange = true;
+  bool firstTime = true;
   final loc.Location _location = loc.Location();
   LatLng? _currentPosition;
   StreamSubscription<loc.LocationData>? _locationSubscription;
@@ -64,11 +65,16 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     try {
       position = await locationCubit.determinePosition();
       debugPrint("Position: ${position?.latitude} :: ${position?.longitude}");
-      placemarks = await geocoding.placemarkFromCoordinates(
-          position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951);
-      currentLocationController.text = placemarks.isNotEmpty
-          ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
-          : "";
+      geocoding
+          .placemarkFromCoordinates(
+              position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951)
+          .then((final placemarks) {
+        currentLocationController.text = placemarks.isNotEmpty
+            ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
+            : "";
+        // setState(() {});
+      });
+
       locationCubit.currentLocation = currentLocationController.text;
       locationCubit.position = position;
       final GoogleMapController controller = await _controller.future;
@@ -192,13 +198,13 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
 
   @override
   void initState() {
-    super.initState();
     getCurrentLocation();
     startTracking();
 
     currentLocationController.addListener(() {
       onChange();
     });
+    super.initState();
   }
 
   @override
@@ -210,6 +216,10 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   }
 
   void onChange() {
+    if (firstTime) {
+      firstTime = false;
+      return;
+    }
     if (_suppressOnChange) return;
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
