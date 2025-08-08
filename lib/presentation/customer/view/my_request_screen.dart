@@ -76,9 +76,6 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
           if (state is CustomerRideBookingsLoadingState) return Center(child: LoadingWithoutText());
           return Column(
             children: [
-              const SizedBox(
-                height: 20,
-              ),
               (show)
                   ? Expanded(
                       child: customListView(
@@ -143,7 +140,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
 
   Widget customListView({required final CustomerRideBookingResponse? response}) => ListView.builder(
         itemCount: response?.data?.length,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         itemBuilder: (final context, final index) {
           final request = response?.data?[index];
           return GestureDetector(

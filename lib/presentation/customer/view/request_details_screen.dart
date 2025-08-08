@@ -524,13 +524,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   ),
                   CustomTextField(
                     readOnly: true,
-                    onTap: openContactPicker,
                     textEditingController: receiverNameController,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(nameRegex),
                     ],
                     inputType: TextInputType.name,
                     hint: 'eg. Jon Doe',
+                    suffixIcon: GestureDetector(
+                      onTap: openContactPicker,
+                      child: Icon(
+                        Icons.contacts_outlined,
+                        color: primaryColor,
+                      ),
+                    ),
                   ),
 
                   const SizedBox(
@@ -552,6 +558,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       FilteringTextInputFormatter.allow(phoneNumberRegex),
                       LengthLimitingTextInputFormatter(10),
                     ],
+                    suffixIcon: GestureDetector(
+                      onTap: openContactPicker,
+                      child: Icon(
+                        Icons.contacts_outlined,
+                        color: primaryColor,
+                      ),
+                    ),
                   ),
 
                   const SizedBox(
