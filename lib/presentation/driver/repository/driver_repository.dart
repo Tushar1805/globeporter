@@ -234,7 +234,6 @@ class DriverRepository extends BaseRepository {
     return responseData;
   }
 
-
   //* Accept or Reject rides
   Future<Map<String, dynamic>> acceptOrRejectRide({
     required final String lang,
@@ -250,6 +249,65 @@ class DriverRepository extends BaseRepository {
         'lang': lang,
         'booking_id': bookingId,
         'status': status,
+      },
+    );
+
+    return responseData;
+  }
+
+  //* Generate OTP
+  Future<Map<String, dynamic>> generateOtp({
+    required final String lang,
+    required final String token,
+    required final int bookingId,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: generateOtpUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+        'booking_id': bookingId,
+      },
+    );
+
+    return responseData;
+  }
+
+  //* Verify OTP
+  Future<Map<String, dynamic>> verifyRideOtpByDriver({
+    required final String lang,
+    required final String token,
+    required final String otp,
+    required final int bookingId,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: otpVerifyDriverUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+        'booking_id': bookingId,
+        'otp': otp,
+      },
+    );
+
+    return responseData;
+  }
+
+  //* End ride by driver
+  Future<Map<String, dynamic>> endRideByDriver({
+    required final String lang,
+    required final String token,
+    required final int bookingId,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: endRideDriverUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+        'booking_id': bookingId,
       },
     );
 

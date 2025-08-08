@@ -175,4 +175,84 @@ class DriverCubit extends BaseCubit {
       handleExceptions(e);
     }
   }
+
+  Future<void> generateOtp({
+    required final int bookingId,
+  }) async {
+    try {
+      emit(GenerateOTPLoadingState('Loading'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.generateOtp(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+        bookingId: bookingId,
+      );
+
+      emit(GenerateOTPLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> verifyRideOtpByDriver({
+    required final int bookingId,
+    required final String otp,
+  }) async {
+    try {
+      emit(VerifyRideOTPLoadingState('Loading'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.verifyRideOtpByDriver(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+        bookingId: bookingId,
+        otp: otp,
+      );
+
+      emit(VerifyRideOTPLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> verifyEndRideOtpByDriver({
+    required final int bookingId,
+    required final String otp,
+  }) async {
+    try {
+      emit(VerifyEndRideOTPLoadingState('Loading'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.verifyRideOtpByDriver(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+        bookingId: bookingId,
+        otp: otp,
+      );
+
+      emit(VerifyEndRideOTPLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> endRideByDriver({
+    required final int bookingId,
+  }) async {
+    try {
+      emit(EndRideLoadingState('Loading'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.endRideByDriver(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+        bookingId: bookingId,
+      );
+
+      emit(EndRideLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
 }

@@ -67,3 +67,34 @@ class CheckCancleRideByDriverLoadingState extends LoadingState {
 class CheckCancleRideByDriverLoadedState extends LoadedState {
   CheckCancleRideByDriverLoadedState({required super.data});
 }
+
+class GenerateOTPLoadingState extends LoadingState {
+  GenerateOTPLoadingState(super.loadingMessage);
+}
+
+class GenerateOTPLoadedState extends LoadedState {
+  GenerateOTPLoadedState({required super.data});
+}
+class VerifyRideOTPLoadingState extends LoadingState {
+  VerifyRideOTPLoadingState(super.loadingMessage);
+}
+
+class VerifyRideOTPLoadedState extends LoadedState {
+  VerifyRideOTPLoadedState({required super.data});
+}
+
+class VerifyEndRideOTPLoadingState extends LoadingState {
+  VerifyEndRideOTPLoadingState(super.loadingMessage);
+}
+
+class VerifyEndRideOTPLoadedState extends LoadedState {
+  VerifyEndRideOTPLoadedState({required super.data});
+}
+
+class EndRideLoadingState extends LoadingState {
+  EndRideLoadingState(super.loadingMessage);
+}
+
+class EndRideLoadedState extends LoadedState {
+  EndRideLoadedState({required super.data});
+}

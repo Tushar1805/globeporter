@@ -309,5 +309,13 @@
     "phoneCallPermissionDeniedString": "Phone call permission denied",
     "@phoneCallPermissionDeniedString": {},
     "trackString": "Track",
-    "@trackString": {}
+    "@trackString": {},
+    "rideString": "Ride",
+    "@rideString": {},
+    "startedString": "Started",
+    "@startedString": {},
+    "startString": "Start",
+    "@startString": {},
+    "enterOtpString": "Enter OTP",
+    "@enterOtpString": {}
 }

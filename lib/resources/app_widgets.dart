@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -597,6 +598,107 @@ void showCustomDialogOneButton({
                 borderRadius: 28,
                 alignment: Alignment.center,
                 onPressed: onTap,
+                backgroundColor: whiteColor,
+                nameColor: primaryColor,
+                nameSize: 24,
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showOtpDialog({
+  required BuildContext context,
+  required double? borderRadius,
+  required String? title,
+  required Function(String otp) onOtpSubmit,
+  String? buttonTitle,
+  bool? barrierDismissible,
+}) {
+  final TextEditingController otpController = TextEditingController();
+
+  showDialog(
+    context: context,
+    barrierDismissible: barrierDismissible ?? false,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius ?? 16),
+          side: BorderSide(color: primaryColor),
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(borderRadius ?? 18),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title ?? 'Enter OTP',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 24,
+                      color: whiteColor,
+                    ),
+              ),
+              const SizedBox(height: 20),
+
+              // OTP TextField
+
+              TextField(
+                controller: otpController,
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: Colors.black, letterSpacing: 8),
+                decoration: InputDecoration(
+                  counterText: '',
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.6),
+                  hintText: AppLocalizations.of(context)!.enterOtpString,
+                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Submit button
+              CustomElevatedButton(
+                name: buttonTitle ?? AppLocalizations.of(context)!.submitString,
+                borderRadius: 28,
+                alignment: Alignment.center,
+                onPressed: () {
+                  final otp = otpController.text.trim();
+                  if (otp.isEmpty || otp.length < 4) {
+                    Fluttertoast.showToast(
+                        msg:
+                            "${AppLocalizations.of(context)!.pleaseEnterString} ${AppLocalizations.of(context)!.validString.toLowerCase()}  ${AppLocalizations.of(context)!.otpString.toUpperCase()}");
+                    return;
+                  }
+                  context.pop(); // Close dialog
+                  onOtpSubmit(otp);
+                },
                 backgroundColor: whiteColor,
                 nameColor: primaryColor,
                 nameSize: 24,

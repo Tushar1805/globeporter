@@ -478,4 +478,16 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get trackString => 'ट्रैक करें';
+
+  @override
+  String get rideString => 'सवारी';
+
+  @override
+  String get startedString => 'शुरू';
+
+  @override
+  String get startString => 'शुरू';
+
+  @override
+  String get enterOtpString => 'ओटीपी दर्ज करें';
 }

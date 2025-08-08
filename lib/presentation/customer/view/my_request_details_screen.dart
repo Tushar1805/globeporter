@@ -82,9 +82,7 @@ class MyRequestDetailsScreen extends StatelessWidget {
               ),
               requestData?.status == 1
                   ? GestureDetector(
-                      onTap: () {
-                        makePhoneCall(requestData?.driverData?.mobile ?? '', context);
-                      },
+                      onTap: () {},
                       child: Icon(
                         Icons.chat,
                         color: whiteColor,

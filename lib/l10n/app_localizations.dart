@@ -1017,6 +1017,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Track'**
   String get trackString;
+
+  /// No description provided for @rideString.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride'**
+  String get rideString;
+
+  /// No description provided for @startedString.
+  ///
+  /// In en, this message translates to:
+  /// **'Started'**
+  String get startedString;
+
+  /// No description provided for @startString.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get startString;
+
+  /// No description provided for @enterOtpString.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter OTP'**
+  String get enterOtpString;
 }
 
 class _AppLocalizationsDelegate

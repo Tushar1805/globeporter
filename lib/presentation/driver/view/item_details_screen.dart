@@ -219,6 +219,8 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           bookingId: widget.data?.id ?? 1,
                           status: RideStatus.onTheWay.value,
                         );
+
+                        await driverCubit.getDriverBookings();
                       },
                     ),
             ),

@@ -480,4 +480,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trackString => 'Track';
+
+  @override
+  String get rideString => 'Ride';
+
+  @override
+  String get startedString => 'Started';
+
+  @override
+  String get startString => 'Start';
+
+  @override
+  String get enterOtpString => 'Enter OTP';
 }

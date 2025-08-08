@@ -158,5 +158,9 @@
     "cancelString": "रद्द करा",
     "unableToMakePhoneCallString": "सध्या फोन कॉल करता येत नाही.",
     "phoneCallPermissionDeniedString": "फोन कॉलची परवानगी नाकारली",
-    "trackString": "ट्रॅक करा"
+    "trackString": "ट्रॅक करा",
+    "rideString": "राइड",
+    "startedString": "सुरू",
+    "startString": "सुरू करा",
+    "enterOtpString": "ओटीपी एंटर करा"
 }

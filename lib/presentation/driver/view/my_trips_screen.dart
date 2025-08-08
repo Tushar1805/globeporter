@@ -196,41 +196,45 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                     height: 8,
                                   ),
                                   trip?.isBookingActive == 1
-                                      ? Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            CustomElevatedButton(
-                                              name: AppLocalizations.of(context)!.goString,
-                                              borderRadius: 5,
-                                              alignment: Alignment.centerLeft,
-                                              onPressed: () {
-                                                if (RideStatus.accepted.value ==
+                                      ? CustomElevatedButton(
+                                          name: AppLocalizations.of(context)!.goString,
+                                          borderRadius: 5,
+                                          alignment: Alignment.center,
+                                          onPressed: () {
+                                            if (RideStatus.accepted.value == trip?.bookingStatus) {
+                                              context.pushNamed(
+                                                itemDetailsScreen,
+                                                extra: {
+                                                  'type': trip?.rideType?.toLowerCase(),
+                                                  'data': trip,
+                                                },
+                                              );
+                                            } else if (RideStatus.onTheWay.value ==
+                                                trip?.bookingStatus) {
+                                              context.pushNamed(
+                                                tripInfoScreen,
+                                                extra: {
+                                                  'type': trip?.rideType?.toLowerCase(),
+                                                  'data': trip
+                                                },
+                                              );
+                                            } else if (RideStatus.arrivedAtPickup.value ==
+                                                    trip?.bookingStatus ||
+                                                RideStatus.rideStarted.value ==
                                                     trip?.bookingStatus) {
-                                                  context.pushNamed(
-                                                    itemDetailsScreen,
-                                                    extra: {
-                                                      'type': trip?.rideType?.toLowerCase(),
-                                                      'data': trip,
-                                                    },
-                                                  );
-                                                } else if (RideStatus.onTheWay.value ==
-                                                    trip?.bookingStatus) {
-                                                  context.pushNamed(
-                                                    tripInfoScreen,
-                                                    extra: {
-                                                      'type': trip?.rideType?.toLowerCase(),
-                                                      'data': trip
-                                                    },
-                                                  );
-                                                }
-                                              },
-                                              textPadding: const EdgeInsets.symmetric(
-                                                  horizontal: 10, vertical: 4),
-                                            ),
-                                            SizedBox(
-                                              width: size.width * 0.06,
-                                            ),
-                                          ],
+                                              context.pushNamed(
+                                                startTripScreen,
+                                                extra: {
+                                                  'type': trip?.rideType?.toLowerCase(),
+                                                  'data': trip
+                                                },
+                                              );
+                                            }
+                                          },
+                                          textPadding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 4,
+                                          ),
                                         )
                                       : SizedBox.shrink(),
                                 ],

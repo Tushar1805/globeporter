@@ -12,7 +12,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -36,6 +38,7 @@ class TripInfoScreen extends StatefulWidget {
 class _TripInfoScreenState extends State<TripInfoScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   final locationCubit = sl<LocationCubit>();
+  final driverCubit = sl<DriverCubit>();
   Position? position;
   final loc.Location _location = loc.Location();
   StreamSubscription<loc.LocationData>? _locationSubscription;
@@ -56,7 +59,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
       final GoogleMapController controller = await _controller.future;
 
       _kGooglePlex = CameraPosition(
-        target: LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLat ?? 20.5574253),
+        target: LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLng ?? 78.8386951),
         zoom: 14,
       );
       _markers = <Marker>[
@@ -70,38 +73,40 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
       controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
 
       final latLng = LatLng(
-        widget.data?.dropLat ?? 20.5574253,
-        widget.data?.dropLng ?? 78.838695,
+        widget.data?.pickupLat ?? 20.5574253,
+        widget.data?.pickupLng ?? 78.838695,
       );
-      await locationCubit
-          .routeDirection(
-        pickupLat: widget.data?.pickupLat ?? 20.5574253,
-        pickupLng: widget.data?.pickupLng ?? 78.838695,
-        dropLat: widget.data?.dropLat ?? 20.5574253,
-        dropLng: widget.data?.dropLng ?? 78.838695,
-      )
-          .then((final response) {
-        final points = response?.routes?[0].overviewPolyline?.points ?? '';
-        polylineCoordinates = decodePolyline(points);
+      // await locationCubit
+      //     .routeDirection(
+      //   pickupLat: widget.data?.pickupLat ?? 20.5574253,
+      //   pickupLng: widget.data?.pickupLng ?? 78.838695,
+      //   dropLat: widget.data?.dropLat ?? 20.5574253,
+      //   dropLng: widget.data?.dropLng ?? 78.838695,
+      // )
+      //     .then((final response) {
+      //   final points = response?.routes?[0].overviewPolyline?.points ?? '';
+      //   polylineCoordinates = decodePolyline(points);
 
-        polylines.add(
-          Polyline(
-            polylineId: PolylineId("route"),
-            points: polylineCoordinates,
-            color: Colors.black,
-            width: 5,
-          ),
-        );
-        _markers?.add(
-          Marker(
-            markerId: MarkerId('drop'),
-            position: latLng,
-            infoWindow: InfoWindow(title: 'Destination'),
-          ),
-        );
+      //   polylines.add(
+      //     Polyline(
+      //       polylineId: PolylineId("route"),
+      //       points: polylineCoordinates,
+      //       color: Colors.black,
+      //       width: 5,
+      //     ),
+      //   );
+      //   _markers?.add(
+      //     Marker(
+      //       markerId: MarkerId('drop'),
+      //       position: latLng,
+      //       infoWindow: InfoWindow(title: 'Destination'),
+      //     ),
+      //   );
 
-        setState(() {});
-      });
+      //   setState(() {});
+      // });
+
+      setState(() {});
 
       final GoogleMapController mapController = await _controller.future;
       mapController.animateCamera(CameraUpdate.newLatLng(latLng));
@@ -136,14 +141,14 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
     _locationSubscription?.cancel(); // cancel previous listener if any
 
     _locationSubscription = _location.onLocationChanged
-        .throttleTime(const Duration(seconds: 5))
+        .throttleTime(const Duration(seconds: 3))
         .listen((locationData) async {
       if (locationData.latitude == null || locationData.longitude == null) return;
 
       final currentLat = locationData.latitude!;
       final currentLng = locationData.longitude!;
-      final dropLat = widget.data?.dropLat ?? 0.0;
-      final dropLng = widget.data?.dropLng ?? 0.0;
+      final pickupLat = widget.data?.pickupLat ?? 0.0;
+      final pickupLng = widget.data?.pickupLng ?? 0.0;
 
       // Update backend
       locationCubit.updateMyLocation(
@@ -158,8 +163,8 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
           .routeDirection(
         pickupLat: currentLat,
         pickupLng: currentLng,
-        dropLat: dropLat,
-        dropLng: dropLng,
+        dropLat: pickupLat,
+        dropLng: pickupLng,
       )
           .then((response) {
         final points = response?.routes?[0].overviewPolyline?.points ?? '';
@@ -189,7 +194,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
         driverMarker!,
         Marker(
           markerId: const MarkerId('drop'),
-          position: LatLng(dropLat, dropLng),
+          position: LatLng(pickupLat, pickupLng),
           infoWindow: const InfoWindow(title: 'Destination'),
         ),
       ];
@@ -201,7 +206,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
       controller.animateCamera(CameraUpdate.newLatLng(currentLatLng));
 
       // Check if driver reached destination
-      final distance = Geolocator.distanceBetween(currentLat, currentLng, dropLat, dropLng);
+      final distance = Geolocator.distanceBetween(currentLat, currentLng, pickupLat, pickupLng);
       if (distance <= 50) {
         _locationSubscription?.cancel();
         popUp();
@@ -210,18 +215,28 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
   }
 
   void popUp() {
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(Duration(milliseconds: 100), () {
       widget.type == 'urban'
           ? showCustomDialogOneButton(
+              barrierDismissible: false,
               context: context,
               borderRadius: 18,
               title: AppLocalizations.of(context)!.reachedPickupLocationMsgString,
               buttonTitle: AppLocalizations.of(context)!.okString,
-              onTap: () {
-                context.pop();
-                context.pushNamed(startTripScreen, extra: {
-                  'type': widget.type,
+              onTap: () async {
+                await driverCubit
+                    .changeRideStatus(
+                  bookingId: widget.data?.id ?? 1,
+                  status: RideStatus.arrivedAtPickup.value,
+                )
+                    .then((value) {
+                  context.pop();
+                  context.pushReplacementNamed(startTripScreen, extra: {
+                    'type': widget.type,
+                    'data': widget.data,
+                  });
                 });
+                await driverCubit.getDriverBookings();
               },
             )
           : showDynamicItemDialog(
@@ -293,15 +308,28 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                     ),
                   ),
                   SizedBox(width: size.width * 0.09),
-                  GestureDetector(
-                    onTap: () {
-                      makePhoneCall(widget.data?.receiverContactNo ?? '');
-                    },
-                    child: Image.asset(
-                      phoneCallIcon,
-                      width: 24,
-                      color: whiteColor,
-                    ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          makePhoneCall(widget.data?.receiverContactNo ?? '');
+                        },
+                        child: Image.asset(
+                          phoneCallIcon,
+                          width: 24,
+                          color: whiteColor,
+                        ),
+                      ),
+                      SizedBox(width: size.width * 0.05),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Icon(
+                          Icons.chat,
+                          color: whiteColor,
+                          size: 24,
+                        ),
+                      )
+                    ],
                   ),
                 ],
               ),

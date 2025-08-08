@@ -155,5 +155,9 @@
     "cancelString": "रद्द करो",
     "unableToMakePhoneCallString": "इस समय फ़ोन कॉल करने में असमर्थ",
     "phoneCallPermissionDeniedString": "फ़ोन कॉल की अनुमति अस्वीकृत",
-    "trackString": "ट्रैक करें"
+    "trackString": "ट्रैक करें",
+    "rideString": "सवारी",
+    "startedString": "शुरू",
+    "startString": "शुरू",
+   "enterOtpString": "ओटीपी दर्ज करें"
 }

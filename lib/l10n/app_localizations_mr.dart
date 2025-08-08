@@ -477,4 +477,16 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get trackString => 'ट्रॅक करा';
+
+  @override
+  String get rideString => 'राइड';
+
+  @override
+  String get startedString => 'सुरू';
+
+  @override
+  String get startString => 'सुरू करा';
+
+  @override
+  String get enterOtpString => 'ओटीपी एंटर करा';
 }
