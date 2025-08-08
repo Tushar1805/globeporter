@@ -135,17 +135,39 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               ),
             ),
             Positioned(
-              right: size.width * 0.08,
+              right: size.width * 0.15,
               bottom: size.width * 0.1,
-              child: GestureDetector(
-                onTap: () {
-                  makePhoneCall(widget.data?.receiverContactNo ?? '');
-                },
-                child: Image.asset(
-                  phoneCallIcon,
-                  width: 24,
-                  color: whiteColor,
-                ),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      makePhoneCall(widget.data?.receiverContactNo ?? '');
+                    },
+                    child: Image.asset(
+                      phoneCallIcon,
+                      width: 24,
+                      color: whiteColor,
+                    ),
+                  ),
+                  SizedBox(width: size.width * 0.05),
+                  GestureDetector(
+                    onTap: () {
+                      context.pushNamed(chatScreen, extra: {
+                        'senderId': widget.data?.driverId.toString(),
+                        'receiverId': widget.data?.userId.toString(),
+                        'senderName': authCubit.userDetails?.data?.name,
+                        'type': 'customer',
+                        'receiverName': widget.data?.userData?.name,
+                        'receiverImageUrl': widget.data?.userData?.profilePhotoUrl,
+                      });
+                    },
+                    child: Icon(
+                      Icons.chat,
+                      color: whiteColor,
+                      size: 24,
+                    ),
+                  )
+                ],
               ),
             ),
           ],
