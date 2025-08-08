@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_extension_functions.dart';
@@ -39,6 +40,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   final locationCubit = sl<LocationCubit>();
   final driverCubit = sl<DriverCubit>();
+  final authCubit = sl<AuthCubit>();
   Position? position;
   final loc.Location _location = loc.Location();
   StreamSubscription<loc.LocationData>? _locationSubscription;
@@ -322,7 +324,16 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                       ),
                       SizedBox(width: size.width * 0.05),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          context.pushNamed(chatScreen, extra: {
+                            'senderId': widget.data?.driverId.toString(),
+                            'receiverId': widget.data?.userId.toString(),
+                            'senderName': authCubit.userDetails?.data?.name,
+                            'type': 'customer',
+                            'receiverName': widget.data?.userData?.name,
+                            'receiverImageUrl': widget.data?.userData?.profilePhotoUrl,
+                          });
+                        },
                         child: Icon(
                           Icons.chat,
                           color: whiteColor,

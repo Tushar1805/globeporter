@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -15,7 +17,7 @@ import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
 class MyRequestDetailsScreen extends StatelessWidget {
-  const MyRequestDetailsScreen({
+  MyRequestDetailsScreen({
     super.key,
     required this.type,
     required this.requestData,
@@ -23,6 +25,7 @@ class MyRequestDetailsScreen extends StatelessWidget {
 
   final String? type;
   final customer.Data? requestData;
+  final authCubit = sl<AuthCubit>();
 
   Future<void> makePhoneCall(String phoneNumber, BuildContext context) async {
     final status = await Permission.phone.request();
@@ -82,7 +85,16 @@ class MyRequestDetailsScreen extends StatelessWidget {
               ),
               requestData?.status == 1
                   ? GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        context.pushNamed(chatScreen, extra: {
+                          'senderId': requestData?.userId.toString(),
+                          'receiverId': requestData?.driverId.toString(),
+                          'senderName': authCubit.userDetails?.data?.name,
+                          'type': 'customer',
+                          'receiverName': requestData?.driverData?.name,
+                          'receiverImageUrl': requestData?.driverData?.profilePhotoUrl,
+                        });
+                      },
                       child: Icon(
                         Icons.chat,
                         color: whiteColor,

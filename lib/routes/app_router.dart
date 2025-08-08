@@ -419,10 +419,12 @@ final GoRouter router = GoRouter(
         return slideTransitionPage(
           key: state.pageKey,
           child: ChatScreen(
-            customerId: params?['customerId'] as String,
-            driverId: params?['driverId'] as String,
+            senderId: params?['senderId'] as String,
+            receiverId: params?['receiverId'] as String,
             type: params?['type'] as String,
-            name: params?['name'] as String,
+            senderName: params?['senderName'] as String,
+            receiverName: params?['receiverName'] as String,
+            receiverImageUrl: params?['receiverImageUrl'] as String?,
           ),
         );
       },
