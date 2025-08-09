@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';

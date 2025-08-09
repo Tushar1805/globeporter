@@ -201,7 +201,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                           borderRadius: 5,
                                           alignment: Alignment.center,
                                           onPressed: () {
-                                            if (RideStatus.accepted.value == trip?.bookingStatus) {
+                                            if (RideStatus.accept.value == trip?.bookingStatus) {
                                               context.pushNamed(
                                                 itemDetailsScreen,
                                                 extra: {
