@@ -135,7 +135,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               ),
             ),
             Positioned(
-              right: size.width * 0.15,
+              right: size.width * 0.12,
               bottom: size.width * 0.1,
               child: Row(
                 children: [

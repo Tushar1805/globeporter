@@ -223,7 +223,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(
               child: messages.isEmpty
                   ? const Center(
-                      child: LoadingWithoutText(),
+                      child: Text('No chats'),
                     )
                   : ListView.builder(
                       controller: _scrollController,
