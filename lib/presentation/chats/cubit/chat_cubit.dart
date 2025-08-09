@@ -16,8 +16,8 @@ class ChatCubit extends BaseCubit {
     required final String title,
     required final String message,
     final String? id,
-    final String? userId,
-    final String? driverId,
+    final String? receiverId,
+    final String? senderId,
   }) async {
     try {
       emit(ChatNotificationLoadingState('Loading'));
@@ -28,8 +28,8 @@ class ChatCubit extends BaseCubit {
         title: title,
         message: message,
         id: id,
-        userId: userId,
-        driverId: driverId,
+        receiverId: receiverId,
+        senderId: senderId,
       );
       customPrint('Chat Notification Response: ${response.toString()}');
 

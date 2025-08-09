@@ -48,6 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     final conversationId = getConversationId(widget.senderId, widget.receiverId);
     _chatRef = FirebaseDatabase.instance.ref().child('chats/$conversationId');
+    clearUnreadCount(conversationId);
     _listenToMessages();
   }
 
@@ -137,7 +138,72 @@ class _ChatScreenState extends State<ChatScreen> {
     return text;
   }
 
-  void _sendMessage() {
+  //* sendMessage without unread count
+
+  // void _sendMessage() {
+  //   if (_isDisposed) return;
+
+  //   final messageText = _maskSensitiveInfo(_messageController.text.trim());
+  //   if (messageText.isEmpty) return;
+
+  //   final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+  //   final newMessage = ChatMessage(
+  //     senderId: widget.senderId,
+  //     receiverId: widget.receiverId,
+  //     message: messageText,
+  //     timestamp: timestamp,
+  //   );
+
+  //   final conversationId = getConversationId(widget.senderId, widget.receiverId);
+
+  //   // Use a unique key for the message to avoid conflicts
+  //   final messageRef = _chatRef.push();
+  //   messageRef.set(newMessage.toMap()).catchError((error) {
+  //     debugPrint('Error sending message: $error');
+  //     // Optionally show error to user
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Failed to send message')),
+  //       );
+  //     }
+  //   });
+
+  //   // Update chat list for sender
+  //   FirebaseDatabase.instance.ref("chat_list/${widget.senderId}/$conversationId").set({
+  //     "name": widget.receiverName,
+  //     "otherUserId": widget.receiverId,
+  //     "lastMessage": messageText,
+  //     "timestamp": timestamp,
+  //     "receiverImageUrl": widget.receiverImageUrl
+  //   }).catchError((error) {
+  //     debugPrint('Error updating sender chat list: $error');
+  //   });
+
+  //   // Update chat list for receiver
+  //   FirebaseDatabase.instance.ref("chat_list/${widget.receiverId}/$conversationId").set({
+  //     "name": widget.senderName,
+  //     "otherUserId": widget.senderId,
+  //     "lastMessage": messageText,
+  //     "timestamp": timestamp,
+  //     "receiverImageUrl": authCubit.userDetails?.data?.profilePhotoUrl,
+  //   }).catchError((error) {
+  //     debugPrint('Error updating receiver chat list: $error');
+  //   });
+
+  //   chatCubit.sendNotification(
+  //     title: widget.senderName,
+  //     message: messageText,
+  //     userId: widget.receiverId,
+  //     driverId: widget.senderId,
+  //   );
+
+  //   _messageController.clear();
+  // }
+
+  //* Send Message with unread count
+
+  Future<void> _sendMessage() async {
     if (_isDisposed) return;
 
     final messageText = _maskSensitiveInfo(_messageController.text.trim());
@@ -154,48 +220,87 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final conversationId = getConversationId(widget.senderId, widget.receiverId);
 
-    // Use a unique key for the message to avoid conflicts
+    // Reference to the message list for this conversation
     final messageRef = _chatRef.push();
-    messageRef.set(newMessage.toMap()).catchError((error) {
-      debugPrint('Error sending message: $error');
-      // Optionally show error to user
+
+    try {
+      // 1) Save the message
+      await messageRef.set(newMessage.toMap());
+
+      // 2) Update sender's chat list entry (unreadCount = 0)
+      final senderChatRef =
+          FirebaseDatabase.instance.ref("chat_list/${widget.senderId}/$conversationId");
+
+      await senderChatRef.update({
+        "name": widget.receiverName,
+        "otherUserId": widget.receiverId,
+        "lastMessage": messageText,
+        "timestamp": timestamp,
+        "receiverImageUrl": widget.receiverImageUrl,
+        "unreadCount": 0,
+      });
+
+      // 3) Atomically increment receiver's unreadCount
+      final receiverChatRef =
+          FirebaseDatabase.instance.ref("chat_list/${widget.receiverId}/$conversationId");
+
+      await receiverChatRef.runTransaction((Object? currentValue) {
+        final Map<String, dynamic> current =
+            (currentValue as Map?)?.map((key, value) => MapEntry(key.toString(), value)) ??
+                <String, dynamic>{};
+
+        int currentUnread = 0;
+        final dynamic u = current['unreadCount'];
+        if (u is int) {
+          currentUnread = u;
+        } else if (u is double) {
+          currentUnread = u.toInt();
+        } else {
+          currentUnread = int.tryParse(u?.toString() ?? '0') ?? 0;
+        }
+
+        current['unreadCount'] = currentUnread + 1;
+        current['lastMessage'] = messageText;
+        current['timestamp'] = timestamp;
+        current['otherUserId'] = widget.senderId;
+        current['name'] = widget.senderName;
+        current['receiverImageUrl'] =
+            authCubit.userDetails?.data?.profilePhotoUrl ?? current['receiverImageUrl'];
+
+        return Transaction.success(current);
+      });
+
+      // 4) Send push notification
+      chatCubit.sendNotification(
+        title: widget.senderName,
+        message: messageText,
+        receiverId: widget.receiverId,
+        senderId: widget.senderId,
+      );
+
+      // 5) Clear the input box
+      _messageController.clear();
+    } catch (e) {
+      debugPrint('Error sending message: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to send message')),
         );
       }
-    });
+    }
+  }
 
-    // Update chat list for sender
-    FirebaseDatabase.instance.ref("chat_list/${widget.senderId}/$conversationId").set({
-      "name": widget.receiverName,
-      "otherUserId": widget.receiverId,
-      "lastMessage": messageText,
-      "timestamp": timestamp,
-      "receiverImageUrl": widget.receiverImageUrl
-    }).catchError((error) {
-      debugPrint('Error updating sender chat list: $error');
-    });
-
-    // Update chat list for receiver
-    FirebaseDatabase.instance.ref("chat_list/${widget.receiverId}/$conversationId").set({
-      "name": widget.senderName,
-      "otherUserId": widget.senderId,
-      "lastMessage": messageText,
-      "timestamp": timestamp,
-      "receiverImageUrl": authCubit.userDetails?.data?.profilePhotoUrl,
-    }).catchError((error) {
-      debugPrint('Error updating receiver chat list: $error');
-    });
-
-    chatCubit.sendNotification(
-      title: widget.senderName,
-      message: messageText,
-      userId: widget.receiverId,
-      driverId: widget.senderId,
-    );
-
-    _messageController.clear();
+  // Clear unread count for current user & conversation (called when user opens chat)
+  Future<void> clearUnreadCount(String conversationId) async {
+    final currentUserId = authCubit.userDetails?.data?.id;
+    if (currentUserId == null) return;
+    try {
+      final ref =
+          FirebaseDatabase.instance.ref('chat_list/$currentUserId/$conversationId/unreadCount');
+      await ref.set(0);
+    } catch (e) {
+      debugPrint('Error clearing unread count: $e');
+    }
   }
 
   @override

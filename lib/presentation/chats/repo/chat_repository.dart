@@ -8,8 +8,8 @@ class ChatRepository extends BaseRepository {
     required final String title,
     required final String message,
     final String? id,
-    final String? userId,
-    final String? driverId,
+    final String? receiverId,
+    final String? senderId,
   }) async {
     final responseData = await fetchData(
       apiCallType: ApiCallType.post,
@@ -19,8 +19,8 @@ class ChatRepository extends BaseRepository {
         'title': title,
         'message': message,
         'id': id,
-        'user_id': userId,
-        'driver_id': driverId,
+        'receiver_id': receiverId,
+        'sender_id': senderId,
       },
     );
 

@@ -57,6 +57,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
             final List<Map<String, dynamic>> loadedChats = [];
 
             data.forEach((key, value) {
+              // robust parsing of unreadCount
+              final dynamic unreadRaw = value['unreadCount'] ?? value['unread_count'] ?? 0;
+              int unreadCount = 0;
+              if (unreadRaw is int) {
+                unreadCount = unreadRaw;
+              } else if (unreadRaw is double) {
+                unreadCount = unreadRaw.toInt();
+              } else {
+                unreadCount = int.tryParse(unreadRaw.toString()) ?? 0;
+              }
               // Add null safety checks
               if (value != null && value is Map) {
                 loadedChats.add({
@@ -65,7 +75,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   "lastMessage": value["lastMessage"] ?? "",
                   "timestamp": value["timestamp"] ?? 0,
                   "otherUserId": value["otherUserId"] ?? "",
-                  'receiverImageUrl': value['receiverImageUrl']
+                  'receiverImageUrl': value['receiverImageUrl'],
+                  'unreadCount': unreadCount, // <- new
                 });
               }
             });
@@ -179,8 +190,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   final chat = chatList[index];
                   final timestamp = chat["timestamp"] as int? ?? 0;
                   final time = _formatTime(timestamp);
+                  final unreadCount = chat['unreadCount'] as int? ?? 0;
 
                   return ListTile(
+                    // tileColor: unreadCount > 0 ? secondaryColor : null,
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(
                         chat['receiverImageUrl'] ?? sampleNetworkImage,
@@ -200,12 +213,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
                     ),
-                    trailing: Text(
-                      time,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 13,
-                            color: greyTextColor,
-                          ),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          time,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontSize: 13,
+                                color: greyTextColor,
+                              ),
+                        ),
+                        const SizedBox(height: 6),
+                        if (unreadCount > 0) buildUnreadBadge(unreadCount),
+                      ],
                     ),
                     onTap: () {
                       // Add null safety checks for navigation
@@ -238,6 +259,26 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   );
                 },
               ),
+      ),
+    );
+  }
+
+  // --- helper badge widget (add to class) ---
+  Widget buildUnreadBadge(int count) {
+    if (count <= 0) return const SizedBox.shrink();
+    final display = count > 99 ? '99+' : count.toString();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 2, offset: Offset(0, 1))],
+      ),
+      constraints: const BoxConstraints(minWidth: 24, minHeight: 20),
+      child: Text(
+        display,
+        textAlign: TextAlign.center,
+        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
       ),
     );
   }
