@@ -332,7 +332,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                             });
                             customPrint(
                                 "Booking Id: $currentBookingId \n ReasonId: $currentReasonId");
-                            await driverCubit.acceptOrRejectRide(
+                            await driverCubit.rejectRide(
                               bookingId: widget.data?.id ?? 1,
                               status: 'Reject',
                             );

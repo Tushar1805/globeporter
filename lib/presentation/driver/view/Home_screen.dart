@@ -12,7 +12,7 @@ import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
-import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart';
+import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart' as pending;
 import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -40,11 +40,12 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   bool dialogLoading = false;
   int? currentBookingId;
   int? currentReasonId;
+  pending.Data? currentData;
 
   // LatLng? _currentPosition;
   final Location _location = Location();
   StreamSubscription<LocationData>? _locationSubscription;
-  PendingBookingsResponse? pendingBookingsResponse;
+  pending.PendingBookingsResponse? pendingBookingsResponse;
   RideCancellationReasonResponse? rideCancellationReasonsResponse;
   FToast? fToast;
 
@@ -308,7 +309,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               dialogLoading = false;
             });
           } else if (state is PendingBookingsLoadedState) {
-            pendingBookingsResponse = state.data as PendingBookingsResponse?;
+            pendingBookingsResponse = state.data as pending.PendingBookingsResponse?;
             setState(() {
               loading = false;
             });
@@ -317,6 +318,22 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             setState(() {
               loading = false;
             });
+          } else if (state is AcceptRideLoadedState) {
+            final data = state.data as Map<String, dynamic>;
+            if (data['status_code'] == 200) {
+              context.pushNamed(
+                itemDetailsScreen,
+                extra: {'type': currentData?.rideType, 'data': currentData},
+              );
+              loadPendingBookings();
+            } else {
+              showToast(
+                context: context,
+                fToast: fToast!,
+                msg: data['message'],
+                duration: 5,
+              );
+            }
           } else if (state is ErrorState) {
             setState(() {
               loading = false;
@@ -335,21 +352,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               state is RideCancellationReasonsLoadingState) {
             return Center(
               child: LoadingWithoutText(),
-            );
-          } else if (state is ErrorState) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
-                child: Center(
-                  child: Text(
-                    '',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.red,
-                        ),
-                  ),
-                ),
-              ),
             );
           }
           return pendingBookingsResponse == null
@@ -442,18 +444,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                             title:
                                                 '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
                                             onTapYes: () async {
+                                              setState(() {
+                                                currentData = trip;
+                                              });
+                                              context.pop();
                                               driverCubit.deductAmount();
-                                              await driverCubit.acceptOrRejectRide(
+                                              await driverCubit.acceptRide(
                                                 bookingId: trip?.id ?? 1,
                                                 status: 'Accept',
                                               );
-
-                                              context.pop();
-                                              context.pushNamed(
-                                                itemDetailsScreen,
-                                                extra: {'type': trip?.rideType, 'data': trip},
-                                              );
-                                              loadPendingBookings();
                                             },
                                             onTapNo: () {
                                               context.pop();
@@ -483,7 +482,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                               });
                                               customPrint(
                                                   "Booking Id: $currentBookingId \n ReasonId: $currentReasonId");
-                                              await driverCubit.acceptOrRejectRide(
+                                              await driverCubit.rejectRide(
                                                 bookingId: trip?.id ?? 1,
                                                 status: 'Reject',
                                               );

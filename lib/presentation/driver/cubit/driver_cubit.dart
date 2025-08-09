@@ -153,14 +153,38 @@ class DriverCubit extends BaseCubit {
     }
   }
 
-  //* Accept or reject the ride
+  //* Accept  the ride
 
-  Future<void> acceptOrRejectRide({
+  Future<void> acceptRide({
     required final int bookingId,
     required final String status,
   }) async {
     try {
-      emit(AcceptOrRejectLoadingState('Loading'));
+      emit(AcceptRideLoadingState('Loading'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.acceptOrRejectRide(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+        bookingId: bookingId,
+        status: status,
+      );
+      customPrint('Accept Response: ${response.toString()}');
+
+      emit(AcceptRideLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  //* Reject the ride
+
+  Future<void> rejectRide({
+    required final int bookingId,
+    required final String status,
+  }) async {
+    try {
+      emit(RejectRideLoadingState('Loading'));
       final lang = await storage.readValue(languageCodeKey);
       final accessToken = await storage.readValue(accessTokenKey);
       final response = await _driverRepository.acceptOrRejectRide(
@@ -170,7 +194,7 @@ class DriverCubit extends BaseCubit {
         status: status,
       );
 
-      emit(AcceptOrRejectLoadedState(data: response));
+      emit(RejectRideLoadedState(data: response));
     } catch (e) {
       handleExceptions(e);
     }

@@ -143,7 +143,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
     _locationSubscription?.cancel(); // cancel previous listener if any
 
     _locationSubscription = _location.onLocationChanged
-        .throttleTime(const Duration(seconds: 3))
+        .throttleTime(const Duration(seconds: 5))
         .listen((locationData) async {
       if (locationData.latitude == null || locationData.longitude == null) return;
 
@@ -232,8 +232,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                   status: RideStatus.arrivedAtPickup.value,
                 )
                     .then((value) {
-                  context.pop();
-                  context.pushReplacementNamed(startTripScreen, extra: {
+                  context.pushNamed(startTripScreen, extra: {
                     'type': widget.type,
                     'data': widget.data,
                   });

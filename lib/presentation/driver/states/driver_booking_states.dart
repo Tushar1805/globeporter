@@ -20,12 +20,20 @@ class DriverBookingsLoadedState extends LoadedState {
   DriverBookingsLoadedState({required super.data});
 }
 
-class AcceptOrRejectLoadingState extends LoadingState {
-  AcceptOrRejectLoadingState(super.loadingMessage);
+class AcceptRideLoadingState extends LoadingState {
+  AcceptRideLoadingState(super.loadingMessage);
 }
 
-class AcceptOrRejectLoadedState extends LoadedState {
-  AcceptOrRejectLoadedState({required super.data});
+class AcceptRideLoadedState extends LoadedState {
+  AcceptRideLoadedState({required super.data});
+}
+
+class RejectRideLoadingState extends LoadingState {
+  RejectRideLoadingState(super.loadingMessage);
+}
+
+class RejectRideLoadedState extends LoadedState {
+  RejectRideLoadedState({required super.data});
 }
 
 class ChangeRideStatusLoadingState extends LoadingState {

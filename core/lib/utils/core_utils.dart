@@ -96,10 +96,13 @@ void showToast({
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset(
-          appLogoIcon,
-          width: 24,
-          height: 24,
+        CircleAvatar(
+          radius: 12,
+          child: Image.asset(
+            appLogoIcon,
+            width: 24,
+            height: 24,
+          ),
         ),
         SizedBox(
           width: 12.0,
