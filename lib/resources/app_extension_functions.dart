@@ -30,7 +30,7 @@ extension RideStatusExtension on RideStatus {
       case RideStatus.accept:
         return 'Accept';
       case RideStatus.onTheWay:
-        return 'On The Way';
+        return 'Ongoing';
       case RideStatus.arrivedAtPickup:
         return 'Arrived At Pickup Point';
       case RideStatus.rideStarted:
