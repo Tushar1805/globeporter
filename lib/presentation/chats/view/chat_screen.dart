@@ -4,6 +4,7 @@ import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/chats/cubit/chat_cubit.dart';
 import 'package:globeporter/presentation/chats/model/chat_model.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -37,6 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   late DatabaseReference _chatRef;
   final authCubit = sl<AuthCubit>();
+  final chatCubit = sl<ChatCubit>();
   List<ChatMessage> messages = [];
   StreamSubscription<DatabaseEvent>? _chatSubscription;
   bool _isDisposed = false;
@@ -111,10 +113,34 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  String _maskSensitiveInfo(String text) {
+    // Mask phone numbers (10+ digits)
+    final phoneRegex = RegExp(r'\b\d{10,}\b');
+    text = text.replaceAllMapped(phoneRegex, (match) {
+      final number = match.group(0)!;
+      if (number.length >= 4) {
+        return number.substring(0, 2) + '*' * (number.length - 2);
+      }
+      return '*' * number.length;
+    });
+
+    // Mask emails
+    final emailRegex = RegExp(r'([a-zA-Z0-9._%+-]{2,})@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}');
+    text = text.replaceAllMapped(emailRegex, (match) {
+      final email = match.group(0)!;
+      final parts = email.split('@');
+      final name = parts[0];
+      final maskedName = name.substring(0, 3) + '*' * (name.length - 3);
+      return "$maskedName@${parts[1]}";
+    });
+
+    return text;
+  }
+
   void _sendMessage() {
     if (_isDisposed) return;
 
-    final messageText = _messageController.text.trim();
+    final messageText = _maskSensitiveInfo(_messageController.text.trim());
     if (messageText.isEmpty) return;
 
     final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -161,6 +187,13 @@ class _ChatScreenState extends State<ChatScreen> {
     }).catchError((error) {
       debugPrint('Error updating receiver chat list: $error');
     });
+
+    chatCubit.sendNotification(
+      title: widget.senderName,
+      message: messageText,
+      userId: widget.receiverId,
+      driverId: widget.senderId,
+    );
 
     _messageController.clear();
   }

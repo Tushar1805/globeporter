@@ -52,3 +52,4 @@ const String getPackagingTypeUrl = '$_baseUrl/get_package_type';
 //* Settings
 
 const String updateProfileUrl = '$_baseUrl/update_profile_data';
+const String commonSendNotificationUrl = '$_baseUrl/common_send_notification';
