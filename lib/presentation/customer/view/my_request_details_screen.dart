@@ -150,6 +150,7 @@ class MyRequestDetailsScreen extends StatelessWidget {
             if (type == 'rural') RuralDetailsSection(requestData: requestData, size: size),
             const SizedBox(height: 20),
             requestData?.status == 1
+                // && requestData?.isBookingActive == 1
                 ? CustomElevatedButton(
                     name:
                         "${AppLocalizations.of(context)!.trackString} ${AppLocalizations.of(context)!.driverString}",

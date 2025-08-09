@@ -42,7 +42,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
   @override
   void initState() {
     super.initState();
-    getInitialRoute();
+    // getInitialRoute();
     listenToDriverLocation();
   }
 
@@ -53,54 +53,54 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
   }
 
   /// Show pickup and drop route initially
-  void getInitialRoute() async {
-    try {
-      final GoogleMapController controller = await _controller.future;
+  // void getInitialRoute() async {
+  //   try {
+  //     final GoogleMapController controller = await _controller.future;
 
-      _kGooglePlex = CameraPosition(
-        target: LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLng ?? 78.8386951),
-        zoom: 14,
-      );
+  //     _kGooglePlex = CameraPosition(
+  //       target: LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLng ?? 78.8386951),
+  //       zoom: 14,
+  //     );
 
-      _markers = [
-        Marker(
-          markerId: const MarkerId('pickup'),
-          position:
-              LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLng ?? 78.8386951),
-        ),
-        Marker(
-          markerId: const MarkerId('drop'),
-          position: LatLng(widget.data?.dropLat ?? 20.5574253, widget.data?.dropLng ?? 78.838695),
-          infoWindow: const InfoWindow(title: 'Destination'),
-        ),
-      ];
+  //     _markers = [
+  //       Marker(
+  //         markerId: const MarkerId('pickup'),
+  //         position:
+  //             LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLng ?? 78.8386951),
+  //       ),
+  //       Marker(
+  //         markerId: const MarkerId('drop'),
+  //         position: LatLng(widget.data?.dropLat ?? 20.5574253, widget.data?.dropLng ?? 78.838695),
+  //         infoWindow: const InfoWindow(title: 'Destination'),
+  //       ),
+  //     ];
 
-      // Draw initial polyline
-      final response = await locationCubit.routeDirection(
-        pickupLat: widget.data?.pickupLat ?? 20.5574253,
-        pickupLng: widget.data?.pickupLng ?? 78.838695,
-        dropLat: widget.data?.dropLat ?? 20.5574253,
-        dropLng: widget.data?.dropLng ?? 78.838695,
-      );
+  //     // Draw initial polyline
+  //     final response = await locationCubit.routeDirection(
+  //       pickupLat: widget.data?.pickupLat ?? 20.5574253,
+  //       pickupLng: widget.data?.pickupLng ?? 78.838695,
+  //       dropLat: widget.data?.dropLat ?? 20.5574253,
+  //       dropLng: widget.data?.dropLng ?? 78.838695,
+  //     );
 
-      final points = response?.routes?[0].overviewPolyline?.points ?? '';
-      polylineCoordinates = decodePolyline(points);
+  //     final points = response?.routes?[0].overviewPolyline?.points ?? '';
+  //     polylineCoordinates = decodePolyline(points);
 
-      polylines.add(
-        Polyline(
-          polylineId: const PolylineId("route"),
-          points: polylineCoordinates,
-          color: Colors.black,
-          width: 5,
-        ),
-      );
+  //     polylines.add(
+  //       Polyline(
+  //         polylineId: const PolylineId("route"),
+  //         points: polylineCoordinates,
+  //         color: Colors.black,
+  //         width: 5,
+  //       ),
+  //     );
 
-      controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
-      setState(() {});
-    } catch (e) {
-      debugPrint("Error: Getting initial route: $e");
-    }
-  }
+  //     controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
+  //     setState(() {});
+  //   } catch (e) {
+  //     debugPrint("Error: Getting initial route: $e");
+  //   }
+  // }
 
   /// Listen to driver location from Firebase Realtime Database
   void listenToDriverLocation() {
@@ -119,15 +119,17 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
       final driverLat = (data['latitude'] as num).toDouble();
       final driverLng = (data['longitude'] as num).toDouble();
 
-      final dropLat = widget.data?.dropLat ?? 0.0;
-      final dropLng = widget.data?.dropLng ?? 0.0;
+      // final dropLat = widget.data?.dropLat ?? 0.0;
+      // final dropLng = widget.data?.dropLng ?? 0.0;
+      final pickupLat = widget.data?.pickupLat ?? 0.0;
+      final pickupLng = widget.data?.pickupLng ?? 0.0;
 
       // Update route polyline
       final response = await locationCubit.routeDirection(
         pickupLat: driverLat,
         pickupLng: driverLng,
-        dropLat: dropLat,
-        dropLng: dropLng,
+        dropLat: pickupLat,
+        dropLng: pickupLng,
       );
 
       final points = response?.routes?[0].overviewPolyline?.points ?? '';
@@ -155,7 +157,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
         driverMarker!,
         Marker(
           markerId: const MarkerId('drop'),
-          position: LatLng(dropLat, dropLng),
+          position: LatLng(pickupLat, pickupLng),
           infoWindow: const InfoWindow(title: 'Destination'),
         ),
       ];
@@ -167,7 +169,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
       controller.animateCamera(CameraUpdate.newLatLng(LatLng(driverLat, driverLng)));
 
       // Check if driver reached destination
-      final distance = Geolocator.distanceBetween(driverLat, driverLng, dropLat, dropLng);
+      final distance = Geolocator.distanceBetween(driverLat, driverLng, pickupLat, pickupLng);
       if (distance <= 50) {
         _driverLocationSub?.cancel();
         // You can trigger a popup or completion logic here
