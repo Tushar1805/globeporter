@@ -270,7 +270,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.red,
+        color: primaryColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 2, offset: Offset(0, 1))],
       ),
@@ -278,7 +278,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
       child: Text(
         display,
         textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: whiteColor,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }

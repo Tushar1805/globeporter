@@ -209,6 +209,9 @@ class _ChatScreenState extends State<ChatScreen> {
     final messageText = _maskSensitiveInfo(_messageController.text.trim());
     if (messageText.isEmpty) return;
 
+    // 5) Clear the input box
+    _messageController.clear();
+
     final timestamp = DateTime.now().millisecondsSinceEpoch;
 
     final newMessage = ChatMessage(
@@ -277,9 +280,6 @@ class _ChatScreenState extends State<ChatScreen> {
         receiverId: widget.receiverId,
         senderId: widget.senderId,
       );
-
-      // 5) Clear the input box
-      _messageController.clear();
     } catch (e) {
       debugPrint('Error sending message: $e');
       if (mounted) {
