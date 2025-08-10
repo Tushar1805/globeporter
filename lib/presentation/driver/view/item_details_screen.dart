@@ -35,7 +35,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   final driverCubit = sl<DriverCubit>();
   final authCubit = sl<AuthCubit>();
   bool loading = false;
-  bool dialogLoading = false;
+  final dialogLoadingNotifier = ValueNotifier(false);
   int? currentBookingId;
   int? currentReasonId;
   RideCancellationReasonResponse? rideCancellationReasonsResponse;
@@ -218,7 +218,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     loading = true;
                   });
                 } else if (state is ChangeRideStatusLoadedState) {
-                  context.pushNamed(
+                  context.pushReplacementNamed(
                     tripInfoScreen,
                     extra: {
                       'type': widget.type,
@@ -255,7 +255,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                 if (state is CheckCancleRideByDriverLoadingState ||
                     state is CancleRideByDriverLoadingState) {
                   setState(() {
-                    dialogLoading = true;
+                    dialogLoadingNotifier.value = true;
                   });
                 } else if (state is CheckCancleRideByDriverLoadedState) {
                   final data = state.data;
@@ -283,18 +283,24 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       title: AppLocalizations.of(context)!.cancellationWarningString,
                       buttonTitle: AppLocalizations.of(context)!.okString,
                       onTap: () async {
+                        await driverCubit.declineRideByDriver(
+                          bookingId: currentBookingId ?? 1,
+                          reasonId: currentReasonId ?? 1,
+                        );
+                        await driverCubit.getDriverBookings();
                         context.pop();
                       },
                     );
                   } else {
-                    context.pop();
-                    await driverCubit.declineRideByDriver(
+                    await driverCubit.cancelRideByDriver(
                       bookingId: currentBookingId ?? 1,
                       reasonId: currentReasonId ?? 1,
                     );
+                    await driverCubit.getDriverBookings();
+                    context.pop();
                   }
                   setState(() {
-                    dialogLoading = false;
+                    dialogLoadingNotifier.value = false;
                   });
                 } else if (state is RideCancellationReasonsLoadedState) {
                   rideCancellationReasonsResponse = state.data as RideCancellationReasonResponse?;
@@ -306,7 +312,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     loading = false;
                   });
                   showToast(
-                    gravity: ToastGravity.CENTER,
                     context: context,
                     fToast: fToast!,
                     msg: state.errorMessage,
@@ -324,7 +329,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         showReasonDialog(
                           context: context,
                           reasons: rideCancellationReasonsResponse,
-                          loading: dialogLoading,
+                          loadingNotifier: dialogLoadingNotifier,
                           onTap: (final reasonId) async {
                             setState(() {
                               currentReasonId = int.parse(reasonId);
@@ -332,10 +337,10 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                             });
                             customPrint(
                                 "Booking Id: $currentBookingId \n ReasonId: $currentReasonId");
-                            await driverCubit.rejectRide(
-                              bookingId: widget.data?.id ?? 1,
-                              status: 'Reject',
-                            );
+                            // await driverCubit.rejectRide(
+                            //   bookingId: widget.data?.id ?? 1,
+                            //   status: 'Reject',
+                            // );
 
                             await driverCubit.checkCancelRideByDriver(
                               bookingId: widget.data?.id ?? 1,
@@ -450,22 +455,18 @@ class RuralDetailsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Divider(color: primaryColor),
-        ),
         CustomText(text: AppLocalizations.of(context)!.productTypeString),
-        const SizedBox(height: 8),
-        CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
         const SizedBox(height: 4),
+        CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
+        const SizedBox(height: 8),
         CustomText(text: AppLocalizations.of(context)!.packagingTypeString),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
-        const SizedBox(height: 4),
-        CustomText(text: AppLocalizations.of(context)!.quantityString),
         const SizedBox(height: 8),
-        CustomTextMedium(text: requestData?.qty ?? ''),
+        CustomText(text: AppLocalizations.of(context)!.quantityString),
         const SizedBox(height: 4),
+        CustomTextMedium(text: requestData?.qty ?? ''),
+        const SizedBox(height: 8),
       ],
     );
   }

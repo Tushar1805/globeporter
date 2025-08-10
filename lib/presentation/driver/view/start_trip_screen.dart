@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
@@ -44,7 +43,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   final locationCubit = sl<LocationCubit>();
   final driverCubit = sl<DriverCubit>();
-   final authCubit = sl<AuthCubit>();
+  final authCubit = sl<AuthCubit>();
   Position? position;
   final loc.Location _location = loc.Location();
   StreamSubscription<loc.LocationData>? _locationSubscription;
@@ -213,7 +212,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
 
       // Check if driver reached destination
       final distance = Geolocator.distanceBetween(currentLat, currentLng, dropLat, dropLng);
-      if (distance <= 50) {
+      if (distance <= 50 && rideStarted) {
         _locationSubscription?.cancel();
         popUp();
       }
@@ -227,8 +226,9 @@ class _StartTripScreenState extends State<StartTripScreen> {
         borderRadius: 18,
         title: AppLocalizations.of(context)!.reachedDropLocationMsgString,
         buttonTitle: AppLocalizations.of(context)!.okString,
-        onTap: () {
+        onTap: () async {
           context.pop();
+          await driverCubit.generateOtp(bookingId: widget.data?.id ?? 1);
           showOtpDialog(
             context: context,
             borderRadius: 18,
@@ -324,7 +324,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
                       ),
                       SizedBox(width: size.width * 0.05),
                       GestureDetector(
-                         onTap: () {
+                        onTap: () {
                           context.pushNamed(chatScreen, extra: {
                             'senderId': widget.data?.driverId.toString(),
                             'receiverId': widget.data?.userId.toString(),
@@ -361,6 +361,48 @@ class _StartTripScreenState extends State<StartTripScreen> {
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: rideStarted
+          ? null
+          : loading
+              ? Container(
+                  alignment: Alignment.bottomCenter,
+                  width: 56,
+                  height: 56,
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                      strokeWidth: 5,
+                    ),
+                  ),
+                )
+              // show a wide button when not loading and ride not started
+              : CustomElevatedButton(
+                  name: AppLocalizations.of(context)!.startTripString,
+                  borderRadius: 25,
+                  alignment: Alignment.bottomCenter,
+                  onPressed: () async {
+                    setState(() {
+                      loading = true;
+                    });
+                    await driverCubit.generateOtp(bookingId: widget.data?.id ?? 1);
+                    showOtpDialog(
+                      context: context,
+                      borderRadius: 18,
+                      title:
+                          "${AppLocalizations.of(context)!.startString} ${AppLocalizations.of(context)!.rideString}",
+                      onOtpSubmit: (otp) async {
+                        customPrint("OTP entered: $otp");
+                        await driverCubit.verifyRideOtpByDriver(
+                          bookingId: widget.data?.id ?? 1,
+                          otp: otp,
+                        );
+                      },
+                    );
+                  },
+                  nameSize: 20,
+                ),
       body: BlocListener(
         bloc: driverCubit,
         listener: (final context, final state) async {
@@ -371,6 +413,8 @@ class _StartTripScreenState extends State<StartTripScreen> {
           } else if (state is VerifyRideOTPLoadedState) {
             final data = state.data;
             if (data['status_code'] == 200) {
+              // Remove otp box first
+              context.pop();
               showToast(
                 context: context,
                 fToast: fToast!,
@@ -391,115 +435,124 @@ class _StartTripScreenState extends State<StartTripScreen> {
           } else if (state is VerifyEndRideOTPLoadedState) {
             final data = state.data;
             if (data['status_code'] == 200) {
-              await driverCubit.changeRideStatus(
+              // remove otp box first
+              context.pop();
+              await driverCubit.endRideByDriver(
                 bookingId: widget.data?.id ?? 1,
-                status: RideStatus.rideClosed.value,
               );
-              await driverCubit.getDriverBookings();
+            }
+          } else if (state is EndRideLoadedState) {
+            await driverCubit.getDriverBookings();
+            context.pop();
+          } else if (state is ErrorState) {
+            if (state.errorMessage == 'OTP not match') {
+              showToast(
+                context: context,
+                fToast: fToast!,
+                msg: state.errorMessage,
+                duration: 3,
+              );
               setState(() {
                 loading = false;
               });
+            } else {
+              setState(() {
+                rideStarted = false;
+                loading = false;
+              });
+              showToast(
+                context: context,
+                fToast: fToast!,
+                msg: state.errorMessage,
+                duration: 3,
+              );
             }
-          } else if (state is ErrorState) {
-            setState(() {
-              rideStarted = false;
-              loading = false;
-            });
-            showToast(
-              context: context,
-              fToast: fToast!,
-              msg: state.errorMessage,
-              duration: 3,
-            );
           }
         },
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 20,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
+            const SizedBox(
+              height: 4,
+            ),
+            ShowLocationWidget(
+              address: widget.data?.pickupAddress,
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
+            const SizedBox(
+              height: 4,
+            ),
+            ShowLocationWidget(
+              address: widget.data?.dropAddress,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            CustomText(
+              text: AppLocalizations.of(context)!.mapString,
+              fontSize: 18,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Expanded(
+              child: GoogleMap(
+                initialCameraPosition: _kGooglePlex,
+                markers: Set<Marker>.of(_markers ?? []),
+                mapToolbarEnabled: false,
+                myLocationEnabled: true,
+                onMapCreated: (final controller) {
+                  _controller.complete(controller);
+                },
+                polylines: polylines,
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+                  ),
+                },
               ),
-              CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
-              const SizedBox(
-                height: 4,
-              ),
-              ShowLocationWidget(
-                address: widget.data?.pickupAddress,
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
-              const SizedBox(
-                height: 4,
-              ),
-              ShowLocationWidget(
-                address: widget.data?.dropAddress,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              CustomText(
-                text: AppLocalizations.of(context)!.mapString,
-                fontSize: 18,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              SizedBox(
-                height: size.width * 0.8,
-                child: GoogleMap(
-                  initialCameraPosition: _kGooglePlex,
-                  markers: Set<Marker>.of(_markers ?? []),
-                  mapToolbarEnabled: false,
-                  myLocationEnabled: true,
-                  onMapCreated: (final controller) {
-                    _controller.complete(controller);
-                  },
-                  polylines: polylines,
-                  gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                    Factory<OneSequenceGestureRecognizer>(
-                      () => EagerGestureRecognizer(),
-                    ),
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              rideStarted
-                  ? SizedBox.shrink()
-                  : loading
-                      ? SizedBox.shrink()
-                      : CustomElevatedButton(
-                          name: AppLocalizations.of(context)!.startTripString,
-                          borderRadius: 25,
-                          alignment: Alignment.center,
-                          onPressed: () async {
-                            await driverCubit.generateOtp(bookingId: widget.data?.id ?? 1);
-                            showOtpDialog(
-                              context: context,
-                              borderRadius: 18,
-                              title:
-                                  "${AppLocalizations.of(context)!.startString} ${AppLocalizations.of(context)!.rideString}",
-                              onOtpSubmit: (otp) async {
-                                customPrint("OTP entered: $otp");
-                                await driverCubit.verifyRideOtpByDriver(
-                                  bookingId: widget.data?.id ?? 1,
-                                  otp: otp,
-                                );
-                              },
-                            );
-                          },
-                          nameSize: 20,
-                        ),
-              loading ? LoadingWithoutText() : SizedBox.shrink(),
-              const SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
+            ),
+            // const SizedBox(
+            //   height: 24,
+            // ),
+            // rideStarted
+            //     ? SizedBox.shrink()
+            //     : loading
+            //         ? SizedBox.shrink()
+            //         : CustomElevatedButton(
+            //             name: AppLocalizations.of(context)!.startTripString,
+            //             borderRadius: 25,
+            //             alignment: Alignment.center,
+            //             onPressed: () async {
+            //               await driverCubit.generateOtp(bookingId: widget.data?.id ?? 1);
+            //               showOtpDialog(
+            //                 context: context,
+            //                 borderRadius: 18,
+            //                 title:
+            //                     "${AppLocalizations.of(context)!.startString} ${AppLocalizations.of(context)!.rideString}",
+            //                 onOtpSubmit: (otp) async {
+            //                   customPrint("OTP entered: $otp");
+            //                   await driverCubit.verifyRideOtpByDriver(
+            //                     bookingId: widget.data?.id ?? 1,
+            //                     otp: otp,
+            //                   );
+            //                 },
+            //               );
+            //             },
+            //             nameSize: 20,
+            //           ),
+            // loading ? LoadingWithoutText() : SizedBox.shrink(),
+            // const SizedBox(
+            //   height: 20,
+            // ),
+          ],
         ),
       ),
     );

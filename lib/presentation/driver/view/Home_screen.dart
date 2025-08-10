@@ -37,7 +37,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   final locationCubit = sl<LocationCubit>();
   String amount = '500';
   bool loading = false;
-  bool dialogLoading = false;
+  final dialogLoadingNotifier = ValueNotifier(false);
   int? currentBookingId;
   int? currentReasonId;
   pending.Data? currentData;
@@ -266,50 +266,28 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               state is CancleRideByDriverLoadingState ||
               state is DeclineRideByDriverLoadingState) {
             setState(() {
-              dialogLoading = true;
+              dialogLoadingNotifier.value = true;
             });
-          } else if (state is CheckCancleRideByDriverLoadedState) {
+          } else if (state is DeclineRideByDriverLoadedState) {
             final data = state.data;
-            if (data['status'] == false) {
-              //* blocking user here
-              showCustomDialogOneButton(
-                barrierDismissible: false,
-                context: context,
-                borderRadius: 18,
-                title: AppLocalizations.of(context)!.cancelledAccountString,
-                buttonTitle: AppLocalizations.of(context)!.confirmString,
-                onTap: () async {
-                  context.pop();
-                  await authCubit.logout();
-                  context.go(loginScreen, extra: {
-                    'status': 0,
-                  });
-                },
-              );
-            } else if (data['count'] == 3) {
-              showCustomDialogOneButton(
-                barrierDismissible: false,
-                context: context,
-                borderRadius: 18,
-                title: AppLocalizations.of(context)!.cancellationWarningString,
-                buttonTitle: AppLocalizations.of(context)!.okString,
-                onTap: () async {
-                  context.pop();
-                },
-              );
-            } else {
-              context.pop();
-              await driverCubit.declineRideByDriver(
-                bookingId: currentBookingId ?? 1,
-                reasonId: currentReasonId ?? 1,
-              );
-              loadPendingBookings();
-            }
+            context.pop();
+            loadPendingBookings();
+            showToast(
+              context: context,
+              fToast: fToast!,
+              msg: data['message'],
+              duration: 5,
+            );
             setState(() {
-              dialogLoading = false;
+              dialogLoadingNotifier.value = false;
             });
           } else if (state is PendingBookingsLoadedState) {
-            pendingBookingsResponse = state.data as pending.PendingBookingsResponse?;
+            final data = state.data as pending.PendingBookingsResponse?;
+            if (data?.data == null) {
+              pendingBookingsResponse = null;
+            } else {
+              pendingBookingsResponse = data;
+            }
             setState(() {
               loading = false;
             });
@@ -323,7 +301,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             if (data['status_code'] == 200) {
               context.pushNamed(
                 itemDetailsScreen,
-                extra: {'type': currentData?.rideType, 'data': currentData},
+                extra: {
+                  'type': currentData?.rideType?.toLowerCase(),
+                  'data': currentData,
+                },
               );
               loadPendingBookings();
             } else {
@@ -355,7 +336,18 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             );
           }
           return pendingBookingsResponse == null
-              ? SizedBox.shrink()
+              ? Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.hourglass_empty_outlined,
+                      color: primaryColor,
+                      size: 40,
+                    ),
+                    Text('No Bookings')
+                  ],
+                ))
               : Column(
                   children: [
                     Expanded(
@@ -474,7 +466,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                           showReasonDialog(
                                             context: context,
                                             reasons: rideCancellationReasonsResponse,
-                                            loading: dialogLoading,
+                                            loadingNotifier: dialogLoadingNotifier,
                                             onTap: (final reasonId) async {
                                               setState(() {
                                                 currentReasonId = int.parse(reasonId);
@@ -482,14 +474,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                               });
                                               customPrint(
                                                   "Booking Id: $currentBookingId \n ReasonId: $currentReasonId");
-                                              await driverCubit.rejectRide(
-                                                bookingId: trip?.id ?? 1,
-                                                status: 'Reject',
-                                              );
-
-                                              await driverCubit.checkCancelRideByDriver(
-                                                bookingId: trip?.id ?? 1,
-                                                reasonId: int.parse(reasonId),
+                                              await driverCubit.declineRideByDriver(
+                                                bookingId: currentBookingId ?? 1,
+                                                reasonId: currentReasonId ?? 1,
                                               );
                                             },
                                           );

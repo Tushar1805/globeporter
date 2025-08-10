@@ -123,6 +123,8 @@ class DriverCubit extends BaseCubit {
         token: accessToken ?? '',
       );
 
+      customPrint(response?.toJson().toString());
+
       emit(PendingBookingsLoadedState(data: response));
     } catch (e) {
       handleExceptions(e);
@@ -148,6 +150,30 @@ class DriverCubit extends BaseCubit {
       customPrint(response.toString());
 
       emit(ChangeRideStatusLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  //* End ride status
+  Future<void> endRideStatus({
+    required final int bookingId,
+    required final String status,
+  }) async {
+    try {
+      emit(EndRideStatusLoadingState('Changin ride status'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.changeRideStatus(
+        lang: lang ?? 'en',
+        token: accessToken ?? '',
+        bookingId: bookingId,
+        status: status,
+      );
+
+      customPrint(response.toString());
+
+      emit(EndRideStatusLoadedState(data: response));
     } catch (e) {
       handleExceptions(e);
     }
@@ -234,7 +260,11 @@ class DriverCubit extends BaseCubit {
         otp: otp,
       );
 
-      emit(VerifyRideOTPLoadedState(data: response));
+      if (response['status_code'] == 200) {
+        emit(VerifyRideOTPLoadedState(data: response));
+      } else {
+        emit(RideOTPNotMatchState('OTP not match'));
+      }
     } catch (e) {
       handleExceptions(e);
     }
@@ -255,7 +285,13 @@ class DriverCubit extends BaseCubit {
         otp: otp,
       );
 
-      emit(VerifyEndRideOTPLoadedState(data: response));
+      customPrint("End ride verify otp: ${response.toString()}");
+
+      if (response['status_code'] == 200) {
+        emit(VerifyEndRideOTPLoadedState(data: response));
+      } else {
+        emit(RideOTPNotMatchState('OTP not match'));
+      }
     } catch (e) {
       handleExceptions(e);
     }

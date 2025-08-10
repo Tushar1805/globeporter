@@ -226,13 +226,14 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
               title: AppLocalizations.of(context)!.reachedPickupLocationMsgString,
               buttonTitle: AppLocalizations.of(context)!.okString,
               onTap: () async {
+                context.pop();
                 await driverCubit
                     .changeRideStatus(
                   bookingId: widget.data?.id ?? 1,
                   status: RideStatus.arrivedAtPickup.value,
                 )
                     .then((value) {
-                  context.pushNamed(startTripScreen, extra: {
+                  context.pushReplacementNamed(startTripScreen, extra: {
                     'type': widget.type,
                     'data': widget.data,
                   });
@@ -324,6 +325,8 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                       SizedBox(width: size.width * 0.05),
                       GestureDetector(
                         onTap: () {
+                          customPrint(
+                              'SenderId: ${widget.data?.driverId.toString()} \nReceiverId: ${widget.data?.userId.toString()}');
                           context.pushNamed(chatScreen, extra: {
                             'senderId': widget.data?.driverId.toString(),
                             'receiverId': widget.data?.userId.toString(),
@@ -360,63 +363,57 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 20,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
+          const SizedBox(
+            height: 4,
+          ),
+          ShowLocationWidget(
+            address: widget.data?.pickupAddress,
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
+          const SizedBox(
+            height: 4,
+          ),
+          ShowLocationWidget(
+            address: widget.data?.dropAddress,
+          ),
+          const SizedBox(
+            height: 24,
+          ),
+          CustomText(
+            text: AppLocalizations.of(context)!.mapString,
+            fontSize: 18,
+          ),
+          const SizedBox(
+            height: 24,
+          ),
+          Expanded(
+            child: GoogleMap(
+              initialCameraPosition: _kGooglePlex,
+              markers: Set<Marker>.of(_markers ?? []),
+              mapToolbarEnabled: false,
+              myLocationEnabled: true,
+              onMapCreated: (final controller) {
+                _controller.complete(controller);
+              },
+              polylines: polylines,
+              gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                Factory<OneSequenceGestureRecognizer>(
+                  () => EagerGestureRecognizer(),
+                ),
+              },
             ),
-            CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
-            const SizedBox(
-              height: 4,
-            ),
-            ShowLocationWidget(
-              address: widget.data?.pickupAddress,
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
-            const SizedBox(
-              height: 4,
-            ),
-            ShowLocationWidget(
-              address: widget.data?.dropAddress,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            CustomText(
-              text: AppLocalizations.of(context)!.mapString,
-              fontSize: 18,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            SizedBox(
-              height: size.width * 0.8,
-              child: GoogleMap(
-                initialCameraPosition: _kGooglePlex,
-                markers: Set<Marker>.of(_markers ?? []),
-                mapToolbarEnabled: false,
-                myLocationEnabled: true,
-                onMapCreated: (final controller) {
-                  _controller.complete(controller);
-                },
-                polylines: polylines,
-                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                  Factory<OneSequenceGestureRecognizer>(
-                    () => EagerGestureRecognizer(),
-                  ),
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

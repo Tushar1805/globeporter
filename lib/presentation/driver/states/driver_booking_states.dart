@@ -44,6 +44,14 @@ class ChangeRideStatusLoadedState extends LoadedState {
   ChangeRideStatusLoadedState({required super.data});
 }
 
+class EndRideStatusLoadingState extends LoadingState {
+  EndRideStatusLoadingState(super.loadingMessage);
+}
+
+class EndRideStatusLoadedState extends LoadedState {
+  EndRideStatusLoadedState({required super.data});
+}
+
 class RideCancellationReasonsLoadingState extends LoadingState {
   RideCancellationReasonsLoadingState(super.loadingMessage);
 }
@@ -83,6 +91,7 @@ class GenerateOTPLoadingState extends LoadingState {
 class GenerateOTPLoadedState extends LoadedState {
   GenerateOTPLoadedState({required super.data});
 }
+
 class VerifyRideOTPLoadingState extends LoadingState {
   VerifyRideOTPLoadingState(super.loadingMessage);
 }
@@ -97,6 +106,10 @@ class VerifyEndRideOTPLoadingState extends LoadingState {
 
 class VerifyEndRideOTPLoadedState extends LoadedState {
   VerifyEndRideOTPLoadedState({required super.data});
+}
+
+class RideOTPNotMatchState extends SuccessState {
+  RideOTPNotMatchState(super.message);
 }
 
 class EndRideLoadingState extends LoadingState {

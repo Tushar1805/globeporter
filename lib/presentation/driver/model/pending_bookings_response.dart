@@ -58,7 +58,7 @@ class Data {
   final double? distance;
   final UserData? userData;
   final VehicleTypeData? vehicleTypeData;
-  final dynamic packageTypeData;
+  final PackageTypeData? packageTypeData;
   final List<BookingRideItem>? bookingRideItem;
 
   Data({
@@ -131,7 +131,9 @@ class Data {
         vehicleTypeData = (json['vehicle_type_data'] as Map<String, dynamic>?) != null
             ? VehicleTypeData.fromJson(json['vehicle_type_data'] as Map<String, dynamic>)
             : null,
-        packageTypeData = json['package_type_data'],
+        packageTypeData = (json['package_type_data'] as Map<String, dynamic>?) != null
+            ? PackageTypeData.fromJson(json['package_type_data'] as Map<String, dynamic>)
+            : null,
         bookingRideItem = (json['booking_ride_item'] as List?)
             ?.map((dynamic e) => BookingRideItem.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -167,7 +169,7 @@ class Data {
         'distance': distance,
         'user_data': userData?.toJson(),
         'vehicle_type_data': vehicleTypeData?.toJson(),
-        'package_type_data': packageTypeData,
+        'package_type_data': packageTypeData?.toJson(),
         'booking_ride_item': bookingRideItem?.map((final e) => e.toJson()).toList()
       };
 }
@@ -410,5 +412,48 @@ class BookingRideItem {
         'created_at': createdAt,
         'updated_at': updatedAt,
         'item_image_url': itemImageUrl
+      };
+}
+
+class PackageTypeData {
+  final int? id;
+  final String? nameEn;
+  final String? nameMr;
+  final String? nameHi;
+  final int? status;
+  final dynamic deletedAt;
+  final String? createdAt;
+  final String? updatedAt;
+
+  PackageTypeData({
+    this.id,
+    this.nameEn,
+    this.nameMr,
+    this.nameHi,
+    this.status,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  PackageTypeData.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int?,
+        nameEn = json['name_en'] as String?,
+        nameMr = json['name_mr'] as String?,
+        nameHi = json['name_hi'] as String?,
+        status = json['status'] as int?,
+        deletedAt = json['deleted_at'],
+        createdAt = json['created_at'] as String?,
+        updatedAt = json['updated_at'] as String?;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name_en': nameEn,
+        'name_mr': nameMr,
+        'name_hi': nameHi,
+        'status': status,
+        'deleted_at': deletedAt,
+        'created_at': createdAt,
+        'updated_at': updatedAt
       };
 }

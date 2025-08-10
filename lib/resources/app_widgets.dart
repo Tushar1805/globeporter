@@ -379,7 +379,7 @@ void showReasonDialog({
   required final BuildContext context,
   required final Future Function(String id) onTap,
   required final RideCancellationReasonResponse? reasons,
-  final bool? loading,
+  required final ValueNotifier<bool> loadingNotifier,
 }) {
   String? selectedReason;
 
@@ -444,16 +444,21 @@ void showReasonDialog({
                         ),
                       ),
                       const SizedBox(height: 20),
-                      (loading ?? false)
-                          ? CircularProgressIndicator(color: whiteColor)
-                          : CustomElevatedButton(
-                              name: AppLocalizations.of(context)!.submitString,
-                              borderRadius: 25,
-                              alignment: Alignment.center,
-                              onPressed: () async => await onTap(selectedReason ?? ''),
-                              backgroundColor: whiteColor,
-                              nameColor: primaryColor,
-                            ),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: loadingNotifier,
+                        builder: (context, isLoading, _) {
+                          return isLoading
+                              ? CircularProgressIndicator(color: whiteColor)
+                              : CustomElevatedButton(
+                                  name: AppLocalizations.of(context)!.submitString,
+                                  borderRadius: 25,
+                                  alignment: Alignment.center,
+                                  onPressed: () async => await onTap(selectedReason ?? ''),
+                                  backgroundColor: whiteColor,
+                                  nameColor: primaryColor,
+                                );
+                        },
+                      ),
                     ],
                   );
                 },
@@ -707,7 +712,7 @@ void showOtpDialog({
                             "${AppLocalizations.of(context)!.pleaseEnterString} ${AppLocalizations.of(context)!.validString.toLowerCase()}  ${AppLocalizations.of(context)!.otpString.toUpperCase()}");
                     return;
                   }
-                  context.pop(); // Close dialog
+                  // context.pop(); // Close dialog
                   onOtpSubmit(otp);
                 },
                 backgroundColor: whiteColor,

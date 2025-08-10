@@ -15,6 +15,7 @@ extension StringExtension on String {
 }
 
 enum RideStatus {
+  ongoing,
   accept,
   onTheWay,
   arrivedAtPickup,
@@ -27,10 +28,12 @@ enum RideStatus {
 extension RideStatusExtension on RideStatus {
   String get value {
     switch (this) {
+      case RideStatus.ongoing:
+        return 'Ongoing';
       case RideStatus.accept:
         return 'Accept';
       case RideStatus.onTheWay:
-        return 'Ongoing';
+        return 'On The Way';
       case RideStatus.arrivedAtPickup:
         return 'Arrived At Pickup Point';
       case RideStatus.rideStarted:
@@ -40,7 +43,7 @@ extension RideStatusExtension on RideStatus {
       case RideStatus.driverNotFound:
         return 'Driver Not Found';
       case RideStatus.rideClosed:
-        return 'Ride Closed';
+        return 'Driver Not Found Ride Closed';
     }
   }
 }
