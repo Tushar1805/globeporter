@@ -13,6 +13,7 @@ import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rxdart/rxdart.dart';
 
 class TrackDriverScreen extends StatefulWidget {
   const TrackDriverScreen({super.key, required this.data, required this.type});
@@ -109,7 +110,8 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
 
     final dbRef = FirebaseDatabase.instance.ref("locations/$driverId");
 
-    _driverLocationSub = dbRef.onValue.listen((event) async {
+    _driverLocationSub =
+        dbRef.onValue.throttleTime(const Duration(seconds: 5)).listen((event) async {
       if (!event.snapshot.exists) return;
 
       final data = event.snapshot.value as Map<dynamic, dynamic>?;

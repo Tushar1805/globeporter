@@ -212,7 +212,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
 
       // Check if driver reached destination
       final distance = Geolocator.distanceBetween(currentLat, currentLng, dropLat, dropLng);
-      if (distance <= 50 && rideStarted) {
+      if (distance <= 70 && rideStarted) {
         _locationSubscription?.cancel();
         popUp();
       }

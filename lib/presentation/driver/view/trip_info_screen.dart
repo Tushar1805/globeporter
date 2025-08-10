@@ -209,7 +209,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
 
       // Check if driver reached destination
       final distance = Geolocator.distanceBetween(currentLat, currentLng, pickupLat, pickupLng);
-      if (distance <= 50) {
+      if (distance <= 70) {
         _locationSubscription?.cancel();
         popUp();
       }
