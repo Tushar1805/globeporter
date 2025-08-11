@@ -319,12 +319,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             setState(() {
               loading = false;
             });
-            showToast(
-              gravity: ToastGravity.CENTER,
-              context: context,
-              fToast: fToast!,
+            Fluttertoast.showToast(
               msg: state.errorMessage,
-              duration: 5,
             );
           }
         },
@@ -352,7 +348,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   children: [
                     Expanded(
                       child: ListView.builder(
-                        itemCount: pendingBookingsResponse?.data?.length,
+                        itemCount: pendingBookingsResponse?.data?.length ?? 0,
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         itemBuilder: (final context, final index) {
                           final trip = pendingBookingsResponse?.data?[index];

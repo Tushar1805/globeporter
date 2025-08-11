@@ -68,7 +68,7 @@ class MyRequestDetailsScreen extends StatelessWidget {
               SizedBox(
                 width: size.width * 0.1,
               ),
-              requestData?.status == 1
+              requestData?.status == 1 && requestData?.isBookingActive == 1
                   ? GestureDetector(
                       onTap: () {
                         makePhoneCall(requestData?.receiverContactNo ?? '', context);
@@ -83,7 +83,7 @@ class MyRequestDetailsScreen extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              requestData?.status == 1
+              requestData?.status == 1 && requestData?.isBookingActive == 1
                   ? GestureDetector(
                       onTap: () {
                         context.pushNamed(chatScreen, extra: {
@@ -149,8 +149,7 @@ class MyRequestDetailsScreen extends StatelessWidget {
             if (type == 'urban') UrbanItemsSection(requestData: requestData, size: size),
             if (type == 'rural') RuralDetailsSection(requestData: requestData, size: size),
             const SizedBox(height: 20),
-            requestData?.status == 1
-                // && requestData?.isBookingActive == 1
+            requestData?.status == 1 && requestData?.isBookingActive == 1
                 ? CustomElevatedButton(
                     name:
                         "${AppLocalizations.of(context)!.trackString} ${AppLocalizations.of(context)!.driverString}",

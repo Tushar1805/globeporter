@@ -326,7 +326,9 @@ class _StartTripScreenState extends State<StartTripScreen> {
                       GestureDetector(
                         onTap: () {
                           context.pushNamed(chatScreen, extra: {
-                            'senderId': widget.data?.driverId.toString(),
+                            'senderId': widget.data?.driverId != null
+                                ? widget.data?.driverId.toString()
+                                : authCubit.userDetails?.data?.id.toString(),
                             'receiverId': widget.data?.userId.toString(),
                             'senderName': authCubit.userDetails?.data?.name,
                             'type': 'customer',

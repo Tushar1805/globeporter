@@ -325,10 +325,10 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                       SizedBox(width: size.width * 0.05),
                       GestureDetector(
                         onTap: () {
-                          customPrint(
-                              'SenderId: ${widget.data?.driverId.toString()} \nReceiverId: ${widget.data?.userId.toString()}');
                           context.pushNamed(chatScreen, extra: {
-                            'senderId': widget.data?.driverId.toString(),
+                            'senderId': widget.data?.driverId != null
+                                ? widget.data?.driverId.toString()
+                                : authCubit.userDetails?.data?.id.toString(),
                             'receiverId': widget.data?.userId.toString(),
                             'senderName': authCubit.userDetails?.data?.name,
                             'type': 'customer',

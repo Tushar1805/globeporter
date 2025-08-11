@@ -52,7 +52,8 @@ class _ChatScreenState extends State<ChatScreen> {
     _listenToMessages();
   }
 
-  String getConversationId(String id1, String id2) {
+  String getConversationId(String? id1, String? id2) {
+    if (id1 == null || id2 == null || id1.trim().isEmpty || id2.trim().isEmpty) return '';
     final ids = [id1, id2];
     ids.sort(); // ensures same order for both users
     return "${ids[0]}_${ids[1]}";
@@ -222,6 +223,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     final conversationId = getConversationId(widget.senderId, widget.receiverId);
+    if (conversationId == '') return;
 
     // Reference to the message list for this conversation
     final messageRef = _chatRef.push();

@@ -90,7 +90,12 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
               loading = true;
             });
           } else if (state is DriverBookingsLoadedState) {
-            driverBookingsResponse = state.data as PendingBookingsResponse?;
+            final data = state.data as PendingBookingsResponse?;
+            if (data?.data == null) {
+              driverBookingsResponse = null;
+            } else {
+              driverBookingsResponse = data;
+            }
             setState(() {
               loading = false;
             });
@@ -119,7 +124,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                   children: [
                     Expanded(
                       child: ListView.builder(
-                        itemCount: driverBookingsResponse?.data?.length,
+                        itemCount: driverBookingsResponse?.data?.length ?? 0,
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         itemBuilder: (final context, final index) {
                           final trip = driverBookingsResponse?.data?[index];

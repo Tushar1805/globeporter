@@ -28,17 +28,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
   StreamSubscription<DatabaseEvent>? _chatListSubscription;
   bool _isDisposed = false;
 
+  void loadUserDetails() async {
+    await authCubit.getUserDetails(force: true);
+  }
+
   @override
   void initState() {
-    super.initState();
+    loadUserDetails();
     _initializeChatList();
+    super.initState();
   }
 
   void _initializeChatList() {
-    final currentUserId = authCubit.userDetails?.data?.id;
-
-    if (currentUserId == null) {
-      debugPrint('Current user ID is null, cannot initialize chat list');
+    final currentUserId = authCubit.userDetails?.data?.id?.toString();
+    if (currentUserId == null || currentUserId.trim().isEmpty) {
+      debugPrint('Current user ID is null/empty, cannot initialize chat list');
       return;
     }
 

@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
@@ -21,6 +24,9 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart' as pending;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:path/path.dart' as path;
+import 'package:http/http.dart' as http;
 
 class ItemDetailsScreen extends StatefulWidget {
   const ItemDetailsScreen({super.key, required this.type, required this.data});
@@ -153,7 +159,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   GestureDetector(
                     onTap: () {
                       context.pushNamed(chatScreen, extra: {
-                        'senderId': widget.data?.driverId.toString(),
+                        'senderId': widget.data?.driverId != null
+                            ? widget.data?.driverId.toString()
+                            : authCubit.userDetails?.data?.id.toString(),
                         'receiverId': widget.data?.userId.toString(),
                         'senderName': authCubit.userDetails?.data?.name,
                         'type': 'customer',
@@ -204,7 +212,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            if (widget.type == 'urban') UrbanDetailsSection(requestData: widget.data, size: size),
+            if (widget.type == 'urban') UrbanItemsSection(requestData: widget.data, size: size),
             if (widget.type == 'rural') RuralDetailsSection(requestData: widget.data, size: size),
             const SizedBox(height: 20),
             SizedBox(
@@ -362,84 +370,185 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   }
 }
 
-class UrbanDetailsSection extends StatelessWidget {
-  const UrbanDetailsSection({super.key, required this.requestData, required this.size});
+// class UrbanDetailsSection extends StatelessWidget {
+//   const UrbanDetailsSection({super.key, required this.requestData, required this.size});
+//   final pending.Data? requestData;
+//   final Size size;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         CustomText(
+//           text: AppLocalizations.of(context)!.itemDetailsString,
+//           fontSize: 16,
+//         ),
+//         const SizedBox(height: 8),
+//         SizedBox(
+//           height: size.width * 0.55,
+//           child: ListView.separated(
+//             padding: const EdgeInsets.symmetric(horizontal: 20),
+//             scrollDirection: Axis.horizontal,
+//             itemCount: requestData?.bookingRideItem?.length ?? 0,
+//             separatorBuilder: (_, __) => const SizedBox(width: 12),
+//             itemBuilder: (context, index) {
+//               final item = requestData!.bookingRideItem![index];
+//               return Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Container(
+//                     width: size.width * 0.4,
+//                     height: size.width * 0.5,
+//                     decoration: BoxDecoration(
+//                       color: secondaryColor,
+//                       borderRadius: BorderRadius.circular(10),
+//                       image: item.itemImageUrl != null
+//                           ? DecorationImage(
+//                               image: NetworkImage(item.itemImageUrl!),
+//                               fit: BoxFit.cover,
+//                             )
+//                           : null,
+//                     ),
+//                     child: item.itemImageUrl == null
+//                         ? Center(
+//                             child: Icon(Icons.image, size: 40, color: Colors.grey),
+//                           )
+//                         : null,
+//                   ),
+//                 ],
+//               );
+//             },
+//           ),
+//         ),
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 0),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: List.generate(
+//               requestData?.bookingRideItem?.length ?? 0,
+//               (index) {
+//                 final item = requestData!.bookingRideItem![index];
+//                 return Padding(
+//                   padding: const EdgeInsets.only(bottom: 12),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       CustomText(
+//                           text: "${AppLocalizations.of(context)!.descriptionString} ${index + 1}"),
+//                       const SizedBox(height: 4),
+//                       CustomTextMedium(
+//                         text: item.description ?? 'No description provided.',
+//                       ),
+//                     ],
+//                   ),
+//                 );
+//               },
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
+
+class UrbanItemsSection extends StatelessWidget {
+  const UrbanItemsSection({
+    super.key,
+    required this.requestData,
+    required this.size,
+  });
+
   final pending.Data? requestData;
   final Size size;
 
+  // Cache map to store futures
+  static final Map<String, Future<File>> _fileCache = {};
+
+  Future<File> urlToFile(String imageUrl) async {
+    final Directory tempDir = await path_provider.getTemporaryDirectory();
+    final String fileName = path.basename(imageUrl);
+    final File file = File('${tempDir.path}/$fileName');
+
+    if (!await file.exists()) {
+      final http.Response response = await http.get(Uri.parse(imageUrl));
+      await file.writeAsBytes(response.bodyBytes);
+    }
+
+    return file;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final items = requestData?.bookingRideItem ?? [];
+
+    if (items.isEmpty) return const SizedBox.shrink();
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: AppLocalizations.of(context)!.itemDetailsString,
-          fontSize: 16,
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: size.width * 0.55,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            scrollDirection: Axis.horizontal,
-            itemCount: requestData?.bookingRideItem?.length ?? 0,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
-            itemBuilder: (context, index) {
-              final item = requestData!.bookingRideItem![index];
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: size.width * 0.4,
-                    height: size.width * 0.5,
-                    decoration: BoxDecoration(
-                      color: secondaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                      image: item.itemImageUrl != null
-                          ? DecorationImage(
-                              image: NetworkImage(item.itemImageUrl!),
-                              fit: BoxFit.cover,
-                            )
-                          : null,
-                    ),
-                    child: item.itemImageUrl == null
-                        ? Center(
-                            child: Icon(Icons.image, size: 40, color: Colors.grey),
-                          )
-                        : null,
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-              requestData?.bookingRideItem?.length ?? 0,
-              (index) {
-                final item = requestData!.bookingRideItem![index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                          text: "${AppLocalizations.of(context)!.descriptionString} ${index + 1}"),
-                      const SizedBox(height: 4),
-                      CustomTextMedium(
-                        text: item.description ?? 'No description provided.',
-                      ),
-                    ],
-                  ),
-                );
-              },
+      children: List.generate(
+        items.length,
+        (index) {
+          final bookingItem = items[index];
+          final imageUrl = bookingItem.itemImageUrl;
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomText(
+                  text: '${AppLocalizations.of(context)!.itemDetailsString}: ${index + 1}',
+                ),
+                const SizedBox(height: 10),
+                imageUrl?.isNotEmpty == true
+                    ? FutureBuilder<File>(
+                        future: _fileCache.putIfAbsent(imageUrl!, () => urlToFile(imageUrl)),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError || !snapshot.hasData) {
+                            return const Icon(Icons.broken_image);
+                          }
+
+                          final File file = snapshot.data!;
+
+                          return GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                fullImagePreviewScreen,
+                                extra: {'imageFile': file},
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: secondaryColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.file(
+                                  file,
+                                  height: size.width * 0.6,
+                                  width: double.infinity,
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : const Icon(Icons.image_not_supported),
+                const SizedBox(height: 20),
+                CustomText(text: AppLocalizations.of(context)!.descriptionString),
+                const SizedBox(height: 8),
+                CustomTextMedium(text: bookingItem.description ?? '-'),
+                const CustomDivider(),
+              ],
             ),
-          ),
-        ),
-      ],
+          );
+        },
+      ),
     );
   }
 }

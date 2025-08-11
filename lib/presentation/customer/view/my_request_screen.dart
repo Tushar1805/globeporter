@@ -204,9 +204,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                     ),
                     CustomRichText(
                       title: '${AppLocalizations.of(context)!.statusString}: ',
-                      value: request?.status == 1
-                          ? AppLocalizations.of(context)!.confirmString
-                          : AppLocalizations.of(context)!.pendingString,
+                      value: request?.bookingStatus ?? AppLocalizations.of(context)!.pendingString,
                     ),
                     const SizedBox(
                       height: 8,
