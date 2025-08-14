@@ -29,6 +29,14 @@ class PackagingTypeLoadedState extends LoadedState {
   PackagingTypeLoadedState({required super.data});
 }
 
+class QuantityLoadingState extends LoadingState {
+  QuantityLoadingState(super.loadingMessage);
+}
+
+class QuantityLoadedState extends LoadedState {
+  QuantityLoadedState({required super.data});
+}
+
 class VehicleTypeLoadingState extends LoadingState {
   VehicleTypeLoadingState(super.loadingMessage);
 }

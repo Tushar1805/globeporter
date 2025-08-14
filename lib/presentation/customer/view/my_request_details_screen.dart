@@ -145,7 +145,6 @@ class MyRequestDetailsScreen extends StatelessWidget {
                     ),
               ),
             ),
-            const SizedBox(height: 20),
             if (type == 'urban') UrbanItemsSection(requestData: requestData, size: size),
             if (type == 'rural') RuralDetailsSection(requestData: requestData, size: size),
             const SizedBox(height: 20),
@@ -280,26 +279,38 @@ class RuralDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final items = requestData?.bookingRideUserPackage ?? [];
+
+    if (items.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Divider(color: primaryColor),
-        ),
-        CustomText(text: AppLocalizations.of(context)!.productTypeString),
-        const SizedBox(height: 8),
-        CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
-        const CustomDivider(),
-        CustomText(text: AppLocalizations.of(context)!.packagingTypeString),
-        const SizedBox(height: 8),
-        CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
-        const CustomDivider(),
-        CustomText(text: AppLocalizations.of(context)!.quantityString),
-        const SizedBox(height: 8),
-        CustomTextMedium(text: requestData?.qty ?? ''),
-        const CustomDivider(),
-      ],
+      children: List.generate(
+        items.length,
+        (index) {
+          final packageItem = items[index];
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CustomDivider(),
+                CustomText(
+                  text: '${AppLocalizations.of(context)!.itemDetailsString}: ${index + 1}',
+                ),
+                const SizedBox(height: 20),
+                CustomText(text: AppLocalizations.of(context)!.packagingTypeString),
+                const SizedBox(height: 8),
+                CustomTextMedium(text: packageItem.packageTypeData?.name ?? ''),
+                const SizedBox(height: 10),
+                CustomText(text: AppLocalizations.of(context)!.quantityString),
+                const SizedBox(height: 8),
+                CustomTextMedium(text: packageItem.qtyData?.qty ?? '-'),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

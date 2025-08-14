@@ -26,6 +26,7 @@ import 'package:globeporter/presentation/authentication/model/vehicle_type_respo
     as vehicle;
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/model/packaging_type_reponse.dart' as package;
+import 'package:globeporter/presentation/customer/model/quantify_response_model.dart' as quantity;
 import 'package:globeporter/presentation/customer/states/customer_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -53,14 +54,12 @@ class ItemEntry {
 /// New class to represent multiple packaging entries for rural section
 class RuralPackageEntry {
   package.Data? selectedPackageType;
-  String? selectedQuantity;
-  List<String>? quantityOptions;
+  quantity.Data? selectedQuantity;
   bool packageLocked;
 
   RuralPackageEntry({
     this.selectedPackageType,
     this.selectedQuantity,
-    this.quantityOptions,
     this.packageLocked = false,
   });
 }
@@ -80,7 +79,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   TextEditingController receiverNameController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
   final TextEditingController packagingTypeController = TextEditingController();
-  final TextEditingController quantityController = TextEditingController();
   late final List<Placemark> placemarks;
   List<ItemEntry> itemEntries = [];
 
@@ -93,9 +91,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   SearchPlacesResponse? searchPlacesResponse;
   RouteDirectionsResponse? routeDirectionsResponse;
+  quantity.QuantityResponseModel? quantityResponseModel;
   package.PackagingTypeResponse? packagingTypeResponse;
   vehicle.VehicleTypeResponseModel? vehicleTypeResponse;
-  package.Data? selectedPackageType;
   vehicle.Data? selectedVehicleType;
   bool loading = false;
   LatLng? _currentPosition;
@@ -166,12 +164,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     // });
   }
 
-  void getPackagingType() async {
+  void getAllDropdownValues() async {
     await customerCubit.getPackagingType();
-  }
-
-  void getVehicleType() async {
     await customerCubit.getVehicleType();
+    await customerCubit.getQuantity();
   }
 
   @override
@@ -181,8 +177,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     receiverNameController = TextEditingController(text: authCubit.userDetails?.data?.name);
     contactNumberController = TextEditingController(text: authCubit.userDetails?.data?.mobile);
     getCurrentLocation();
-    getPackagingType();
-    getVehicleType();
+    getAllDropdownValues();
     addNewItem();
     addNewRuralPackage();
     _fetchAndShowNearbyUsers();
@@ -305,7 +300,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     destinationLocationController.dispose();
     receiverNameController.dispose();
     contactNumberController.dispose();
-    quantityController.dispose();
     for (var item in itemEntries) {
       item.descriptionController.dispose();
     }
@@ -377,6 +371,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 setState(() {});
               } else if (state is PackagingTypeLoadedState) {
                 packagingTypeResponse = state.data as package.PackagingTypeResponse?;
+                setState(() {});
+              } else if (state is QuantityLoadedState) {
+                quantityResponseModel = state.data as quantity.QuantityResponseModel?;
                 setState(() {});
               } else if (state is CustomerRequestLoadingState) {
                 setState(() {
@@ -624,7 +621,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             onChanged: rItem.packageLocked
                                                 ? null
                                                 : (val) {
-                                                    // When user selects a package type -> lock it and load quantities
                                                     setState(() {
                                                       rItem.selectedPackageType = val;
                                                       rItem.packageLocked =
@@ -643,7 +639,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: DropdownButtonFormField2<String>(
+                                    child: DropdownButtonFormField2<quantity.Data>(
                                       value: rItem.selectedQuantity,
                                       isExpanded: true,
                                       iconStyleData: IconStyleData(
@@ -672,12 +668,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           radius: const Radius.circular(4),
                                         ),
                                       ),
-                                      items: (rItem.quantityOptions ?? [])
-                                          .map((q) => DropdownMenuItem<String>(
-                                                value: q,
-                                                child: Text(q),
-                                              ))
-                                          .toList(),
+                                      items:
+                                          quantityResponseModel?.data?.map((quantity.Data? item) {
+                                        return DropdownMenuItem<quantity.Data>(
+                                          value: item,
+                                          child: Text(
+                                            item?.qty ?? '',
+                                            style: Theme.of(context).textTheme.bodyMedium,
+                                          ),
+                                        );
+                                      }).toList(),
                                       onChanged: (val) {
                                         setState(() {
                                           rItem.selectedQuantity = val;
@@ -1044,15 +1044,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               }
                             } else {
                               //* Rural validation
-                              if (quantityController.text.isEmpty) {
-                                showToast(
-                                  context: context,
-                                  fToast: fToast!,
-                                  msg:
-                                      '$enterMsg ${AppLocalizations.of(context)!.validString} ${AppLocalizations.of(context)!.quantityString.toLowerCase()}',
-                                  duration: 3,
-                                );
-                              } else if (selectedPackageType == null) {
+                              if (ruralPackageEntries.isEmpty) {
                                 showToast(
                                   context: context,
                                   fToast: fToast!,
@@ -1060,13 +1052,30 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       '$enterMsg ${AppLocalizations.of(context)!.validString} ${AppLocalizations.of(context)!.packagingTypeString.toLowerCase()}',
                                   duration: 3,
                                 );
+                              } else if (ruralPackageEntries.any((entry) =>
+                                  entry.selectedPackageType == null ||
+                                  entry.selectedQuantity == null)) {
+                                showToast(
+                                  context: context,
+                                  fToast: fToast!,
+                                  msg:
+                                      '$enterMsg ${AppLocalizations.of(context)!.validString} ${AppLocalizations.of(context)!.packagingTypeString.toLowerCase()} ${AppLocalizations.of(context)!.dataString}',
+                                  duration: 3,
+                                );
                               } else {
+                                List<Map<String, dynamic>> packageTypes =
+                                    ruralPackageEntries.map((entry) {
+                                  return {
+                                    "package_type_id":
+                                        entry.selectedPackageType?.id?.toString() ?? '0',
+                                    "qty": entry.selectedQuantity?.id?.toString() ?? '0',
+                                  };
+                                }).toList();
                                 await customerCubit.createRuralRequest(
                                   vehicleTypeId: selectedVehicleType?.id ?? 3,
-                                  packageTypeId: selectedPackageType?.id ?? 1,
+                                  packageData: packageTypes,
                                   receiverName: receiverNameController.text,
                                   receiverContact: contactNumberController.text,
-                                  quantiry: quantityController.text,
                                   pickupAddress: currentLocationController.text,
                                   dropAddress: destinationLocationController.text,
                                   pickupLat: pickupPosition?.latitude.toString() ?? '',

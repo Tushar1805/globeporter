@@ -502,4 +502,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSettingString => 'Open Settings';
+
+  @override
+  String get dataString => 'data';
 }

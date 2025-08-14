@@ -499,4 +499,7 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get openSettingString => 'सेटिंग्ज उघडा';
+
+  @override
+  String get dataString => 'डेटा';
 }

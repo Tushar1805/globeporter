@@ -1059,6 +1059,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get openSettingString;
+
+  /// No description provided for @dataString.
+  ///
+  /// In en, this message translates to:
+  /// **'data'**
+  String get dataString;
 }
 
 class _AppLocalizationsDelegate

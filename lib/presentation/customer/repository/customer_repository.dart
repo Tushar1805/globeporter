@@ -8,6 +8,7 @@ import 'package:datasource/network/api_response_type.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
 import 'package:globeporter/presentation/customer/model/customer_ride_response.dart';
 import 'package:globeporter/presentation/customer/model/packaging_type_reponse.dart';
+import 'package:globeporter/presentation/customer/model/quantify_response_model.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
 import 'package:globeporter/resources/app_api.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +27,22 @@ class CustomerRepository extends BaseRepository {
     );
 
     return PackagingTypeResponse.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<QuantityResponseModel?> getQuantity({
+    required final String lang,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getQuantityUrl,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return QuantityResponseModel.fromJson(
       responseData as Map<String, dynamic>?,
     );
   }
@@ -67,11 +84,10 @@ class CustomerRepository extends BaseRepository {
   Future<Map<String, dynamic>> createRuralRequest({
     required final String lang,
     required final String accessToken,
+    required final List<Map<String, dynamic>> packageData,
     required final int vehicleTypeId,
-    required final int packageTypeId,
     required final String receiverName,
     required final String receiverContact,
-    required final String quantiry,
     required final String pickupAddress,
     required final String dropAddress,
     required final String pickupLat,
@@ -86,16 +102,15 @@ class CustomerRepository extends BaseRepository {
       requestModel: {
         "lang": lang,
         "vehicle_type_id": vehicleTypeId,
-        "package_type_id": packageTypeId,
         "receiver_name": receiverName,
         "receiver_contact_no": receiverContact,
-        "qty": quantiry,
         "pickup_address": pickupAddress,
         "pickup_lat": pickupLat,
         "pickup_lng": pickupLng,
         "drop_address": dropAddress,
         "drop_lat": dropLat,
-        "drop_lng": dropLng
+        "drop_lng": dropLng,
+        "package_types": packageData,
       },
     );
 

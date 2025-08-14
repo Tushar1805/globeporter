@@ -48,6 +48,7 @@ const String createUrbanRequestUrl = '$_baseUrl/add_urban_booking';
 const String createRuralRequestUrl = '$_baseUrl/add_rural_booking';
 const String getCustomerBookingsUrl = '$_baseUrl/get_customer_bookings';
 const String getPackagingTypeUrl = '$_baseUrl/get_package_type';
+const String getQuantityUrl = '$_baseUrl/get_qty_master';
 
 //* Settings
 

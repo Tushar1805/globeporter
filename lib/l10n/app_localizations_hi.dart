@@ -500,4 +500,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get openSettingString => 'सेटिंग्स खोलें';
+
+  @override
+  String get dataString => 'डेटा';
 }

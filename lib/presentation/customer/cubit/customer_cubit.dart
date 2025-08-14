@@ -24,6 +24,18 @@ class CustomerCubit extends BaseCubit {
     }
   }
 
+  Future<void> getQuantity() async {
+    try {
+      emit(QuantityLoadingState('Loading Quantities'));
+      final lang = await storage.readValue(languageCodeKey);
+      final response = await _customerRepository.getQuantity(lang: lang ?? 'en');
+
+      emit(QuantityLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
   Future<void> getVehicleType() async {
     try {
       emit(VehicleTypeLoadingState('Loading vehicle types'));
@@ -55,10 +67,9 @@ class CustomerCubit extends BaseCubit {
 
   Future<void> createRuralRequest({
     required final int vehicleTypeId,
-    required final int packageTypeId,
+    required final List<Map<String, dynamic>> packageData,
     required final String receiverName,
     required final String receiverContact,
-    required final String quantiry,
     required final String pickupAddress,
     required final String dropAddress,
     required final String pickupLat,
@@ -74,11 +85,10 @@ class CustomerCubit extends BaseCubit {
       final response = await _customerRepository.createRuralRequest(
         lang: lang ?? 'en',
         accessToken: accessToken ?? '',
+        packageData: packageData,
         vehicleTypeId: vehicleTypeId,
-        packageTypeId: packageTypeId,
         receiverName: receiverName,
         receiverContact: receiverContact,
-        quantiry: quantiry,
         pickupAddress: pickupAddress,
         dropAddress: dropAddress,
         pickupLat: pickupLat,
