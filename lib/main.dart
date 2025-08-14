@@ -19,7 +19,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'routes/app_router.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 
-
 final NotificationServices notificationServices = NotificationServices();
 
 @pragma('vm:entry-point')
@@ -36,7 +35,7 @@ Future<void> main() async {
   setupServiceLocator();
   await ensurePermissions();
   await initializeBackgroundService();
-  await FlutterBackgroundService().startService(); 
+  await FlutterBackgroundService().startService();
   runApp(
     DevicePreview(
       enabled: false,

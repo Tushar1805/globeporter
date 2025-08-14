@@ -60,8 +60,8 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
             });
           } else if (state is CustomerRideBookingsLoadedState) {
             customerRideBookingResponse = state.data as CustomerRideBookingResponse?;
-            if (customerRideBookingResponse != null ||
-                (customerRideBookingResponse?.data?.isEmpty ?? false)) {
+            if (customerRideBookingResponse != null &&
+                (customerRideBookingResponse?.data?.isNotEmpty ?? false)) {
               setState(() {
                 show = true;
               });
