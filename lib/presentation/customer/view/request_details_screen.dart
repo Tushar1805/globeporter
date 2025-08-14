@@ -50,6 +50,21 @@ class ItemEntry {
   });
 }
 
+/// New class to represent multiple packaging entries for rural section
+class RuralPackageEntry {
+  package.Data? selectedPackageType;
+  String? selectedQuantity;
+  List<String>? quantityOptions;
+  bool packageLocked;
+
+  RuralPackageEntry({
+    this.selectedPackageType,
+    this.selectedQuantity,
+    this.quantityOptions,
+    this.packageLocked = false,
+  });
+}
+
 class RequestDetailsScreen extends StatefulWidget {
   const RequestDetailsScreen({super.key, required this.type, required this.onSubmitTap});
   final String? type;
@@ -68,6 +83,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   final TextEditingController quantityController = TextEditingController();
   late final List<Placemark> placemarks;
   List<ItemEntry> itemEntries = [];
+
+  /// List to hold multiple rural package entries
+  List<RuralPackageEntry> ruralPackageEntries = [];
   final customerCubit = sl<CustomerCubit>();
   final locationCubit = sl<LocationCubit>();
   final authCubit = sl<AuthCubit>();
@@ -166,6 +184,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     getPackagingType();
     getVehicleType();
     addNewItem();
+    addNewRuralPackage();
     _fetchAndShowNearbyUsers();
     destinationLocationController.addListener(() {
       onChange();
@@ -183,6 +202,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     setState(() {
       itemEntries[index].descriptionController.dispose();
       itemEntries.removeAt(index);
+    });
+  }
+
+  void addNewRuralPackage() {
+    setState(() {
+      ruralPackageEntries.add(RuralPackageEntry());
+    });
+  }
+
+  void removeRuralPackage(int index) {
+    setState(() {
+      ruralPackageEntries.removeAt(index);
     });
   }
 
@@ -509,78 +540,169 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             ),
                           ],
                         )
+                      // RURAL SECTION (updated): supports multiple packaging entries with lock-on-select
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(
                               height: 15,
                             ),
-                            CustomText(text: AppLocalizations.of(context)!.packagingTypeString),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: DropdownButtonFormField2<package.Data>(
-                                value: selectedPackageType,
-                                isExpanded: true,
-                                iconStyleData:
-                                    IconStyleData(icon: const Icon(Icons.keyboard_arrow_down)),
-                                decoration: InputDecoration(
-                                  contentPadding:
-                                      const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4),
+
+                            // Render multiple package entries
+                            ...ruralPackageEntries.asMap().entries.map((entry) {
+                              final index = entry.key;
+                              final rItem = entry.value;
+
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText(
+                                          text: AppLocalizations.of(context)!.packagingTypeString),
+                                      // remove button for this package entry
+                                      if (ruralPackageEntries.length > 1)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                          child: IconButton(
+                                            onPressed: () => removeRuralPackage(index),
+                                            icon: const Icon(Icons.close),
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                    ],
                                   ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: primaryColor),
-                                    borderRadius: BorderRadius.circular(4),
+                                  const SizedBox(
+                                    height: 8,
                                   ),
-                                ),
-                                dropdownStyleData: DropdownStyleData(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                                  maxHeight: MediaQuery.of(context).size.width * 0.5,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: secondaryColor,
-                                  ),
-                                  offset: const Offset(0, -4),
-                                  scrollbarTheme: ScrollbarThemeData(
-                                    thumbColor: WidgetStateProperty.all(primaryColor),
-                                    radius: const Radius.circular(4),
-                                  ),
-                                ),
-                                items: packagingTypeResponse?.data?.map((package.Data? item) {
-                                  return DropdownMenuItem<package.Data>(
-                                    value: item,
-                                    child: Text(
-                                      item?.name ?? '',
-                                      style: Theme.of(context).textTheme.bodyMedium,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: DropdownButtonFormField2<package.Data>(
+                                            value: rItem.selectedPackageType,
+                                            isExpanded: true,
+                                            iconStyleData: IconStyleData(
+                                                icon: const Icon(Icons.keyboard_arrow_down)),
+                                            decoration: InputDecoration(
+                                              contentPadding: const EdgeInsets.symmetric(
+                                                  horizontal: 10, vertical: 14),
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(color: primaryColor),
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                            ),
+                                            dropdownStyleData: DropdownStyleData(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                                              maxHeight: MediaQuery.of(context).size.width * 0.5,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(4),
+                                                color: secondaryColor,
+                                              ),
+                                              offset: const Offset(0, -4),
+                                              scrollbarTheme: ScrollbarThemeData(
+                                                thumbColor: WidgetStateProperty.all(primaryColor),
+                                                radius: const Radius.circular(4),
+                                              ),
+                                            ),
+                                            items: packagingTypeResponse?.data
+                                                ?.map((package.Data? item) {
+                                              return DropdownMenuItem<package.Data>(
+                                                value: item,
+                                                child: Text(
+                                                  item?.name ?? '',
+                                                  style: Theme.of(context).textTheme.bodyMedium,
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: rItem.packageLocked
+                                                ? null
+                                                : (val) {
+                                                    // When user selects a package type -> lock it and load quantities
+                                                    setState(() {
+                                                      rItem.selectedPackageType = val;
+                                                      rItem.packageLocked =
+                                                          true; // lock after selection
+                                                    });
+                                                  },
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                }).toList(),
-                                onChanged: (val) {
-                                  setState(() {
-                                    selectedPackageType = val;
-                                  });
-                                },
+                                  ),
+                                  const SizedBox(height: 12),
+                                  CustomText(text: AppLocalizations.of(context)!.quantityString),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: DropdownButtonFormField2<String>(
+                                      value: rItem.selectedQuantity,
+                                      isExpanded: true,
+                                      iconStyleData: IconStyleData(
+                                          icon: const Icon(Icons.keyboard_arrow_down)),
+                                      decoration: InputDecoration(
+                                        contentPadding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 14),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: primaryColor),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                      ),
+                                      dropdownStyleData: DropdownStyleData(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                                        maxHeight: MediaQuery.of(context).size.width * 0.5,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(4),
+                                          color: secondaryColor,
+                                        ),
+                                        offset: const Offset(0, -4),
+                                        scrollbarTheme: ScrollbarThemeData(
+                                          thumbColor: WidgetStateProperty.all(primaryColor),
+                                          radius: const Radius.circular(4),
+                                        ),
+                                      ),
+                                      items: (rItem.quantityOptions ?? [])
+                                          .map((q) => DropdownMenuItem<String>(
+                                                value: q,
+                                                child: Text(q),
+                                              ))
+                                          .toList(),
+                                      onChanged: (val) {
+                                        setState(() {
+                                          rItem.selectedQuantity = val;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                ],
+                              );
+                            }),
+
+                            const SizedBox(height: 8),
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: CustomElevatedButton(
+                                name: '+ ${AppLocalizations.of(context)!.addMoreItemsString}',
+                                borderRadius: 4,
+                                alignment: Alignment.centerRight,
+                                onPressed: addNewRuralPackage,
                               ),
                             ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            CustomText(text: AppLocalizations.of(context)!.quantityString),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            CustomTextField(
-                              textEditingController: quantityController,
-                              inputType: TextInputType.number,
-                              hint: '10',
-                            ),
-                            const SizedBox(
-                              height: 12,
-                            ),
+
+                            const SizedBox(height: 12),
                           ],
                         ),
 
@@ -921,6 +1043,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 );
                               }
                             } else {
+                              //* Rural validation
                               if (quantityController.text.isEmpty) {
                                 showToast(
                                   context: context,

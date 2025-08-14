@@ -492,4 +492,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterOtpString => 'Enter OTP';
+
+  @override
+  String get backgroundLocationRequiredString => 'Background Location Required';
+
+  @override
+  String get backgroundLocationDescriptionString =>
+      'To keep tracking your trips even when the app is closed, you must set Location Permission to \"Allow all the time\" in settings.';
+
+  @override
+  String get openSettingString => 'Open Settings';
 }

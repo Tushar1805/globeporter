@@ -490,4 +490,14 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get enterOtpString => 'ओटीपी दर्ज करें';
+
+  @override
+  String get backgroundLocationRequiredString => 'पृष्ठभूमि स्थान आवश्यक';
+
+  @override
+  String get backgroundLocationDescriptionString =>
+      'ऐप बंद होने पर भी अपनी यात्राओं पर नज़र रखने के लिए, आपको सेटिंग में स्थान अनुमति को \"हमेशा अनुमति दें\" पर सेट करना होगा।';
+
+  @override
+  String get openSettingString => 'सेटिंग्स खोलें';
 }

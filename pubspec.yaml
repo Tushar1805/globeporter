@@ -62,6 +62,7 @@ dev_dependencies:
   flutter_lints: 
   flutter_launcher_icons: 
   flutter_native_splash: ^2.4.6
+  flutter_background_service:
 
 flutter_launcher_icons:
   android: true

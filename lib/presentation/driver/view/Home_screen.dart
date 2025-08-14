@@ -23,6 +23,7 @@ import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -56,6 +57,25 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     if (permissionGranted != PermissionStatus.granted || !serviceEnabled) {
       return;
     }
+
+    // Configure frequency & power
+    await _location.changeSettings(
+      accuracy: LocationAccuracy.high, // or .high if you truly need it
+      interval: 10000, // 10s
+      distanceFilter: 20, // only push when moved ~20m
+      pausesLocationUpdatesAutomatically: false,
+    );
+
+    // final service = FlutterBackgroundService();
+    // service.invoke('updateConfig', {
+    //   'userId': authCubit.userDetails?.data?.id.toString(),
+    //   'role': 'driver',
+    //   'type': authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeName,
+    //   'active': false, // set to true when a trip starts to increase frequency
+    // });
+
+    // Run in background (keeps Android Foreground Service + iOS background updates)
+    await _location.enableBackgroundMode(enable: true);
 
     _locationSubscription?.cancel(); // cancel previous listener if any
 

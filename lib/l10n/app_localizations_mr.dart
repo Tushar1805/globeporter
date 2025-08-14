@@ -489,4 +489,14 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get enterOtpString => 'ओटीपी एंटर करा';
+
+  @override
+  String get backgroundLocationRequiredString => 'पार्श्वभूमी स्थान आवश्यक';
+
+  @override
+  String get backgroundLocationDescriptionString =>
+      'अ‍ॅप बंद असतानाही तुमच्या ट्रिपचा मागोवा घेण्यासाठी, तुम्ही सेटिंग्जमध्ये स्थान परवानगी \"सर्व वेळ परवानगी द्या\" वर सेट करणे आवश्यक आहे.';
+
+  @override
+  String get openSettingString => 'सेटिंग्ज उघडा';
 }

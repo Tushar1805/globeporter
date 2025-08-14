@@ -317,5 +317,11 @@
     "startString": "Start",
     "@startString": {},
     "enterOtpString": "Enter OTP",
-    "@enterOtpString": {}
+    "@enterOtpString": {},
+    "backgroundLocationRequiredString": "Background Location Required",
+    "@backgroundLocationRequiredString": {},
+    "backgroundLocationDescriptionString": "To keep tracking your trips even when the app is closed, you must set Location Permission to \"Allow all the time\" in settings.",
+    "@backgroundLocationDescriptionString": {},
+    "openSettingString": "Open Settings",
+    "@openSettingString": {}
 }

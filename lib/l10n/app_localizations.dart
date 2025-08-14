@@ -1041,6 +1041,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter OTP'**
   String get enterOtpString;
+
+  /// No description provided for @backgroundLocationRequiredString.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Location Required'**
+  String get backgroundLocationRequiredString;
+
+  /// No description provided for @backgroundLocationDescriptionString.
+  ///
+  /// In en, this message translates to:
+  /// **'To keep tracking your trips even when the app is closed, you must set Location Permission to \"Allow all the time\" in settings.'**
+  String get backgroundLocationDescriptionString;
+
+  /// No description provided for @openSettingString.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettingString;
 }
 
 class _AppLocalizationsDelegate

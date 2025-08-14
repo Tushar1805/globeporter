@@ -57,17 +57,27 @@
 		<false/>
 		<key>NSLocationAlwaysAndWhenInUsageDescription</key>
 		<string>App app want's to access your location to get address</string>
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>App app want's to access your location to get address.</string>
 		<key>NSLocationAlwaysUsageDescription</key>
 		<string>App app want's to access your location to get address.</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>App want's to access your location to get address.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>App want's to access your gallery to get image.</string>
 		<key>NSCameraUsageDescription</key>
 		<string>App want's to access your camera to capture image.</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>App want's to capture audio for image picker plugin.</string>
+		<key>UIBackgroundModes</key>
+		<array>
+		<string>location</string>
+		</array>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>location</string>
+			<string>processing</string>
+			<string>fetch</string>
+		</array>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>We use your location to show nearby rides.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>We use your location in the background to keep you available.</string>
 	</dict>
 </plist>

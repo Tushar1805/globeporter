@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/location/background_location_service.dart';
 import 'package:globeporter/notifications/notification_service.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_strings.dart';
@@ -30,6 +31,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   setupServiceLocator();
+  // await initializeBackgroundService();
   runApp(
     DevicePreview(
       enabled: false,
