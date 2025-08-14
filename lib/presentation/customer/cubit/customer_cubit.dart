@@ -1,4 +1,5 @@
 import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
 import 'package:globeporter/presentation/customer/repository/customer_repository.dart';
@@ -65,6 +66,28 @@ class CustomerCubit extends BaseCubit {
     }
   }
 
+  Future<void> findNearbyDrivers({
+    required final int bookingId,
+    required final String distance,
+  }) async {
+    try {
+      emit(NearbyDriversLoadingState('Loading nearby drivers'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _customerRepository.findNearbyDrivers(
+        lang: lang ?? 'en',
+        accessToken: accessToken ?? '',
+        bookingId: bookingId,
+        distance: distance,
+      );
+
+      emit(NearbyDriversLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
   Future<void> createRuralRequest({
     required final int vehicleTypeId,
     required final List<Map<String, dynamic>> packageData,
@@ -98,6 +121,7 @@ class CustomerCubit extends BaseCubit {
       );
 
       if (response['status_code'] == 200) {
+        customPrint('REQUEST DATA: $response');
         emit(CustomerRequestLoadedState(data: response));
       } else {
         emit(ErrorState(response['message']));

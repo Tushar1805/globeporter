@@ -8,10 +8,9 @@ class CustomerLoadedState extends LoadedState {
   CustomerLoadedState({required super.data});
 }
 
-class CustomerGeneralState extends SuccessState{
-  CustomerGeneralState(super.message);  
+class CustomerGeneralState extends SuccessState {
+  CustomerGeneralState(super.message);
 }
-
 
 class CustomerRequestLoadingState extends LoadingState {
   CustomerRequestLoadingState(super.loadingMessage);
@@ -44,6 +43,7 @@ class VehicleTypeLoadingState extends LoadingState {
 class VehicleTypeLoadedState extends LoadedState {
   VehicleTypeLoadedState({required super.data});
 }
+
 class CustomerRideBookingsLoadingState extends LoadingState {
   CustomerRideBookingsLoadingState(super.loadingMessage);
 }
@@ -52,4 +52,10 @@ class CustomerRideBookingsLoadedState extends LoadedState {
   CustomerRideBookingsLoadedState({required super.data});
 }
 
+class NearbyDriversLoadingState extends LoadingState {
+  NearbyDriversLoadingState(super.loadingMessage);
+}
 
+class NearbyDriversLoadedState extends LoadedState {
+  NearbyDriversLoadedState({required super.data});
+}

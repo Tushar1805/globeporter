@@ -381,11 +381,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 });
               } else if (state is CustomerRequestLoadedState) {
                 final data = state.data as Map<String, dynamic>;
+               
                 if (data['status_code'] == 200) {
-                  // context.pushReplacementNamed(myRequestScreen, extra: {
-                  //   'type': 'urban',
-                  //   'show': true,
-                  // });
+                  // customerCubit.findNearbyDrivers(bookingId: bookingId, distance: '10');
                   widget.onSubmitTap?.call();
                   context.pop();
                 }

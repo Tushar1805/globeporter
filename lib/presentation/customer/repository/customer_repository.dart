@@ -81,6 +81,26 @@ class CustomerRepository extends BaseRepository {
     );
   }
 
+  Future<Map<String, dynamic>?> findNearbyDrivers({
+    required final String lang,
+    required final String accessToken,
+    required final int bookingId,
+    required final String distance,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: findNearbyDriverUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'lang': lang,
+        "booking_id": bookingId,
+        "distance": distance,
+      },
+    );
+
+    return responseData;
+  }
+
   Future<Map<String, dynamic>> createRuralRequest({
     required final String lang,
     required final String accessToken,
