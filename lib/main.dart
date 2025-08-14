@@ -15,7 +15,10 @@ import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_strings.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/theme/theme_cubit.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'routes/app_router.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+
 
 final NotificationServices notificationServices = NotificationServices();
 
@@ -31,7 +34,9 @@ Future<void> main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   setupServiceLocator();
-  // await initializeBackgroundService();
+  await ensurePermissions();
+  await initializeBackgroundService();
+  await FlutterBackgroundService().startService(); 
   runApp(
     DevicePreview(
       enabled: false,
@@ -48,6 +53,19 @@ Future<void> main() async {
       statusBarBrightness: Brightness.dark,
     ),
   );
+}
+
+Future<void> ensurePermissions() async {
+  if (await Permission.locationAlways.isDenied || await Permission.locationAlways.isRestricted) {
+    // First ask WhenInUse, then Always
+    await Permission.locationWhenInUse.request();
+    await Permission.locationAlways.request();
+  }
+
+  // Android 13+ notifications permission or your FG service notif may not show
+  if (await Permission.notification.isDenied) {
+    await Permission.notification.request();
+  }
 }
 
 class GlobePorter extends StatefulWidget {

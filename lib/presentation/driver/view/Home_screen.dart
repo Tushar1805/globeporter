@@ -65,15 +65,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       distanceFilter: 20, // only push when moved ~20m
       pausesLocationUpdatesAutomatically: false,
     );
-
-    // final service = FlutterBackgroundService();
-    // service.invoke('updateConfig', {
-    //   'userId': authCubit.userDetails?.data?.id.toString(),
-    //   'role': 'driver',
-    //   'type': authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeName,
-    //   'active': false, // set to true when a trip starts to increase frequency
-    // });
-
     // Run in background (keeps Android Foreground Service + iOS background updates)
     await _location.enableBackgroundMode(enable: true);
 
@@ -97,6 +88,45 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     });
   }
 
+  Future<void> initTrackingAndService() async {
+    await startTracking(); // your existing startTracking
+
+    final service = FlutterBackgroundService();
+    // wait until service reports running (with timeout)
+    var attempts = 0;
+    while (attempts < 6) {
+      final running = await service.isRunning();
+      if (running) break;
+      attempts++;
+      // try to start it if it's not running
+      try {
+        await service.startService();
+      } catch (_) {}
+      await Future.delayed(const Duration(seconds: 1));
+    }
+
+    // Now invoke updateConfig (retry if invoke fails)
+    final config = {
+      'userId': authCubit.userDetails?.data?.id.toString() ?? '',
+      'role': 'driver',
+      'type': authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeName ?? '',
+      // optionally send a token if your backend needs it:
+      // 'token': await storage.readValue('accessToken') ?? '',
+      'active': false,
+    };
+
+    attempts = 0;
+    while (attempts < 5) {
+      try {
+        service.invoke('updateConfig', config);
+        break;
+      } catch (e) {
+        attempts++;
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    }
+  }
+
   void loadPendingBookings() async {
     await driverCubit.getPendingBookings();
   }
@@ -110,7 +140,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     fToast = FToast();
     fToast!.init(context);
 
-    startTracking();
+    // startTracking();
+    initTrackingAndService();
     loadPendingBookings();
     loadCancellationReasons();
     super.initState();

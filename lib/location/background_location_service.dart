@@ -3,10 +3,15 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
+import 'package:globeporter/location/repository/location_repository.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 
 /// ---- CONFIG ----
 /// Poll interval in seconds when "idle" and when "active" (e.g., on-trip).
@@ -97,13 +102,41 @@ Future<void> onStart(ServiceInstance service) async {
     if (userId?.isEmpty ?? false) return; // wait until UI provided config
     lastUploadTime = DateTime.now();
     lastUploaded = p;
-    await locationCubit.updateMyLocation(
-      lat: p.latitude,
-      lng: p.longitude,
-      role: authCubit.userDetails?.data?.userType == 2 ? 'driver' : 'customer',
-      userId: authCubit.userDetails?.data?.id.toString(),
-      type: authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeName,
+    final LocationRepository locationRepository = LocationRepository();
+    final storage = sl<SecureStorage>();
+    final DatabaseReference dbRef = FirebaseDatabase.instance.ref().child('locations');
+    // await locationCubit.updateMyLocation(
+    //   lat: p.latitude,
+    //   lng: p.longitude,
+    //   role: role ?? 'driver',
+    //   userId: userId,
+    //   type: type,
+    // );
+    final lat = p.latitude;
+    final lng = p.longitude;
+
+    final lang = await storage.readValue(languageCodeKey);
+    final accessToken = await storage.readValue(accessTokenKey);
+    await locationRepository.updateUserLocation(
+      lang: lang ?? 'en',
+      token: accessToken ?? '',
+      logitude: lng.toString(),
+      latitude: lat.toString(),
     );
+    try {
+      if (userId != null && userId != '') {
+        await dbRef.child(userId!).set({
+          "latitude": lat,
+          "longitude": lng,
+          "last_updated": ServerValue.timestamp,
+          "type": type ?? "truck",
+          "role": role,
+        });
+      }
+      customPrint('Location Update for RTDB: lat: $lat Lng: $lng');
+    } catch (e) {
+      customPrint('Something went wrong: $e');
+    }
 
     // Update notification text occasionally (Android)
     if (service is AndroidServiceInstance) {
