@@ -17,6 +17,8 @@ import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_r
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_keys.dart';
+import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -89,8 +91,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   }
 
   Future<void> initTrackingAndService() async {
-    await startTracking(); // your existing startTracking
-
     final service = FlutterBackgroundService();
     // wait until service reports running (with timeout)
     var attempts = 0;
@@ -105,13 +105,17 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       await Future.delayed(const Duration(seconds: 1));
     }
 
+    final storage = sl<SecureStorage>();
+    final accessToken = await storage.readValue(accessTokenKey) ?? '';
+    final language = await storage.readValue(languageCodeKey) ?? 'en';
+
     // Now invoke updateConfig (retry if invoke fails)
     final config = {
       'userId': authCubit.userDetails?.data?.id.toString() ?? '',
       'role': 'driver',
       'type': authCubit.userDetails?.data?.vehicleDetailData?.vehicleTypeName ?? '',
-      // optionally send a token if your backend needs it:
-      // 'token': await storage.readValue('accessToken') ?? '',
+      'token': accessToken,
+      'lang': language,
       'active': false,
     };
 
@@ -140,8 +144,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     fToast = FToast();
     fToast!.init(context);
 
-    // startTracking();
-    initTrackingAndService();
+    startTracking().then((_) {
+      initTrackingAndService();
+    });
+
     loadPendingBookings();
     loadCancellationReasons();
     super.initState();

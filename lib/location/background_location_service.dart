@@ -2,24 +2,16 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/location/repository/location_repository.dart';
-import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
-import 'package:globeporter/resources/app_keys.dart';
-import 'package:globeporter/resources/app_storage.dart';
 
 /// ---- CONFIG ----
 /// Poll interval in seconds when "idle" and when "active" (e.g., on-trip).
 const _idleInterval = Duration(seconds: 10);
 const _activeInterval = Duration(seconds: 10);
-
-final authCubit = sl<AuthCubit>();
-final locationCubit = sl<LocationCubit>();
 
 /// Distance threshold to reduce spam if stationary (meters).
 const _minDistanceMeters = 25;
@@ -45,14 +37,24 @@ Future<void> onStart(ServiceInstance service) async {
   String? userId = '';
   String? role = 'driver';
   String? type;
-  bool activeMode = false; // you can flip this when a ride starts/ends
+  bool activeMode = false;
+  String? accessToken = '';
+  String lang = 'en';
 
   service.on('updateConfig').listen((data) {
     if (data == null) return;
-    userId = (data['userId'] ?? userId)?.toString();
-    role = (data['role'] ?? role)?.toString();
-    type = (data['type'] ?? type)?.toString();
-    activeMode = (data['active'] ?? activeMode) == true;
+    try {
+      userId = (data['userId'] ?? userId)?.toString();
+      role = (data['role'] ?? role)?.toString();
+      type = (data['type'] ?? type)?.toString();
+      activeMode = (data['active'] ?? activeMode) == true;
+      accessToken = (data['token'] ?? accessToken)?.toString();
+      lang = (data['lang'] ?? lang)?.toString() ?? 'en';
+      customPrint(
+          'BGService: config updated userId=$userId role=$role type=$type tokenSet=${accessToken?.isNotEmpty} lang=$lang');
+    } catch (e) {
+      customPrint('BGService: failed parse updateConfig: $e');
+    }
   });
 
   // Ensure location services + permissions (the UI should do this beforehand).
@@ -103,7 +105,6 @@ Future<void> onStart(ServiceInstance service) async {
     lastUploadTime = DateTime.now();
     lastUploaded = p;
     final LocationRepository locationRepository = LocationRepository();
-    final storage = sl<SecureStorage>();
     final DatabaseReference dbRef = FirebaseDatabase.instance.ref().child('locations');
     // await locationCubit.updateMyLocation(
     //   lat: p.latitude,
@@ -115,10 +116,8 @@ Future<void> onStart(ServiceInstance service) async {
     final lat = p.latitude;
     final lng = p.longitude;
 
-    final lang = await storage.readValue(languageCodeKey);
-    final accessToken = await storage.readValue(accessTokenKey);
     await locationRepository.updateUserLocation(
-      lang: lang ?? 'en',
+      lang: lang,
       token: accessToken ?? '',
       logitude: lng.toString(),
       latitude: lat.toString(),
