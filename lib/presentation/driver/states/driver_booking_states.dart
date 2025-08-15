@@ -119,3 +119,28 @@ class EndRideLoadingState extends LoadingState {
 class EndRideLoadedState extends LoadedState {
   EndRideLoadedState({required super.data});
 }
+
+class PackagingTypeLoadingState extends LoadingState {
+  PackagingTypeLoadingState(super.loadingMessage);
+}
+
+class PackagingTypeLoadedState extends LoadedState {
+  PackagingTypeLoadedState({required super.data});
+}
+
+class ProductNamesLoadingState extends LoadingState {
+  ProductNamesLoadingState(super.loadingMessage);
+}
+
+class ProductNamesLoadedState extends LoadedState {
+  ProductNamesLoadedState({required super.data});
+}
+
+class UpdateBookingDetailsByDriverLoadingState extends LoadingState {
+  UpdateBookingDetailsByDriverLoadingState(super.loadingMessage);
+}
+
+class UpdateBookingDetailsByDriverLoadedState extends LoadedState {
+  UpdateBookingDetailsByDriverLoadedState({required super.data});
+}
+

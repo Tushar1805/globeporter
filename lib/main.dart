@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
+import 'package:globeporter/firebase_options.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/background_location_service.dart';
 import 'package:globeporter/notifications/notification_service.dart';
@@ -30,7 +31,9 @@ Future<void> _firebaseMessagingBackgroundHandler(
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   setupServiceLocator();
   await ensurePermissions();

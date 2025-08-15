@@ -33,6 +33,51 @@ class DriverCubit extends BaseCubit {
     }
   }
 
+  Future<void> getPackagingType() async {
+    try {
+      emit(PackagingTypeLoadingState('Loading Packaging types'));
+      final lang = await storage.readValue(languageCodeKey);
+      final response = await _driverRepository.getPackagingType(lang: lang ?? 'en');
+
+      emit(PackagingTypeLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> getProductNames() async {
+    try {
+      emit(ProductNamesLoadingState('Loading Packaging types'));
+      final lang = await storage.readValue(languageCodeKey);
+      final response = await _driverRepository.getProductNames(lang: lang ?? 'en');
+
+      emit(ProductNamesLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> updateBookingDetailsByDriver({
+    required final String bookingId,
+    required final List<Map<String, dynamic>> packageData,
+  }) async {
+    try {
+      emit(UpdateBookingDetailsByDriverLoadingState('Cancelling Ride'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _driverRepository.updateBookingDetailsByDriver(
+        lang: lang ?? 'en',
+        accessToken: accessToken ?? '',
+        bookingId: bookingId,
+        packageData: packageData,
+      );
+
+      emit(UpdateBookingDetailsByDriverLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
   Future<void> declineRideByDriver({
     required final int bookingId,
     required final int reasonId,
@@ -122,8 +167,6 @@ class DriverCubit extends BaseCubit {
         lang: lang ?? 'en',
         token: accessToken ?? '',
       );
-
-      customPrint(response?.toJson().toString());
 
       emit(PendingBookingsLoadedState(data: response));
     } catch (e) {

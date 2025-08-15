@@ -205,12 +205,12 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             ShowLocationWidget(
               address: widget.data?.dropAddress,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Divider(
-                color: primaryColor,
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            //   child: Divider(
+            //     color: primaryColor,
+            //   ),
+            // ),
             const SizedBox(height: 20),
             if (widget.type == 'urban') UrbanItemsSection(requestData: widget.data, size: size),
             if (widget.type == 'rural') RuralDetailsSection(requestData: widget.data, size: size),
@@ -553,6 +553,34 @@ class UrbanItemsSection extends StatelessWidget {
   }
 }
 
+// class RuralDetailsSection extends StatelessWidget {
+//   const RuralDetailsSection({super.key, required this.requestData, required this.size});
+
+//   final pending.Data? requestData;
+//   final Size size;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         CustomText(text: AppLocalizations.of(context)!.productTypeString),
+//         const SizedBox(height: 4),
+//         // CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
+//         const SizedBox(height: 8),
+//         CustomText(text: AppLocalizations.of(context)!.packagingTypeString),
+//         const SizedBox(height: 4),
+//         // CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
+//         const SizedBox(height: 8),
+//         CustomText(text: AppLocalizations.of(context)!.quantityString),
+//         const SizedBox(height: 4),
+//         CustomTextMedium(text: requestData?.qty ?? ''),
+//         const SizedBox(height: 8),
+//       ],
+//     );
+//   }
+// }
+
 class RuralDetailsSection extends StatelessWidget {
   const RuralDetailsSection({super.key, required this.requestData, required this.size});
 
@@ -561,22 +589,38 @@ class RuralDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final items = requestData?.bookingRideUserPackage ?? [];
+
+    if (items.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(text: AppLocalizations.of(context)!.productTypeString),
-        const SizedBox(height: 4),
-        CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
-        const SizedBox(height: 8),
-        CustomText(text: AppLocalizations.of(context)!.packagingTypeString),
-        const SizedBox(height: 4),
-        CustomTextMedium(text: requestData?.packageTypeData?.nameEn ?? ''),
-        const SizedBox(height: 8),
-        CustomText(text: AppLocalizations.of(context)!.quantityString),
-        const SizedBox(height: 4),
-        CustomTextMedium(text: requestData?.qty ?? ''),
-        const SizedBox(height: 8),
-      ],
+      children: List.generate(
+        items.length,
+        (index) {
+          final packageItem = items[index];
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CustomDivider(),
+                CustomText(
+                  text: '${AppLocalizations.of(context)!.itemDetailsString}: ${index + 1}',
+                ),
+                const SizedBox(height: 20),
+                CustomText(text: AppLocalizations.of(context)!.packagingTypeString),
+                const SizedBox(height: 8),
+                CustomTextMedium(text: packageItem.packageTypeData?.name ?? ''),
+                const SizedBox(height: 10),
+                CustomText(text: AppLocalizations.of(context)!.quantityString),
+                const SizedBox(height: 8),
+                CustomTextMedium(text: packageItem.qtyData?.qty ?? '-'),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

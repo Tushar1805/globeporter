@@ -1,9 +1,9 @@
 {
   "project_info": {
     "project_number": "532818634989",
+    "firebase_url": "https://globeporter-8bc9c-default-rtdb.firebaseio.com",
     "project_id": "globeporter-8bc9c",
-    "storage_bucket": "globeporter-8bc9c.firebasestorage.app",
-    "firebase_url": "https://globeporter-8bc9c-default-rtdb.firebaseio.com/"
+    "storage_bucket": "globeporter-8bc9c.firebasestorage.app"
   },
   "client": [
     {

@@ -58,8 +58,8 @@ class Data {
   final double? distance;
   final UserData? userData;
   final VehicleTypeData? vehicleTypeData;
-  final PackageTypeData? packageTypeData;
   final List<BookingRideItem>? bookingRideItem;
+  final List<BookingRideUserPackage>? bookingRideUserPackage;
 
   Data({
     this.id,
@@ -92,8 +92,8 @@ class Data {
     this.distance,
     this.userData,
     this.vehicleTypeData,
-    this.packageTypeData,
     this.bookingRideItem,
+    this.bookingRideUserPackage,
   });
 
   Data.fromJson(final Map<String, dynamic> json)
@@ -131,11 +131,11 @@ class Data {
         vehicleTypeData = (json['vehicle_type_data'] as Map<String, dynamic>?) != null
             ? VehicleTypeData.fromJson(json['vehicle_type_data'] as Map<String, dynamic>)
             : null,
-        packageTypeData = (json['package_type_data'] as Map<String, dynamic>?) != null
-            ? PackageTypeData.fromJson(json['package_type_data'] as Map<String, dynamic>)
-            : null,
         bookingRideItem = (json['booking_ride_item'] as List?)
             ?.map((dynamic e) => BookingRideItem.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        bookingRideUserPackage = (json['booking_ride_user_package'] as List?)
+            ?.map((dynamic e) => BookingRideUserPackage.fromJson(e as Map<String, dynamic>))
             .toList();
 
   Map<String, dynamic> toJson() => {
@@ -169,8 +169,8 @@ class Data {
         'distance': distance,
         'user_data': userData?.toJson(),
         'vehicle_type_data': vehicleTypeData?.toJson(),
-        'package_type_data': packageTypeData?.toJson(),
-        'booking_ride_item': bookingRideItem?.map((final e) => e.toJson()).toList()
+        'booking_ride_item': bookingRideItem?.map((final e) => e.toJson()).toList(),
+        'booking_ride_user_package': bookingRideUserPackage?.map((e) => e.toJson()).toList()
       };
 }
 
@@ -415,32 +415,111 @@ class BookingRideItem {
       };
 }
 
+class BookingRideUserPackage {
+  final int? id;
+  final int? bookingId;
+  final int? packageTypeId;
+  final String? qty;
+  final dynamic deletedAt;
+  final String? createdAt;
+  final String? updatedAt;
+  final String? packageTypeName;
+  final String? qtyName;
+  final PackageTypeData? packageTypeData;
+  final QtyData? qtyData;
+
+  BookingRideUserPackage({
+    this.id,
+    this.bookingId,
+    this.packageTypeId,
+    this.qty,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.packageTypeName,
+    this.qtyName,
+    this.packageTypeData,
+    this.qtyData,
+  });
+
+  BookingRideUserPackage.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int?,
+        bookingId = json['booking_id'] as int?,
+        packageTypeId = json['package_type_id'] as int?,
+        qty = json['qty'] as String?,
+        deletedAt = json['deleted_at'],
+        createdAt = json['created_at'] as String?,
+        updatedAt = json['updated_at'] as String?,
+        packageTypeName = json['package_type_name'] as String?,
+        qtyName = json['qty_name'] as String?,
+        packageTypeData = (json['package_type_data'] as Map<String, dynamic>?) != null
+            ? PackageTypeData.fromJson(json['package_type_data'] as Map<String, dynamic>)
+            : null,
+        qtyData = (json['qty_data'] as Map<String, dynamic>?) != null
+            ? QtyData.fromJson(json['qty_data'] as Map<String, dynamic>)
+            : null;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'booking_id': bookingId,
+        'package_type_id': packageTypeId,
+        'qty': qty,
+        'deleted_at': deletedAt,
+        'created_at': createdAt,
+        'updated_at': updatedAt,
+        'package_type_name': packageTypeName,
+        'qty_name': qtyName,
+        'package_type_data': packageTypeData?.toJson(),
+        'qty_data': qtyData?.toJson()
+      };
+}
+
 class PackageTypeData {
   final int? id;
+  final String? name;
   final String? nameEn;
   final String? nameMr;
   final String? nameHi;
+
+  PackageTypeData({
+    this.id,
+    this.name,
+    this.nameEn,
+    this.nameMr,
+    this.nameHi,
+  });
+
+  PackageTypeData.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int?,
+        name = json['name'] as String?,
+        nameEn = json['name_en'] as String?,
+        nameMr = json['name_mr'] as String?,
+        nameHi = json['name_hi'] as String?;
+
+  Map<String, dynamic> toJson() =>
+      {'id': id, 'name': name, 'name_en': nameEn, 'name_mr': nameMr, 'name_hi': nameHi};
+}
+
+class QtyData {
+  final int? id;
+  final String? qty;
   final int? status;
   final dynamic deletedAt;
   final String? createdAt;
   final String? updatedAt;
 
-  PackageTypeData({
+  QtyData({
     this.id,
-    this.nameEn,
-    this.nameMr,
-    this.nameHi,
+    this.qty,
     this.status,
     this.deletedAt,
     this.createdAt,
     this.updatedAt,
   });
 
-  PackageTypeData.fromJson(Map<String, dynamic> json)
+  QtyData.fromJson(Map<String, dynamic> json)
       : id = json['id'] as int?,
-        nameEn = json['name_en'] as String?,
-        nameMr = json['name_mr'] as String?,
-        nameHi = json['name_hi'] as String?,
+        qty = json['qty'] as String?,
         status = json['status'] as int?,
         deletedAt = json['deleted_at'],
         createdAt = json['created_at'] as String?,
@@ -448,9 +527,7 @@ class PackageTypeData {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'name_en': nameEn,
-        'name_mr': nameMr,
-        'name_hi': nameHi,
+        'qty': qty,
         'status': status,
         'deleted_at': deletedAt,
         'created_at': createdAt,

@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:datasource/base_repository.dart';
 import 'package:datasource/network/api_call_type.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
+import 'package:globeporter/presentation/customer/model/packaging_type_reponse.dart';
 import 'package:globeporter/presentation/driver/model/driver_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/owner_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart';
+import 'package:globeporter/presentation/driver/model/product_name_response.dart';
 import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/presentation/driver/model/vehicle_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/verification_status_response.dart';
@@ -24,6 +26,37 @@ class DriverRepository extends BaseRepository {
     );
 
     return VehicleTypeResponseModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<PackagingTypeResponse?> getPackagingType({
+    required final String lang,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getPackagingTypeUrl,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return PackagingTypeResponse.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+  Future<ProductNameResponse?> getProductNames({
+    required final String lang,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getProductNameUrl,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return ProductNameResponse.fromJson(
       responseData as Map<String, dynamic>?,
     );
   }
@@ -308,6 +341,26 @@ class DriverRepository extends BaseRepository {
       requestModel: {
         'lang': lang,
         'booking_id': bookingId,
+      },
+    );
+
+    return responseData;
+  }
+
+  Future<Map<String, dynamic>> updateBookingDetailsByDriver({
+    required final String lang,
+    required final String accessToken,
+    required final String bookingId,
+    required final List<Map<String, dynamic>> packageData,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: updateBookingDetailsDriverUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'lang': lang,
+        "booking_id": bookingId,
+        "package_types": packageData,
       },
     );
 

@@ -3,9 +3,11 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:core/utils/core_utils.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:globeporter/firebase_options.dart';
 import 'package:globeporter/location/repository/location_repository.dart';
 
 /// ---- CONFIG ----
@@ -19,6 +21,9 @@ const _minDistanceMeters = 25;
 /// Entry point called by the plugin in a background isolate.
 @pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // ANDROID: make sure we run as a Foreground Service with a notification.
   if (service is AndroidServiceInstance) {
     await service.setAsForegroundService();

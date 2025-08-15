@@ -1,14 +1,26 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:core/app_widgets.dart';
+import 'package:core/di/service_locator.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
+import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:globeporter/presentation/customer/model/packaging_type_reponse.dart' as package;
+import 'package:globeporter/presentation/driver/model/product_name_response.dart' as product;
+import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart' as pending;
 
 class CustomText extends StatelessWidget {
   const CustomText({super.key, required this.text, this.fontSize, this.style});
@@ -727,42 +739,67 @@ void showOtpDialog({
   );
 }
 
+// Update your model to hold selected dropdown values for product & packaging.
 class PackageDetail {
-  TextEditingController productNameController;
-  TextEditingController packagingTypeController;
+  product.Data? selectedProductName;
+  package.Data? selectedPackageType;
   TextEditingController quantiyTypeController;
 
   PackageDetail({
-    required this.productNameController,
-    required this.packagingTypeController,
+    this.selectedProductName,
+    this.selectedPackageType,
     required this.quantiyTypeController,
   });
 }
 
 class DynamicItemDialog extends StatefulWidget {
-  const DynamicItemDialog({super.key, required this.type});
+  const DynamicItemDialog({
+    super.key,
+    required this.type,
+    required this.bookingId,
+    required this.data,
+  });
+
   final String? type;
+  final String? bookingId;
+  final pending.Data? data;
 
   @override
   State<DynamicItemDialog> createState() => _DynamicItemDialogState();
 }
 
 class _DynamicItemDialogState extends State<DynamicItemDialog> {
-  List<PackageDetail> items = [];
+  final driverCubit = sl<DriverCubit>();
+  final List<PackageDetail> items = [];
+  bool loading = false;
+
+  /// Options for the "Product Name" dropdown
+  product.ProductNameResponse? productNameResponse;
+
+  /// Options for the "Packaging Type" dropdown
+  package.PackagingTypeResponse? packagingTypeResponse;
+
+  void loadData() async {
+    await driverCubit.getPackagingType();
+    await driverCubit.getProductNames();
+  }
 
   @override
   void initState() {
     super.initState();
     _addNewItem();
+    loadData();
   }
 
   void _addNewItem() {
     setState(() {
-      items.add(PackageDetail(
-        packagingTypeController: TextEditingController(),
-        productNameController: TextEditingController(),
-        quantiyTypeController: TextEditingController(),
-      ));
+      items.add(
+        PackageDetail(
+          selectedProductName: null,
+          selectedPackageType: null,
+          quantiyTypeController: TextEditingController(),
+        ),
+      );
     });
   }
 
@@ -772,130 +809,269 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
       ),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.itemDetailsString,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 20,
-                      color: primaryColor,
-                    ),
-              ),
-              const SizedBox(height: 10),
-              ...items.asMap().entries.map((entry) {
-                // final index = entry.key;
-                final item = entry.value;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: secondaryColor,
-                      borderRadius: BorderRadius.circular(9),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Text(
-                            AppLocalizations.of(context)!.productNameString,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: primaryColor, fontSize: 18),
+      child: BlocListener(
+        bloc: driverCubit,
+        listener: (final context, final state) async {
+          if (state is UpdateBookingDetailsByDriverLoadingState) {
+            setState(() {
+              loading = true;
+            });
+          }
+          if (state is PackagingTypeLoadedState) {
+            packagingTypeResponse = state.data as package.PackagingTypeResponse?;
+            setState(() {});
+          } else if (state is ProductNamesLoadedState) {
+            productNameResponse = state.data as product.ProductNameResponse?;
+            setState(() {});
+          } else if (state is UpdateBookingDetailsByDriverLoadedState) {
+            final data = state.data;
+            if (data['status_code'] == 200) {
+              await driverCubit
+                  .changeRideStatus(
+                bookingId: widget.data?.id ?? 1,
+                status: RideStatus.arrivedAtPickup.value,
+              )
+                  .then((value) {
+                context.pushReplacementNamed(startTripScreen, extra: {
+                  'type': widget.type,
+                  'data': widget.data,
+                });
+              });
+              await driverCubit.getDriverBookings();
+            } else {
+              Fluttertoast.showToast(
+                msg: 'Something went wrong',
+              );
+            }
+            setState(() {
+              loading = false;
+            });
+          } else if (state is ErrorState) {
+            Fluttertoast.showToast(
+              msg: state.errorMessage,
+            );
+            setState(() {
+              loading = false;
+            });
+          }
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.itemDetailsString,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontSize: 20,
+                        color: primaryColor,
+                      ),
+                ),
+                const SizedBox(height: 10),
+
+                ...items.asMap().entries.map((entry) {
+                  final item = entry.value;
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // ---------- Product Name (DROPDOWN) ----------
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.productNameString,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: primaryColor, fontSize: 18),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        CustomTextField(
-                          textEditingController: item.productNameController,
-                          borderRadius: 10,
-                          textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontSize: 20,
-                                color: primaryColor,
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: DropdownButtonFormField2<product.Data>(
+                              value: item.selectedProductName,
+                              isExpanded: true,
+                              iconStyleData: const IconStyleData(
+                                icon: Icon(Icons.keyboard_arrow_down),
                               ),
-                          cursorColor: primaryColor,
-                        ),
-                        const SizedBox(height: 12),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Text(
-                            AppLocalizations.of(context)!.packagingTypeString,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: primaryColor, fontSize: 18),
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: primaryColor),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              dropdownStyleData: DropdownStyleData(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                maxHeight: MediaQuery.of(context).size.width * 0.5,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: secondaryColor,
+                                ),
+                                offset: const Offset(0, -4),
+                                scrollbarTheme: ScrollbarThemeData(
+                                  thumbColor: WidgetStateProperty.all(primaryColor),
+                                  radius: const Radius.circular(4),
+                                ),
+                              ),
+                              items: productNameResponse?.data
+                                  ?.map((product.Data? item) => DropdownMenuItem<product.Data>(
+                                        value: item,
+                                        child: Text(
+                                          item?.name ?? '',
+                                          style: Theme.of(context).textTheme.bodyMedium,
+                                        ),
+                                      ))
+                                  .toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  item.selectedProductName = val;
+                                });
+                              },
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        CustomTextField(
-                          textEditingController: item.packagingTypeController,
-                          borderRadius: 10,
-                          textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontSize: 20,
-                                color: primaryColor,
-                              ),
-                          cursorColor: primaryColor,
-                        ),
-                        const SizedBox(height: 12),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Text(
-                            AppLocalizations.of(context)!.quantityString,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: primaryColor, fontSize: 18),
+                          const SizedBox(height: 12),
+
+                          // ---------- Packaging Type (DROPDOWN) ----------
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.packagingTypeString,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: primaryColor, fontSize: 18),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        CustomTextField(
-                          textEditingController: item.quantiyTypeController,
-                          borderRadius: 10,
-                          textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontSize: 20,
-                                color: primaryColor,
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: DropdownButtonFormField2<package.Data>(
+                              value: item.selectedPackageType,
+                              isExpanded: true,
+                              iconStyleData: const IconStyleData(
+                                icon: Icon(Icons.keyboard_arrow_down),
                               ),
-                          cursorColor: primaryColor,
-                        ),
-                        const SizedBox(height: 12),
-                      ],
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: primaryColor),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              dropdownStyleData: DropdownStyleData(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                maxHeight: MediaQuery.of(context).size.width * 0.5,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: secondaryColor,
+                                ),
+                                offset: const Offset(0, -4),
+                                scrollbarTheme: ScrollbarThemeData(
+                                  thumbColor: WidgetStateProperty.all(primaryColor),
+                                  radius: const Radius.circular(4),
+                                ),
+                              ),
+                              items: packagingTypeResponse?.data
+                                  ?.map((package.Data item) => DropdownMenuItem<package.Data>(
+                                        value: item,
+                                        child: Text(
+                                          item.name ?? '',
+                                          style: Theme.of(context).textTheme.bodyMedium,
+                                        ),
+                                      ))
+                                  .toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  item.selectedPackageType = val;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // ---------- Quantity (kept as TextField as-is) ----------
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.quantityString,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: primaryColor, fontSize: 18),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          CustomTextField(
+                            textEditingController: item.quantiyTypeController,
+                            borderRadius: 4,
+                            textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  fontSize: 20,
+                                  color: primaryColor,
+                                ),
+                            cursorColor: primaryColor,
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }),
-              CustomElevatedButton(
-                name: '+ ${AppLocalizations.of(context)!.addMoreItemsString}',
-                borderRadius: 4,
-                alignment: Alignment.centerRight,
-                onPressed: _addNewItem,
-              ),
-              const SizedBox(height: 20),
-              CustomElevatedButton(
-                name: AppLocalizations.of(context)!.submitString,
-                borderRadius: 25,
-                alignment: Alignment.bottomCenter,
-                onPressed: () {
-                  for (var item in items) {
-                    debugPrint('Product: ${item.productNameController.text}, '
-                        'Packaging: ${item.packagingTypeController.text}, '
-                        'Qty: ${item.quantiyTypeController.text}');
-                  }
-                  context.pop();
-                  context.pushNamed(startTripScreen, extra: {'type': widget.type});
-                },
-                textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                nameSize: 22,
-              ),
-            ],
+                  );
+                }),
+
+                // Add more items
+                CustomElevatedButton(
+                  name: '+ ${AppLocalizations.of(context)!.addMoreItemsString}',
+                  borderRadius: 4,
+                  alignment: Alignment.centerRight,
+                  onPressed: _addNewItem,
+                ),
+                const SizedBox(height: 20),
+
+                // Submit
+                CustomElevatedButton(
+                  name: AppLocalizations.of(context)!.submitString,
+                  textWidget: loading ? LoadingWithoutText() : null,
+                  borderRadius: 25,
+                  alignment: Alignment.bottomCenter,
+                  onPressed: () async {
+                    List<Map<String, dynamic>> packageData = items.map((entry) {
+                      return {
+                        "package_type_id": entry.selectedPackageType?.id?.toString() ?? '0',
+                        "product_id": entry.selectedProductName?.id?.toString() ?? '0',
+                        "qty": entry.quantiyTypeController.text.toString(),
+                      };
+                    }).toList();
+
+                    await driverCubit.updateBookingDetailsByDriver(
+                        bookingId: widget.bookingId ?? '1', packageData: packageData);
+                  },
+                  textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  nameSize: 22,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -903,10 +1079,16 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
   }
 }
 
-void showDynamicItemDialog({required final BuildContext context, required final String? type}) {
+void showDynamicItemDialog({
+  required final BuildContext context,
+  required final String? type,
+  required final String? bookingId,
+  required final pending.Data? data,
+}) {
   showDialog(
+    barrierDismissible: false,
     context: context,
-    builder: (_) => DynamicItemDialog(type: type),
+    builder: (_) => DynamicItemDialog(type: type, bookingId: bookingId, data: data),
   );
 }
 

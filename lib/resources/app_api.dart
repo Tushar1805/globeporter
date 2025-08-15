@@ -43,12 +43,14 @@ const String generateOtpUrl = '$_baseUrl/generate_otp';
 const String otpVerifyDriverUrl = '$_baseUrl/otp_verify_ride_by_driver';
 const String endRideDriverUrl = '$_baseUrl/end_ride_by_driver';
 const String findNearbyDriverUrl = '$_baseUrl/find_driver';
+const String updateBookingDetailsDriverUrl = '$_baseUrl/update_booking_detail_by_driver';
 
 //* Customer
 const String createUrbanRequestUrl = '$_baseUrl/add_urban_booking';
 const String createRuralRequestUrl = '$_baseUrl/add_rural_booking';
 const String getCustomerBookingsUrl = '$_baseUrl/get_customer_bookings';
 const String getPackagingTypeUrl = '$_baseUrl/get_package_type';
+const String getProductNameUrl = '$_baseUrl/get_product';
 const String getQuantityUrl = '$_baseUrl/get_qty_master';
 
 //* Settings

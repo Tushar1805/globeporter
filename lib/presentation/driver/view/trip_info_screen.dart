@@ -244,6 +244,8 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
           : showDynamicItemDialog(
               context: context,
               type: widget.type,
+              bookingId: widget.data?.id.toString(),
+              data: widget.data,
             );
     });
   }
