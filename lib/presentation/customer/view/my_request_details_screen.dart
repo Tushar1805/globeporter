@@ -1,11 +1,18 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
+import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
-import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
+import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart';
+import 'package:globeporter/presentation/customer/states/customer_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -16,16 +23,24 @@ import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
-class MyRequestDetailsScreen extends StatelessWidget {
-  MyRequestDetailsScreen({
+class MyRequestDetailsScreen extends StatefulWidget {
+  const MyRequestDetailsScreen({
     super.key,
     required this.type,
-    required this.requestData,
+    required this.bookingId,
   });
 
   final String? type;
-  final customer.Data? requestData;
+  final String? bookingId;
+
+  @override
+  State<MyRequestDetailsScreen> createState() => _MyRequestDetailsScreenState();
+}
+
+class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
   final authCubit = sl<AuthCubit>();
+  final customerCubit = sl<CustomerCubit>();
+  BookingDetailsResponse? bookingDetailsResponse;
 
   Future<void> makePhoneCall(String phoneNumber, BuildContext context) async {
     final status = await Permission.phone.request();
@@ -33,139 +48,168 @@ class MyRequestDetailsScreen extends StatelessWidget {
     if (status.isGranted) {
       FlutterPhoneDirectCaller.callNumber(phoneNumber);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.phoneCallPermissionDeniedString)));
+      Fluttertoast.showToast(
+        msg: AppLocalizations.of(context)!.phoneCallPermissionDeniedString,
+      );
     }
+  }
+
+  void loadBookingDetails() async {
+    await customerCubit.getBookingDetails(bookingId: widget.bookingId ?? '1');
+  }
+
+  @override
+  void initState() {
+    loadBookingDetails();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      backgroundColor: whiteColor,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(size.width * 0.25),
-        child: CustomStatusBarWidget(
-          title: '',
-          text: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              CustomRichText(
+    return BlocConsumer(
+      bloc: customerCubit,
+      listener: (final context, final state) {
+        if (state is BookingDetailsLoadedState) {
+          bookingDetailsResponse = state.data as BookingDetailsResponse?;
+          setState(() {});
+        }
+      },
+      builder: (context, state) {
+        if (state is BookingDetailsLoadingState) {
+          return Container(
+            color: whiteColor,
+            alignment: Alignment.center,
+            child: LoadingWithoutText(),
+          );
+        } else {
+          final booking = bookingDetailsResponse?.data;
+          return Scaffold(
+            backgroundColor: whiteColor,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(size.width * 0.25),
+              child: CustomStatusBarWidget(
                 title: '',
-                value: type == 'urban'
-                    ? AppLocalizations.of(context)!.urbanString
-                    : AppLocalizations.of(context)!.ruralString,
-                titleStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 20,
-                      color: whiteColor,
+                text: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CustomRichText(
+                      title: '',
+                      value: widget.type == 'urban'
+                          ? AppLocalizations.of(context)!.urbanString
+                          : AppLocalizations.of(context)!.ruralString,
+                      titleStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontSize: 20,
+                            color: whiteColor,
+                          ),
+                      valueStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontSize: 22,
+                            color: whiteColor,
+                          ),
                     ),
-                valueStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 22,
-                      color: whiteColor,
+                    SizedBox(
+                      width: size.width * 0.1,
                     ),
-              ),
-              SizedBox(
-                width: size.width * 0.1,
-              ),
-              requestData?.status == 1 && requestData?.isBookingActive == 1
-                  ? GestureDetector(
-                      onTap: () {
-                        makePhoneCall(requestData?.receiverContactNo ?? '', context);
-                      },
-                      child: Image.asset(
-                        phoneCallIcon,
-                        width: 24,
-                        color: whiteColor,
-                      ),
-                    )
-                  : SizedBox.shrink(),
-              const SizedBox(
-                width: 20,
-              ),
-              requestData?.status == 1 && requestData?.isBookingActive == 1
-                  ? GestureDetector(
-                      onTap: () {
-                        context.pushNamed(chatScreen, extra: {
-                          'senderId': requestData?.userId.toString(),
-                          'receiverId': requestData?.driverId.toString(),
-                          'senderName': authCubit.userDetails?.data?.name,
-                          'type': 'customer',
-                          'receiverName': requestData?.driverData?.name,
-                          'receiverImageUrl': requestData?.driverData?.profilePhotoUrl,
-                        });
-                      },
-                      child: Icon(
-                        Icons.chat,
-                        color: whiteColor,
-                        size: 24,
-                      ),
-                    )
-                  : SizedBox.shrink(),
-            ],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
-            const SizedBox(height: 8),
-            ShowLocationWidget(address: requestData?.pickupAddress),
-            const CustomDivider(),
-            CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
-            const SizedBox(height: 8),
-            ShowLocationWidget(address: requestData?.dropAddress),
-            const CustomDivider(),
-            CustomText(text: AppLocalizations.of(context)!.receiverNameString),
-            const SizedBox(height: 8),
-            CustomTextMedium(text: requestData?.receiverName ?? ''),
-            const CustomDivider(),
-            CustomText(text: AppLocalizations.of(context)!.contactNoString),
-            const SizedBox(height: 8),
-            CustomTextMedium(text: requestData?.receiverContactNo ?? ''),
-            const CustomDivider(),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: CustomRichText(
-                title: '${AppLocalizations.of(context)!.statusString}: ',
-                value: requestData?.status == 1
-                    ? AppLocalizations.of(context)!.confirmString
-                    : AppLocalizations.of(context)!.pendingString,
-                titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
+                    bookingDetailsResponse?.data?.status == 1 && booking?.isBookingActive == 1
+                        ? GestureDetector(
+                            onTap: () {
+                              makePhoneCall(booking?.receiverContactNo ?? '', context);
+                            },
+                            child: Image.asset(
+                              phoneCallIcon,
+                              width: 24,
+                              color: whiteColor,
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                    const SizedBox(
+                      width: 20,
                     ),
-                valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    booking?.status == 1 && booking?.isBookingActive == 1
+                        ? GestureDetector(
+                            onTap: () {
+                              context.pushNamed(chatScreen, extra: {
+                                'senderId': booking?.userId.toString(),
+                                'receiverId': booking?.driverId.toString(),
+                                'senderName': authCubit.userDetails?.data?.name,
+                                'type': 'customer',
+                                'receiverName': booking?.driverData?.name,
+                                'receiverImageUrl': booking?.driverData?.profilePhotoUrl,
+                              });
+                            },
+                            child: Icon(
+                              Icons.chat,
+                              color: whiteColor,
+                              size: 24,
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ],
+                ),
               ),
             ),
-            if (type == 'urban') UrbanItemsSection(requestData: requestData, size: size),
-            if (type == 'rural') RuralDetailsSection(requestData: requestData, size: size),
-            const SizedBox(height: 20),
-            requestData?.status == 1 && requestData?.isBookingActive == 1
-                ? CustomElevatedButton(
-                    name:
-                        "${AppLocalizations.of(context)!.trackString} ${AppLocalizations.of(context)!.driverString}",
-                    borderRadius: 25,
-                    alignment: Alignment.bottomCenter,
-                    onPressed: () async {
-                      context.pushNamed(trackDriverScreen, extra: {
-                        'type': requestData?.rideType?.toLowerCase(),
-                        'data': requestData,
-                      });
-                    },
-                  )
-                : SizedBox.shrink(),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
+                  const SizedBox(height: 8),
+                  ShowLocationWidget(address: booking?.pickupAddress),
+                  const CustomDivider(),
+                  CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
+                  const SizedBox(height: 8),
+                  ShowLocationWidget(address: booking?.dropAddress),
+                  const CustomDivider(),
+                  CustomText(text: AppLocalizations.of(context)!.receiverNameString),
+                  const SizedBox(height: 8),
+                  CustomTextMedium(text: booking?.receiverName ?? ''),
+                  const CustomDivider(),
+                  CustomText(text: AppLocalizations.of(context)!.contactNoString),
+                  const SizedBox(height: 8),
+                  CustomTextMedium(text: booking?.receiverContactNo ?? ''),
+                  const CustomDivider(),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomRichText(
+                      title: '${AppLocalizations.of(context)!.statusString}: ',
+                      value: booking?.bookingStatus,
+                      titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                          ),
+                      valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                  ),
+                  if (widget.type == 'urban') UrbanItemsSection(requestData: booking, size: size),
+                  if (widget.type == 'rural') RuralDetailsSection(requestData: booking, size: size),
+                  const SizedBox(height: 20),
+                  booking?.status == 1 && booking?.isBookingActive == 1
+                      ? CustomElevatedButton(
+                          name:
+                              "${AppLocalizations.of(context)!.trackString} ${AppLocalizations.of(context)!.driverString}",
+                          borderRadius: 25,
+                          alignment: Alignment.bottomCenter,
+                          onPressed: () async {
+                            context.pushNamed(trackDriverScreen, extra: {
+                              'type': booking?.rideType?.toLowerCase(),
+                              'data': booking,
+                            });
+                          },
+                        )
+                      : SizedBox.shrink(),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }
@@ -177,7 +221,7 @@ class UrbanItemsSection extends StatelessWidget {
     required this.size,
   });
 
-  final customer.Data? requestData;
+  final Data? requestData;
   final Size size;
 
   // Cache map to store futures
@@ -274,7 +318,7 @@ class UrbanItemsSection extends StatelessWidget {
 class RuralDetailsSection extends StatelessWidget {
   const RuralDetailsSection({super.key, required this.requestData, required this.size});
 
-  final customer.Data? requestData;
+  final Data? requestData;
   final Size size;
 
   @override

@@ -52,6 +52,7 @@ const String getCustomerBookingsUrl = '$_baseUrl/get_customer_bookings';
 const String getPackagingTypeUrl = '$_baseUrl/get_package_type';
 const String getProductNameUrl = '$_baseUrl/get_product';
 const String getQuantityUrl = '$_baseUrl/get_qty_master';
+const String getBookingDetailsUrl = '$_baseUrl/get_booking_details';
 
 //* Settings
 

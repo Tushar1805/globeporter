@@ -147,7 +147,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
             onTap: () {
               context.pushNamed(myRequestDetailsScreen, extra: {
                 'type': request?.rideType?.toLowerCase(),
-                'requestData': request,
+                'bookingId': request?.id.toString(),
               });
             },
             child: Padding(

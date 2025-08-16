@@ -59,3 +59,13 @@ class NearbyDriversLoadingState extends LoadingState {
 class NearbyDriversLoadedState extends LoadedState {
   NearbyDriversLoadedState({required super.data});
 }
+
+class BookingDetailsLoadingState extends LoadingState {
+  BookingDetailsLoadingState(super.loadingMessage);
+}
+
+class BookingDetailsLoadedState extends LoadedState {
+  BookingDetailsLoadedState({required super.data});
+}
+
+

@@ -2,6 +2,7 @@ import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart';
 import 'package:globeporter/presentation/customer/repository/customer_repository.dart';
 import 'package:globeporter/presentation/customer/states/customer_states.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
@@ -63,6 +64,25 @@ class CustomerCubit extends BaseCubit {
       emit(CustomerRideBookingsLoadedState(data: response));
     } catch (e) {
       handleExceptions(e);
+    }
+  }
+
+  Future<BookingDetailsResponse?> getBookingDetails({
+    required final String bookingId,
+  }) async {
+    try {
+      emit(BookingDetailsLoadingState('Loading bookings details'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _customerRepository.getBookingDetails(
+          lang: lang ?? 'en', accessToken: accessToken ?? '', bookingId: bookingId);
+
+      emit(BookingDetailsLoadedState(data: response));
+      return response;
+    } catch (e) {
+      handleExceptions(e);
+      return null;
     }
   }
 

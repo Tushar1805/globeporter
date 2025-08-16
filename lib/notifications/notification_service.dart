@@ -1,19 +1,119 @@
 // ignore_for_file: use_build_context_synchronously, avoid_dynamic_calls, avoid_print
+import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
+import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/routes/app_router.dart';
+import 'package:globeporter/routes/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+// Top-level background tap handler for flutter_local_notifications (runs in background isolate)
 @pragma('vm:entry-point')
 void onDidReceiveBackgroundNotificationResponse(
   final NotificationResponse notificationResponse,
 ) {
-  customPrint('******** background notifcation');
-  print(' ******** relese on tap');
+  final NotificationServices notificationService = NotificationServices();
+  customPrint('******** background notification tapped (background isolate)');
+  if (kDebugMode) {
+    customPrint('background tap payload: ${notificationResponse.payload}');
+  }
+  // Keep minimal - navigation should be handled when app resumes (getInitialMessage / onMessageOpenedApp)
+  if (notificationResponse.payload != null) {
+    try {
+      final decoded = jsonDecode(notificationResponse.payload!);
+      if (decoded is Map<String, dynamic>) {
+        notificationService.handleMessageFromData(Map<String, dynamic>.from(decoded));
+      } else {
+        customPrint('Notification payload is not a Map: $decoded');
+      }
+    } catch (e) {
+      customPrint('Failed to decode notification payload: $e');
+    }
+    return;
+  }
+}
+
+// Top-level Firebase background message handler (must be top-level and annotated)
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Ensure Firebase is initialized in this isolate
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    // If already initialized, ignore
+    if (kDebugMode) print('Firebase init in background handler: $e');
+  }
+
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  const androidInit = AndroidInitializationSettings('mipmap/ic_launcher');
+  const iosInit = DarwinInitializationSettings();
+  final initSettings = InitializationSettings(android: androidInit, iOS: iosInit);
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initSettings,
+    onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
+  );
+
+  final channelId = message.notification?.android?.channelId?.toString() ?? 'default_channel';
+  final channelName = channelId;
+
+  final channel = AndroidNotificationChannel(
+    channelId,
+    channelName,
+    importance: Importance.max,
+  );
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  final androidNotificationDetails = AndroidNotificationDetails(
+    channel.id,
+    channel.name,
+    channelDescription: 'your channel description',
+    importance: Importance.max,
+    priority: Priority.max,
+    ticker: 'ticker',
+    sound: channel.sound,
+    number: message.notification?.android?.count ?? 0,
+    icon: '@drawable/ic_icon',
+    color: primaryColor,
+  );
+
+  const darwinNotificationDetails = DarwinNotificationDetails(
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true,
+  );
+
+  final notificationDetails = NotificationDetails(
+    android: androidNotificationDetails,
+    iOS: darwinNotificationDetails,
+  );
+
+  final title = message.notification?.title ?? message.data['title'] ?? '';
+  final body = message.notification?.body ?? message.data['body'] ?? '';
+  final payload = jsonEncode(message.data);
+
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    title,
+    body,
+    notificationDetails,
+    payload: payload,
+  );
+
+  if (kDebugMode) {
+    print('Background handler: displayed notification: $title / $body, data: ${message.data}');
+  }
 }
 
 class NotificationServices {
@@ -39,14 +139,33 @@ class NotificationServices {
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSetting,
       onDidReceiveNotificationResponse: (final NotificationResponse notificationResponse) {
-        print('relese on tap');
-        handleMessage(message);
+        // App in foreground/background (non-terminated)
+        if (kDebugMode) print('release on tap -> Foreground');
+
+        // Prefer payload (set when we showed the local notification). If not present, fall back to the
+        // RemoteMessage that was used to create this notification (the `message` param) as a last resort.
+        if (notificationResponse.payload != null) {
+          try {
+            final decoded = jsonDecode(notificationResponse.payload!);
+            if (decoded is Map<String, dynamic>) {
+              handleMessageFromData(Map<String, dynamic>.from(decoded));
+            } else {
+              customPrint('Notification payload is not a Map: $decoded');
+            }
+          } catch (e) {
+            customPrint('Failed to decode notification payload: $e');
+          }
+          return;
+        }
+
+        // FALLBACK: existing logic - call handleMessage with the RemoteMessage passed to initLocalNotifications
+        try {
+          handleMessage(message);
+        } catch (e) {
+          customPrint('Error handling notification tap fallback: $e');
+        }
       },
-      // onDidReceiveBackgroundNotificationResponse:
-      //     (final NotificationResponse notificationResponse) {
-      //   print('relese on tap');
-      //   handleMessage(message);
-      // },
+      onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
     );
   }
 
@@ -78,23 +197,12 @@ class NotificationServices {
   }
 
   void firebaseInit(final BuildContext context) async {
+    // getInitialMessage will be handled below
     await FirebaseMessaging.instance.getInitialMessage();
-    FirebaseMessaging.onBackgroundMessage((final message) {
-      final notification = message.notification;
-      final android = message.notification!.android;
-      if (kDebugMode) {
-        print('notifications title:${notification!.title}');
-        print('notifications body:${notification.body}');
-        print(
-          'count:${android?.count == null ? notificationCount : android?.count ?? 0}',
-        );
-        print('data:${message.data}');
-      }
-      return showNotification(
-        message,
-        android?.count == null ? notificationCount : android?.count ?? 0,
-      );
-    });
+
+    // Register the top-level background handler. It's important this is a top-level function.
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
     FirebaseMessaging.onMessage.listen((final RemoteMessage message) {
       final notification = message.notification;
       final android = message.notification!.android;
@@ -163,12 +271,15 @@ class NotificationServices {
       iOS: darwinNotificationDetails,
     );
 
+    final payload = jsonEncode(message.data);
+
     Future.delayed(Duration.zero, () {
       _flutterLocalNotificationsPlugin.show(
         0,
         message.notification!.title.toString(),
         message.notification!.body.toString(),
         notificationDetails,
+        payload: payload,
       );
     });
   }
@@ -183,12 +294,15 @@ class NotificationServices {
       iOS: darwinNotificationDetails,
     );
 
+    final payload = jsonEncode(message.data);
+
     Future.delayed(Duration.zero, () {
       _flutterLocalNotificationsPlugin.show(
         0,
         message.notification!.title.toString(),
         message.notification!.body.toString(),
         notificationDetails,
+        payload: payload,
       );
     });
   }
@@ -199,13 +313,20 @@ class NotificationServices {
     return token;
   }
 
-//* To check whether the existing token is expired or not
+  //* To check whether the existing token is expired or not
   Future<bool> isTokenRefresh() async {
-    bool val = false;
-    messaging.onTokenRefresh.listen((final event) {
-      val = true;
+    final completer = Completer<bool>();
+    StreamSubscription<String>? sub;
+
+    sub = messaging.onTokenRefresh.listen((_) {
+      sub?.cancel();
+      if (!completer.isCompleted) {
+        completer.complete(true);
+      }
     });
-    return val;
+
+    // If no refresh within 10s, assume false
+    return completer.future.timeout(const Duration(seconds: 10), onTimeout: () => false);
   }
 
   Future foregroundMessage() async {
@@ -216,7 +337,35 @@ class NotificationServices {
     );
   }
 
+  // Keep existing signature but delegate to _handleData so we can reuse logic
   void handleMessage(final RemoteMessage message) async {
-    customPrint(message);
+    await _handleData(message.data);
+  }
+
+  // Called when we have payload/data (from local notification tap payload)
+  Future<void> handleMessageFromData(final Map<String, dynamic> data) async {
+    await _handleData(data);
+  }
+
+  // Centralized data handling logic
+  Future<void> _handleData(final Map<String, dynamic> data) async {
+    customPrint(data);
+    try {
+      final customerCubit = sl<CustomerCubit>();
+      if (data['type'].toString() == '1') {
+        if (data['user_type'].toString() == '1') {
+          final response =
+              await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+
+          //* Route to customer -> request details
+          await router.pushNamed(myRequestDetailsScreen, extra: {
+            'type': response?.data?.rideType?.toLowerCase(),
+            'bookingId': data['booking_id'].toString(),
+          });
+        }
+      }
+    } catch (e) {
+      customPrint('Error: Redirecting to the screen: $e');
+    }
   }
 }

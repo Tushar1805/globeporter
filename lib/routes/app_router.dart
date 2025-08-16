@@ -14,9 +14,10 @@ import 'package:globeporter/presentation/customer/view/create_request_screen.dar
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
 import 'package:globeporter/presentation/customer/view/track_driver_screen.dart';
 import 'package:globeporter/presentation/settings/view/customer_profile_screen.dart';
-import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
+// import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart' as booking;
 import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart'
-    as pendingBookings;
+    as pending_ookings;
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
@@ -218,7 +219,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: MyRequestDetailsScreen(
             type: params?['type'] as String?,
-            requestData: params?['requestData'] as customer.Data?,
+            bookingId: params?['bookingId'] as String?,
           ),
         );
       },
@@ -232,7 +233,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: TrackDriverScreen(
             type: params?['type'] as String?,
-            data: params?['data'] as customer.Data?,
+            data: params?['data'] as booking.Data?,
           ),
         );
       },
@@ -254,7 +255,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: ItemDetailsScreen(
             type: params?['type'] as String?,
-            data: params?['data'] as pendingBookings.Data?,
+            data: params?['data'] as pending_ookings.Data?,
           ),
         );
       },
@@ -268,7 +269,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: TripInfoScreen(
             type: params?['type'] as String?,
-            data: params?['data'] as pendingBookings.Data?,
+            data: params?['data'] as pending_ookings.Data?,
           ),
         );
       },
@@ -282,7 +283,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: StartTripScreen(
             type: params?['type'] as String?,
-            data: params?['data'] as pendingBookings.Data?,
+            data: params?['data'] as pending_ookings.Data?,
           ),
         );
       },

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
-import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart' as booking;
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -17,7 +17,7 @@ import 'package:rxdart/rxdart.dart';
 
 class TrackDriverScreen extends StatefulWidget {
   const TrackDriverScreen({super.key, required this.data, required this.type});
-  final customer.Data? data;
+  final booking.Data? data;
   final String? type;
 
   @override

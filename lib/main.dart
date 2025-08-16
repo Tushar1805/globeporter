@@ -1,10 +1,16 @@
+// ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
+
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:core/localization/language_cubit.dart';
+import 'package:core/utils/core_utils.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
@@ -22,19 +28,12 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 
 final NotificationServices notificationServices = NotificationServices();
 
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(
-  final RemoteMessage message,
-) async {
-  await Firebase.initializeApp();
-}
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   setupServiceLocator();
   await ensurePermissions();
   await initializeBackgroundService();
@@ -80,13 +79,77 @@ class GlobePorter extends StatefulWidget {
 class _GlobePorterState extends State<GlobePorter> {
   late final ThemeCubit themeCubit;
   late final LanguageCubit languageCubit;
+  final NotificationServices _notificationService = NotificationServices();
+  final FlutterLocalNotificationsPlugin _mainFlutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
-    super.initState();
     themeCubit = sl<ThemeCubit>();
     languageCubit = sl<LanguageCubit>();
     languageCubit.getLanguage();
+    _configureNotifications();
+    super.initState();
+  }
+
+  Future<void> _configureNotifications() async {
+    // 1. Ask for permissions
+    _notificationService.requestNotificationPermission();
+
+    // 2. Initialize flutter_local_notifications in the MAIN isolate so taps are handled reliably
+    const androidInit = AndroidInitializationSettings('mipmap/ic_launcher');
+    const iosInit = DarwinInitializationSettings();
+    final initSettings = InitializationSettings(android: androidInit, iOS: iosInit);
+
+    await _mainFlutterLocalNotificationsPlugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        // When user taps a *local* notification shown by the plugin,
+        // the payload is the JSON we set when showing the notification.
+        if (response.payload != null && response.payload!.isNotEmpty) {
+          try {
+            final Map<String, dynamic> data =
+                Map<String, dynamic>.from(jsonDecode(response.payload!));
+            _notificationService.handleMessageFromData(data);
+          } catch (e) {
+            customPrint('Failed to parse notification payload: $e');
+          }
+        }
+      },
+      // Provide the same background tap handler you have in the service (top-level).
+      onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
+    );
+
+    // 3. Create an Android channel up-front so any background isolate notification uses it
+    const channel = AndroidNotificationChannel(
+      'default_channel', // id
+      'Default Channel', // name
+      importance: Importance.max,
+    );
+    await _mainFlutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    // 4. Handle the case where the app was launched by tapping a notification (terminated -> open)
+    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      // forward to your existing handler (keeps your original routing logic)
+      _notificationService.handleMessage(initialMessage);
+    }
+
+    // 5. Let your NotificationServices register its listeners which require a BuildContext
+    //    (your firebaseInit registers onMessage, onBackgroundMessage, etc.)
+    _notificationService.firebaseInit(context);
+
+    // 6. Also handle app-open-from-background taps globally (cover Android + iOS)
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _notificationService.handleMessage(message);
+    });
+
+    // 7. For iOS foreground presentation
+    if (Platform.isIOS) {
+      await _notificationService.foregroundMessage();
+    }
   }
 
   @override

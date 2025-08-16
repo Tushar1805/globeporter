@@ -6,6 +6,7 @@ import 'package:datasource/base_repository.dart';
 import 'package:datasource/network/api_call_type.dart';
 import 'package:datasource/network/api_response_type.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart';
 import 'package:globeporter/presentation/customer/model/customer_ride_response.dart';
 import 'package:globeporter/presentation/customer/model/packaging_type_reponse.dart';
 import 'package:globeporter/presentation/customer/model/quantify_response_model.dart';
@@ -77,6 +78,23 @@ class CustomerRepository extends BaseRepository {
     );
 
     return CustomerRideBookingResponse.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<BookingDetailsResponse?> getBookingDetails({
+    required final String lang,
+    required final String accessToken,
+    required final String bookingId,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getBookingDetailsUrl,
+      accessToken: accessToken,
+      requestModel: {'lang': lang, 'booking_id': bookingId},
+    );
+
+    return BookingDetailsResponse.fromJson(
       responseData as Map<String, dynamic>?,
     );
   }
