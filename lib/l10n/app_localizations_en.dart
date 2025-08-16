@@ -505,4 +505,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dataString => 'data';
+
+  @override
+  String get enterAmountString => 'Enter Amount';
+
+  @override
+  String get amountString => 'Amount';
 }

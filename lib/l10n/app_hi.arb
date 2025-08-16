@@ -163,5 +163,7 @@
     "backgroundLocationRequiredString": "पृष्ठभूमि स्थान आवश्यक",
     "backgroundLocationDescriptionString": "ऐप बंद होने पर भी अपनी यात्राओं पर नज़र रखने के लिए, आपको सेटिंग में स्थान अनुमति को \"हमेशा अनुमति दें\" पर सेट करना होगा।",
     "openSettingString": "सेटिंग्स खोलें",
-    "dataString": "डेटा"
+    "dataString": "डेटा",
+    "enterAmountString": "राशि डालें",
+    "amountString": "राशि"
 }

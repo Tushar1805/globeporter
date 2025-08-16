@@ -502,4 +502,10 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get dataString => 'डेटा';
+
+  @override
+  String get enterAmountString => 'रक्कम प्रविष्ट करा';
+
+  @override
+  String get amountString => 'रक्कम';
 }

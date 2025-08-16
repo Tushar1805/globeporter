@@ -325,5 +325,9 @@
     "openSettingString": "Open Settings",
     "@openSettingString": {},
     "dataString" : "data",
-    "@dataString": {}
+    "@dataString": {},
+    "enterAmountString": "Enter Amount",
+    "@enterAmountString": {},
+    "amountString": "Amount",
+    "@amountString": {}
 }

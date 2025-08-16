@@ -503,4 +503,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get dataString => 'डेटा';
+
+  @override
+  String get enterAmountString => 'राशि डालें';
+
+  @override
+  String get amountString => 'राशि';
 }

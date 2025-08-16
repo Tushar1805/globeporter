@@ -1065,6 +1065,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'data'**
   String get dataString;
+
+  /// No description provided for @enterAmountString.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Amount'**
+  String get enterAmountString;
+
+  /// No description provided for @amountString.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amountString;
 }
 
 class _AppLocalizationsDelegate
