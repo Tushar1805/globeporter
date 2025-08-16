@@ -73,7 +73,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     _locationSubscription?.cancel(); // cancel previous listener if any
 
     _locationSubscription = _location.onLocationChanged
-        .throttleTime(const Duration(seconds: 20))
+        .throttleTime(const Duration(seconds: 10))
         .listen((locationData) {
       if (locationData.latitude == null || locationData.longitude == null) return;
 
