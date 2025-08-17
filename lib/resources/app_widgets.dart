@@ -19,7 +19,7 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:globeporter/presentation/customer/model/packaging_type_reponse.dart' as package;
 import 'package:globeporter/presentation/driver/model/product_name_response.dart' as product;
-import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart' as pending;
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart' as booking;
 
 class CustomText extends StatelessWidget {
   const CustomText({super.key, required this.text, this.fontSize, this.style});
@@ -761,7 +761,7 @@ class DynamicItemDialog extends StatefulWidget {
 
   final String? type;
   final String? bookingId;
-  final pending.Data? data;
+  final booking.Data? data;
 
   @override
   State<DynamicItemDialog> createState() => _DynamicItemDialogState();
@@ -833,7 +833,7 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
                   .then((value) {
                 context.pushReplacementNamed(startTripScreen, extra: {
                   'type': widget.type,
-                  'data': widget.data,
+                  'bookingId': widget.data?.id.toString(),
                 });
               });
               await driverCubit.getDriverBookings();
@@ -1086,7 +1086,7 @@ void showDynamicItemDialog({
   required final BuildContext context,
   required final String? type,
   required final String? bookingId,
-  required final pending.Data? data,
+  required final booking.Data? data,
 }) {
   showDialog(
     barrierDismissible: false,

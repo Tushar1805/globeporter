@@ -144,3 +144,11 @@ class UpdateBookingDetailsByDriverLoadedState extends LoadedState {
   UpdateBookingDetailsByDriverLoadedState({required super.data});
 }
 
+class BookingDetailsLoadingState extends LoadingState {
+  BookingDetailsLoadingState(super.loadingMessage);
+}
+
+class BookingDetailsLoadedState extends LoadedState {
+  BookingDetailsLoadedState({required super.data});
+}
+

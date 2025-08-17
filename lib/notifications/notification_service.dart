@@ -352,7 +352,11 @@ class NotificationServices {
     customPrint(data);
     try {
       final customerCubit = sl<CustomerCubit>();
-      if (data['type'].toString() == '1') {
+      if (data['type'] == '0') {
+        await router.pushNamed(driverRideNotificationScreen, extra: {
+          'bookingId': data['booking_id'].toString(),
+        });
+      } else if (data['type'].toString() == '1') {
         if (data['user_type'].toString() == '1') {
           final response =
               await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());

@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
-import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart';
+import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart' as pending;
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_extension_functions.dart';
@@ -26,7 +26,7 @@ class MyTripsScreen extends StatefulWidget {
 class _MyTripsScreenState extends State<MyTripsScreen> {
   final driverCubit = sl<DriverCubit>();
   bool loading = false;
-  PendingBookingsResponse? driverBookingsResponse;
+  pending.PendingBookingsResponse? driverBookingsResponse;
   FToast? fToast;
 
   void loadDriverBookings() async {
@@ -90,7 +90,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
               loading = true;
             });
           } else if (state is DriverBookingsLoadedState) {
-            final data = state.data as PendingBookingsResponse?;
+            final data = state.data as pending.PendingBookingsResponse?;
             if (data?.data == null) {
               driverBookingsResponse = null;
             } else {
@@ -212,7 +212,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                                 itemDetailsScreen,
                                                 extra: {
                                                   'type': trip?.rideType?.toLowerCase(),
-                                                  'data': trip,
+                                                  'bookingId': trip?.id.toString(),
                                                 },
                                               );
                                             } else if (RideStatus.onTheWay.value ==
@@ -221,7 +221,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                                 tripInfoScreen,
                                                 extra: {
                                                   'type': trip?.rideType?.toLowerCase(),
-                                                  'data': trip
+                                                  'bookingId': trip?.id.toString(),
                                                 },
                                               );
                                             } else if (RideStatus.arrivedAtPickup.value ==
@@ -232,7 +232,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                                 startTripScreen,
                                                 extra: {
                                                   'type': trip?.rideType?.toLowerCase(),
-                                                  'data': trip
+                                                  'bookingId': trip?.id.toString(),
                                                 },
                                               );
                                             }

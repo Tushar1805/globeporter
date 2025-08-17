@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:datasource/base_repository.dart';
 import 'package:datasource/network/api_call_type.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart';
 import 'package:globeporter/presentation/customer/model/packaging_type_reponse.dart';
 import 'package:globeporter/presentation/driver/model/driver_details_response_model.dart';
 import 'package:globeporter/presentation/driver/model/owner_details_response_model.dart';
@@ -136,6 +137,23 @@ class DriverRepository extends BaseRepository {
 
     return responseData;
   }
+  Future<BookingDetailsResponse?> getBookingDetails({
+    required final String lang,
+    required final String accessToken,
+    required final String bookingId,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: getBookingDetailsUrl,
+      accessToken: accessToken,
+      requestModel: {'lang': lang, 'booking_id': bookingId},
+    );
+
+    return BookingDetailsResponse.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
 
   Future<OwnerDetailsResponseModel?> getOwnerDetails({
     required final String lang,

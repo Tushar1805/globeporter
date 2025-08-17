@@ -2,6 +2,7 @@ import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart';
 import 'package:globeporter/presentation/driver/repository/driver_repository.dart';
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
 import 'package:globeporter/resources/app_keys.dart';
@@ -57,6 +58,25 @@ class DriverCubit extends BaseCubit {
       handleExceptions(e);
     }
   }
+  Future<BookingDetailsResponse?> getBookingDetails({
+    required final String bookingId,
+  }) async {
+    try {
+      emit(BookingDetailsLoadingState('Loading bookings details'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _driverRepository.getBookingDetails(
+          lang: lang ?? 'en', accessToken: accessToken ?? '', bookingId: bookingId);
+
+      emit(BookingDetailsLoadedState(data: response));
+      return response;
+    } catch (e) {
+      handleExceptions(e);
+      return null;
+    }
+  }
+
 
   Future<void> updateBookingDetailsByDriver({
     required final String bookingId,

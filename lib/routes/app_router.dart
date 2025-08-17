@@ -13,11 +13,10 @@ import 'package:globeporter/presentation/chats/view/chat_screen.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
 import 'package:globeporter/presentation/customer/view/track_driver_screen.dart';
+import 'package:globeporter/presentation/driver/view/accept_ride_notification_screen.dart';
 import 'package:globeporter/presentation/settings/view/customer_profile_screen.dart';
 // import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
 import 'package:globeporter/presentation/customer/model/booking_details_response.dart' as booking;
-import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart'
-    as pending_ookings;
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
@@ -256,7 +255,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: ItemDetailsScreen(
             type: params?['type'] as String?,
-            data: params?['data'] as pending_ookings.Data?,
+            bookingId: params?['bookingId'] as String,
           ),
         );
       },
@@ -270,7 +269,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: TripInfoScreen(
             type: params?['type'] as String?,
-            data: params?['data'] as pending_ookings.Data?,
+            bookingId: params?['bookingId'] as String,
           ),
         );
       },
@@ -284,7 +283,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: StartTripScreen(
             type: params?['type'] as String?,
-            data: params?['data'] as pending_ookings.Data?,
+            bookingId: params?['bookingId'] as String,
           ),
         );
       },
@@ -470,6 +469,19 @@ final GoRouter router = GoRouter(
         key: state.pageKey,
         child: const TransactionHistoryScreen(),
       ),
+    ),
+    GoRoute(
+      name: driverRideNotificationScreen,
+      path: driverRideNotificationScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: DriverRideNotificationScreen(
+            bookingId: params?['bookingId'] as String,
+          ),
+        );
+      },
     ),
   ],
 );

@@ -371,7 +371,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 itemDetailsScreen,
                 extra: {
                   'type': currentData?.rideType?.toLowerCase(),
-                  'data': currentData,
+                  'bookingId': currentData?.id.toString(),
                 },
               );
               loadPendingBookings();
