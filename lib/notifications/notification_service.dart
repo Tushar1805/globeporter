@@ -378,6 +378,44 @@ class NotificationServices {
           'receiverName': data['senderName'],
           'receiverImageUrl': data['receiverImageUrl'],
         });
+      } else if (data['type'] == "5" && data['user_type'].toString() == "1") {
+        //* Status on the way -> Track driver
+        final response =
+            await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+        await router.pushNamed(trackDriverScreen, extra: {
+          'type': response?.data?.rideType?.toLowerCase(),
+          'data': response?.data,
+        });
+      } else if (data['type'] == '6' && data['user_type'].toString() == "1") {
+        //* Status Arrived at pickup
+        final response =
+            await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+
+        //* Route to customer -> request details
+        await router.pushNamed(myRequestDetailsScreen, extra: {
+          'type': response?.data?.rideType?.toLowerCase(),
+          'bookingId': data['booking_id'].toString(),
+        });
+      } else if (data['type'] == '7' && data['user_type'].toString() == "1") {
+        //* Status Ride started
+        final response =
+            await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+
+        //* Route to customer -> request details
+        await router.pushNamed(myRequestDetailsScreen, extra: {
+          'type': response?.data?.rideType?.toLowerCase(),
+          'bookingId': data['booking_id'].toString(),
+        });
+      } else if (data['type'] == '8' && data['user_type'].toString() == "1") {
+        //* Status Arrived at destination
+        final response =
+            await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+
+        //* Route to customer -> request details
+        await router.pushNamed(myRequestDetailsScreen, extra: {
+          'type': response?.data?.rideType?.toLowerCase(),
+          'bookingId': data['booking_id'].toString(),
+        });
       }
     } catch (e) {
       customPrint('Error: Redirecting to the screen: $e');
