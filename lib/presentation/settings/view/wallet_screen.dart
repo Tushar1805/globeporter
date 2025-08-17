@@ -4,6 +4,7 @@ import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
@@ -15,6 +16,7 @@ import 'package:globeporter/resources/app_api_keys.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
+import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -128,11 +130,57 @@ class _WalletScreenState extends State<WalletScreen> {
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(size.width * 0.35),
-        child: CustomStatusBarWidget(
-          title: locale.walletString,
-          height: size.width * 0.35,
-          titlePositionTop: size.width * 0.2,
+        preferredSize: Size.fromHeight(size.width * 0.3),
+        child: Stack(
+          children: [
+            Container(
+              height: size.width * 0.3,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(size.width * 0.127),
+                  bottomRight: Radius.circular(size.width * 0.127),
+                ),
+              ),
+            ),
+            Positioned(
+              top: size.height * 0.055,
+              right: 15,
+              child: Center(
+                child: SvgPicture.asset(
+                  appLogoSmall,
+                  width: MediaQuery.sizeOf(context).width * .25,
+                ),
+              ),
+            ),
+            Positioned(
+              top: size.height * 0.055,
+              left: size.width * 0.043,
+              child: Text(
+                locale.walletString,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: whiteColor,
+                      fontSize: 24,
+                    ),
+              ),
+            ),
+            Positioned(
+              bottom: size.width * 0.07,
+              right: size.width * 0.07,
+              child: GestureDetector(
+                onTap: () {
+                  context.pushNamed(transactionHistoryScreen);
+                },
+                child: Center(
+                    child: Icon(
+                  Icons.receipt_long_outlined,
+                  color: whiteColor,
+                  size: 30,
+                )),
+              ),
+            ),
+          ],
         ),
       ),
       body: BlocConsumer(

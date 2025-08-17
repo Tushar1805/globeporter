@@ -33,6 +33,7 @@ import 'package:globeporter/presentation/driver/view/trip_info_screen.dart';
 import 'package:globeporter/presentation/driver/widgets/full_image_preview.dart';
 import 'package:globeporter/presentation/driver/widgets/image_review_screen.dart';
 import 'package:globeporter/presentation/driver/widgets/normal_upload_screen.dart';
+import 'package:globeporter/presentation/settings/view/transaction_history_screen.dart';
 import 'package:globeporter/presentation/settings/view/view_documents_screen.dart';
 import 'package:globeporter/presentation/settings/view/wallet_screen.dart';
 import 'package:globeporter/presentation/notification/view/notification_screen.dart';
@@ -460,6 +461,14 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const ContactPickerScreen(),
+      ),
+    ),
+    GoRoute(
+      name: transactionHistoryScreen,
+      path: transactionHistoryScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const TransactionHistoryScreen(),
       ),
     ),
   ],

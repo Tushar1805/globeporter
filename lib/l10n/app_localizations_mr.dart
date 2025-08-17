@@ -508,4 +508,13 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get amountString => 'रक्कम';
+
+  @override
+  String get transactionHistoryString => 'व्यवहार इतिहास';
+
+  @override
+  String get debitedToString => 'यांना डेबिट केले';
+
+  @override
+  String get creditedToString => 'यांना क्रेडिट केले';
 }

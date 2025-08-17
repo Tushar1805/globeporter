@@ -165,5 +165,9 @@
     "openSettingString": "सेटिंग्स खोलें",
     "dataString": "डेटा",
     "enterAmountString": "राशि डालें",
-    "amountString": "राशि"
+    "amountString": "राशि",
+    "transactionHistoryString": "लेन-देन इतिहास",
+    "debitedToString": "डेबिट किया गया",
+    "creditedToString": "क्रेडिट किया गया"
+    
 }

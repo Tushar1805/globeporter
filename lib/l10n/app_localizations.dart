@@ -1077,6 +1077,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount'**
   String get amountString;
+
+  /// No description provided for @transactionHistoryString.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction History'**
+  String get transactionHistoryString;
+
+  /// No description provided for @debitedToString.
+  ///
+  /// In en, this message translates to:
+  /// **'Debited To'**
+  String get debitedToString;
+
+  /// No description provided for @creditedToString.
+  ///
+  /// In en, this message translates to:
+  /// **'Credited To'**
+  String get creditedToString;
 }
 
 class _AppLocalizationsDelegate

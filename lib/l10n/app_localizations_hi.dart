@@ -509,4 +509,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get amountString => 'राशि';
+
+  @override
+  String get transactionHistoryString => 'लेन-देन इतिहास';
+
+  @override
+  String get debitedToString => 'डेबिट किया गया';
+
+  @override
+  String get creditedToString => 'क्रेडिट किया गया';
 }

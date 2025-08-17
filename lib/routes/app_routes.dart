@@ -43,3 +43,4 @@ const fullImagePreviewScreen = '/full_image_preview_screen';
 const imageReviewScreen = '/image_review_screen';
 const viewDocumentsScreen = '/view_document_screen';
 const contactPickerScreen = '/contact_picker_screen';
+const transactionHistoryScreen = '/transactinon_history_screen';

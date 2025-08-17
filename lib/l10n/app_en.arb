@@ -329,5 +329,11 @@
     "enterAmountString": "Enter Amount",
     "@enterAmountString": {},
     "amountString": "Amount",
-    "@amountString": {}
+    "@amountString": {},
+    "transactionHistoryString": "Transaction History",
+    "@transactionHistoryString": {},
+    "debitedToString": "Debited To",
+    "@debitedToString": {},
+    "creditedToString": "Credited To",
+    "@creditedToString": {}
 }

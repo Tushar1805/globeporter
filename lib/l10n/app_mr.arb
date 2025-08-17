@@ -168,5 +168,8 @@
     "openSettingString": "सेटिंग्ज उघडा",
     "dataString": "डेटा",
     "enterAmountString": "रक्कम प्रविष्ट करा",
-    "amountString": "रक्कम"
+    "amountString": "रक्कम",
+    "transactionHistoryString": "व्यवहार इतिहास",
+    "debitedToString": "यांना डेबिट केले",
+    "creditedToString": "यांना क्रेडिट केले"
 }

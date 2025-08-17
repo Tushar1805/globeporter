@@ -511,4 +511,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get amountString => 'Amount';
+
+  @override
+  String get transactionHistoryString => 'Transaction History';
+
+  @override
+  String get debitedToString => 'Debited To';
+
+  @override
+  String get creditedToString => 'Credited To';
 }
