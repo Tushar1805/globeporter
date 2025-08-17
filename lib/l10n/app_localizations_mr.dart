@@ -517,4 +517,10 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get creditedToString => 'यांना क्रेडिट केले';
+
+  @override
+  String get otpNotGeneratedYetString => 'OTP अद्याप जनरेट झालेला नाही';
+
+  @override
+  String get waitingForOtpString => 'OTP ची वाट पाहत आहे...';
 }

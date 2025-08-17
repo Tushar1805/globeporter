@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -1052,7 +1051,11 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
                 // Submit
                 CustomElevatedButton(
                   name: AppLocalizations.of(context)!.submitString,
-                  textWidget: loading ? LoadingWithoutText() : null,
+                  textWidget: loading
+                      ? CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : null,
                   borderRadius: 25,
                   alignment: Alignment.bottomCenter,
                   onPressed: () async {

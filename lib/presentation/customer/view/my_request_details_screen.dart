@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
@@ -54,6 +55,18 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
     }
   }
 
+  Stream<String?> listenOtp(String bookingId) {
+    final dbRef = FirebaseDatabase.instance.ref("ride_otp/$bookingId/otp");
+
+    return dbRef.onValue.map((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        return data.toString(); // OTP as String
+      }
+      return null;
+    });
+  }
+
   void loadBookingDetails() async {
     await customerCubit.getBookingDetails(bookingId: widget.bookingId ?? '1');
   }
@@ -67,6 +80,7 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final locale = AppLocalizations.of(context)!;
 
     return BlocConsumer(
       bloc: customerCubit,
@@ -185,6 +199,34 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
                             fontWeight: FontWeight.w400,
                           ),
                     ),
+                  ),
+                  const CustomDivider(),
+                  const SizedBox(height: 10),
+                  StreamBuilder<String?>(
+                    stream: listenOtp(widget.bookingId ?? '1'),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CustomTextMedium(text: locale.waitingForOtpString);
+                      }
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        return CustomTextMedium(text: locale.otpNotGeneratedYetString);
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CustomRichText(
+                          title: '${locale.otpString.toUpperCase()}: ',
+                          value: snapshot.data,
+                          titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                              ),
+                          valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w400,
+                              ),
+                        ),
+                      );
+                    },
                   ),
                   if (widget.type == 'urban') UrbanItemsSection(requestData: booking, size: size),
                   if (widget.type == 'rural') RuralDetailsSection(requestData: booking, size: size),

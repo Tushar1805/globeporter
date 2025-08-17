@@ -335,5 +335,7 @@
     "debitedToString": "Debited To",
     "@debitedToString": {},
     "creditedToString": "Credited To",
-    "@creditedToString": {}
+    "@creditedToString": {},
+    "otpNotGeneratedYetString": "OTP not generated yet",
+    "waitingForOtpString": "Waiting for OTP..."
 }

@@ -1,5 +1,6 @@
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
 import 'package:globeporter/presentation/driver/repository/driver_repository.dart';
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
@@ -274,6 +275,7 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(GenerateOTPLoadingState('Loading'));
+       final dbRef = FirebaseDatabase.instance.ref("ride_otp/$bookingId");
       final lang = await storage.readValue(languageCodeKey);
       final accessToken = await storage.readValue(accessTokenKey);
       final response = await _driverRepository.generateOtp(
@@ -281,6 +283,12 @@ class DriverCubit extends BaseCubit {
         token: accessToken ?? '',
         bookingId: bookingId,
       );
+
+      if(response['status_code'] == 200){
+await dbRef.update({
+    "otp": response['otp'],
+  });
+      }
 
       emit(GenerateOTPLoadedState(data: response));
     } catch (e) {

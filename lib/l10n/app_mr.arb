@@ -171,5 +171,7 @@
     "amountString": "रक्कम",
     "transactionHistoryString": "व्यवहार इतिहास",
     "debitedToString": "यांना डेबिट केले",
-    "creditedToString": "यांना क्रेडिट केले"
+    "creditedToString": "यांना क्रेडिट केले",
+    "otpNotGeneratedYetString": "OTP अद्याप जनरेट झालेला नाही",
+    "waitingForOtpString": "OTP ची वाट पाहत आहे..."
 }

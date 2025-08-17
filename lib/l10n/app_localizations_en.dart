@@ -520,4 +520,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get creditedToString => 'Credited To';
+
+  @override
+  String get otpNotGeneratedYetString => 'OTP not generated yet';
+
+  @override
+  String get waitingForOtpString => 'Waiting for OTP...';
 }

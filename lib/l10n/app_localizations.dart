@@ -1095,6 +1095,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Credited To'**
   String get creditedToString;
+
+  /// No description provided for @otpNotGeneratedYetString.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP not generated yet'**
+  String get otpNotGeneratedYetString;
+
+  /// No description provided for @waitingForOtpString.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for OTP...'**
+  String get waitingForOtpString;
 }
 
 class _AppLocalizationsDelegate
