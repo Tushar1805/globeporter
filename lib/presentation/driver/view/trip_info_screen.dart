@@ -83,35 +83,35 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
         bookingDetailsResponse?.data?.pickupLat ?? 20.5574253,
         bookingDetailsResponse?.data?.pickupLng ?? 78.838695,
       );
-      // await locationCubit
-      //     .routeDirection(
-      //   pickupLat: bookingDetailsResponse?.data?.pickupLat ?? 20.5574253,
-      //   pickupLng: bookingDetailsResponse?.data?.pickupLng ?? 78.838695,
-      //   dropLat: bookingDetailsResponse?.data?.dropLat ?? 20.5574253,
-      //   dropLng: bookingDetailsResponse?.data?.dropLng ?? 78.838695,
-      // )
-      //     .then((final response) {
-      //   final points = response?.routes?[0].overviewPolyline?.points ?? '';
-      //   polylineCoordinates = decodePolyline(points);
+      await locationCubit
+          .routeDirection(
+        pickupLat: bookingDetailsResponse?.data?.pickupLat ?? 20.5574253,
+        pickupLng: bookingDetailsResponse?.data?.pickupLng ?? 78.838695,
+        dropLat: bookingDetailsResponse?.data?.dropLat ?? 20.5574253,
+        dropLng: bookingDetailsResponse?.data?.dropLng ?? 78.838695,
+      )
+          .then((final response) {
+        final points = response?.routes?[0].overviewPolyline?.points ?? '';
+        polylineCoordinates = decodePolyline(points);
 
-      //   polylines.add(
-      //     Polyline(
-      //       polylineId: PolylineId("route"),
-      //       points: polylineCoordinates,
-      //       color: Colors.black,
-      //       width: 5,
-      //     ),
-      //   );
-      //   _markers?.add(
-      //     Marker(
-      //       markerId: MarkerId('drop'),
-      //       position: latLng,
-      //       infoWindow: InfoWindow(title: 'Destination'),
-      //     ),
-      //   );
+        polylines.add(
+          Polyline(
+            polylineId: PolylineId("route"),
+            points: polylineCoordinates,
+            color: Colors.black,
+            width: 5,
+          ),
+        );
+        _markers?.add(
+          Marker(
+            markerId: MarkerId('drop'),
+            position: latLng,
+            infoWindow: InfoWindow(title: 'Destination'),
+          ),
+        );
+      });
 
-      //   setState(() {});
-      // });
+      await startTracking();
 
       setState(() {});
 
@@ -283,7 +283,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
         if (state is BookingDetailsLoadedState) {
           bookingDetailsResponse = state.data as BookingDetailsResponse?;
           getCurrentLocation();
-          startTracking();
+
           setState(() {});
         }
       },

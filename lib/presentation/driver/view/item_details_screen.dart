@@ -254,13 +254,13 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         context.pushReplacementNamed(
                           tripInfoScreen,
                           extra: {
-                            'type': widget.type,
+                            'type': widget.type?.toLowerCase(),
                             'bookingId': bookingDetailsResponse?.data?.id.toString(),
                           },
                         );
-                        setState(() {
-                          loading = false;
-                        });
+                        // setState(() {
+                        //   loading = false;
+                        // });
                       }
                     },
                     child: loading
@@ -275,7 +275,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                 status: RideStatus.onTheWay.value,
                               );
 
-                              await driverCubit.getDriverBookings();
+                              // await driverCubit.getDriverBookings();
                             },
                           ),
                   ),
