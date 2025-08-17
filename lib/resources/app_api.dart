@@ -58,3 +58,10 @@ const String getBookingDetailsUrl = '$_baseUrl/get_booking_details';
 
 const String updateProfileUrl = '$_baseUrl/update_profile_data';
 const String commonSendNotificationUrl = '$_baseUrl/common_send_notification';
+
+//* Wallet
+
+const String createOrderUrl = '$_baseUrl/create_order_on_razor_pay';
+const String getWalletDataUrl = '$_baseUrl/get_wallet_data';
+const String getWalletHistoryUrl = '$_baseUrl/get_wallet_history';
+const String addMoneyToWalletUrl = '$_baseUrl/add_money_to_wallet';

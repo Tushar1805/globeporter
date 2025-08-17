@@ -11,7 +11,9 @@ import 'package:globeporter/presentation/chats/cubit/chat_cubit.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/repository/driver_repository.dart';
 import 'package:globeporter/presentation/settings/cubit/settings_cubit.dart';
+import 'package:globeporter/presentation/settings/cubit/wallet_cubit.dart';
 import 'package:globeporter/presentation/settings/repository/settings_repository.dart';
+import 'package:globeporter/presentation/settings/repository/wallet_repository.dart';
 import 'package:globeporter/resources/app_storage.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/authentication/repository/auth_repo.dart';
@@ -27,6 +29,7 @@ void setupServiceLocator() async {
   sl.registerFactory<LocationRepository>(LocationRepository.new);
   sl.registerFactory<SettingsRepository>(SettingsRepository.new);
   sl.registerFactory<ChatRepository>(ChatRepository.new);
+  sl.registerFactory<WalletRepository>(WalletRepository.new);
 
   //* Cubits
   sl.registerLazySingleton<ThemeCubit>(
@@ -55,5 +58,8 @@ void setupServiceLocator() async {
   );
   sl.registerSingleton<ChatCubit>(
     ChatCubit(sl<ChatRepository>()),
+  );
+  sl.registerSingleton<WalletCubit>(
+    WalletCubit(sl<WalletRepository>()),
   );
 }
