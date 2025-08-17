@@ -7,9 +7,13 @@ class ChatRepository extends BaseRepository {
     required final String lang,
     required final String title,
     required final String message,
+    required final String? receiverId,
+    required final String? senderId,
+    required final String? receiverName,
+    required final String? senderName,
+    required final String? receiverImageUrl,
+    required final String? userType,
     final String? id,
-    final String? receiverId,
-    final String? senderId,
   }) async {
     final responseData = await fetchData(
       apiCallType: ApiCallType.post,
@@ -21,6 +25,10 @@ class ChatRepository extends BaseRepository {
         'id': id,
         'receiver_id': receiverId,
         'sender_id': senderId,
+        "senderName": senderName,
+        "receiverName": receiverName,
+        "receiverImageUrl": receiverImageUrl,
+        "user_type": userType,
       },
     );
 

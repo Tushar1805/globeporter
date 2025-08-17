@@ -15,9 +15,13 @@ class ChatCubit extends BaseCubit {
   Future<void> sendNotification({
     required final String title,
     required final String message,
+    required final String? receiverId,
+    required final String? senderId,
+    required final String? receiverName,
+    required final String? senderName,
+    required final String? receiverImageUrl,
+    required final String? userType,
     final String? id,
-    final String? receiverId,
-    final String? senderId,
   }) async {
     try {
       emit(ChatNotificationLoadingState('Loading'));
@@ -30,6 +34,10 @@ class ChatCubit extends BaseCubit {
         id: id,
         receiverId: receiverId,
         senderId: senderId,
+        receiverName: receiverName,
+        senderName: senderName,
+        receiverImageUrl: receiverImageUrl,
+        userType: userType,
       );
       customPrint('Chat Notification Response: ${response.toString()}');
 

@@ -139,69 +139,6 @@ class _ChatScreenState extends State<ChatScreen> {
     return text;
   }
 
-  //* sendMessage without unread count
-
-  // void _sendMessage() {
-  //   if (_isDisposed) return;
-
-  //   final messageText = _maskSensitiveInfo(_messageController.text.trim());
-  //   if (messageText.isEmpty) return;
-
-  //   final timestamp = DateTime.now().millisecondsSinceEpoch;
-
-  //   final newMessage = ChatMessage(
-  //     senderId: widget.senderId,
-  //     receiverId: widget.receiverId,
-  //     message: messageText,
-  //     timestamp: timestamp,
-  //   );
-
-  //   final conversationId = getConversationId(widget.senderId, widget.receiverId);
-
-  //   // Use a unique key for the message to avoid conflicts
-  //   final messageRef = _chatRef.push();
-  //   messageRef.set(newMessage.toMap()).catchError((error) {
-  //     debugPrint('Error sending message: $error');
-  //     // Optionally show error to user
-  //     if (mounted) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(content: Text('Failed to send message')),
-  //       );
-  //     }
-  //   });
-
-  //   // Update chat list for sender
-  //   FirebaseDatabase.instance.ref("chat_list/${widget.senderId}/$conversationId").set({
-  //     "name": widget.receiverName,
-  //     "otherUserId": widget.receiverId,
-  //     "lastMessage": messageText,
-  //     "timestamp": timestamp,
-  //     "receiverImageUrl": widget.receiverImageUrl
-  //   }).catchError((error) {
-  //     debugPrint('Error updating sender chat list: $error');
-  //   });
-
-  //   // Update chat list for receiver
-  //   FirebaseDatabase.instance.ref("chat_list/${widget.receiverId}/$conversationId").set({
-  //     "name": widget.senderName,
-  //     "otherUserId": widget.senderId,
-  //     "lastMessage": messageText,
-  //     "timestamp": timestamp,
-  //     "receiverImageUrl": authCubit.userDetails?.data?.profilePhotoUrl,
-  //   }).catchError((error) {
-  //     debugPrint('Error updating receiver chat list: $error');
-  //   });
-
-  //   chatCubit.sendNotification(
-  //     title: widget.senderName,
-  //     message: messageText,
-  //     userId: widget.receiverId,
-  //     driverId: widget.senderId,
-  //   );
-
-  //   _messageController.clear();
-  // }
-
   //* Send Message with unread count
 
   Future<void> _sendMessage() async {
@@ -281,6 +218,10 @@ class _ChatScreenState extends State<ChatScreen> {
         message: messageText,
         receiverId: widget.receiverId,
         senderId: widget.senderId,
+        receiverName: widget.receiverName,
+        senderName: widget.senderName,
+        receiverImageUrl: widget.receiverImageUrl,
+        userType: widget.type,
       );
     } catch (e) {
       debugPrint('Error sending message: $e');

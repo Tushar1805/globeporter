@@ -363,6 +363,17 @@ class NotificationServices {
             'bookingId': data['booking_id'].toString(),
           });
         }
+      } else if (data['type'] == 'notify' && data['receiver_id'] != null) {
+        //* when chat notification receives sender becomes receiver
+        // TODO: Receiver Image logic not yet done
+        await router.pushNamed(chatScreen, extra: {
+          'senderId': data['receiver_id'],
+          'receiverId': data['sender_id'],
+          'senderName': data['receiverName'],
+          'type': data['user_type'],
+          'receiverName': data['senderName'],
+          'receiverImageUrl': data['receiverImageUrl'],
+        });
       }
     } catch (e) {
       customPrint('Error: Redirecting to the screen: $e');
