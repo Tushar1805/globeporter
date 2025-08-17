@@ -62,6 +62,32 @@ class RuralPackageEntry {
     this.selectedQuantity,
     this.packageLocked = false,
   });
+
+  RuralPackageEntry copyWith({
+    package.Data? selectedPackageType,
+    quantity.Data? selectedQuantity,
+    bool? packageLocked,
+  }) {
+    return RuralPackageEntry(
+      selectedPackageType: selectedPackageType ?? this.selectedPackageType,
+      selectedQuantity: selectedQuantity ?? this.selectedQuantity,
+      packageLocked: packageLocked ?? this.packageLocked,
+    );
+  }
+}
+
+//* Filtering out packages
+Set<Object> selectedPackageIdsExcept({
+  required List<RuralPackageEntry> entries,
+  required int index,
+}) {
+  final taken = <Object>{};
+  for (var i = 0; i < entries.length; i++) {
+    if (i == index) continue;
+    final sel = entries[i].selectedPackageType;
+    if (sel != null) taken.add(sel.id as Object); // id can be int or String
+  }
+  return taken;
 }
 
 class RequestDetailsScreen extends StatefulWidget {
@@ -113,7 +139,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   );
 
   List<Marker>? _markers;
-  Set<Polyline> _polylines = {};
+  Set<Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
   Uint8List? customMarker;
 
@@ -537,6 +563,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           ...ruralPackageEntries.asMap().entries.map((entry) {
                             final index = entry.key;
                             final rItem = entry.value;
+                            final taken = selectedPackageIdsExcept(
+                                entries: ruralPackageEntries, index: index);
+                            final currentId = rItem.selectedPackageType?.id;
 
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -598,11 +627,22 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           ),
                                           items: packagingTypeResponse?.data
                                               ?.map((package.Data? item) {
+                                            final id = item?.id;
+                                            final isTaken = id != null && taken.contains(id);
+                                            final isCurrent = currentId != null && id == currentId;
+                                            final disabled = isTaken && !isCurrent;
                                             return DropdownMenuItem<package.Data>(
                                               value: item,
+                                              enabled: !disabled,
                                               child: Text(
                                                 item?.name ?? '',
-                                                style: Theme.of(context).textTheme.bodyMedium,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                      color: disabled ? Colors.grey : null,
+                                                      fontStyle: disabled ? FontStyle.italic : null,
+                                                    ),
                                               ),
                                             );
                                           }).toList(),
@@ -883,7 +923,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           response?.routes?[0].overviewPolyline?.points ?? '';
                                       polylineCoordinates = decodePolyline(points);
 
-                                      _polylines.add(
+                                      polylines.add(
                                         Polyline(
                                           polylineId: PolylineId("route"),
                                           points: polylineCoordinates,
@@ -944,7 +984,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     onMapCreated: (final controller) {
                       _controller.complete(controller);
                     },
-                    polylines: _polylines,
+                    polylines: polylines,
                     gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
                       Factory<OneSequenceGestureRecognizer>(
                         () => EagerGestureRecognizer(),
