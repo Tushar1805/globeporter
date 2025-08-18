@@ -111,16 +111,15 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
               loading = false;
             });
           } else if (state is ErrorState) {
-            setState(() {
-              loading = false;
-            });
             showToast(
-              gravity: ToastGravity.CENTER,
               context: context,
               fToast: fToast!,
               msg: state.errorMessage,
               duration: 5,
             );
+            setState(() {
+              loading = false;
+            });
           }
         },
         builder: (final context, final state) {

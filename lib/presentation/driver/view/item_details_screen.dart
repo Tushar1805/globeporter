@@ -106,6 +106,11 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
         if (state is BookingDetailsLoadedState) {
           bookingDetailsResponse = state.data as booking.BookingDetailsResponse?;
           setState(() {});
+        } else if (state is RideCancellationReasonsLoadedState) {
+          setState(() {
+            rideCancellationReasonsResponse = state.data as RideCancellationReasonResponse?;
+            loading = false;
+          });
         }
       },
       builder: (final context, final state) {
@@ -325,8 +330,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                 bookingId: currentBookingId ?? 1,
                                 reasonId: currentReasonId ?? 1,
                               );
-                              await driverCubit.getDriverBookings();
-                              context.pop();
                             },
                           );
                         } else {
@@ -334,18 +337,14 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                             bookingId: currentBookingId ?? 1,
                             reasonId: currentReasonId ?? 1,
                           );
-                          await driverCubit.getDriverBookings();
                           context.pop();
                         }
                         setState(() {
                           dialogLoadingNotifier.value = false;
                         });
-                      } else if (state is RideCancellationReasonsLoadedState) {
-                        rideCancellationReasonsResponse =
-                            state.data as RideCancellationReasonResponse?;
-                        setState(() {
-                          loading = false;
-                        });
+                      } else if (state is CancleRideByDriverLoadedState) {
+                        await driverCubit.getDriverBookings();
+                        context.pop();
                       } else if (state is ErrorState) {
                         setState(() {
                           loading = false;
@@ -376,10 +375,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                   });
                                   customPrint(
                                       "Booking Id: $currentBookingId \n ReasonId: $currentReasonId");
-                                  // await driverCubit.rejectRide(
-                                  //   bookingId: widget.data?.id ?? 1,
-                                  //   status: 'Reject',
-                                  // );
 
                                   await driverCubit.checkCancelRideByDriver(
                                     bookingId: bookingDetailsResponse?.data?.id ?? 1,
