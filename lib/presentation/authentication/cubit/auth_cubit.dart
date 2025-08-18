@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
 import 'package:globeporter/notifications/notification_service.dart';
 import 'package:globeporter/presentation/authentication/model/user_details_response_model.dart';
@@ -194,20 +195,15 @@ class AuthCubit extends BaseCubit {
       if (response?.statusCode == 200) {
         final authToken = response?.token;
         await storage.saveValue(value: authToken, key: accessTokenKey);
-        var fcmToken = await storage.readValue(fcmTokenKey);
 
-        customPrint('FcM Token: $fcmToken');
-
-        if (fcmToken == null || fcmToken == '') {
-          final token = await notificationService.getDeviceToken() ?? '';
-          await _authRepository.updateFcmToken(
-            lang: lang ?? 'en',
-            accessToken: authToken ?? '',
-            fcmToken: token,
-          );
-          await storage.saveValue(value: token, key: fcmTokenKey);
-          fcmToken = token;
-        }
+        final token = await notificationService.getDeviceToken() ?? '';
+        await _authRepository.updateFcmToken(
+          lang: lang ?? 'en',
+          accessToken: authToken ?? '',
+          fcmToken: token,
+        );
+        await storage.saveValue(value: token, key: fcmTokenKey);
+        customPrint('FcM Token: $token');
         customPrint("Token: ${response?.token}");
         emit(OtpVerifyLoadedState(data: response));
       } else if (response?.statusCode == 410) {
@@ -246,6 +242,8 @@ class AuthCubit extends BaseCubit {
       await storage.saveValue(value: '0', key: vehicleDetailsFilledKey);
       await storage.saveValue(value: '0', key: driverDetailsFilledKey);
       userDetails = null;
+
+      await FirebaseMessaging.instance.deleteToken();
 
       _authRepository.logout(accessToken: accessToken ?? '', lang: lang ?? 'en');
       emit(GeneralState('logout'));

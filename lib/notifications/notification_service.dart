@@ -329,6 +329,10 @@ class NotificationServices {
     return completer.future.timeout(const Duration(seconds: 10), onTimeout: () => false);
   }
 
+  Future<void> deleteFCMToken() async {
+    await messaging.deleteToken();
+  }
+
   Future foregroundMessage() async {
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
