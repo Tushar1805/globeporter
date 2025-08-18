@@ -124,7 +124,7 @@ class Data {
         bookingStatus = json['booking_status'] as String?,
         status = json['status'] as int?,
         isBookingActive = json['is_booking_active'] as int?,
-        distance = json['distance'] as double?,
+        distance = (json['distance'] as num?)?.toDouble(),
         userData = (json['user_data'] as Map<String, dynamic>?) != null
             ? UserData.fromJson(json['user_data'] as Map<String, dynamic>)
             : null,

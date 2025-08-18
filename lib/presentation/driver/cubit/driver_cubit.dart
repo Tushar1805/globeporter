@@ -1,5 +1,6 @@
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
 import 'package:globeporter/presentation/customer/model/booking_details_response.dart';
@@ -58,6 +59,7 @@ class DriverCubit extends BaseCubit {
       handleExceptions(e);
     }
   }
+
   Future<BookingDetailsResponse?> getBookingDetails({
     required final String bookingId,
   }) async {
@@ -77,6 +79,24 @@ class DriverCubit extends BaseCubit {
     }
   }
 
+  Future<BookingDetailsResponse?> getBookingDetailsRoute({
+    required final String bookingId,
+  }) async {
+    try {
+      emit(LoadingState('Loading bookings details'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _driverRepository.getBookingDetails(
+          lang: lang ?? 'en', accessToken: accessToken ?? '', bookingId: bookingId);
+
+      emit(LoadedState(data: response));
+      return response;
+    } catch (e) {
+      handleExceptions(e);
+      return null;
+    }
+  }
 
   Future<void> updateBookingDetailsByDriver({
     required final String bookingId,
@@ -295,7 +315,7 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(GenerateOTPLoadingState('Loading'));
-       final dbRef = FirebaseDatabase.instance.ref("ride_otp/$bookingId");
+      final dbRef = FirebaseDatabase.instance.ref("ride_otp/$bookingId");
       final lang = await storage.readValue(languageCodeKey);
       final accessToken = await storage.readValue(accessTokenKey);
       final response = await _driverRepository.generateOtp(
@@ -304,10 +324,10 @@ class DriverCubit extends BaseCubit {
         bookingId: bookingId,
       );
 
-      if(response['status_code'] == 200){
-await dbRef.update({
-    "otp": response['otp'],
-  });
+      if (response['status_code'] == 200) {
+        await dbRef.update({
+          "otp": response['otp'],
+        });
       }
 
       emit(GenerateOTPLoadedState(data: response));

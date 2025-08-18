@@ -245,19 +245,24 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   ),
                   BlocListener(
                     bloc: driverCubit,
-                    listener: (final context, final state) {
+                    listener: (final context, final state) async {
                       if (state is ChangeRideStatusLoadingState) {
                         setState(() {
                           loading = true;
                         });
                       } else if (state is ChangeRideStatusLoadedState) {
-                        context.pushReplacementNamed(
-                          tripInfoScreen,
-                          extra: {
-                            'type': widget.type?.toLowerCase(),
-                            'bookingId': bookingDetailsResponse?.data?.id.toString(),
-                          },
-                        );
+                        await driverCubit
+                            .getBookingDetailsRoute(bookingId: widget.bookingId)
+                            .then((final response) {
+                          context.pushReplacementNamed(
+                            tripInfoScreen,
+                            extra: {
+                              'type': widget.type?.toLowerCase(),
+                              'data': response?.data,
+                            },
+                          );
+                        });
+
                         // setState(() {
                         //   loading = false;
                         // });

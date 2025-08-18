@@ -152,13 +152,12 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     fToast = FToast();
     fToast!.init(context);
 
+    loadPendingBookings();
+    loadCancellationReasons();
+    loadWalletData();
     startTracking().then((_) {
       initTrackingAndService();
     });
-
-    loadWalletData();
-    loadPendingBookings();
-    loadCancellationReasons();
     super.initState();
   }
 

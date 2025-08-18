@@ -269,7 +269,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: TripInfoScreen(
             type: params?['type'] as String?,
-            bookingId: params?['bookingId'] as String,
+            data: params?['data'] as booking.Data,
           ),
         );
       },
@@ -283,7 +283,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: StartTripScreen(
             type: params?['type'] as String?,
-            bookingId: params?['bookingId'] as String,
+            data: params?['data'] as booking.Data,
           ),
         );
       },

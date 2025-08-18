@@ -833,7 +833,7 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
                   .then((value) {
                 context.pushReplacementNamed(startTripScreen, extra: {
                   'type': widget.type,
-                  'bookingId': widget.data?.id.toString(),
+                  'data': widget.data,
                 });
               });
               await driverCubit.getDriverBookings();

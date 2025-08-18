@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
@@ -26,6 +28,7 @@ class MyTripsScreen extends StatefulWidget {
 class _MyTripsScreenState extends State<MyTripsScreen> {
   final driverCubit = sl<DriverCubit>();
   bool loading = false;
+  bool buttonLoading = false;
   pending.PendingBookingsResponse? driverBookingsResponse;
   FToast? fToast;
 
@@ -88,6 +91,14 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
           if (state is DriverBookingsLoadingState) {
             setState(() {
               loading = true;
+            });
+          } else if (state is BookingDetailsLoadingState) {
+            setState(() {
+              buttonLoading = true;
+            });
+          } else if (state is BookingDetailsLoadedState) {
+            setState(() {
+              buttonLoading = false;
             });
           } else if (state is DriverBookingsLoadedState) {
             final data = state.data as pending.PendingBookingsResponse?;
@@ -203,9 +214,14 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                   trip?.isBookingActive == 1
                                       ? CustomElevatedButton(
                                           name: AppLocalizations.of(context)!.goString,
+                                          textWidget: buttonLoading
+                                              ? CircularProgressIndicator(
+                                                  color: whiteColor,
+                                                )
+                                              : null,
                                           borderRadius: 5,
                                           alignment: Alignment.center,
-                                          onPressed: () {
+                                          onPressed: () async {
                                             if (RideStatus.accept.value == trip?.bookingStatus ||
                                                 RideStatus.ongoing.value == trip?.bookingStatus) {
                                               context.pushNamed(
@@ -217,24 +233,41 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                               );
                                             } else if (RideStatus.onTheWay.value ==
                                                 trip?.bookingStatus) {
-                                              context.pushNamed(
-                                                tripInfoScreen,
-                                                extra: {
-                                                  'type': trip?.rideType?.toLowerCase(),
-                                                  'bookingId': trip?.id.toString(),
-                                                },
-                                              );
+                                              // context.pushNamed(
+                                              //   itemDetailsScreen,
+                                              //   extra: {
+                                              //     'type': trip?.rideType?.toLowerCase(),
+                                              //     'bookingId': trip?.id.toString(),
+                                              //   },
+                                              // );
+                                              await driverCubit
+                                                  .getBookingDetails(
+                                                      bookingId: trip?.id.toString() ?? '1')
+                                                  .then((final response) {
+                                                context.pushNamed(
+                                                  tripInfoScreen,
+                                                  extra: {
+                                                    'type': trip?.rideType?.toLowerCase(),
+                                                    'data': response?.data,
+                                                  },
+                                                );
+                                              });
                                             } else if (RideStatus.arrivedAtPickup.value ==
                                                     trip?.bookingStatus ||
                                                 RideStatus.rideStarted.value ==
                                                     trip?.bookingStatus) {
-                                              context.pushNamed(
-                                                startTripScreen,
-                                                extra: {
-                                                  'type': trip?.rideType?.toLowerCase(),
-                                                  'bookingId': trip?.id.toString(),
-                                                },
-                                              );
+                                              await driverCubit
+                                                  .getBookingDetails(
+                                                      bookingId: trip?.id.toString() ?? '1')
+                                                  .then((final response) {
+                                                context.pushNamed(
+                                                  startTripScreen,
+                                                  extra: {
+                                                    'type': trip?.rideType?.toLowerCase(),
+                                                    'data': response?.data,
+                                                  },
+                                                );
+                                              });
                                             }
                                           },
                                           textPadding: const EdgeInsets.symmetric(

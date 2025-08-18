@@ -2,24 +2,21 @@
 
 import 'dart:async';
 
-import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
-import 'package:globeporter/presentation/customer/model/booking_details_response.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
-import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_extension_functions.dart';
+import 'package:globeporter/presentation/customer/model/booking_details_response.dart' as booking;
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -31,9 +28,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TripInfoScreen extends StatefulWidget {
-  const TripInfoScreen({super.key, required this.type, required this.bookingId});
+  const TripInfoScreen({super.key, required this.type, required this.data});
   final String? type;
-  final String bookingId;
+  final booking.Data data;
 
   @override
   State<TripInfoScreen> createState() => _TripInfoScreenState();
@@ -45,13 +42,11 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
   final driverCubit = sl<DriverCubit>();
   final authCubit = sl<AuthCubit>();
   Position? position;
-  final loc.Location _location = loc.Location();
   StreamSubscription<loc.LocationData>? _locationSubscription;
   Set<Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
   FToast? fToast;
   Marker? driverMarker;
-  BookingDetailsResponse? bookingDetailsResponse;
 
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(20.5574253, 78.8386951),
@@ -62,61 +57,65 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
 
   void getCurrentLocation() async {
     try {
+      customPrint('***************** Current location 1 ');
       final GoogleMapController controller = await _controller.future;
 
       _kGooglePlex = CameraPosition(
-        target: LatLng(bookingDetailsResponse?.data?.pickupLat ?? 20.5574253,
-            bookingDetailsResponse?.data?.pickupLng ?? 78.8386951),
+        target: LatLng(widget.data.pickupLat ?? 20.5574253, widget.data.pickupLng ?? 78.8386951),
         zoom: 14,
       );
       _markers = <Marker>[
         Marker(
           markerId: MarkerId('1'),
-          position: LatLng(bookingDetailsResponse?.data?.pickupLat ?? 20.5574253,
-              bookingDetailsResponse?.data?.pickupLat ?? 20.5574253),
+          position:
+              LatLng(widget.data.pickupLat ?? 20.5574253, widget.data.pickupLat ?? 20.5574253),
           // infoWindow: InfoWindow(title: 'The title of the marker'),
         )
       ];
       controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
 
+      customPrint('***************** Current location 2 ');
+
       final latLng = LatLng(
-        bookingDetailsResponse?.data?.pickupLat ?? 20.5574253,
-        bookingDetailsResponse?.data?.pickupLng ?? 78.838695,
+        widget.data.pickupLat ?? 20.5574253,
+        widget.data.pickupLng ?? 78.838695,
       );
-      await locationCubit
-          .routeDirection(
-        pickupLat: bookingDetailsResponse?.data?.pickupLat ?? 20.5574253,
-        pickupLng: bookingDetailsResponse?.data?.pickupLng ?? 78.838695,
-        dropLat: bookingDetailsResponse?.data?.dropLat ?? 20.5574253,
-        dropLng: bookingDetailsResponse?.data?.dropLng ?? 78.838695,
-      )
-          .then((final response) {
-        final points = response?.routes?[0].overviewPolyline?.points ?? '';
-        polylineCoordinates = decodePolyline(points);
+      // await locationCubit
+      //     .routeDirection(
+      //   pickupLat: widget.data.pickupLat ?? 20.5574253,
+      //   pickupLng: widget.data.pickupLng ?? 78.838695,
+      //   dropLat: widget.data.dropLat ?? 20.5574253,
+      //   dropLng: widget.data.dropLng ?? 78.838695,
+      // )
+      //     .then((final response) {
+      //   final points = response?.routes?[0].overviewPolyline?.points ?? '';
+      //   polylineCoordinates = decodePolyline(points);
 
-        polylines.add(
-          Polyline(
-            polylineId: PolylineId("route"),
-            points: polylineCoordinates,
-            color: Colors.black,
-            width: 5,
-          ),
-        );
-        _markers?.add(
-          Marker(
-            markerId: MarkerId('drop'),
-            position: latLng,
-            infoWindow: InfoWindow(title: 'Destination'),
-          ),
-        );
-      });
+      //   polylines.add(
+      //     Polyline(
+      //       polylineId: PolylineId("route"),
+      //       points: polylineCoordinates,
+      //       color: Colors.black,
+      //       width: 5,
+      //     ),
+      //   );
+      //   _markers?.add(
+      //     Marker(
+      //       markerId: MarkerId('drop'),
+      //       position: latLng,
+      //       infoWindow: InfoWindow(title: 'Destination'),
+      //     ),
+      //   );
+      // });
 
-      await startTracking();
+      // setState(() {});
 
-      setState(() {});
+      customPrint('***************** Current location 3 ');
 
       final GoogleMapController mapController = await _controller.future;
       mapController.animateCamera(CameraUpdate.newLatLng(latLng));
+
+      customPrint('***************** Current location 4 ');
     } catch (e) {
       debugPrint("Error: Getting Location: $e");
     }
@@ -138,87 +137,112 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
   }
 
   Future<void> startTracking() async {
-    final permissionGranted = await _location.requestPermission();
-    final serviceEnabled = await _location.serviceEnabled() || await _location.requestService();
+    final location = loc.Location();
+    final permissionGranted = await location.requestPermission();
+    final serviceEnabled = await location.serviceEnabled() || await location.requestService();
+
+    customPrint('***************** Tracking 1 ');
 
     if (permissionGranted != loc.PermissionStatus.granted || !serviceEnabled) {
+      customPrint('***************** Checking if permissions ');
       return;
     }
 
+    customPrint('***************** Tracking 2 ');
+
     _locationSubscription?.cancel(); // cancel previous listener if any
 
-    _locationSubscription = _location.onLocationChanged
-        .throttleTime(const Duration(seconds: 5))
-        .listen((locationData) async {
-      if (locationData.latitude == null || locationData.longitude == null) return;
+    customPrint('***************** Tracking 3 ');
+    void onError(final object, stack) {
+      customPrint('Error Tracking: $stack ');
+    }
 
-      final currentLat = locationData.latitude!;
-      final currentLng = locationData.longitude!;
-      final pickupLat = bookingDetailsResponse?.data?.pickupLat ?? 0.0;
-      final pickupLng = bookingDetailsResponse?.data?.pickupLng ?? 0.0;
-
-      // Update backend
-      locationCubit.updateMyLocation(
-        lat: currentLat,
-        lng: currentLng,
-        role: 'customer',
-        userId: bookingDetailsResponse?.data?.userId.toString(),
+    try {
+      await location.changeSettings(
+        accuracy: loc.LocationAccuracy.high,
+        interval: 5000,
+        distanceFilter: 0,
       );
+      customPrint('***************** Tracking 4 ');
 
-      // Update route polyline
-      await locationCubit
-          .routeDirection(
-        pickupLat: currentLat,
-        pickupLng: currentLng,
-        dropLat: pickupLat,
-        dropLng: pickupLng,
-      )
-          .then((response) {
-        final points = response?.routes?[0].overviewPolyline?.points ?? '';
-        polylineCoordinates = decodePolyline(points);
+      _locationSubscription = location.onLocationChanged
+          .doOnError(onError)
+          .throttleTime(const Duration(seconds: 5))
+          .listen((locationData) async {
+        if (locationData.latitude == null || locationData.longitude == null) return;
 
-        polylines.clear(); // clear previous route
-        polylines.add(
-          Polyline(
-            polylineId: PolylineId("route"),
-            points: polylineCoordinates,
-            color: Colors.black,
-            width: 5,
-          ),
+        customPrint('***************** Stream 1 ');
+
+        final currentLat = locationData.latitude!;
+        final currentLng = locationData.longitude!;
+        final pickupLat = widget.data.pickupLat ?? 0.0;
+        final pickupLng = widget.data.pickupLng ?? 0.0;
+
+        // Update backend
+        locationCubit.updateMyLocation(
+          lat: currentLat,
+          lng: currentLng,
+          role: 'customer',
+          userId: widget.data.driverId.toString(),
         );
+
+        // Update route polyline
+        await locationCubit
+            .routeDirection(
+          pickupLat: currentLat,
+          pickupLng: currentLng,
+          dropLat: pickupLat,
+          dropLng: pickupLng,
+        )
+            .then((response) {
+          final points = response?.routes?[0].overviewPolyline?.points ?? '';
+          polylineCoordinates = decodePolyline(points);
+
+          polylines.clear(); // clear previous route
+          polylines.add(
+            Polyline(
+              polylineId: PolylineId("route"),
+              points: polylineCoordinates,
+              color: Colors.black,
+              width: 5,
+            ),
+          );
+        });
+
+        // Update driver marker
+        final currentLatLng = LatLng(currentLat, currentLng);
+        driverMarker = await getMarker(
+            vehicleType: widget.data.vehicleTypeData?.nameEn ?? '',
+            markerId: const MarkerId('driver'),
+            position: currentLatLng,
+            info: "You");
+
+        // Update marker list
+        _markers = [
+          driverMarker!,
+          Marker(
+            markerId: const MarkerId('drop'),
+            position: LatLng(pickupLat, pickupLng),
+            infoWindow: const InfoWindow(title: 'Destination'),
+          ),
+        ];
+
+        setState(() {});
+
+        // Move camera
+        final controller = await _controller.future;
+        controller.animateCamera(CameraUpdate.newLatLng(currentLatLng));
+
+        // Check if driver reached destination
+        final distance = Geolocator.distanceBetween(currentLat, currentLng, pickupLat, pickupLng);
+        if (distance <= 70) {
+          _locationSubscription?.cancel();
+          popUp();
+        }
       });
-
-      // Update driver marker
-      final currentLatLng = LatLng(currentLat, currentLng);
-      driverMarker = await getMarker(
-          vehicleType: bookingDetailsResponse?.data?.vehicleTypeData?.nameEn ?? '',
-          markerId: const MarkerId('driver'),
-          position: currentLatLng,
-          info: "You");
-
-      // Update marker list
-      _markers = [
-        driverMarker!,
-        Marker(
-          markerId: const MarkerId('drop'),
-          position: LatLng(pickupLat, pickupLng),
-          infoWindow: const InfoWindow(title: 'Destination'),
-        ),
-      ];
-
-      setState(() {});
-
-      // Move camera
-      final controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newLatLng(currentLatLng));
-
-      // Check if driver reached destination
-      final distance = Geolocator.distanceBetween(currentLat, currentLng, pickupLat, pickupLng);
-      if (distance <= 70) {
-        _locationSubscription?.cancel();
-        popUp();
-      }
-    });
+    } catch (e) {
+      customPrint("ERROR: unable to initialize stream: $e");
+    }
   }
 
   void popUp() {
@@ -234,13 +258,13 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                 context.pop();
                 await driverCubit
                     .changeRideStatus(
-                  bookingId: bookingDetailsResponse?.data?.id ?? 1,
+                  bookingId: widget.data.id ?? 1,
                   status: RideStatus.arrivedAtPickup.value,
                 )
                     .then((value) {
                   context.pushReplacementNamed(startTripScreen, extra: {
                     'type': widget.type,
-                    'bookingId': bookingDetailsResponse?.data?.id.toString(),
+                    'data': widget.data,
                   });
                 });
                 await driverCubit.getDriverBookings();
@@ -249,22 +273,20 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
           : showDynamicItemDialog(
               context: context,
               type: widget.type,
-              bookingId: bookingDetailsResponse?.data?.id.toString(),
-              data: bookingDetailsResponse?.data,
+              bookingId: widget.data.id.toString(),
+              data: widget.data,
             );
     });
-  }
-
-  void loadBookingDetails() async {
-    customPrint("********* Loading Booking details");
-    await driverCubit.getBookingDetails(bookingId: widget.bookingId);
   }
 
   @override
   void initState() {
     fToast = FToast();
     fToast!.init(context);
-    loadBookingDetails();
+    getCurrentLocation();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      startTracking();
+    });
     super.initState();
   }
 
@@ -277,179 +299,155 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return BlocConsumer(
-      bloc: driverCubit,
-      listener: (final context, final state) {
-        if (state is BookingDetailsLoadedState) {
-          bookingDetailsResponse = state.data as BookingDetailsResponse?;
-          getCurrentLocation();
-
-          setState(() {});
-        }
-      },
-      builder: (context, state) {
-        if (state is BookingDetailsLoadingState) {
-          return Container(
-            alignment: Alignment.center,
-            color: whiteColor,
-            child: LoadingWithoutText(),
-          );
-        } else {
-          return Scaffold(
-            backgroundColor: whiteColor,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(size.width * 0.35),
-              child: Stack(
+    return Scaffold(
+      backgroundColor: whiteColor,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(size.width * 0.35),
+        child: Stack(
+          children: [
+            Container(
+              height: size.width * 0.35,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(size.width * 0.127),
+                  bottomRight: Radius.circular(size.width * 0.127),
+                ),
+              ),
+            ),
+            Positioned(
+              top: size.height * 0.05,
+              left: size.width * 0.05,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    height: size.width * 0.35,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: primaryColor,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(size.width * 0.127),
-                        bottomRight: Radius.circular(size.width * 0.127),
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: size.width * 0.1,
+                    child: CircleAvatar(
+                      radius: size.width * 0.097,
+                      backgroundImage: NetworkImage(
+                        widget.data.driverData?.profilePhotoUrl ?? sampleNetworkImage,
                       ),
+                      backgroundColor: Colors.white,
                     ),
                   ),
-                  Positioned(
-                    top: size.height * 0.05,
-                    left: size.width * 0.05,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: size.width * 0.1,
-                          child: CircleAvatar(
-                            radius: size.width * 0.097,
-                            backgroundImage: NetworkImage(
-                              bookingDetailsResponse?.data?.userData?.profilePhotoUrl ??
-                                  sampleNetworkImage,
-                            ),
-                            backgroundColor: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Center(
-                          child: Text(
-                            bookingDetailsResponse?.data?.userData?.name ?? '',
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                        SizedBox(width: size.width * 0.09),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                makePhoneCall(
-                                    bookingDetailsResponse?.data?.receiverContactNo ?? '');
-                              },
-                              child: Image.asset(
-                                phoneCallIcon,
-                                width: 24,
-                                color: whiteColor,
-                              ),
-                            ),
-                            SizedBox(width: size.width * 0.05),
-                            GestureDetector(
-                              onTap: () {
-                                context.pushNamed(chatScreen, extra: {
-                                  'senderId': bookingDetailsResponse?.data?.driverId != null
-                                      ? bookingDetailsResponse?.data?.driverId.toString()
-                                      : authCubit.userDetails?.data?.id.toString(),
-                                  'receiverId': bookingDetailsResponse?.data?.userId.toString(),
-                                  'senderName': authCubit.userDetails?.data?.name,
-                                  'type': 'customer',
-                                  'receiverName': bookingDetailsResponse?.data?.userData?.name,
-                                  'receiverImageUrl':
-                                      bookingDetailsResponse?.data?.userData?.profilePhotoUrl,
-                                });
-                              },
-                              child: Icon(
-                                Icons.chat,
-                                color: whiteColor,
-                                size: 24,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    right: 15,
-                    top: size.width * 0.1,
+                  const SizedBox(width: 15),
+                  Center(
                     child: Text(
-                      widget.type == 'urban'
-                          ? AppLocalizations.of(context)!.urbanString
-                          : AppLocalizations.of(context)!.ruralString,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontSize: 22, color: whiteColor),
+                      widget.data.driverData?.name ?? '',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
+                      textAlign: TextAlign.end,
                     ),
+                  ),
+                  SizedBox(width: size.width * 0.09),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          makePhoneCall(widget.data.receiverContactNo ?? '');
+                        },
+                        child: Image.asset(
+                          phoneCallIcon,
+                          width: 24,
+                          color: whiteColor,
+                        ),
+                      ),
+                      SizedBox(width: size.width * 0.05),
+                      GestureDetector(
+                        onTap: () {
+                          context.pushNamed(chatScreen, extra: {
+                            'senderId': widget.data.driverId != null
+                                ? widget.data.driverId.toString()
+                                : authCubit.userDetails?.data?.id.toString(),
+                            'receiverId': widget.data.userId.toString(),
+                            'senderName': authCubit.userDetails?.data?.name,
+                            'type': 'customer',
+                            'receiverName': widget.data.userData?.name,
+                            'receiverImageUrl': widget.data.userData?.profilePhotoUrl,
+                          });
+                        },
+                        child: Icon(
+                          Icons.chat,
+                          color: whiteColor,
+                          size: 24,
+                        ),
+                      )
+                    ],
                   ),
                 ],
               ),
             ),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
-                const SizedBox(
-                  height: 4,
-                ),
-                ShowLocationWidget(
-                  address: bookingDetailsResponse?.data?.pickupAddress,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
-                const SizedBox(
-                  height: 4,
-                ),
-                ShowLocationWidget(
-                  address: bookingDetailsResponse?.data?.dropAddress,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                CustomText(
-                  text: AppLocalizations.of(context)!.mapString,
-                  fontSize: 18,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                Expanded(
-                  child: GoogleMap(
-                    initialCameraPosition: _kGooglePlex,
-                    markers: Set<Marker>.of(_markers ?? []),
-                    mapToolbarEnabled: false,
-                    myLocationEnabled: true,
-                    onMapCreated: (final controller) {
-                      _controller.complete(controller);
-                    },
-                    polylines: polylines,
-                    gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                      Factory<OneSequenceGestureRecognizer>(
-                        () => EagerGestureRecognizer(),
-                      ),
-                    },
-                  ),
-                ),
-              ],
+            Positioned(
+              right: 15,
+              top: size.width * 0.1,
+              child: Text(
+                widget.type == 'urban'
+                    ? AppLocalizations.of(context)!.urbanString
+                    : AppLocalizations.of(context)!.ruralString,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(fontSize: 22, color: whiteColor),
+              ),
             ),
-          );
-        }
-      },
+          ],
+        ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
+          const SizedBox(
+            height: 4,
+          ),
+          ShowLocationWidget(
+            address: widget.data.pickupAddress,
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
+          const SizedBox(
+            height: 4,
+          ),
+          ShowLocationWidget(
+            address: widget.data.dropAddress,
+          ),
+          const SizedBox(
+            height: 24,
+          ),
+          CustomText(
+            text: AppLocalizations.of(context)!.mapString,
+            fontSize: 18,
+          ),
+          const SizedBox(
+            height: 24,
+          ),
+          Expanded(
+            child: GoogleMap(
+              initialCameraPosition: _kGooglePlex,
+              markers: Set<Marker>.of(_markers ?? []),
+              mapToolbarEnabled: false,
+              myLocationEnabled: true,
+              onMapCreated: (final controller) {
+                _controller.complete(controller);
+              },
+              polylines: polylines,
+              gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                Factory<OneSequenceGestureRecognizer>(
+                  () => EagerGestureRecognizer(),
+                ),
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
