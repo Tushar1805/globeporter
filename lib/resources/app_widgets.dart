@@ -1322,3 +1322,33 @@ class CustomDropdownField extends StatelessWidget {
     );
   }
 }
+
+class UnreadBadge extends StatelessWidget {
+  const UnreadBadge({super.key, required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    if (count <= 0) return const SizedBox.shrink();
+    final display = count > 99 ? '99+' : count.toString();
+    final size = MediaQuery.of(context).size;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 2, offset: Offset(0, 1))],
+      ),
+      constraints: BoxConstraints(minWidth: size.width * 0.02, minHeight: size.width * 0.02),
+      child: Text(
+        display,
+        textAlign: TextAlign.center,
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: whiteColor, fontWeight: FontWeight.w600, fontSize: 12),
+      ),
+    );
+  }
+}

@@ -229,7 +229,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               ),
                         ),
                         const SizedBox(height: 6),
-                        if (unreadCount > 0) buildUnreadBadge(unreadCount),
+                        if (unreadCount > 0) UnreadBadge(count: unreadCount),
                       ],
                     ),
                     onTap: () {
@@ -263,29 +263,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   );
                 },
               ),
-      ),
-    );
-  }
-
-  // --- helper badge widget (add to class) ---
-  Widget buildUnreadBadge(int count) {
-    if (count <= 0) return const SizedBox.shrink();
-    final display = count > 99 ? '99+' : count.toString();
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: primaryColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 2, offset: Offset(0, 1))],
-      ),
-      constraints: const BoxConstraints(minWidth: 24, minHeight: 20),
-      child: Text(
-        display,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: whiteColor,
-              fontWeight: FontWeight.w600,
-            ),
       ),
     );
   }

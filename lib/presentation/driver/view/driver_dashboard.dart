@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core/di/service_locator.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
@@ -29,7 +32,11 @@ class _DriverDashboardState extends State<DriverDashboard> {
   final driverCubit = sl<DriverDetailsCubit>();
   final authCubit = sl<AuthCubit>();
   final storage = sl<SecureStorage>();
-  String amount = '500';
+  int totalUnreadCount = 0;
+  UserDetailsResponseModel? userDetailsResponse;
+  late DatabaseReference _chatListRef;
+  StreamSubscription<DatabaseEvent>? _chatListSubscription;
+  bool isDisposed = false;
 
   final screens = [
     MyTripsScreen(),
@@ -46,6 +53,63 @@ class _DriverDashboardState extends State<DriverDashboard> {
     await authCubit.getUserDetails(force: true);
   }
 
+  void getChatUnreadCount() {
+    final currentUserId = authCubit.userDetails?.data?.id?.toString();
+    if (currentUserId == null || currentUserId.trim().isEmpty) {
+      debugPrint('Current user ID is null/empty, cannot initialize chat list');
+      return;
+    }
+
+    _chatListRef = FirebaseDatabase.instance.ref("chat_list/$currentUserId");
+
+    _chatListSubscription = _chatListRef.orderByChild("timestamp").onValue.listen(
+      (DatabaseEvent event) {
+        if (isDisposed || !mounted) return;
+
+        final data = event.snapshot.value as Map<dynamic, dynamic>?;
+
+        if (data != null) {
+          try {
+            int total = 0; // <- total counter
+
+            data.forEach((key, value) {
+              final dynamic unreadRaw = value['unreadCount'] ?? value['unread_count'] ?? 0;
+              int unreadCount = 0;
+              if (unreadRaw is int) {
+                unreadCount = unreadRaw;
+              } else if (unreadRaw is double) {
+                unreadCount = unreadRaw.toInt();
+              } else {
+                unreadCount = int.tryParse(unreadRaw.toString()) ?? 0;
+              }
+
+              total += unreadCount; // <- accumulate
+            });
+
+            if (mounted && !isDisposed) {
+              setState(() {
+                totalUnreadCount = total;
+              });
+            }
+
+            debugPrint("Total unread count: $totalUnreadCount");
+          } catch (e) {
+            debugPrint('Error parsing chat list data: $e');
+          }
+        } else {
+          if (mounted && !isDisposed) {
+            setState(() {
+              totalUnreadCount = 0;
+            });
+          }
+        }
+      },
+      onError: (error) {
+        debugPrint('Error listening to chat list: $error');
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +120,10 @@ class _DriverDashboardState extends State<DriverDashboard> {
   @override
   void dispose() {
     pageController.dispose();
+    isDisposed = true;
+    // Cancel stream subscription
+    _chatListSubscription?.cancel();
+    _chatListSubscription = null;
     super.dispose();
   }
 
@@ -84,6 +152,8 @@ class _DriverDashboardState extends State<DriverDashboard> {
       listener: (final context, final state) async {
         if (state is UserDetailsLoadedState) {
           final data = state.data as UserDetailsResponseModel?;
+          userDetailsResponse = data;
+          getChatUnreadCount();
 
           if (data?.data?.status == 0) {
             await authCubit.logout();
@@ -140,12 +210,23 @@ class _DriverDashboardState extends State<DriverDashboard> {
                   pageIndex: pageIndex,
                   itemIndex: 1,
                 ),
-                BottomNavBarIcon(
-                  title: AppLocalizations.of(context)!.chatsString,
-                  icon: chatIcon,
-                  onTap: () => onNavBarTap(2),
-                  pageIndex: pageIndex,
-                  itemIndex: 2,
+                Stack(
+                  children: [
+                    BottomNavBarIcon(
+                      title: AppLocalizations.of(context)!.chatsString,
+                      icon: chatIcon,
+                      onTap: () => onNavBarTap(2),
+                      pageIndex: pageIndex,
+                      itemIndex: 2,
+                    ),
+                    Positioned(
+                      top: 5,
+                      right: 5,
+                      child: UnreadBadge(
+                        count: totalUnreadCount,
+                      ),
+                    ),
+                  ],
                 ),
                 BottomNavBarIcon(
                   title: AppLocalizations.of(context)!.profileString,
