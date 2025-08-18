@@ -128,7 +128,7 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
                     bookingDetailsResponse?.data?.status == 1 && booking?.isBookingActive == 1
                         ? GestureDetector(
                             onTap: () {
-                              makePhoneCall(booking?.receiverContactNo ?? '', context);
+                              makePhoneCall(booking?.driverData?.mobile ?? '', context);
                             },
                             child: Image.asset(
                               phoneCallIcon,
