@@ -133,7 +133,12 @@ class _ChatScreenState extends State<ChatScreen> {
       final email = match.group(0)!;
       final parts = email.split('@');
       final name = parts[0];
-      final maskedName = name.substring(0, 3) + '*' * (name.length - 3);
+
+      final String maskedName;
+      name.length <= 3
+          ? maskedName = name.substring(0, 1) + '*' * (name.length - 1)
+          : maskedName = name.substring(0, 3) + '*' * (name.length - 3);
+
       return "$maskedName@${parts[1]}";
     });
 
