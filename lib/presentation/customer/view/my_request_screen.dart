@@ -1,8 +1,10 @@
 import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/model/customer_ride_response.dart';
@@ -24,9 +26,8 @@ class MyRequestScreen extends StatefulWidget {
 
 class _MyRequestScreenState extends State<MyRequestScreen> {
   final customerCubit = sl<CustomerCubit>();
-  bool loading = false;
+  //* signifies to show the no requests widget
   bool show = false;
-  String? errorMessage = '';
   CustomerRideBookingResponse? customerRideBookingResponse;
 
   void loadData() async {
@@ -54,85 +55,86 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
       body: BlocConsumer(
         bloc: customerCubit,
         listener: (final context, final state) {
-          if (state is CustomerRideBookingsLoadingState) {
-            setState(() {
-              loading = true;
-            });
-          } else if (state is CustomerRideBookingsLoadedState) {
+          if (state is CustomerRideBookingsLoadedState) {
             customerRideBookingResponse = state.data as CustomerRideBookingResponse?;
-            if (customerRideBookingResponse != null &&
-                (customerRideBookingResponse?.data?.isNotEmpty ?? false)) {
+            if (customerRideBookingResponse == null ||
+                (customerRideBookingResponse != null &&
+                    (customerRideBookingResponse?.data?.isEmpty ?? false))) {
               setState(() {
                 show = true;
               });
             }
+          } else if (state is ErrorState) {
+            Fluttertoast.showToast(msg: state.errorMessage);
             setState(() {
-              loading = false;
-              errorMessage = '';
+              show = true;
             });
           }
         },
         builder: (final context, final state) {
-          if (state is CustomerRideBookingsLoadingState) return Center(child: LoadingWithoutText());
-          return Column(
-            children: [
-              (show)
-                  ? Expanded(
-                      child: customListView(
-                        response: customerRideBookingResponse,
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        SizedBox(height: size.width * 0.2),
-                        SizedBox(
-                          height: size.width * 0.6,
-                          width: size.width * 0.6,
-                          child: Card(
-                            elevation: 10,
-                            color: Color(0xFFE0FFDD),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(size.width),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(30.0),
-                              child: SvgPicture.asset(emptyBoxImage),
+          if (state is CustomerRideBookingsLoadingState) {
+            return Center(child: LoadingWithoutText());
+          } else {
+            return Column(
+              children: [
+                (!show)
+                    ? Expanded(
+                        child: customListView(
+                          response: customerRideBookingResponse,
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          SizedBox(height: size.width * 0.2),
+                          SizedBox(
+                            height: size.width * 0.6,
+                            width: size.width * 0.6,
+                            child: Card(
+                              elevation: 10,
+                              color: Color(0xFFE0FFDD),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(size.width),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(30.0),
+                                child: SvgPicture.asset(emptyBoxImage),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.noRequestString,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.orderHistoryDesc,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF7D7171),
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: size.width * 0.2),
-                        CustomElevatedButton(
-                          name: AppLocalizations.of(context)!.createRequestString,
-                          borderRadius: 8,
-                          alignment: Alignment.center,
-                          onPressed: widget.onCreateRequestTap ?? () {},
-                        )
-                      ],
-                    ),
-            ],
-          );
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!.noRequestString,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!.orderHistoryDesc,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF7D7171),
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: size.width * 0.2),
+                          CustomElevatedButton(
+                            name: AppLocalizations.of(context)!.createRequestString,
+                            borderRadius: 8,
+                            alignment: Alignment.center,
+                            onPressed: widget.onCreateRequestTap ?? () {},
+                          )
+                        ],
+                      )
+              ],
+            );
+          }
         },
       ),
     );
@@ -217,8 +219,11 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                           value: request?.rideType,
                         ),
                         CustomRichText(
-                            title: '${AppLocalizations.of(context)!.dateString}: ',
-                            value: formatDate(date: request?.createdAt ?? '')),
+                          title: '${AppLocalizations.of(context)!.dateString}: ',
+                          value: (request?.createdAt != null)
+                              ? formatDate(date: request?.createdAt ?? '')
+                              : '',
+                        ),
                       ],
                     )
                   ],

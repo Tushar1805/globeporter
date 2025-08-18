@@ -139,11 +139,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     await driverCubit.getPendingBookings();
   }
 
-  void loadCancellationReasons() async {
+  void loadData() async {
+    await driverCubit.getPendingBookings();
     await driverCubit.getCancellationReasons(userType: '2');
-  }
-
-  void loadWalletData() async {
     await walletCubit.getWalletData();
   }
 
@@ -151,10 +149,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   void initState() {
     fToast = FToast();
     fToast!.init(context);
-
-    loadPendingBookings();
-    loadCancellationReasons();
-    loadWalletData();
+    loadData();
     startTracking().then((_) {
       initTrackingAndService();
     });
