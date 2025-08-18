@@ -192,8 +192,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   void getAllDropdownValues() async {
     await customerCubit.getPackagingType();
-    await customerCubit.getVehicleType();
     await customerCubit.getQuantity();
+    await customerCubit.getVehicleType();
   }
 
   @override
