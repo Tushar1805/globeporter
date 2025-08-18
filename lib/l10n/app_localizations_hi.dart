@@ -524,4 +524,17 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get waitingForOtpString => 'OTP की प्रतीक्षा कर रहा हूँ...';
+
+  @override
+  String get noBookingsString => 'कोई बुकिंग नहीं';
+
+  @override
+  String get noChatsYetString => 'अभी तक कोई चैट नहीं';
+
+  @override
+  String get unableToOpenChatString =>
+      'चैट खोलने में असमर्थ. कृपया पुनः प्रयास करें';
+
+  @override
+  String get failedToSendMessageString => 'संदेश भेजने में विफल';
 }

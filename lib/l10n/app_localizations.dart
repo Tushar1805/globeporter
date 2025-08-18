@@ -1107,6 +1107,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Waiting for OTP...'**
   String get waitingForOtpString;
+
+  /// No description provided for @noBookingsString.
+  ///
+  /// In en, this message translates to:
+  /// **'No Bookings'**
+  String get noBookingsString;
+
+  /// No description provided for @noChatsYetString.
+  ///
+  /// In en, this message translates to:
+  /// **'No chats yet'**
+  String get noChatsYetString;
+
+  /// No description provided for @unableToOpenChatString.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open chat. Please try again'**
+  String get unableToOpenChatString;
+
+  /// No description provided for @failedToSendMessageString.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message'**
+  String get failedToSendMessageString;
 }
 
 class _AppLocalizationsDelegate

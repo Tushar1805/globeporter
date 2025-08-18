@@ -173,5 +173,9 @@
     "debitedToString": "यांना डेबिट केले",
     "creditedToString": "यांना क्रेडिट केले",
     "otpNotGeneratedYetString": "OTP अद्याप जनरेट झालेला नाही",
-    "waitingForOtpString": "OTP ची वाट पाहत आहे..."
+    "waitingForOtpString": "OTP ची वाट पाहत आहे...",
+    "noBookingsString": "कोणतेही बुकिंग नाही",
+    "noChatsYetString": "अद्याप कोणत्याही गप्पा नाहीत",
+    "unableToOpenChatString": "चॅट उघडण्यात अक्षम. कृपया पुन्हा प्रयत्न करा",
+    "failedToSendMessageString": "संदेश पाठवण्यात अयशस्वी"
 }

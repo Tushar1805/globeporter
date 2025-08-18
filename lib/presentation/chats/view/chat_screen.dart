@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/chats/cubit/chat_cubit.dart';
@@ -226,9 +227,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       debugPrint('Error sending message: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to send message')),
-        );
+        Fluttertoast.showToast(msg: AppLocalizations.of(context)!.failedToSendMessageString);
       }
     }
   }
@@ -266,6 +265,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+    final theme = Theme.of(context).textTheme;
     return SafeArea(
       left: false,
       top: false,
@@ -302,8 +303,11 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Expanded(
               child: messages.isEmpty
-                  ? const Center(
-                      child: Text('No chats'),
+                  ? Center(
+                      child: Text(
+                        locale.noChatsYetString,
+                        style: theme.bodyMedium,
+                      ),
                     )
                   : ListView.builder(
                       controller: _scrollController,
@@ -335,19 +339,14 @@ class _ChatScreenState extends State<ChatScreen> {
                               children: [
                                 Text(
                                   msg.message,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(fontSize: 16),
+                                  style: theme.bodyMedium?.copyWith(fontSize: 16),
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
                                   DateFormat('hh:mm a')
                                       .format(DateTime.fromMillisecondsSinceEpoch(msg.timestamp)),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(color: Colors.grey, fontSize: 11),
+                                  style:
+                                      theme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11),
                                 ),
                               ],
                             ),
@@ -364,14 +363,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   Expanded(
                     child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 18),
+                      style: theme.bodyMedium?.copyWith(fontSize: 18),
                       cursorColor: primaryColor,
                       controller: _messageController,
                       maxLines: null,
                       textInputAction: TextInputAction.send,
                       onSubmitted: (_) => _sendMessage(),
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.typeAMessageString,
+                        hintText: locale.typeAMessageString,
                         filled: true,
                         fillColor: Colors.grey[200],
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -379,7 +378,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide.none,
                         ),
-                        hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                        hintStyle: theme.bodyLarge?.copyWith(fontSize: 16),
                       ),
                     ),
                   ),

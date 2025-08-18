@@ -526,4 +526,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waitingForOtpString => 'Waiting for OTP...';
+
+  @override
+  String get noBookingsString => 'No Bookings';
+
+  @override
+  String get noChatsYetString => 'No chats yet';
+
+  @override
+  String get unableToOpenChatString => 'Unable to open chat. Please try again';
+
+  @override
+  String get failedToSendMessageString => 'Failed to send message';
 }

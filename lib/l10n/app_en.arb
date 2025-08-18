@@ -337,5 +337,15 @@
     "creditedToString": "Credited To",
     "@creditedToString": {},
     "otpNotGeneratedYetString": "OTP not generated yet",
-    "waitingForOtpString": "Waiting for OTP..."
+    "@otpNotGeneratedYetString": {},
+    "waitingForOtpString": "Waiting for OTP...",
+    "@waitingForOtpString": {},
+    "noBookingsString": "No Bookings",
+    "@noBookingsString": {},
+    "noChatsYetString": "No chats yet",
+    "@noChatsYetString": {},
+    "unableToOpenChatString": "Unable to open chat. Please try again",
+    "@unableToOpenChatString": {},
+    "failedToSendMessageString": "Failed to send message",
+    "@failedToSendMessageString": {}
 }

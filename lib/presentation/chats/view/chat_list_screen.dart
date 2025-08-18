@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:core/di/service_locator.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/resources/app_colors.dart';
@@ -153,17 +154,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final locale = AppLocalizations.of(context)!;
+    final theme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(size.width * 0.35),
         child: CustomStatusBarWidget(
-          title: AppLocalizations.of(context)!.chatsString,
+          title: locale.chatsString,
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
         child: chatList.isEmpty
-            ? const Center(
+            ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -174,11 +177,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'No chats yet',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
+                      locale.noChatsYetString,
+                      style: theme.bodyMedium,
                     ),
                   ],
                 ),
@@ -209,13 +209,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     ),
                     title: Text(
                       chat["name"] ?? "Unknown",
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 20),
+                      style: theme.bodyLarge?.copyWith(fontSize: 20),
                     ),
                     subtitle: Text(
                       chat["lastMessage"] ?? "",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+                      style: theme.bodyMedium?.copyWith(fontSize: 16),
                     ),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -223,10 +223,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       children: [
                         Text(
                           time,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontSize: 13,
-                                color: greyTextColor,
-                              ),
+                          style: theme.bodySmall?.copyWith(
+                            fontSize: 13,
+                            color: greyTextColor,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         if (unreadCount > 0) UnreadBadge(count: unreadCount),
@@ -253,11 +253,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         });
                       } else {
                         debugPrint('Missing required data for chat navigation');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Unable to open chat. Please try again.'),
-                          ),
-                        );
+
+                        Fluttertoast.showToast(msg: locale.unableToOpenChatString);
                       }
                     },
                   );
