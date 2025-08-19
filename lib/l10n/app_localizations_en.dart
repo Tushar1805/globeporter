@@ -538,4 +538,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failedToSendMessageString => 'Failed to send message';
+
+  @override
+  String get youGotMessageString => 'you got a message from';
 }

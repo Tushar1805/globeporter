@@ -177,5 +177,6 @@
     "noBookingsString": "कोणतेही बुकिंग नाही",
     "noChatsYetString": "अद्याप कोणत्याही गप्पा नाहीत",
     "unableToOpenChatString": "चॅट उघडण्यात अक्षम. कृपया पुन्हा प्रयत्न करा",
-    "failedToSendMessageString": "संदेश पाठवण्यात अयशस्वी"
+    "failedToSendMessageString": "संदेश पाठवण्यात अयशस्वी",
+    "youGotMessageString": "तुम्हाला एक संदेश मिळाला आहे"
 }

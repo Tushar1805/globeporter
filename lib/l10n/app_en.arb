@@ -347,5 +347,7 @@
     "unableToOpenChatString": "Unable to open chat. Please try again",
     "@unableToOpenChatString": {},
     "failedToSendMessageString": "Failed to send message",
-    "@failedToSendMessageString": {}
+    "@failedToSendMessageString": {},
+    "youGotMessageString": "you got a message from",
+    "@youGotMessageString": {}
 }

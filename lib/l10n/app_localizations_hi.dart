@@ -537,4 +537,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get failedToSendMessageString => 'संदेश भेजने में विफल';
+
+  @override
+  String get youGotMessageString => 'आपको यहाँ से एक संदेश मिला';
 }

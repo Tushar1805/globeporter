@@ -85,7 +85,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
               });
             }
 
-            debugPrint("Total unread count: $totalUnreadCount");
+            debugPrint("Total unread chat count: $totalUnreadCount");
           } catch (e) {
             debugPrint('Error parsing chat list data: $e');
           }

@@ -65,3 +65,8 @@ const String createOrderUrl = '$_baseUrl/create_order_on_razor_pay';
 const String getWalletDataUrl = '$_baseUrl/get_wallet_data';
 const String getWalletHistoryUrl = '$_baseUrl/get_wallet_history';
 const String addMoneyToWalletUrl = '$_baseUrl/add_money_to_wallet';
+
+//* Notifications
+
+const String getNotificationsUrl = '$_baseUrl/get_notification';
+const String markNotificationReadUrl = '$_baseUrl/read_message_update';

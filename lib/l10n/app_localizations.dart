@@ -1131,6 +1131,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to send message'**
   String get failedToSendMessageString;
+
+  /// No description provided for @youGotMessageString.
+  ///
+  /// In en, this message translates to:
+  /// **'you got a message from'**
+  String get youGotMessageString;
 }
 
 class _AppLocalizationsDelegate
