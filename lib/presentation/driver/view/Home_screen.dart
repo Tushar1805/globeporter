@@ -37,7 +37,7 @@ class DriverHomeScreen extends StatefulWidget {
   State<DriverHomeScreen> createState() => _DriverHomeScreenState();
 }
 
-class _DriverHomeScreenState extends State<DriverHomeScreen> {
+class _DriverHomeScreenState extends State<DriverHomeScreen> with SingleTickerProviderStateMixin {
   final driverCubit = sl<DriverCubit>();
   final authCubit = sl<AuthCubit>();
   final locationCubit = sl<LocationCubit>();
@@ -48,6 +48,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   int? currentBookingId;
   int? currentReasonId;
   pending.Data? currentData;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
 
   // LatLng? _currentPosition;
   final Location _location = Location();
@@ -153,12 +155,20 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     startTracking().then((_) {
       initTrackingAndService();
     });
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _scaleAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack);
     super.initState();
   }
 
   @override
   void dispose() {
     _locationSubscription?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -273,41 +283,44 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   if (state is WalletDataLoadedState) {
                     final data = state.data as WalletDataResponse?;
                     amount = data?.data?.balance.toString() ?? '000';
+
+                    _animationController.forward(from: 0);
                   }
                 },
                 builder: (final context, final state) {
                   if (state is WalletDataLoadingState) {
                     return SizedBox.shrink();
                   }
-                  return GestureDetector(
-                    onTap: () => context.pushNamed(walletScreen),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      alignment: Alignment.bottomRight,
-                      decoration: BoxDecoration(
-                        color: whiteColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(25),
+                  return ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: GestureDetector(
+                      onTap: () => context.pushNamed(walletScreen),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        alignment: Alignment.bottomRight,
+                        decoration: const BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(25),
+                          ),
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            coinImage,
-                            width: size.width * 0.047,
-                            height: size.width * 0.047,
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          Text(
-                            '$amount ${AppLocalizations.of(context)!.rsString}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(fontSize: 20, color: primaryColor),
-                          ),
-                        ],
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              coinImage,
+                              width: size.width * 0.047,
+                              height: size.width * 0.047,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '$amount ${AppLocalizations.of(context)!.rsString}',
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontSize: 20,
+                                    color: primaryColor,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
