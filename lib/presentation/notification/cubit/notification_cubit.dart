@@ -42,4 +42,20 @@ class NotificationCubit extends BaseCubit {
       handleExceptions(e);
     }
   }
+
+  Future<void> getNotificatinsUnreadCount() async {
+    try {
+      emit(NotificationUnreadCountLoadingState('Loading'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _notificationRepository.getNotificatinsUnreadCount(
+        lang: lang ?? 'en',
+        accessToken: accessToken ?? '',
+      );
+
+      emit(NotificationUnreadCountLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
 }

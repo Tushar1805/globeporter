@@ -39,4 +39,20 @@ class NotificationRepository extends BaseRepository {
       responseData as Map<String, dynamic>?,
     );
   }
+
+  Future<Map<String, dynamic>> getNotificatinsUnreadCount({
+    required final String lang,
+    required final String accessToken,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: notificationUnreadCountUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return responseData;
+  }
 }

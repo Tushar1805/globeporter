@@ -70,3 +70,4 @@ const String addMoneyToWalletUrl = '$_baseUrl/add_money_to_wallet';
 
 const String getNotificationsUrl = '$_baseUrl/get_notification';
 const String markNotificationReadUrl = '$_baseUrl/read_message_update';
+const String notificationUnreadCountUrl = '$_baseUrl/notification_message_count';

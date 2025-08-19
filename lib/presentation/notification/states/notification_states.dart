@@ -15,4 +15,11 @@ class MarkNotificationsReadLoadingState extends LoadingState {
 class MarkNotificationsReadLoadedState extends LoadedState {
   MarkNotificationsReadLoadedState({required super.data});
 }
+class NotificationUnreadCountLoadingState extends LoadingState {
+  NotificationUnreadCountLoadingState(super.loadingMessage);
+}
+
+class NotificationUnreadCountLoadedState extends LoadedState {
+  NotificationUnreadCountLoadedState({required super.data});
+}
 

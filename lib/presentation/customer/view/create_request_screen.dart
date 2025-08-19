@@ -14,6 +14,8 @@ import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/location/model/search_places_response.dart';
 import 'package:globeporter/location/states/location_states.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/notification/cubit/notification_cubit.dart';
+import 'package:globeporter/presentation/notification/states/notification_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_keys.dart';
@@ -35,11 +37,12 @@ class CreateRequestScreen extends StatefulWidget {
   State<CreateRequestScreen> createState() => _CreateRequestScreenState();
 }
 
-class _CreateRequestScreenState extends State<CreateRequestScreen> {
+class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerProviderStateMixin {
   final TextEditingController currentLocationController = TextEditingController();
   final Completer<GoogleMapController> _controller = Completer();
   final locationCubit = sl<LocationCubit>();
   final authCubit = sl<AuthCubit>();
+  final notificationCubit = sl<NotificationCubit>();
   final storage = sl<SecureStorage>();
   SearchPlacesResponse? searchPlacesResponse;
   late final List<geocoding.Placemark> placemarks;
@@ -53,6 +56,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   final loc.Location _location = loc.Location();
   LatLng? _currentPosition;
   StreamSubscription<loc.LocationData>? _locationSubscription;
+  int notificationUnreadCount = 0;
+  late AnimationController _notificationAnimationController;
+  late Animation<double> _notificationScaleAnimation;
 
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(20.5574253, 78.8386951),
@@ -196,10 +202,22 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     });
   }
 
+  void getNotificationCount() async {
+    await notificationCubit.getNotificatinsUnreadCount();
+  }
+
   @override
   void initState() {
     getCurrentLocation();
     startTracking();
+    getNotificationCount();
+
+    _notificationAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _notificationScaleAnimation =
+        CurvedAnimation(parent: _notificationAnimationController, curve: Curves.easeOutBack);
 
     currentLocationController.addListener(() {
       onChange();
@@ -212,6 +230,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     _debounce?.cancel();
     currentLocationController.dispose();
     _locationSubscription?.cancel();
+    _notificationAnimationController.dispose();
     super.dispose();
   }
 
@@ -275,18 +294,48 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: size.width * 0.18,
-                    right: size.width * 0.15,
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          context.pushNamed(notificationScreen);
-                        },
-                        child: Icon(
-                          Icons.notifications_active_outlined,
-                          color: Colors.white,
-                          size: 30,
+                  BlocListener(
+                    bloc: notificationCubit,
+                    listener: (final context, final state) {
+                      if (state is NotificationUnreadCountLoadedState) {
+                        setState(() {
+                          notificationUnreadCount = state.data['noti_unread_count'];
+                        });
+                        _notificationAnimationController.forward(from: 0);
+                      }
+                    },
+                    child: Positioned(
+                      top: size.width * 0.18,
+                      right: size.width * 0.15,
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            context.pushNamed(notificationScreen);
+                            getNotificationCount();
+                          },
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: 40,
+                                width: 40,
+                                child: Icon(
+                                  Icons.notifications_active_outlined,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: ScaleTransition(
+                                  scale: _notificationScaleAnimation,
+                                  child: UnreadBadge(
+                                    count: notificationUnreadCount,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

@@ -15,6 +15,8 @@ import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart' as pending;
 import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
+import 'package:globeporter/presentation/notification/cubit/notification_cubit.dart';
+import 'package:globeporter/presentation/notification/states/notification_states.dart';
 import 'package:globeporter/presentation/settings/cubit/wallet_cubit.dart';
 import 'package:globeporter/presentation/settings/model/wallet_data_response.dart';
 import 'package:globeporter/presentation/settings/states/wallet_states.dart';
@@ -37,11 +39,12 @@ class DriverHomeScreen extends StatefulWidget {
   State<DriverHomeScreen> createState() => _DriverHomeScreenState();
 }
 
-class _DriverHomeScreenState extends State<DriverHomeScreen> with SingleTickerProviderStateMixin {
+class _DriverHomeScreenState extends State<DriverHomeScreen> with TickerProviderStateMixin {
   final driverCubit = sl<DriverCubit>();
   final authCubit = sl<AuthCubit>();
   final locationCubit = sl<LocationCubit>();
   final walletCubit = sl<WalletCubit>();
+  final notificationCubit = sl<NotificationCubit>();
   String amount = '000';
   bool loading = false;
   final dialogLoadingNotifier = ValueNotifier(false);
@@ -49,7 +52,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with SingleTickerPr
   int? currentReasonId;
   pending.Data? currentData;
   late AnimationController _animationController;
+  late AnimationController _notificationAnimationController;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _notificationScaleAnimation;
+  int notificationUnreadCount = 0;
 
   // LatLng? _currentPosition;
   final Location _location = Location();
@@ -141,10 +147,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with SingleTickerPr
     await driverCubit.getPendingBookings();
   }
 
+  void getNotificationCount() async {
+    await notificationCubit.getNotificatinsUnreadCount();
+  }
+
   void loadData() async {
     await driverCubit.getPendingBookings();
     await driverCubit.getCancellationReasons(userType: '2');
     await walletCubit.getWalletData();
+    await notificationCubit.getNotificatinsUnreadCount();
   }
 
   @override
@@ -161,7 +172,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with SingleTickerPr
       duration: const Duration(milliseconds: 500),
     );
 
+    _notificationAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
     _scaleAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack);
+    _notificationScaleAnimation =
+        CurvedAnimation(parent: _notificationAnimationController, curve: Curves.easeOutBack);
     super.initState();
   }
 
@@ -169,6 +187,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with SingleTickerPr
   void dispose() {
     _locationSubscription?.cancel();
     _animationController.dispose();
+    _notificationAnimationController.dispose();
     super.dispose();
   }
 
@@ -201,18 +220,48 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with SingleTickerPr
                 ),
               ),
             ),
-            Positioned(
-              top: size.width * 0.15,
-              right: size.width * 0.32,
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    context.pushNamed(notificationScreen);
-                  },
-                  child: Icon(
-                    Icons.notifications_active_outlined,
-                    color: Colors.white,
-                    size: 30,
+            BlocListener(
+              bloc: notificationCubit,
+              listener: (final context, final state) {
+                if (state is NotificationUnreadCountLoadedState) {
+                  setState(() {
+                    notificationUnreadCount = state.data['noti_unread_count'];
+                  });
+                  _notificationAnimationController.forward(from: 0);
+                }
+              },
+              child: Positioned(
+                top: size.width * 0.15,
+                right: size.width * 0.32,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushNamed(notificationScreen);
+                      getNotificationCount();
+                    },
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: Icon(
+                            Icons.notifications_active_outlined,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: ScaleTransition(
+                            scale: _notificationScaleAnimation,
+                            child: UnreadBadge(
+                              count: notificationUnreadCount,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
