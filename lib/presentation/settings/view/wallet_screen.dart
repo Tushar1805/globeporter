@@ -166,8 +166,8 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ),
             Positioned(
-              bottom: size.width * 0.07,
-              right: size.width * 0.07,
+              bottom: size.width * 0.05,
+              right: size.width * 0.1,
               child: GestureDetector(
                 onTap: () {
                   context.pushNamed(transactionHistoryScreen);
@@ -176,7 +176,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     child: Icon(
                   Icons.receipt_long_outlined,
                   color: whiteColor,
-                  size: 30,
+                  size: size.width * 0.07,
                 )),
               ),
             ),
