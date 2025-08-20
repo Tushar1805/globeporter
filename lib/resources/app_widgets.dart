@@ -394,9 +394,22 @@ void showReasonDialog({
 }) {
   String? selectedReason;
 
-  showDialog(
+  showGeneralDialog(
     context: context,
-    builder: (context) {
+    transitionDuration: const Duration(milliseconds: 300),
+    barrierDismissible: true,
+    barrierLabel: "Dismiss",
+    transitionBuilder: (context, anim1, anim2, child) {
+      // Ease-in animation (fade + scale)
+      return FadeTransition(
+        opacity: CurvedAnimation(parent: anim1, curve: Curves.easeIn),
+        child: ScaleTransition(
+          scale: CurvedAnimation(parent: anim1, curve: Curves.easeIn),
+          child: child,
+        ),
+      );
+    },
+    pageBuilder: (context, anim1, anim2) {
       return Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
