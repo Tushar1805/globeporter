@@ -146,8 +146,8 @@ class _StartTripScreenState extends State<StartTripScreen> {
     _locationSubscription?.cancel(); // cancel previous listener if any
     await location.changeSettings(
       accuracy: loc.LocationAccuracy.high,
-      interval: 5000,
-      distanceFilter: 0,
+      interval: 5000, // 5 sec
+      distanceFilter: 20, // 20 meters
     );
 
     _locationSubscription = location.onLocationChanged
@@ -256,6 +256,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
   void initState() {
     fToast = FToast();
     fToast!.init(context);
+    rideStarted = (widget.data.bookingStatus ?? '') == RideStatus.rideStarted.value;
     getCurrentLocation();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       startTracking();

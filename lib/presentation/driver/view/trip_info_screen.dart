@@ -141,18 +141,18 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
     final permissionGranted = await location.requestPermission();
     final serviceEnabled = await location.serviceEnabled() || await location.requestService();
 
-    customPrint('***************** Tracking 1 ');
+    // customPrint('***************** Tracking 1 ');
 
     if (permissionGranted != loc.PermissionStatus.granted || !serviceEnabled) {
-      customPrint('***************** Checking if permissions ');
+      // customPrint('***************** Checking if permissions ');
       return;
     }
 
-    customPrint('***************** Tracking 2 ');
+    // customPrint('***************** Tracking 2 ');
 
     _locationSubscription?.cancel(); // cancel previous listener if any
 
-    customPrint('***************** Tracking 3 ');
+    // customPrint('***************** Tracking 3 ');
     void onError(final object, stack) {
       customPrint('Error Tracking: $stack ');
     }
@@ -160,10 +160,10 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
     try {
       await location.changeSettings(
         accuracy: loc.LocationAccuracy.high,
-        interval: 5000,
-        distanceFilter: 0,
+        interval: 5000, // 5 secods
+        distanceFilter: 20, // 20 meters
       );
-      customPrint('***************** Tracking 4 ');
+      // customPrint('***************** Tracking 4 ');
 
       _locationSubscription = location.onLocationChanged
           .doOnError(onError)
@@ -171,7 +171,7 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
           .listen((locationData) async {
         if (locationData.latitude == null || locationData.longitude == null) return;
 
-        customPrint('***************** Stream 1 ');
+        // customPrint('***************** Stream 1 ');
 
         final currentLat = locationData.latitude!;
         final currentLng = locationData.longitude!;
