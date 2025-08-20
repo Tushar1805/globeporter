@@ -53,7 +53,10 @@ class _ViewUploadedDocumentsState extends State<ViewUploadedDocuments> {
       body: BlocBuilder(
         bloc: driverCubit,
         builder: (final context, final state) {
-          if (state is AllDocumentsLoadingState) {
+          if (state is AllDocumentsLoadingState ||
+              state is GetOwnerDetailsLoadingState ||
+              state is GetVehicleDetailsLoadingState ||
+              state is GetDriverDetailsLoadingState) {
             return Center(
               child: LoadingWithoutText(),
             );
