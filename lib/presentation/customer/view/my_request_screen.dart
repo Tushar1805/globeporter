@@ -24,11 +24,13 @@ class MyRequestScreen extends StatefulWidget {
   State<MyRequestScreen> createState() => _MyRequestScreenState();
 }
 
-class _MyRequestScreenState extends State<MyRequestScreen> {
+class _MyRequestScreenState extends State<MyRequestScreen> with TickerProviderStateMixin {
   final customerCubit = sl<CustomerCubit>();
   //* signifies to show the no requests widget
   bool show = false;
   CustomerRideBookingResponse? customerRideBookingResponse;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
 
   void loadData() async {
     await customerCubit.getCustomerRideBookings();
@@ -37,7 +39,18 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
   @override
   void initState() {
     loadData();
+
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+
+    _scaleAnimation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,6 +77,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                 show = true;
               });
             }
+            _animationController.forward(from: 0);
           } else if (state is ErrorState) {
             Fluttertoast.showToast(msg: state.errorMessage);
             setState(() {
@@ -81,6 +95,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                     ? Expanded(
                         child: customListView(
                           response: customerRideBookingResponse,
+                          scale: _scaleAnimation,
                         ),
                       )
                     : Column(
@@ -140,93 +155,100 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
     );
   }
 
-  Widget customListView({required final CustomerRideBookingResponse? response}) => ListView.builder(
+  Widget customListView(
+          {required final CustomerRideBookingResponse? response,
+          required final Animation<double> scale}) =>
+      ListView.builder(
         itemCount: response?.data?.length,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         itemBuilder: (final context, final index) {
           final request = response?.data?[index];
-          return GestureDetector(
-            onTap: () {
-              context.pushNamed(myRequestDetailsScreen, extra: {
-                'type': request?.rideType?.toLowerCase(),
-                'bookingId': request?.id.toString(),
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                decoration: BoxDecoration(
-                  color: secondaryColor,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
+          return ScaleTransition(
+            scale: scale,
+            child: GestureDetector(
+              onTap: () {
+                context.pushNamed(myRequestDetailsScreen, extra: {
+                  'type': request?.rideType?.toLowerCase(),
+                  'bookingId': request?.id.toString(),
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: secondaryColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          locationPinImage,
-                          width: 24,
-                          height: 32,
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Expanded(
-                          child: CustomRichText(
-                            title: '${AppLocalizations.of(context)!.destinationLocationString}: ',
-                            value: request?.dropAddress,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            locationPinImage,
+                            width: 24,
+                            height: 32,
                           ),
-                        )
-                      ],
-                    ),
-                    request?.rideType?.toLowerCase() == 'urban'
-                        ? const SizedBox(
-                            height: 8,
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            child: CustomRichText(
+                              title: '${AppLocalizations.of(context)!.destinationLocationString}: ',
+                              value: request?.dropAddress,
+                            ),
                           )
-                        : SizedBox.shrink(),
-                    request?.rideType?.toLowerCase() == 'urban' &&
-                            (request?.bookingRideItem?.isNotEmpty ?? false)
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: request!.bookingRideItem!.map((booking) {
-                              return CustomRichText(
-                                title: '${AppLocalizations.of(context)!.descriptionString}: ',
-                                value: booking.description ?? '',
-                              );
-                            }).toList(),
-                          )
-                        : SizedBox.shrink(),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    CustomRichText(
-                      title: '${AppLocalizations.of(context)!.statusString}: ',
-                      value: request?.bookingStatus ?? AppLocalizations.of(context)!.pendingString,
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomRichText(
-                          title: '${AppLocalizations.of(context)!.typeString}: ',
-                          value: request?.rideType,
-                        ),
-                        CustomRichText(
-                          title: '${AppLocalizations.of(context)!.dateString}: ',
-                          value: (request?.createdAt != null)
-                              ? formatDate(date: request?.createdAt ?? '')
-                              : '',
-                        ),
-                      ],
-                    )
-                  ],
+                        ],
+                      ),
+                      request?.rideType?.toLowerCase() == 'urban'
+                          ? const SizedBox(
+                              height: 8,
+                            )
+                          : SizedBox.shrink(),
+                      request?.rideType?.toLowerCase() == 'urban' &&
+                              (request?.bookingRideItem?.isNotEmpty ?? false)
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: request!.bookingRideItem!.map((booking) {
+                                return CustomRichText(
+                                  title: '${AppLocalizations.of(context)!.descriptionString}: ',
+                                  value: booking.description ?? '',
+                                );
+                              }).toList(),
+                            )
+                          : SizedBox.shrink(),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      CustomRichText(
+                        title: '${AppLocalizations.of(context)!.statusString}: ',
+                        value:
+                            request?.bookingStatus ?? AppLocalizations.of(context)!.pendingString,
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomRichText(
+                            title: '${AppLocalizations.of(context)!.typeString}: ',
+                            value: request?.rideType,
+                          ),
+                          CustomRichText(
+                            title: '${AppLocalizations.of(context)!.dateString}: ',
+                            value: (request?.createdAt != null)
+                                ? formatDate(date: request?.createdAt ?? '')
+                                : '',
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
