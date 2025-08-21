@@ -399,7 +399,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             } else if (state is CustomerRequestLoadedState) {
               final data = state.data as Map<String, dynamic>;
               if (data['status_code'] == 200) {
-                customerCubit.findNearbyDrivers(bookingId: data['booking_id'], distance: '10');
+                customerCubit.findNearbyDrivers(bookingId: data['booking_id'], distance: '30');
                 widget.onSubmitTap?.call();
                 context.pop();
               }

@@ -16,9 +16,12 @@ class TransactionHistoryScreen extends StatefulWidget {
   State<TransactionHistoryScreen> createState() => _TransactionHistoryScreenState();
 }
 
-class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
+class _TransactionHistoryScreenState extends State<TransactionHistoryScreen>
+    with TickerProviderStateMixin {
   final walletCubit = sl<WalletCubit>();
   WalletHistoryResponse? walletHistory;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
 
   void loadTransactions() async {
     await walletCubit.getWalletHistory();
@@ -27,7 +30,17 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
   @override
   void initState() {
     loadTransactions();
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+
+    _scaleAnimation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,6 +59,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
         listener: (final context, final state) {
           if (state is WalletHistoryLoadedState) {
             walletHistory = state.data as WalletHistoryResponse?;
+            _animationController.forward(from: 0);
           }
         },
         builder: (final context, final state) {
@@ -58,7 +72,8 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
               itemCount: walletHistory?.data?.length,
               itemBuilder: (final context, final index) {
                 final transaction = walletHistory?.data?[index];
-                return TransactionCard(transaction: transaction);
+                return ScaleTransition(
+                    scale: _scaleAnimation, child: TransactionCard(transaction: transaction));
               },
             );
           }

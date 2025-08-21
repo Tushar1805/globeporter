@@ -28,7 +28,7 @@ class WalletScreen extends StatefulWidget {
   State<WalletScreen> createState() => _WalletScreenState();
 }
 
-class _WalletScreenState extends State<WalletScreen> {
+class _WalletScreenState extends State<WalletScreen> with TickerProviderStateMixin {
   final authCubit = sl<AuthCubit>();
   final walletCubit = sl<WalletCubit>();
   bool dialogLoading = false;
@@ -36,6 +36,8 @@ class _WalletScreenState extends State<WalletScreen> {
   WalletDataResponse? walletData;
   late Razorpay _razorpay;
   final amountTextController = TextEditingController();
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     await walletCubit.addMoneyToWallet(
@@ -114,12 +116,18 @@ class _WalletScreenState extends State<WalletScreen> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+
+    _scaleAnimation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
+
     super.initState();
   }
 
   @override
   void dispose() {
     _razorpay.clear(); // Removes all listeners
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -188,6 +196,7 @@ class _WalletScreenState extends State<WalletScreen> {
         listener: (final context, final state) {
           if (state is WalletDataLoadedState) {
             walletData = state.data as WalletDataResponse?;
+            _animationController.forward(from: 0);
           } else if (state is CreateOrderLoadingState) {
             setState(() {
               dialogLoading = true;
@@ -221,141 +230,144 @@ class _WalletScreenState extends State<WalletScreen> {
             );
           } else {
             return SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: size.width * 0.1,
-                  ),
-                  Center(
-                    child: Image.asset(
-                      walletImage,
-                      width: size.width * 0.8,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: size.width * 0.1,
                     ),
-                  ),
-                  CustomText(
-                    text:
-                        '${locale.balanceString}: ${walletData?.data?.balance.toString()} ${locale.rsString}',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 22),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Text(
-                    locale.addAmountDescString,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 18,
-                          color: greyTextColor,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: size.width * 0.1,
-                  ),
-                  dialogLoading
-                      ? LoadingWithoutText()
-                      : CustomElevatedButton(
-                          name: locale.addAmountString,
-                          borderRadius: 25,
-                          alignment: Alignment.center,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return Dialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    side: BorderSide(color: primaryColor),
-                                  ),
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width * 0.6,
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.circular(18),
+                    Center(
+                      child: Image.asset(
+                        walletImage,
+                        width: size.width * 0.8,
+                      ),
+                    ),
+                    CustomText(
+                      text:
+                          '${locale.balanceString}: ${walletData?.data?.balance.toString()} ${locale.rsString}',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 22),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      locale.addAmountDescString,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 18,
+                            color: greyTextColor,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: size.width * 0.1,
+                    ),
+                    dialogLoading
+                        ? LoadingWithoutText()
+                        : CustomElevatedButton(
+                            name: locale.addAmountString,
+                            borderRadius: 25,
+                            alignment: Alignment.center,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                      side: BorderSide(color: primaryColor),
                                     ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          locale.enterAmountString,
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                                fontSize: 24,
-                                                color: whiteColor,
-                                              ),
-                                        ),
-                                        const SizedBox(height: 20),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width * 0.6,
+                                      padding:
+                                          const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                                      decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.circular(18),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            locale.enterAmountString,
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                                  fontSize: 24,
+                                                  color: whiteColor,
+                                                ),
+                                          ),
+                                          const SizedBox(height: 20),
 
-                                        // OTP TextField
+                                          // OTP TextField
 
-                                        TextField(
-                                          controller: amountTextController,
-                                          textAlign: TextAlign.center,
-                                          keyboardType: TextInputType.number,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(color: Colors.black, letterSpacing: 2),
-                                          decoration: InputDecoration(
-                                            counterText: '',
-                                            filled: true,
-                                            fillColor: Colors.white.withOpacity(0.6),
-                                            hintText: locale.enterAmountString,
-                                            hintStyle: Theme.of(context)
+                                          TextField(
+                                            controller: amountTextController,
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                            style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium
-                                                ?.copyWith(color: Colors.grey),
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                              borderSide: const BorderSide(color: Colors.white),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                              borderSide: const BorderSide(color: Colors.white),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                              borderSide:
-                                                  const BorderSide(color: Colors.white, width: 2),
+                                                ?.copyWith(color: Colors.black, letterSpacing: 2),
+                                            decoration: InputDecoration(
+                                              counterText: '',
+                                              filled: true,
+                                              fillColor: Colors.white.withOpacity(0.6),
+                                              hintText: locale.enterAmountString,
+                                              hintStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(color: Colors.grey),
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                                borderSide: const BorderSide(color: Colors.white),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                                borderSide: const BorderSide(color: Colors.white),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                                borderSide:
+                                                    const BorderSide(color: Colors.white, width: 2),
+                                              ),
                                             ),
                                           ),
-                                        ),
 
-                                        const SizedBox(height: 20),
+                                          const SizedBox(height: 20),
 
-                                        // Submit button
-                                        CustomElevatedButton(
-                                          name: locale.submitString,
-                                          borderRadius: 28,
-                                          alignment: Alignment.center,
-                                          onPressed: () async {
-                                            final amount = amountTextController.text.trim();
-                                            if (amount.isEmpty) {
-                                              Fluttertoast.showToast(
-                                                  msg:
-                                                      "${locale.pleaseEnterString} ${locale.validString.toLowerCase()}  ${locale.amountString.toLowerCase()}");
-                                              return;
-                                            } else {
-                                              context.pop();
-                                              await walletCubit.createOrder(
-                                                  amount: int.parse(amount));
-                                            }
-                                          },
-                                          backgroundColor: whiteColor,
-                                          nameColor: primaryColor,
-                                          nameSize: 24,
-                                        ),
-                                      ],
+                                          // Submit button
+                                          CustomElevatedButton(
+                                            name: locale.submitString,
+                                            borderRadius: 28,
+                                            alignment: Alignment.center,
+                                            onPressed: () async {
+                                              final amount = amountTextController.text.trim();
+                                              if (amount.isEmpty) {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "${locale.pleaseEnterString} ${locale.validString.toLowerCase()}  ${locale.amountString.toLowerCase()}");
+                                                return;
+                                              } else {
+                                                context.pop();
+                                                await walletCubit.createOrder(
+                                                    amount: int.parse(amount));
+                                              }
+                                            },
+                                            backgroundColor: whiteColor,
+                                            nameColor: primaryColor,
+                                            nameSize: 24,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          nameSize: 20,
-                        ),
-                ],
+                                  );
+                                },
+                              );
+                            },
+                            nameSize: 20,
+                          ),
+                  ],
+                ),
               ),
             );
           }

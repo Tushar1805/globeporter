@@ -20,10 +20,12 @@ class ChatListScreen extends StatefulWidget {
   State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
-class _ChatListScreenState extends State<ChatListScreen> {
+class _ChatListScreenState extends State<ChatListScreen> with TickerProviderStateMixin {
   late DatabaseReference _chatListRef;
   List<Map<String, dynamic>> chatList = [];
   final authCubit = sl<AuthCubit>();
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
 
   // Add these for proper memory management
   StreamSubscription<DatabaseEvent>? _chatListSubscription;
@@ -37,6 +39,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
   void initState() {
     loadUserDetails();
     _initializeChatList();
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+
+    _scaleAnimation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
     super.initState();
   }
 
@@ -98,6 +104,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               setState(() {
                 chatList = loadedChats;
               });
+              _animationController.forward(from: 0);
             }
           } catch (e) {
             debugPrint('Error parsing chat list data: $e');
@@ -128,6 +135,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
     // Clear chat list to free memory
     chatList.clear();
+    _animationController.dispose();
 
     super.dispose();
   }
@@ -196,67 +204,70 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   final time = _formatTime(timestamp);
                   final unreadCount = chat['unreadCount'] as int? ?? 0;
 
-                  return ListTile(
-                    // tileColor: unreadCount > 0 ? secondaryColor : null,
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        chat['receiverImageUrl'] ?? sampleNetworkImage,
+                  return ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: ListTile(
+                      // tileColor: unreadCount > 0 ? secondaryColor : null,
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          chat['receiverImageUrl'] ?? sampleNetworkImage,
+                        ),
+                        radius: 24,
+                        onBackgroundImageError: (exception, stackTrace) {
+                          debugPrint('Error loading chat list image: $exception');
+                        },
                       ),
-                      radius: 24,
-                      onBackgroundImageError: (exception, stackTrace) {
-                        debugPrint('Error loading chat list image: $exception');
+                      title: Text(
+                        chat["name"] ?? "Unknown",
+                        style: theme.bodyLarge?.copyWith(fontSize: 20),
+                      ),
+                      subtitle: Text(
+                        chat["lastMessage"] ?? "",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.bodyMedium?.copyWith(fontSize: 16),
+                      ),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            time,
+                            style: theme.bodySmall?.copyWith(
+                              fontSize: 13,
+                              color: greyTextColor,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          if (unreadCount > 0) UnreadBadge(count: unreadCount),
+                        ],
+                      ),
+                      onTap: () {
+                        // Add null safety checks for navigation
+                        final senderId = authCubit.userDetails?.data?.id?.toString();
+                        final receiverId = chat['otherUserId'];
+                        final senderName = authCubit.userDetails?.data?.name;
+                        final receiverName = chat["name"];
+
+                        if (senderId != null &&
+                            receiverId != null &&
+                            senderName != null &&
+                            receiverName != null) {
+                          context.pushNamed(chatScreen, extra: {
+                            'senderId': senderId,
+                            'receiverId': receiverId,
+                            'senderName': senderName,
+                            'type': widget.role,
+                            'receiverName': receiverName,
+                            'receiverImageUrl': chat['receiverImageUrl']
+                          });
+                        } else {
+                          debugPrint('Missing required data for chat navigation');
+
+                          Fluttertoast.showToast(msg: locale.unableToOpenChatString);
+                        }
                       },
                     ),
-                    title: Text(
-                      chat["name"] ?? "Unknown",
-                      style: theme.bodyLarge?.copyWith(fontSize: 20),
-                    ),
-                    subtitle: Text(
-                      chat["lastMessage"] ?? "",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.bodyMedium?.copyWith(fontSize: 16),
-                    ),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          time,
-                          style: theme.bodySmall?.copyWith(
-                            fontSize: 13,
-                            color: greyTextColor,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        if (unreadCount > 0) UnreadBadge(count: unreadCount),
-                      ],
-                    ),
-                    onTap: () {
-                      // Add null safety checks for navigation
-                      final senderId = authCubit.userDetails?.data?.id?.toString();
-                      final receiverId = chat['otherUserId'];
-                      final senderName = authCubit.userDetails?.data?.name;
-                      final receiverName = chat["name"];
-
-                      if (senderId != null &&
-                          receiverId != null &&
-                          senderName != null &&
-                          receiverName != null) {
-                        context.pushNamed(chatScreen, extra: {
-                          'senderId': senderId,
-                          'receiverId': receiverId,
-                          'senderName': senderName,
-                          'type': widget.role,
-                          'receiverName': receiverName,
-                          'receiverImageUrl': chat['receiverImageUrl']
-                        });
-                      } else {
-                        debugPrint('Missing required data for chat navigation');
-
-                        Fluttertoast.showToast(msg: locale.unableToOpenChatString);
-                      }
-                    },
                   );
                 },
               ),
