@@ -79,7 +79,7 @@ class _OtpScreenState extends State<OtpScreen> {
     phoneController.text = widget.phone;
     nameController.text = widget.name;
     emailController.text = widget.email;
-    otpController.text = widget.otp.toString();
+    // otpController.text = widget.otp.toString();
     _startResendOtpTimer();
     super.initState();
   }
@@ -120,6 +120,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final locale = AppLocalizations.of(context)!;
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -149,7 +150,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.onboarding1Title,
+                      locale.onboarding1Title,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -198,7 +199,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         keyboardType: TextInputType.phone,
                         readOnly: true,
                         decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.enterMobileHint,
+                          hintText: locale.enterMobileHint,
                           hintStyle: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -226,7 +227,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
-                  AppLocalizations.of(context)!.nameString,
+                  locale.nameString,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                 ),
               ),
@@ -263,7 +264,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
-                  AppLocalizations.of(context)!.emailString,
+                  locale.emailString,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                 ),
               ),
@@ -301,7 +302,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
-                  AppLocalizations.of(context)!.otpString,
+                  locale.otpString,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                 ),
               ),
@@ -313,6 +314,9 @@ class _OtpScreenState extends State<OtpScreen> {
               CustomTextField(
                 textEditingController: otpController,
                 inputType: TextInputType.number,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(6),
+                ],
               ),
 
               const SizedBox(
@@ -332,8 +336,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 );
                               },
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .resendOtpString, // Make sure this exists
+                                locale.resendOtpString, // Make sure this exists
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge
@@ -341,7 +344,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               ),
                             )
                           : CustomRichText(
-                              title: AppLocalizations.of(context)!.resendOtpIn,
+                              title: locale.resendOtpIn,
                               value: ' $_remainingSeconds sec',
                               titleStyle: Theme.of(context)
                                   .textTheme
@@ -353,7 +356,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   ?.copyWith(color: primaryColor, fontSize: 16),
                             )
                       //  Text(
-                      //     '${AppLocalizations.of(context)!.resendOtpIn} $_remainingSeconds sec',
+                      //     '${locale.resendOtpIn} $_remainingSeconds sec',
                       //     style:
                       //         Theme.of(context).textTheme.bodyMedium?.copyWith(color: greyTextColor),
                       //   ),
@@ -471,7 +474,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: loading
                     ? SizedBox.shrink()
                     : CustomElevatedButton(
-                        name: AppLocalizations.of(context)!.loginString,
+                        name: locale.loginString,
                         borderRadius: 25,
                         alignment: Alignment.bottomCenter,
                         onPressed: () async {
@@ -480,7 +483,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             showToast(
                               context: context,
                               fToast: fToast!,
-                              msg: AppLocalizations.of(context)!.validNameString,
+                              msg: locale.validNameString,
                               duration: 3,
                             );
                           } else if (isEmailEditing &&
@@ -488,7 +491,16 @@ class _OtpScreenState extends State<OtpScreen> {
                             showToast(
                               context: context,
                               fToast: fToast!,
-                              msg: AppLocalizations.of(context)!.valideEmailString,
+                              msg: locale.valideEmailString,
+                              duration: 3,
+                            );
+                          } else if ((otpController.text.isEmpty ||
+                              otpController.text.length < 6)) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg:
+                                  "${locale.pleaseEnterString} ${locale.validString.toLowerCase()} ${locale.otpString.toUpperCase()}",
                               duration: 3,
                             );
                           } else {
