@@ -51,6 +51,12 @@ class _ChatScreenState extends State<ChatScreen> {
     _chatRef = FirebaseDatabase.instance.ref().child('chats/$conversationId');
     clearUnreadCount(conversationId);
     _listenToMessages();
+
+    // 🔹 Mark this chat as active for current user
+    final currentUserId = authCubit.userDetails?.data?.id;
+    if (currentUserId != null) {
+      FirebaseDatabase.instance.ref("active_chats/$currentUserId").set(conversationId);
+    }
   }
 
   String getConversationId(String? id1, String? id2) {
@@ -153,9 +159,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final messageText = _maskSensitiveInfo(_messageController.text.trim());
     if (messageText.isEmpty) return;
 
-    // 5) Clear the input box
     _messageController.clear();
-
     final timestamp = DateTime.now().millisecondsSinceEpoch;
 
     final newMessage = ChatMessage(
@@ -168,17 +172,14 @@ class _ChatScreenState extends State<ChatScreen> {
     final conversationId = getConversationId(widget.senderId, widget.receiverId);
     if (conversationId == '') return;
 
-    // Reference to the message list for this conversation
     final messageRef = _chatRef.push();
 
     try {
-      // 1) Save the message
       await messageRef.set(newMessage.toMap());
 
-      // 2) Update sender's chat list entry (unreadCount = 0)
+      // Update sender chat list
       final senderChatRef =
           FirebaseDatabase.instance.ref("chat_list/${widget.senderId}/$conversationId");
-
       await senderChatRef.update({
         "name": widget.receiverName,
         "otherUserId": widget.receiverId,
@@ -188,25 +189,13 @@ class _ChatScreenState extends State<ChatScreen> {
         "unreadCount": 0,
       });
 
-      // 3) Atomically increment receiver's unreadCount
+      // Increment receiver unread count
       final receiverChatRef =
           FirebaseDatabase.instance.ref("chat_list/${widget.receiverId}/$conversationId");
-
       await receiverChatRef.runTransaction((Object? currentValue) {
         final Map<String, dynamic> current =
-            (currentValue as Map?)?.map((key, value) => MapEntry(key.toString(), value)) ??
-                <String, dynamic>{};
-
-        int currentUnread = 0;
-        final dynamic u = current['unreadCount'];
-        if (u is int) {
-          currentUnread = u;
-        } else if (u is double) {
-          currentUnread = u.toInt();
-        } else {
-          currentUnread = int.tryParse(u?.toString() ?? '0') ?? 0;
-        }
-
+            (currentValue as Map?)?.map((key, value) => MapEntry(key.toString(), value)) ?? {};
+        int currentUnread = int.tryParse(current['unreadCount']?.toString() ?? '0') ?? 0;
         current['unreadCount'] = currentUnread + 1;
         current['lastMessage'] = messageText;
         current['timestamp'] = timestamp;
@@ -214,21 +203,29 @@ class _ChatScreenState extends State<ChatScreen> {
         current['name'] = widget.senderName;
         current['receiverImageUrl'] =
             authCubit.userDetails?.data?.profilePhotoUrl ?? current['receiverImageUrl'];
-
         return Transaction.success(current);
       });
 
-      // 4) Send push notification
-      chatCubit.sendNotification(
-        title: widget.senderName,
-        message: messageText,
-        receiverId: widget.receiverId,
-        senderId: widget.senderId,
-        receiverName: widget.receiverName,
-        senderName: widget.senderName,
-        receiverImageUrl: widget.receiverImageUrl,
-        userType: widget.type,
-      );
+      // 🔹 Check if receiver is inside the chat screen before sending notification
+      final activeChatRef = FirebaseDatabase.instance.ref("active_chats/${widget.receiverId}");
+      final activeChatSnap = await activeChatRef.get();
+      final activeConversationId = activeChatSnap.value as String?;
+
+      if (activeConversationId != conversationId) {
+        // Receiver is NOT inside this chat → Send notification
+        chatCubit.sendNotification(
+          title: widget.senderName,
+          message: messageText,
+          receiverId: widget.receiverId,
+          senderId: widget.senderId,
+          receiverName: widget.receiverName,
+          senderName: widget.senderName,
+          receiverImageUrl: widget.receiverImageUrl,
+          userType: widget.type,
+        );
+      } else {
+        debugPrint("Receiver is already in chat, skipping notification.");
+      }
     } catch (e) {
       debugPrint('Error sending message: $e');
       if (mounted) {
@@ -253,17 +250,17 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _isDisposed = true;
-
-    // Cancel stream subscription
     _chatSubscription?.cancel();
     _chatSubscription = null;
-
-    // Dispose controllers
     _messageController.dispose();
     _scrollController.dispose();
-
-    // Clear messages list to free memory
     messages.clear();
+
+    // 🔹 Remove active chat on exit
+    final currentUserId = authCubit.userDetails?.data?.id;
+    if (currentUserId != null) {
+      FirebaseDatabase.instance.ref("active_chats/$currentUserId").remove();
+    }
 
     super.dispose();
   }
