@@ -240,7 +240,40 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   Future<File?> pickImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      // Show dialog to choose between camera and gallery
+      ImageSource? source = await showDialog<ImageSource>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.selectImageSourceString),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.camera_alt, color: primaryColor),
+                  title: Text(AppLocalizations.of(context)!.cameraString),
+                  onTap: () {
+                    Navigator.pop(context, ImageSource.camera);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.photo_library, color: primaryColor),
+                  title: Text(AppLocalizations.of(context)!.galleryString),
+                  onTap: () {
+                    Navigator.pop(context, ImageSource.gallery);
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      // If user cancelled the dialog, return null
+      if (source == null) return null;
+
+      // Pick image from selected source
+      final image = await ImagePicker().pickImage(source: source);
 
       if (image == null) return null;
 
@@ -249,9 +282,34 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return imageTemporary;
     } on PlatformException catch (e) {
       debugPrint('Failed to pick image: $e');
+
+      // Show error message to user
+      if (fToast != null) {
+        showToast(
+          context: context,
+          fToast: fToast!,
+          msg: 'Failed to pick image: ${e.message}',
+          duration: 3,
+        );
+      }
     }
     return null;
   }
+
+  // Future<File?> pickImage() async {
+  //   try {
+  //     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+  //     if (image == null) return null;
+
+  //     final imageTemporary = File(image.path);
+
+  //     return imageTemporary;
+  //   } on PlatformException catch (e) {
+  //     debugPrint('Failed to pick image: $e');
+  //   }
+  //   return null;
+  // }
 
   void deleteImage() {
     setState(() {

@@ -539,4 +539,13 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get youGotMessageString => 'तुम्हाला एक संदेश मिळाला आहे';
+
+  @override
+  String get selectImageSourceString => 'प्रतिमा स्रोत निवडा';
+
+  @override
+  String get cameraString => 'कॅमेरा';
+
+  @override
+  String get galleryString => 'गॅलरी';
 }

@@ -541,4 +541,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get youGotMessageString => 'you got a message from';
+
+  @override
+  String get selectImageSourceString => 'Select Image Source';
+
+  @override
+  String get cameraString => 'Camera';
+
+  @override
+  String get galleryString => 'Gallery';
 }

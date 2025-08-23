@@ -540,4 +540,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get youGotMessageString => 'आपको यहाँ से एक संदेश मिला';
+
+  @override
+  String get selectImageSourceString => 'इमेज स्रोत चुनें';
+
+  @override
+  String get cameraString => 'कैमरा';
+
+  @override
+  String get galleryString => 'गैलरी';
 }

@@ -175,6 +175,9 @@
     "noChatsYetString": "अभी तक कोई चैट नहीं",
     "unableToOpenChatString": "चैट खोलने में असमर्थ. कृपया पुनः प्रयास करें",
     "failedToSendMessageString": "संदेश भेजने में विफल",
-    "youGotMessageString": "आपको यहाँ से एक संदेश मिला"
+    "youGotMessageString": "आपको यहाँ से एक संदेश मिला",
+    "selectImageSourceString": "इमेज स्रोत चुनें",
+    "cameraString": "कैमरा",
+    "galleryString": "गैलरी"
     
 }

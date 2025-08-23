@@ -1137,6 +1137,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'you got a message from'**
   String get youGotMessageString;
+
+  /// No description provided for @selectImageSourceString.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Image Source'**
+  String get selectImageSourceString;
+
+  /// No description provided for @cameraString.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get cameraString;
+
+  /// No description provided for @galleryString.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get galleryString;
 }
 
 class _AppLocalizationsDelegate
