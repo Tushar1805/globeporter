@@ -136,9 +136,13 @@ class _ContactPickerScreenState extends State<ContactPickerScreen> {
                         title: Text(contact.displayName),
                         subtitle: Text(phone),
                         onTap: () {
+                          var phoneVal = phone;
+                          if (phone.startsWith('+')) {
+                            phoneVal = phone.replaceRange(0, 3, '');
+                          }
                           context.pop({
                             'name': contact.displayName,
-                            'phone': phone,
+                            'phone': phoneVal,
                           });
                         },
                       );

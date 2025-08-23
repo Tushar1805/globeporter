@@ -826,7 +826,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   height: 8,
                 ),
                 CustomTextField(
-                  readOnly: true,
                   textEditingController: contactNumberController,
                   hint: '91XXXXXXXX',
                   inputType: TextInputType.number,
