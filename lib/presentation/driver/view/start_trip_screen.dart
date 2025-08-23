@@ -304,7 +304,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
                     child: CircleAvatar(
                       radius: size.width * 0.097,
                       backgroundImage: NetworkImage(
-                        widget.data.driverData?.profilePhotoUrl ?? sampleNetworkImage,
+                        widget.data.userData?.profilePhotoUrl ?? sampleNetworkImage,
                       ),
                       backgroundColor: Colors.white,
                     ),
@@ -312,7 +312,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
                   const SizedBox(width: 15),
                   Center(
                     child: Text(
-                      widget.data.driverData?.name ?? '',
+                      widget.data.userData?.name ?? '',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
                       textAlign: TextAlign.end,
@@ -323,7 +323,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          makePhoneCall(widget.data.receiverContactNo ?? '');
+                          makePhoneCall(widget.data.userData?.mobile ?? '');
                         },
                         child: Image.asset(
                           phoneCallIcon,

@@ -10,7 +10,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
-import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
+import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart'
+    as ride_reasons;
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_extension_functions.dart';
@@ -389,10 +390,11 @@ class BottomNavBarIcon extends StatelessWidget {
 void showReasonDialog({
   required final BuildContext context,
   required final Future Function(String id) onTap,
-  required final RideCancellationReasonResponse? reasons,
+  required final ride_reasons.RideCancellationReasonResponse? reasons,
   required final ValueNotifier<bool> loadingNotifier,
 }) {
   String? selectedReason;
+  ride_reasons.Data? selectedReasonData;
 
   showGeneralDialog(
     context: context,
@@ -432,42 +434,69 @@ void showReasonDialog({
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          isExpanded: true, // Forces items to wrap within dialog width
-                          value: selectedReason,
-                          hint: Text(
-                            AppLocalizations.of(context)!.selectReasonString,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                  fontSize: 22,
-                                  color: whiteColor,
-                                ),
-                            textAlign: TextAlign.center,
+                      DropdownButtonFormField2<ride_reasons.Data>(
+                        value: selectedReasonData,
+                        isExpanded: true,
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: whiteColor,
                           ),
-                          dropdownColor: Colors.green.shade700,
-                          icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                          items: reasons?.data?.map((reason) {
-                            return DropdownMenuItem(
-                              value: reason.id.toString(),
-                              child: Text(
-                                reason.reason ?? '',
-                                softWrap: true,
-                                overflow: TextOverflow.visible, // Wrap text instead of cutting
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(color: whiteColor),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedReason = value;
-                            });
-                          },
                         ),
+                        hint: Text(
+                          AppLocalizations.of(context)!.selectReasonString,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontSize: 22,
+                                color: whiteColor,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 14),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: primaryColor),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                          maxHeight: MediaQuery.of(context).size.width * 0.8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.green.shade700,
+                          ),
+                          offset: const Offset(0, -4),
+                          scrollbarTheme: ScrollbarThemeData(
+                            thumbColor: WidgetStateProperty.all(primaryColor),
+                            radius: const Radius.circular(4),
+                          ),
+                        ),
+                        items: reasons?.data?.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final reason = entry.value;
+
+                          return DropdownMenuItem<ride_reasons.Data>(
+                            value: reason,
+                            child: Text(
+                              "${index + 1}. ${reason.reason}",
+                              overflow: TextOverflow.visible,
+                              softWrap: true,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          selectedReason = val?.id.toString();
+                          selectedReasonData = val;
+                        },
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: MediaQuery.of(context).size.width * 0.08),
                       ValueListenableBuilder<bool>(
                         valueListenable: loadingNotifier,
                         builder: (context, isLoading, _) {
