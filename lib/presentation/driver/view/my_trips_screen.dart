@@ -221,77 +221,89 @@ class _MyTripsScreenState extends State<MyTripsScreen> with TickerProviderStateM
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    CustomRichText(
-                                        title: '${AppLocalizations.of(context)!.statusString}: ',
-                                        value: trip?.bookingStatus),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    trip?.isBookingActive == 1
-                                        ? CustomElevatedButton(
-                                            name: AppLocalizations.of(context)!.goString,
-                                            textWidget: buttonLoading
-                                                ? CircularProgressIndicator(
-                                                    color: whiteColor,
-                                                  )
-                                                : null,
-                                            borderRadius: 5,
-                                            alignment: Alignment.center,
-                                            onPressed: () async {
-                                              if (RideStatus.accept.value == trip?.bookingStatus ||
-                                                  RideStatus.ongoing.value == trip?.bookingStatus) {
-                                                context.pushNamed(
-                                                  itemDetailsScreen,
-                                                  extra: {
-                                                    'type': trip?.rideType?.toLowerCase(),
-                                                    'bookingId': trip?.id.toString(),
-                                                  },
-                                                );
-                                              } else if (RideStatus.onTheWay.value ==
-                                                  trip?.bookingStatus) {
-                                                // context.pushNamed(
-                                                //   itemDetailsScreen,
-                                                //   extra: {
-                                                //     'type': trip?.rideType?.toLowerCase(),
-                                                //     'bookingId': trip?.id.toString(),
-                                                //   },
-                                                // );
-                                                await driverCubit
-                                                    .getBookingDetails(
-                                                        bookingId: trip?.id.toString() ?? '1')
-                                                    .then((final response) {
-                                                  context.pushNamed(
-                                                    tripInfoScreen,
-                                                    extra: {
-                                                      'type': trip?.rideType?.toLowerCase(),
-                                                      'data': response?.data,
-                                                    },
-                                                  );
-                                                });
-                                              } else if (RideStatus.arrivedAtPickup.value ==
-                                                      trip?.bookingStatus ||
-                                                  RideStatus.rideStarted.value ==
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CustomRichText(
+                                            title:
+                                                '${AppLocalizations.of(context)!.statusString}: ',
+                                            value: trip?.bookingStatus),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        trip?.isBookingActive == 1
+                                            ? CustomElevatedButton(
+                                                name: AppLocalizations.of(context)!.goString,
+                                                textWidget: buttonLoading
+                                                    ? CircularProgressIndicator(
+                                                        color: whiteColor,
+                                                      )
+                                                    : Image.asset(
+                                                        arrowForward,
+                                                        width: size.width * 0.05,
+                                                        height: size.height * 0.017,
+                                                      ),
+                                                borderRadius: 5,
+                                                alignment: Alignment.centerRight,
+                                                onPressed: () async {
+                                                  if (RideStatus.accept.value ==
+                                                          trip?.bookingStatus ||
+                                                      RideStatus.ongoing.value ==
+                                                          trip?.bookingStatus) {
+                                                    context.pushNamed(
+                                                      itemDetailsScreen,
+                                                      extra: {
+                                                        'type': trip?.rideType?.toLowerCase(),
+                                                        'bookingId': trip?.id.toString(),
+                                                      },
+                                                    );
+                                                  } else if (RideStatus.onTheWay.value ==
                                                       trip?.bookingStatus) {
-                                                await driverCubit
-                                                    .getBookingDetails(
-                                                        bookingId: trip?.id.toString() ?? '1')
-                                                    .then((final response) {
-                                                  context.pushNamed(
-                                                    startTripScreen,
-                                                    extra: {
-                                                      'type': trip?.rideType?.toLowerCase(),
-                                                      'data': response?.data,
-                                                    },
-                                                  );
-                                                });
-                                              }
-                                            },
-                                            textPadding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 4,
-                                            ),
-                                          )
-                                        : SizedBox.shrink(),
+                                                    // context.pushNamed(
+                                                    //   itemDetailsScreen,
+                                                    //   extra: {
+                                                    //     'type': trip?.rideType?.toLowerCase(),
+                                                    //     'bookingId': trip?.id.toString(),
+                                                    //   },
+                                                    // );
+                                                    await driverCubit
+                                                        .getBookingDetails(
+                                                            bookingId: trip?.id.toString() ?? '1')
+                                                        .then((final response) {
+                                                      context.pushNamed(
+                                                        tripInfoScreen,
+                                                        extra: {
+                                                          'type': trip?.rideType?.toLowerCase(),
+                                                          'data': response?.data,
+                                                        },
+                                                      );
+                                                    });
+                                                  } else if (RideStatus.arrivedAtPickup.value ==
+                                                          trip?.bookingStatus ||
+                                                      RideStatus.rideStarted.value ==
+                                                          trip?.bookingStatus) {
+                                                    await driverCubit
+                                                        .getBookingDetails(
+                                                            bookingId: trip?.id.toString() ?? '1')
+                                                        .then((final response) {
+                                                      context.pushNamed(
+                                                        startTripScreen,
+                                                        extra: {
+                                                          'type': trip?.rideType?.toLowerCase(),
+                                                          'data': response?.data,
+                                                        },
+                                                      );
+                                                    });
+                                                  }
+                                                },
+                                                textPadding: const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                              )
+                                            : SizedBox.shrink(),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
