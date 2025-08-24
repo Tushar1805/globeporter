@@ -1031,13 +1031,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 const SizedBox(
                   height: 24,
                 ),
+
                 SizedBox(
-                  height: size.width * 0.8,
+                  height: size.height * 0.5,
                   child: GoogleMap(
                     initialCameraPosition: _kGooglePlex,
                     markers: Set<Marker>.of(_markers ?? []),
-                    mapToolbarEnabled: false,
                     myLocationEnabled: true,
+                    mapToolbarEnabled: false,
                     onMapCreated: (final controller) {
                       _controller.complete(controller);
                     },
@@ -1047,8 +1048,114 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         () => EagerGestureRecognizer(),
                       ),
                     },
+
+                    /// 👇 NEW FEATURE: pick location from map
+                    onTap: (LatLng tappedLatLng) async {
+                      try {
+                        // reverse-geocode to human-readable address
+                        final placemarks = await placemarkFromCoordinates(
+                          tappedLatLng.latitude,
+                          tappedLatLng.longitude,
+                        );
+                        String selectedAddress = "";
+                        if (placemarks.isNotEmpty) {
+                          final place = placemarks.first;
+                          selectedAddress =
+                              "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.administrativeArea}, ${place.country}";
+                        }
+
+                        // update textfield + cubit
+                        setState(() {
+                          _suppressOnChange = true;
+                          destinationLocationController.text = selectedAddress;
+                          locationCubit.currentLocation = selectedAddress;
+                          _markers?.add(
+                            Marker(
+                              markerId: const MarkerId('selected_from_map'),
+                              position: tappedLatLng,
+                              infoWindow: InfoWindow(title: selectedAddress),
+                            ),
+                          );
+                        });
+
+                        // convert into Position object
+                        // final newPosition = Position(
+                        //   latitude: tappedLatLng.latitude,
+                        //   longitude: tappedLatLng.longitude,
+                        //   timestamp: DateTime.now(),
+                        //   accuracy: 1.0,
+                        //   altitude: 0.0,
+                        //   heading: 0.0,
+                        //   speed: 0.0,
+                        //   speedAccuracy: 0.0,
+                        //   altitudeAccuracy: 1.0,
+                        //   headingAccuracy: 1.0,
+                        // );
+
+                        setState(() {
+                          _suppressOnChange = false;
+                        });
+
+                        //* Route the directions
+                        await locationCubit
+                            .routeDirection(
+                          pickupLat: pickupPosition?.latitude ?? 20.5574253,
+                          pickupLng: pickupPosition?.longitude ?? 78.838695,
+                          dropLat: tappedLatLng.latitude,
+                          dropLng: tappedLatLng.longitude,
+                        )
+                            .then((final response) {
+                          final points = response?.routes?[0].overviewPolyline?.points ?? '';
+                          polylineCoordinates = decodePolyline(points);
+
+                          polylines.add(
+                            Polyline(
+                              polylineId: PolylineId("route"),
+                              points: polylineCoordinates,
+                              color: Colors.black,
+                              width: 5,
+                            ),
+                          );
+                          _markers?.add(
+                            Marker(
+                              markerId: MarkerId('drop'),
+                              position: tappedLatLng,
+                              infoWindow: InfoWindow(title: selectedAddress),
+                            ),
+                          );
+
+                          setState(() {
+                            dropLat = tappedLatLng.latitude.toString();
+                            dropLng = tappedLatLng.longitude.toString();
+                          });
+                        });
+
+                        final GoogleMapController mapController = await _controller.future;
+                        mapController.animateCamera(CameraUpdate.newLatLng(tappedLatLng));
+                      } catch (e) {
+                        debugPrint("Error selecting location from map: $e");
+                      }
+                    },
                   ),
                 ),
+                // SizedBox(
+                //   height: size.width * 0.8,
+                //   child: GoogleMap(
+                //     initialCameraPosition: _kGooglePlex,
+                //     markers: Set<Marker>.of(_markers ?? []),
+                //     mapToolbarEnabled: false,
+                //     myLocationEnabled: true,
+                //     onMapCreated: (final controller) {
+                //       _controller.complete(controller);
+                //     },
+                //     polylines: polylines,
+                //     gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                //       Factory<OneSequenceGestureRecognizer>(
+                //         () => EagerGestureRecognizer(),
+                //       ),
+                //     },
+                //   ),
+                // ),
                 const SizedBox(
                   height: 24,
                 ),

@@ -650,8 +650,92 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                     () => EagerGestureRecognizer(),
                   ),
                 },
+
+                /// 👇 NEW FEATURE: pick location from map
+                onTap: (LatLng tappedLatLng) async {
+                  try {
+                    // reverse-geocode to human-readable address
+                    final placemarks = await geocoding.placemarkFromCoordinates(
+                      tappedLatLng.latitude,
+                      tappedLatLng.longitude,
+                    );
+                    String selectedAddress = "";
+                    if (placemarks.isNotEmpty) {
+                      final place = placemarks.first;
+                      selectedAddress =
+                          "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.administrativeArea}, ${place.country}";
+                    }
+
+                    // update textfield + cubit
+                    setState(() {
+                      _suppressOnChange = true;
+                      currentLocationController.text = selectedAddress;
+                      locationCubit.currentLocation = selectedAddress;
+                      _markers = <Marker>[
+                        Marker(
+                          markerId: const MarkerId('selected_from_map'),
+                          position: tappedLatLng,
+                          infoWindow: InfoWindow(title: selectedAddress),
+                        ),
+                      ];
+                    });
+
+                    // convert into Position object
+                    final newPosition = Position(
+                      latitude: tappedLatLng.latitude,
+                      longitude: tappedLatLng.longitude,
+                      timestamp: DateTime.now(),
+                      accuracy: 1.0,
+                      altitude: 0.0,
+                      heading: 0.0,
+                      speed: 0.0,
+                      speedAccuracy: 0.0,
+                      altitudeAccuracy: 1.0,
+                      headingAccuracy: 1.0,
+                    );
+                    locationCubit.position = newPosition;
+
+                    // infer urbanity
+                    final urbananityResult = await UrbanityChecker.inferUrbanity(
+                      tappedLatLng.latitude,
+                      tappedLatLng.longitude,
+                      radius: 500,
+                    );
+
+                    customPrint("Urbanity from map: $urbananityResult");
+
+                    setState(() {
+                      isUrban = urbananityResult.toLowerCase().contains("urban");
+                      _suppressOnChange = false;
+                    });
+
+                    // animate camera to new location
+                    final GoogleMapController mapController = await _controller.future;
+                    mapController.animateCamera(CameraUpdate.newLatLng(tappedLatLng));
+                  } catch (e) {
+                    debugPrint("Error selecting location from map: $e");
+                  }
+                },
               ),
             ),
+
+            // SizedBox(
+            //   height: size.height * 0.5,
+            //   child: GoogleMap(
+            //     initialCameraPosition: _kGooglePlex,
+            //     markers: Set<Marker>.of(_markers ?? []),
+            //     myLocationEnabled: true,
+            //     mapToolbarEnabled: false,
+            //     onMapCreated: (final controller) {
+            //       _controller.complete(controller);
+            //     },
+            //     gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+            //       Factory<OneSequenceGestureRecognizer>(
+            //         () => EagerGestureRecognizer(),
+            //       ),
+            //     },
+            //   ),
+            // ),
             const SizedBox(
               height: 20,
             ),
