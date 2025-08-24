@@ -198,6 +198,28 @@ class _MyRequestScreenState extends State<MyRequestScreen> with TickerProviderSt
                           ),
                           Expanded(
                             child: CustomRichText(
+                              title: '${AppLocalizations.of(context)!.pickupLocationString}: ',
+                              value: request?.pickupAddress,
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            locationPinImage,
+                            width: 24,
+                            height: 32,
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            child: CustomRichText(
                               title: '${AppLocalizations.of(context)!.destinationLocationString}: ',
                               value: request?.dropAddress,
                             ),
