@@ -14,7 +14,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
-import 'package:globeporter/presentation/authentication/model/login_response_model.dart';
+// import 'package:globeporter/presentation/authentication/model/login_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/otp_response_model.dart';
 import 'package:globeporter/presentation/authentication/model/user_type_response_model.dart';
 import 'package:globeporter/presentation/widgets/driver_dialog_widget.dart';
@@ -374,10 +374,10 @@ class _OtpScreenState extends State<OtpScreen> {
                       loading = true;
                     });
                   } else if (state is ResendOtpLoadedState) {
-                    final data = state.data as LoginResponseModel?;
-                    setState(() {
-                      otpController.text = data?.otp.toString() ?? '';
-                    });
+                    // final data = state.data as LoginResponseModel?;
+                    // setState(() {
+                    //   otpController.text = data?.otp.toString() ?? '';
+                    // });
                     _startResendOtpTimer();
 
                     setState(() {
