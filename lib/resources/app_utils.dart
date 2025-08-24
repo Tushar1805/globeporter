@@ -1,11 +1,15 @@
 import 'dart:ui' as ui;
+import 'dart:convert';
 
 import 'package:core/utils/core_utils.dart';
 import 'package:country_phone_validator/country_phone_validator.dart';
 import 'package:flutter/services.dart';
+import 'package:globeporter/resources/app_api_keys.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+
+import 'package:http/http.dart' as http;
 
 Future<Uint8List> getBytesFromAssets({required final String path, required final int width}) async {
   ByteData data = await rootBundle.load(path);
@@ -86,5 +90,63 @@ Future<Marker> getMarker(
       icon: BitmapDescriptor.bytes(truck),
       infoWindow: InfoWindow(title: info),
     );
+  }
+}
+
+class UrbanityChecker {
+  static const String _apiKey = googleMapAPIKey;
+  static const String _baseUrl = "https://areainsights.googleapis.com/v1:computeInsights";
+
+  /// Get aggregate count of POIs for selected types within radius
+  static Future<String> getPlaceDensity(double lat, double lng, {int radius = 500}) async {
+    final body = {
+      "insights": ["INSIGHT_COUNT"],
+      "filter": {
+        "locationFilter": {
+          "circle": {
+            "latLng": {"latitude": lat, "longitude": lng},
+            "radius": radius
+          }
+        },
+        "typeFilter": {
+          "includedTypes": ["restaurant", "cafe"]
+        }
+      }
+    };
+
+    final response = await http.post(
+      Uri.parse(_baseUrl),
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": _apiKey,
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to fetch aggregate: ${response.body}");
+    }
+
+    final data = json.decode(response.body);
+    customPrint("Aggregate Data: $data ");
+    final count = data["count"] ?? "0";
+    return count;
+  }
+
+  /// Infer urbanity based on POI density
+  static Future<String> inferUrbanity(double lat, double lng, {int radius = 500}) async {
+    final density = await getPlaceDensity(lat, lng, radius: radius);
+
+    int count = (int.tryParse(density) ?? 0);
+
+    if (count > 50) {
+      return "Urban (POIs found: $count)";
+    }
+    //  else if (count > 15) {
+    //   return "Semi-urban (POIs found: $count)";
+    // }
+    else {
+      return "Rural (POIs found: $count)";
+    }
   }
 }

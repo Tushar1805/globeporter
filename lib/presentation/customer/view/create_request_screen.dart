@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +81,24 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
             : "";
         // setState(() {});
       });
+
+      final urbananityResult = await UrbanityChecker.inferUrbanity(
+        position?.latitude ?? 20.5574253,
+        position?.longitude ?? 78.8386951,
+        radius: 500,
+      );
+
+      customPrint(urbananityResult);
+
+      if (urbananityResult.toLowerCase().contains('urban')) {
+        setState(() {
+          isUrban = true;
+        });
+      } else {
+        setState(() {
+          isUrban = false;
+        });
+      }
 
       locationCubit.currentLocation = currentLocationController.text;
       locationCubit.position = position;
@@ -491,6 +510,24 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                                   ];
                                 });
 
+                                final urbananityResult = await UrbanityChecker.inferUrbanity(
+                                  latLng.latitude,
+                                  latLng.longitude,
+                                  radius: 500,
+                                );
+
+                                customPrint(urbananityResult);
+
+                                if (urbananityResult.toLowerCase().contains('urban')) {
+                                  setState(() {
+                                    isUrban = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isUrban = false;
+                                  });
+                                }
+
                                 final GoogleMapController mapController = await _controller.future;
                                 mapController.animateCamera(CameraUpdate.newLatLng(latLng));
                               }
@@ -530,9 +567,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                     width: size.width * 0.35,
                     child: elevatedButton(
                       onPressed: () {
-                        setState(() {
-                          isUrban = true;
-                        });
+                        // setState(() {
+                        //   isUrban = true;
+                        // });
                       },
                       title: AppLocalizations.of(context)!.urbanString,
                       backgroundColor: isUrban ? primaryColor : whiteColor,
@@ -547,9 +584,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                     child: elevatedButton(
                       onPressed: () {
                         setState(() {
-                          setState(() {
-                            isUrban = false;
-                          });
+                          // setState(() {
+                          //   isUrban = false;
+                          // });
                         });
                       },
                       title: AppLocalizations.of(context)!.ruralString,
