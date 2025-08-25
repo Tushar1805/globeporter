@@ -2,8 +2,11 @@
 
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/notification/cubit/notification_cubit.dart';
+import 'package:globeporter/presentation/notification/states/notification_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
@@ -18,14 +21,42 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStateMixin {
   final authCubit = sl<AuthCubit>();
   final double profilePercent = 0.78; // 78%
+
+  final notificationCubit = sl<NotificationCubit>();
+  int notificationUnreadCount = 0;
+  late AnimationController _notificationAnimationController;
+  late Animation<double> _notificationScaleAnimation;
 
   Color _getProgressColor(int percent) {
     if (percent < 25) return Colors.red;
     if (percent < 75) return Colors.orange;
     return Colors.green;
+  }
+
+  void getNotificationCount() async {
+    await notificationCubit.getNotificatinsUnreadCount();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getNotificationCount();
+    _notificationAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _notificationScaleAnimation =
+        CurvedAnimation(parent: _notificationAnimationController, curve: Curves.easeOutBack);
+  }
+
+  @override
+  void dispose() {
+    _notificationAnimationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -120,6 +151,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            BlocListener(
+              bloc: notificationCubit,
+              listener: (final context, final state) {
+                if (state is NotificationUnreadCountLoadedState) {
+                  setState(() {
+                    notificationUnreadCount = state.data['noti_unread_count'];
+                  });
+                  _notificationAnimationController.forward(from: 0);
+                }
+              },
+              child: Positioned(
+                top: size.width * 0.15,
+                right: size.width * 0.1,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushNamed(notificationScreen);
+                    },
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: Icon(
+                            Icons.notifications_active_outlined,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: ScaleTransition(
+                            scale: _notificationScaleAnimation,
+                            child: UnreadBadge(
+                              count: notificationUnreadCount,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

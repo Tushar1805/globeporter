@@ -322,136 +322,143 @@ class _NotificationScreenState extends State<NotificationScreen> with TickerProv
     final size = MediaQuery.of(context).size;
     final locale = AppLocalizations.of(context)!;
     final userDetails = authCubit.userDetails?.data;
-    return Scaffold(
-      backgroundColor: whiteColor,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(size.width * 0.35),
-        child: CustomStatusBarWidget(
-          title: locale.notificationString,
-          height: size.width * 0.35,
-          titlePositionTop: size.width * 0.2,
+    return PopScope(
+      onPopInvokedWithResult: (final didPop, final result) {
+        notificationCubit.getNotificatinsUnreadCount();
+      },
+      child: Scaffold(
+        backgroundColor: whiteColor,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(size.width * 0.35),
+          child: CustomStatusBarWidget(
+            title: locale.notificationString,
+            height: size.width * 0.35,
+            titlePositionTop: size.width * 0.2,
+          ),
         ),
-      ),
-      body: BlocConsumer(
-        bloc: notificationCubit,
-        listener: (final context, final state) {
-          if (state is NotificationsLoadedState) {
-            notificationsResponse = state.data as NotificationsResponse?;
-            _animationController.forward(from: 0);
-          }
-        },
-        builder: (final context, final state) {
-          if (state is NotificationsLoadingState) {
-            return const Center(child: LoadingWithoutText());
-          } else {
-            final List<Data> raw = notificationsResponse?.data ?? <Data>[];
-            final sections = buildNotificationSections(raw);
-            final baseNow = DateTime.now();
+        body: BlocConsumer(
+          bloc: notificationCubit,
+          listener: (final context, final state) {
+            if (state is NotificationsLoadedState) {
+              notificationsResponse = state.data as NotificationsResponse?;
+              _animationController.forward(from: 0);
+            }
+          },
+          builder: (final context, final state) {
+            if (state is NotificationsLoadingState) {
+              return const Center(child: LoadingWithoutText());
+            } else {
+              final List<Data> raw = notificationsResponse?.data ?? <Data>[];
+              final sections = buildNotificationSections(raw);
+              final baseNow = DateTime.now();
 
-            return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
 
-                    // Build each date section (UI unchanged).
-                    ...sections.expand((section) {
-                      final sectionLabel = section.label == 'Today'
-                          ? locale.todayString
-                          : section.label == 'Yesterday'
-                              ? locale.yesterdayString
-                              : section.label; // "dd MMM yyyy"
+                      // Build each date section (UI unchanged).
+                      ...sections.expand((section) {
+                        final sectionLabel = section.label == 'Today'
+                            ? locale.todayString
+                            : section.label == 'Yesterday'
+                                ? locale.yesterdayString
+                                : section.label; // "dd MMM yyyy"
 
-                      final tileVMs = _toTileVMs(section.items, baseNow);
+                        final tileVMs = _toTileVMs(section.items, baseNow);
 
-                      return [
+                        return [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                sectionLabel,
+                                style:
+                                    Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ...tileVMs.map(
+                            (vm) {
+                              final message =
+                                  vm.isChat ? '${locale.youGotMessageString} ${vm.title}' : vm.text;
+                              return GestureDetector(
+                                onTap: () => _onNotificationTap(vm.raw),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                  child: Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 20, bottom: 20, left: 10, right: 10),
+                                    decoration: BoxDecoration(
+                                      color: secondaryColor,
+                                      borderRadius: const BorderRadius.all(Radius.circular(9)),
+                                      border:
+                                          Border(left: BorderSide(width: 4, color: primaryColor)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Image.asset(
+                                          bellIcon,
+                                          height: 24,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text(
+                                            "${locale.hiString} ${userDetails?.name}, $message",
+                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Container(
+                                          height: 50,
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            vm.time,
+                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: const Color(0xFF989696),
+                                                ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                        ];
+                      }),
+
+                      if (sections.isEmpty)
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                           child: Align(
                             alignment: Alignment.center,
                             child: Text(
-                              sectionLabel,
+                              "${locale.noString} ${locale.notificationString}",
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        ...tileVMs.map(
-                          (vm) {
-                            final message =
-                                vm.isChat ? '${locale.youGotMessageString} ${vm.title}' : vm.text;
-                            return GestureDetector(
-                              onTap: () => _onNotificationTap(vm.raw),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                child: Container(
-                                  padding: const EdgeInsets.only(
-                                      top: 20, bottom: 20, left: 10, right: 10),
-                                  decoration: BoxDecoration(
-                                    color: secondaryColor,
-                                    borderRadius: const BorderRadius.all(Radius.circular(9)),
-                                    border: Border(left: BorderSide(width: 4, color: primaryColor)),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Image.asset(
-                                        bellIcon,
-                                        height: 24,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Text(
-                                          "${locale.hiString} ${userDetails?.name}, $message",
-                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Container(
-                                        height: 50,
-                                        alignment: Alignment.bottomRight,
-                                        child: Text(
-                                          vm.time,
-                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: const Color(0xFF989696),
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                      ];
-                    }),
-
-                    if (sections.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "${locale.noString} ${locale.notificationString}",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
-                          ),
-                        ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }
-        },
+              );
+            }
+          },
+        ),
       ),
     );
   }
