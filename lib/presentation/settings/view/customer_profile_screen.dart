@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:core/app_widgets.dart';
@@ -17,6 +19,7 @@ import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_regex.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -33,15 +36,18 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   final settingsCubit = sl<SettingsCubit>();
   bool isEditingName = false;
   bool isEditingEmail = false;
+  bool isEditingPhone = false;
   bool isValidEmail = false;
+  bool isPhoneVerified = false;
   bool loading = false;
-  String errorMessage = '';
   File? profilePhoto;
 
   late TextEditingController nameController;
   late TextEditingController emailController;
+  late TextEditingController phoneController;
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _phoneFocusNode = FocusNode();
   FToast? fToast;
   Data? userData;
 
@@ -61,20 +67,24 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
 
     nameController = TextEditingController(text: userData?.name ?? '');
     emailController = TextEditingController(text: userData?.email ?? '');
+    phoneController = TextEditingController(text: userData?.mobile ?? '');
   }
 
   @override
   void dispose() {
     nameController.dispose();
     emailController.dispose();
+    phoneController.dispose();
     _nameFocusNode.dispose();
     _emailFocusNode.dispose();
+    _phoneFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final locale = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: whiteColor,
       body: Column(
@@ -121,8 +131,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                       context.pushNamed(
                         normalUploadScreen,
                         extra: {
-                          'title':
-                              '${AppLocalizations.of(context)!.profileString} ${AppLocalizations.of(context)!.photoString}',
+                          'title': '${locale.profileString} ${locale.photoString}',
                           'image': profilePhoto,
                           'onImageCaptured': (File? file) {
                             setState(() {
@@ -158,7 +167,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
             height: 20,
           ),
           ProfileEditCard(
-            label: AppLocalizations.of(context)!.nameString,
+            label: locale.nameString,
             value: nameController.text,
             isEditing: isEditingName,
             widget: isEditingName
@@ -171,7 +180,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontSize: 16,
                           ),
-                      decoration: InputDecoration.collapsed(hintText: "Enter name"),
+                      decoration: InputDecoration.collapsed(hintText: locale.enterNameString),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(nameRegex),
                       ],
@@ -193,7 +202,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
             height: 20,
           ),
           ProfileEditCard(
-            label: AppLocalizations.of(context)!.emailString,
+            label: locale.emailString,
             value: emailController.text,
             isEditing: isEditingEmail,
             widget: isEditingEmail
@@ -206,7 +215,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontSize: 16,
                           ),
-                      decoration: InputDecoration.collapsed(hintText: "Enter Email"),
+                      decoration: InputDecoration.collapsed(hintText: locale.enterEmailString),
                       onChanged: (final value) {
                         setState(() {
                           isValidEmail = value.isValidEmail();
@@ -229,74 +238,211 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
           const SizedBox(
             height: 20,
           ),
-          Spacer(),
-          BlocListener(
-            bloc: settingsCubit,
-            listener: (final context, final state) {
-              if (state is UpdateProfileLoadingState) {
-                setState(() {
-                  loading = true;
-                });
-              } else if (state is UpdateProfileLoadedState) {
-                setState(() {
-                  loading = false;
-                  errorMessage = '';
-                });
-                showToast(
-                  context: context,
-                  fToast: fToast!,
-                  msg: AppLocalizations.of(context)!.profileUpdatedString,
-                  duration: 3,
-                );
-              } else if (state is ErrorState) {
-                setState(() {
-                  errorMessage = state.errorMessage;
-                  loading = false;
-                });
-              }
-            },
-            child: loading
-                ? SizedBox.shrink()
-                : CustomElevatedButton(
-                    name: AppLocalizations.of(context)!.updateString,
-                    borderRadius: 25,
-                    alignment: Alignment.bottomCenter,
-                    onPressed: () async {
-                      if (userData?.email != emailController.text &&
-                          emailController.text.isNotEmpty &&
-                          !isValidEmail) {
-                        showToast(
-                          context: context,
-                          fToast: fToast!,
-                          msg: AppLocalizations.of(context)!.valideEmailString,
-                          duration: 3,
-                        );
-                      } else {
-                        await settingsCubit.updateProfile(
-                          name: nameController.text,
-                          email: emailController.text,
-                          dialCode: userData?.dialCode ?? '91',
-                          mobile: userData?.mobile ?? '',
-                          profilePic: profilePhoto,
-                        );
-                      }
-                    },
-                    textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    nameSize: 20,
-                  ),
-          ),
-          loading ? LoadingWithoutText() : SizedBox.shrink(),
-          errorMessage != ''
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Center(
-                    child: Text(
-                      errorMessage,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+          ProfileEditCard(
+            label: locale.phoneNumberString,
+            value: phoneController.text,
+            isEditing: isEditingPhone,
+            widget: isEditingPhone
+                ? SizedBox(
+                    width: double.infinity,
+                    child: TextField(
+                      focusNode: _phoneFocusNode,
+                      controller: phoneController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(phoneNumberRegex),
+                        LengthLimitingTextInputFormatter(10),
+                      ],
+                      keyboardType: TextInputType.number,
+                      cursorColor: primaryColor,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 16,
+                          ),
+                      decoration: InputDecoration.collapsed(hintText: locale.enterPhoneString),
+                      onChanged: (final value) {},
                     ),
-                  ),
+                  )
+                : null,
+            onTap: () {
+              setState(() {
+                isEditingPhone = !isEditingPhone;
+                if (isEditingPhone) {
+                  _phoneFocusNode.requestFocus();
+                } else {
+                  _phoneFocusNode.unfocus();
+                }
+              });
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Spacer(),
+          userData?.mobile != phoneController.text && !isPhoneVerified
+              ? BlocListener(
+                  bloc: authCubit,
+                  listener: (final context, final state) async {
+                    if (state is UpdateMobileLoadingState) {
+                      setState(() {
+                        loading = true;
+                      });
+                    } else if (state is UpdateMobileLoadedState) {
+                      showOtpDialog(
+                        context: context,
+                        borderRadius: 18,
+                        maxLength: 6,
+                        title: "${locale.verifyString} ${locale.phoneNumberString}",
+                        onOtpSubmit: (otp) async {
+                          await authCubit.updateVerifyOtp(
+                            dialCode: userData?.dialCode?.replaceAll('+', '') ?? '91',
+                            mobile: phoneController.text,
+                            otp: otp,
+                          );
+                          context.pop();
+                        },
+                      );
+
+                      setState(() {
+                        loading = false;
+                      });
+                    } else if (state is UpdateMobileVerifyLoadedState) {
+                      context.pop();
+                      await authCubit.getUserDetails();
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: "${locale.phoneNumberString} ${locale.verifiedString}",
+                        duration: 3,
+                      );
+                      setState(() {
+                        loading = false;
+                        isPhoneVerified = true;
+                      });
+                    } else if (state is ErrorState) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: state.errorMessage,
+                        duration: 5,
+                      );
+                      setState(() {
+                        loading = false;
+                      });
+                    }
+                  },
+                  child: loading
+                      ? SizedBox.shrink()
+                      : CustomElevatedButton(
+                          name: locale.verifyString,
+                          borderRadius: 25,
+                          alignment: Alignment.bottomCenter,
+                          onPressed: () async {
+                            if (userData?.mobile != phoneController.text) {
+                              final validPhone = isPhoneValid(
+                                phone: phoneController.text,
+                                dialCode: "+${userData?.dialCode ?? '91'}",
+                              );
+
+                              if (!validPhone) {
+                                showToast(
+                                  context: context,
+                                  fToast: fToast!,
+                                  msg: AppLocalizations.of(context)!.validPhoneNumberString,
+                                  duration: 3,
+                                );
+                              } else {
+                                await authCubit.updateMobileNumber(
+                                  dialCode: userData?.dialCode?.replaceAll('+', '') ?? '91',
+                                  phoneNumber: phoneController.text,
+                                );
+                              }
+                            }
+                          },
+                          textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          nameSize: 20,
+                        ),
                 )
-              : SizedBox.shrink(),
+              : BlocListener(
+                  bloc: settingsCubit,
+                  listener: (final context, final state) {
+                    if (state is UpdateProfileLoadingState) {
+                      setState(() {
+                        loading = true;
+                      });
+                    } else if (state is UpdateProfileLoadedState) {
+                      setState(() {
+                        loading = false;
+                      });
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: locale.profileUpdatedString,
+                        duration: 3,
+                      );
+                    } else if (state is ErrorState) {
+                      showToast(
+                        context: context,
+                        fToast: fToast!,
+                        msg: state.errorMessage,
+                        duration: 3,
+                      );
+                      setState(() {
+                        loading = false;
+                      });
+                    }
+                  },
+                  child: loading ||
+                          (userData?.email == emailController.text &&
+                              userData?.mobile == phoneController.text &&
+                              userData?.name == nameController.text)
+                      ? SizedBox.shrink()
+                      : CustomElevatedButton(
+                          name: locale.updateString,
+                          borderRadius: 25,
+                          alignment: Alignment.bottomCenter,
+                          onPressed: () async {
+                            if (userData?.email != emailController.text &&
+                                emailController.text.isNotEmpty &&
+                                !isValidEmail) {
+                              showToast(
+                                context: context,
+                                fToast: fToast!,
+                                msg: locale.valideEmailString,
+                                duration: 3,
+                              );
+                            } else if (userData?.mobile != phoneController.text) {
+                              final validPhone = isPhoneValid(
+                                phone: phoneController.text,
+                                dialCode: userData?.dialCode ?? '91',
+                              );
+
+                              if (!validPhone) {
+                                showToast(
+                                  context: context,
+                                  fToast: fToast!,
+                                  msg: AppLocalizations.of(context)!.validPhoneNumberString,
+                                  duration: 3,
+                                );
+                              } else {
+                                await authCubit.updateMobileNumber(
+                                  dialCode: userData?.dialCode?.replaceAll('+', '') ?? '91',
+                                  phoneNumber: phoneController.text,
+                                );
+                              }
+                            } else {
+                              await settingsCubit.updateProfile(
+                                name: nameController.text,
+                                email: emailController.text,
+                                dialCode: userData?.dialCode ?? '91',
+                                mobile: userData?.mobile ?? '',
+                                profilePic: profilePhoto,
+                              );
+                            }
+                          },
+                          textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          nameSize: 20,
+                        ),
+                ),
+          loading ? LoadingWithoutText() : SizedBox.shrink(),
           SizedBox(
             height: size.width * 0.1,
           ),

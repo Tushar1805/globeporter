@@ -32,7 +32,6 @@ class GoogleLoginLoadedState extends LoadedState {
   GoogleLoginLoadedState({required super.data});
 }
 
-
 class RegisterLoadingState extends LoadingState {
   RegisterLoadingState(super.loadingMessage);
 }
@@ -65,5 +64,18 @@ class ResendOtpLoadedState extends LoadedState {
   ResendOtpLoadedState({required super.data});
 }
 
+class UpdateMobileLoadingState extends LoadingState {
+  UpdateMobileLoadingState(super.loadingMessage);
+}
 
+class UpdateMobileLoadedState extends LoadedState {
+  UpdateMobileLoadedState({required super.data});
+}
 
+class UpdateMobileVerifyLoadingState extends LoadingState {
+  UpdateMobileVerifyLoadingState(super.loadingMessage);
+}
+
+class UpdateMobileVerifyLoadedState extends LoadedState {
+  UpdateMobileVerifyLoadedState({required super.data});
+}

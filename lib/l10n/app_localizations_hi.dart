@@ -549,4 +549,16 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get galleryString => 'गैलरी';
+
+  @override
+  String get enterNameString => 'नाम दर्ज करें';
+
+  @override
+  String get enterEmailString => 'ईमेल दर्ज करें';
+
+  @override
+  String get enterPhoneString => 'फ़ोन नंबर दर्ज करें';
+
+  @override
+  String get verifyString => 'सत्यापित करें';
 }

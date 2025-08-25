@@ -548,4 +548,16 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get galleryString => 'गॅलरी';
+
+  @override
+  String get enterNameString => 'नाव प्रविष्ट करा';
+
+  @override
+  String get enterEmailString => 'ईमेल प्रविष्ट करा';
+
+  @override
+  String get enterPhoneString => 'फोन नंबर एंटर करा';
+
+  @override
+  String get verifyString => 'सत्यापित करा';
 }

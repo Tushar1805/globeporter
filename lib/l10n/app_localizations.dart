@@ -1155,6 +1155,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gallery'**
   String get galleryString;
+
+  /// No description provided for @enterNameString.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter name'**
+  String get enterNameString;
+
+  /// No description provided for @enterEmailString.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email'**
+  String get enterEmailString;
+
+  /// No description provided for @enterPhoneString.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get enterPhoneString;
+
+  /// No description provided for @verifyString.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verifyString;
 }
 
 class _AppLocalizationsDelegate

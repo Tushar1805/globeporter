@@ -24,6 +24,8 @@ const String submitVehicleDetailsUrl = '$_baseUrl/update_user_vehicle_details';
 const String getVerificationStatusUrl = '$_baseUrl/get_verification_status';
 const String fcmTokenUpdateUrl = '$_baseUrl/user_token_update';
 const String updateUserLocationUrl = '$_baseUrl/update_lat_lng';
+const String updateMobileNumberUrl = '$_baseUrl/change_mobile_no';
+const String updateVerifyOtpUrl = '$_baseUrl/change_mobile_otp_verify';
 
 //* Driver
 

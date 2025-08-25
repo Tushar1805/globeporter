@@ -550,4 +550,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get galleryString => 'Gallery';
+
+  @override
+  String get enterNameString => 'Enter name';
+
+  @override
+  String get enterEmailString => 'Enter email';
+
+  @override
+  String get enterPhoneString => 'Enter phone number';
+
+  @override
+  String get verifyString => 'Verify';
 }

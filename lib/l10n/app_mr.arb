@@ -181,5 +181,9 @@
     "youGotMessageString": "तुम्हाला एक संदेश मिळाला आहे",
     "selectImageSourceString": "प्रतिमा स्रोत निवडा",
     "cameraString": "कॅमेरा",
-    "galleryString": "गॅलरी"
+    "galleryString": "गॅलरी",
+    "enterNameString": "नाव प्रविष्ट करा",
+    "enterEmailString": "ईमेल प्रविष्ट करा",
+    "enterPhoneString": "फोन नंबर एंटर करा",
+    "verifyString": "सत्यापित करा"
 }

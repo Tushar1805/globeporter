@@ -251,4 +251,57 @@ class AuthCubit extends BaseCubit {
       handleExceptions(e);
     }
   }
+
+  Future<void> updateMobileNumber({
+    required final String dialCode,
+    required final String phoneNumber,
+  }) async {
+    try {
+      emit(UpdateMobileLoadingState('Update in process'));
+
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _authRepository.updateMobileNumber(
+        lang: lang ?? 'en',
+        dialCode: dialCode,
+        phoneNumber: phoneNumber,
+        accessToken: accessToken ?? '',
+      );
+
+      emit(UpdateMobileLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> updateVerifyOtp({
+    required final String otp,
+    required final String mobile,
+    required final String dialCode,
+  }) async {
+    try {
+      emit(UpdateMobileVerifyLoadingState('OTP verification in progress'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+      final response = await _authRepository.updateVerifyOtp(
+        lang: lang ?? 'en',
+        otp: otp,
+        mobile: mobile,
+        dialCode: dialCode,
+        accessToken: accessToken ?? '',
+      );
+
+      customPrint("Verify update otp response: ${response.toString()}");
+
+      if (response['status_code'] == 200) {
+        final authToken = response['token'];
+        await storage.saveValue(value: authToken, key: accessTokenKey);
+
+        emit(UpdateMobileVerifyLoadedState(data: response));
+      }
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
 }

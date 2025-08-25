@@ -686,6 +686,7 @@ void showOtpDialog({
   required Function(String otp) onOtpSubmit,
   String? buttonTitle,
   bool? barrierDismissible,
+  int? maxLength,
 }) {
   final TextEditingController otpController = TextEditingController();
 
@@ -724,7 +725,7 @@ void showOtpDialog({
                 controller: otpController,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
-                maxLength: 4,
+                maxLength: maxLength?? 4,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium

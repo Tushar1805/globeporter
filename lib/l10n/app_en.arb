@@ -355,5 +355,14 @@
   "cameraString": "Camera",
   "@cameraString": {},
   "galleryString": "Gallery",
-  "@galleryString": {}
+  "@galleryString": {},
+  "enterNameString": "Enter name",
+  "@enterNameString": {},
+  "enterEmailString": "Enter email",
+  "@enterEmailString": {},
+  "enterPhoneString": "Enter phone number",
+  "@enterPhoneString": {},
+  "verifyString": "Verify",
+  "@verifyString": {}
+
 }

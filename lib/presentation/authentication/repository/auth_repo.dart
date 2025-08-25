@@ -70,6 +70,48 @@ class AuthRepository extends BaseRepository {
     );
   }
 
+  Future<Map<String, dynamic>> updateMobileNumber({
+    required final String lang,
+    required final String dialCode,
+    required final String phoneNumber,
+    required final String accessToken,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: updateMobileNumberUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'lang': lang,
+        'dial_code': dialCode,
+        'mobile': phoneNumber,
+      },
+    );
+
+    return responseData;
+  }
+
+  Future<Map<String, dynamic>> updateVerifyOtp({
+    required final String mobile,
+    required final String lang,
+    required final String otp,
+    required final String dialCode,
+    required final String accessToken,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: updateVerifyOtpUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'mobile': mobile,
+        'lang': lang,
+        'otp': otp,
+        'dial_code': dialCode,
+      },
+    );
+
+    return responseData;
+  }
+
   Future<RegisterResponseModel?> register({
     required final int userId,
     required final String lang,

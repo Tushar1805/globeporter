@@ -120,6 +120,6 @@ void showToast({
   fToast.showToast(
     child: toast,
     gravity: gravity ?? ToastGravity.BOTTOM,
-    toastDuration: Duration(seconds: 2),
+    toastDuration: Duration(seconds: duration),
   );
 }

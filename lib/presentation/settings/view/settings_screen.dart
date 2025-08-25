@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         left: size.width * 0.1,
                         right: 0,
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             if (widget.role == 'customer') {
                               context.pushNamed(customerProfileScreen);
                             } else {
