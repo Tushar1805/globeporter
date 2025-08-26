@@ -2,6 +2,7 @@
 
 import 'dart:async'; // ⬅️ for Timer
 import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,7 +18,9 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({super.key, this.data});
+
+  final RemoteMessage? data;
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -151,45 +154,52 @@ class _SplashScreenState extends State<SplashScreen> with WidgetsBindingObserver
     }
 
     // 🔹 Continue your navigation logic
-    if (accessToken != null) {
-      await authCubit.getUserDetails(force: true).then((final response) async {
-        if (response?.data?.status == 0) {
-          await authCubit.logout();
-          context.go(loginScreen, extra: {
-            'status': response?.data?.status,
-          });
-        } else if (response?.data?.userType != null && response?.data?.userType == 2) {
-          if (isDetailsVerified == '1') {
-            context.go(driverDashboard);
-          } else if (detailsFilled == '1') {
-            context.go(documentVerificationScreen);
-          } else {
-            if (ownerDetailsFilled == '1' &&
-                vehiclDetailsFilled == '1' &&
-                driverDetailsFilled == '1') {
-              context.go(documentVerificationScreen);
-            } else if (ownerDetailsFilled == '1' && vehiclDetailsFilled == '1') {
-              context.go(ownerDetailsScreen, extra: {'currentIndex': 2});
-            } else if (ownerDetailsFilled == '1') {
-              context.go(ownerDetailsScreen, extra: {'currentIndex': 1});
-            } else {
-              context.go(ownerDetailsScreen);
-            }
-          }
-        } else if (response?.data?.userType != null && response?.data?.userType == 1) {
-          context.go(customerDashboard);
-        } else {
-          context.go(loginScreen);
-        }
-      });
+
+    if (widget.data != null) {
+      customPrint('TESTING Background notifications');
+      notificationServices.handleBackgroundMessage(widget.data!.data);
     } else {
-      context.pushReplacementNamed(setLanguageScreen);
+      if (accessToken != null) {
+        await authCubit.getUserDetails(force: true).then((final response) async {
+          if (response?.data?.status == 0) {
+            await authCubit.logout();
+            context.go(loginScreen, extra: {
+              'status': response?.data?.status,
+            });
+          } else if (response?.data?.userType != null && response?.data?.userType == 2) {
+            if (isDetailsVerified == '1') {
+              context.go(driverDashboard);
+            } else if (detailsFilled == '1') {
+              context.go(documentVerificationScreen);
+            } else {
+              if (ownerDetailsFilled == '1' &&
+                  vehiclDetailsFilled == '1' &&
+                  driverDetailsFilled == '1') {
+                context.go(documentVerificationScreen);
+              } else if (ownerDetailsFilled == '1' && vehiclDetailsFilled == '1') {
+                context.go(ownerDetailsScreen, extra: {'currentIndex': 2});
+              } else if (ownerDetailsFilled == '1') {
+                context.go(ownerDetailsScreen, extra: {'currentIndex': 1});
+              } else {
+                context.go(ownerDetailsScreen);
+              }
+            }
+          } else if (response?.data?.userType != null && response?.data?.userType == 1) {
+            context.go(customerDashboard);
+          } else {
+            context.go(loginScreen);
+          }
+        });
+      } else {
+        context.pushReplacementNamed(setLanguageScreen);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Container(
         color: primaryColor,

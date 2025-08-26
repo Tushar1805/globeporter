@@ -22,19 +22,35 @@ import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_strings.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:core/theme/theme_cubit.dart';
+import 'package:globeporter/routes/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'routes/app_router.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 
 final NotificationServices notificationServices = NotificationServices();
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(
+  final RemoteMessage message,
+) async {
+  await Firebase.initializeApp();
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   setupServiceLocator();
+  await FirebaseMessaging.instance.getInitialMessage().then((final RemoteMessage? message) {
+    customPrint("********************* From Backgound: ${message?.data}");
+    if (message?.data != null) {
+      WidgetsBinding.instance.addPostFrameCallback((final _) {
+        router.go(splashScreen, extra: {'route': message});
+      });
+    }
+  });
   await ensurePermissions();
   await initializeBackgroundService();
   await FlutterBackgroundService().startService();

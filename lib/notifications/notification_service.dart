@@ -425,4 +425,78 @@ class NotificationServices {
       customPrint('Error: Redirecting to the screen: $e');
     }
   }
+
+  Future<void> handleBackgroundMessage(final Map<String, dynamic> data) async {
+    customPrint(data);
+    try {
+      final customerCubit = sl<CustomerCubit>();
+      if (data['type'] == '0') {
+        router.go("/driver_dashboard/driverRideNotification2Screen", extra: {
+          'bookingId': data['booking_id'].toString(),
+        });
+      } else if (data['type'].toString() == '1') {
+        if (data['user_type'].toString() == '1') {
+          final response =
+              await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+
+          //* Route to customer -> request details
+          router.go("/customer_dashboard/myRequestDetailsNotificationScreen", extra: {
+            'type': response?.data?.rideType?.toLowerCase(),
+            'bookingId': data['booking_id'].toString(),
+          });
+        }
+      } else if (data['type'] == 'notify' && data['receiver_id'] != null) {
+        //* when chat notification receives sender becomes receiver
+        // TODO: Receiver Image logic not yet done
+        router.go("/customer_dashboard/chatNotificationScreen", extra: {
+          'senderId': data['receiver_id'],
+          'receiverId': data['sender_id'],
+          'senderName': data['receiverName'],
+          'type': data['user_type'],
+          'receiverName': data['senderName'],
+          'receiverImageUrl': data['receiverImageUrl'],
+        });
+      } else if (data['type'] == "5" && data['user_type'].toString() == "1") {
+        //* Status on the way -> Track driver
+        final response =
+            await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+        router.go("/customer_dashboard/trackDriverNotificationScreen", extra: {
+          'type': response?.data?.rideType?.toLowerCase(),
+          'data': response?.data,
+        });
+      } else if (data['type'] == '6' && data['user_type'].toString() == "1") {
+        //* Status Arrived at pickup
+        final response =
+            await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+
+        //* Route to customer -> request details
+        router.go("/customer_dashboard/myRequestDetailsNotificationScreen", extra: {
+          'type': response?.data?.rideType?.toLowerCase(),
+          'bookingId': data['booking_id'].toString(),
+        });
+      } else if (data['type'] == '7' && data['user_type'].toString() == "1") {
+        //* Status Ride started
+        final response =
+            await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+
+        //* Route to customer -> request details
+        router.go("/customer_dashboard/myRequestDetailsNotificationScreen", extra: {
+          'type': response?.data?.rideType?.toLowerCase(),
+          'bookingId': data['booking_id'].toString(),
+        });
+      } else if (data['type'] == '8' && data['user_type'].toString() == "1") {
+        //* Status Arrived at destination
+        final response =
+            await customerCubit.getBookingDetails(bookingId: data['booking_id'].toString());
+
+        //* Route to customer -> request details
+        router.go("/customer_dashboard/myRequestDetailsNotificationScreen", extra: {
+          'type': response?.data?.rideType?.toLowerCase(),
+          'bookingId': data['booking_id'].toString(),
+        });
+      }
+    } catch (e) {
+      customPrint('Error: Redirecting to the screen: $e');
+    }
+  }
 }

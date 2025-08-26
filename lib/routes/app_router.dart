@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:globeporter/presentation/authentication/view/login_screen.dart';
 import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_1_screen.dart';
@@ -68,11 +69,102 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: splashScreen,
       path: splashScreen,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const SplashScreen(),
-      ),
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: SplashScreen(
+            data: params?['route'] as RemoteMessage?,
+          ),
+        );
+      },
     ),
+
+    //* Background notification routing
+    GoRoute(
+      name: customerDashboard,
+      path: customerDashboard,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: CustomerDashboard(
+            type: params?['type'] as String?,
+          ),
+        );
+      },
+      routes: [
+        GoRoute(
+          name: "myRequestDetailsNotificationScreen",
+          path: "myRequestDetailsNotificationScreen",
+          pageBuilder: (final context, final state) {
+            final params = state.extra as Map<String, dynamic>?;
+            return slideTransitionPage(
+              key: state.pageKey,
+              child: MyRequestDetailsScreen(
+                type: params?['type'] as String?,
+                bookingId: params?['bookingId'] as String?,
+              ),
+            );
+          },
+        ),
+        GoRoute(
+          name: "chatNotificationScreen",
+          path: "chatNotificationScreen",
+          pageBuilder: (final context, final state) {
+            final params = state.extra as Map<String, dynamic>?;
+            return slideTransitionPage(
+              key: state.pageKey,
+              child: ChatScreen(
+                senderId: params?['senderId'] as String,
+                receiverId: params?['receiverId'] as String,
+                type: params?['type'] as String,
+                senderName: params?['senderName'] as String,
+                receiverName: params?['receiverName'] as String,
+                receiverImageUrl: params?['receiverImageUrl'] as String?,
+              ),
+            );
+          },
+        ),
+        GoRoute(
+          name: "trackDriverNotificationScreen",
+          path: "trackDriverNotificationScreen",
+          pageBuilder: (final context, final state) {
+            final params = state.extra as Map<String, dynamic>?;
+            return slideTransitionPage(
+              key: state.pageKey,
+              child: TrackDriverScreen(
+                type: params?['type'] as String?,
+                data: params?['data'] as booking.Data?,
+              ),
+            );
+          },
+        ),
+      ],
+    ),
+
+    GoRoute(
+        name: driverDashboard,
+        path: driverDashboard,
+        pageBuilder: (context, state) => slideTransitionPage(
+              key: state.pageKey,
+              child: const DriverDashboard(),
+            ),
+        routes: [
+          GoRoute(
+            name: "driverRideNotification2Screen",
+            path: "driverRideNotification2Screen",
+            pageBuilder: (final context, final state) {
+              final params = state.extra as Map<String, dynamic>?;
+              return slideTransitionPage(
+                key: state.pageKey,
+                child: DriverRideNotificationScreen(
+                  bookingId: params?['bookingId'] as String,
+                ),
+              );
+            },
+          ),
+        ]),
     GoRoute(
       name: setLanguageScreen,
       path: setLanguageScreen,
@@ -166,19 +258,6 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      name: customerDashboard,
-      path: customerDashboard,
-      pageBuilder: (final context, final state) {
-        final params = state.extra as Map<String, dynamic>?;
-        return slideTransitionPage(
-          key: state.pageKey,
-          child: CustomerDashboard(
-            type: params?['type'] as String?,
-          ),
-        );
-      },
-    ),
-    GoRoute(
       name: createRequestScreen,
       path: createRequestScreen,
       pageBuilder: (context, state) => slideTransitionPage(
@@ -237,14 +316,6 @@ final GoRouter router = GoRouter(
           ),
         );
       },
-    ),
-    GoRoute(
-      name: driverDashboard,
-      path: driverDashboard,
-      pageBuilder: (context, state) => slideTransitionPage(
-        key: state.pageKey,
-        child: const DriverDashboard(),
-      ),
     ),
     GoRoute(
       name: itemDetailsScreen,
