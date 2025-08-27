@@ -22,7 +22,7 @@ import 'package:globeporter/presentation/customer/view/my_request_details_screen
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
 import 'package:globeporter/presentation/driver/view/document_verification_screen.dart';
-import 'package:globeporter/presentation/driver/view/new_ride_screen.dart';
+import 'package:globeporter/presentation/driver_ride_back/view/new_ride_screen.dart';
 import 'package:globeporter/presentation/driver/widgets/document_upload_screen.dart';
 import 'package:globeporter/presentation/driver/view/driver_dashboard.dart';
 import 'package:globeporter/presentation/settings/view/driver_profile_screen.dart';
