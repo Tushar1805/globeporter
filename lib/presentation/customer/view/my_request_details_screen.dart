@@ -102,67 +102,99 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
           return Scaffold(
             backgroundColor: whiteColor,
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(size.width * 0.25),
-              child: CustomStatusBarWidget(
-                title: '',
-                text: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                preferredSize: Size.fromHeight(size.width * 0.35),
+                child: Stack(
                   children: [
-                    CustomRichText(
-                      title: '',
-                      value: widget.type == 'urban'
-                          ? AppLocalizations.of(context)!.urbanString
-                          : AppLocalizations.of(context)!.ruralString,
-                      titleStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontSize: 20,
-                            color: whiteColor,
-                          ),
-                      valueStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontSize: 22,
-                            color: whiteColor,
-                          ),
+                    Container(
+                      height: size.width * 0.35,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(size.width * 0.127),
+                          bottomRight: Radius.circular(size.width * 0.127),
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      width: size.width * 0.1,
-                    ),
-                    bookingDetailsResponse?.data?.status == 1 && booking?.isBookingActive == 1
-                        ? GestureDetector(
-                            onTap: () {
-                              makePhoneCall(booking?.driverData?.mobile ?? '', context);
-                            },
-                            child: Image.asset(
-                              phoneCallIcon,
-                              width: 24,
-                              color: whiteColor,
+                    Positioned(
+                      top: size.height * 0.05,
+                      left: size.width * 0.05,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: size.width * 0.1,
+                            child: CircleAvatar(
+                              radius: size.width * 0.097,
+                              backgroundImage: NetworkImage(
+                                booking?.driverData?.profilePhotoUrl ?? sampleNetworkImage,
+                              ),
+                              backgroundColor: Colors.white,
                             ),
-                          )
-                        : SizedBox.shrink(),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    booking?.status == 1 && booking?.isBookingActive == 1
-                        ? GestureDetector(
-                            onTap: () {
-                              context.pushNamed(chatScreen, extra: {
-                                'senderId': booking?.userId.toString(),
-                                'receiverId': booking?.driverId.toString(),
-                                'senderName': authCubit.userDetails?.data?.name,
-                                'type': 'customer',
-                                'receiverName': booking?.driverData?.name,
-                                'receiverImageUrl': booking?.driverData?.profilePhotoUrl,
-                              });
-                            },
-                            child: Icon(
-                              Icons.chat,
-                              color: whiteColor,
-                              size: 24,
+                          ),
+                          const SizedBox(width: 15),
+                          Center(
+                            child: Text(
+                              booking?.driverData?.name ?? '',
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.end,
                             ),
-                          )
-                        : SizedBox.shrink(),
+                          ),
+                          SizedBox(width: size.width * 0.09),
+                          bookingDetailsResponse?.data?.status == 1 && booking?.isBookingActive == 1
+                              ? Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        makePhoneCall(booking?.driverData?.mobile ?? '', context);
+                                      },
+                                      child: Image.asset(
+                                        phoneCallIcon,
+                                        width: 24,
+                                        color: whiteColor,
+                                      ),
+                                    ),
+                                    SizedBox(width: size.width * 0.05),
+                                    GestureDetector(
+                                      onTap: () {
+                                        context.pushNamed(chatScreen, extra: {
+                                          'senderId': booking?.userId.toString(),
+                                          'receiverId': booking?.driverId.toString(),
+                                          'senderName': authCubit.userDetails?.data?.name,
+                                          'type': 'customer',
+                                          'receiverName': booking?.driverData?.name,
+                                          'receiverImageUrl': booking?.driverData?.profilePhotoUrl,
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.chat,
+                                        color: whiteColor,
+                                        size: 24,
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : SizedBox.shrink(),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      right: 15,
+                      top: size.width * 0.1,
+                      child: Text(
+                        widget.type == 'urban'
+                            ? AppLocalizations.of(context)!.urbanString
+                            : AppLocalizations.of(context)!.ruralString,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(fontSize: 22, color: whiteColor),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-            ),
+                )),
             body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
