@@ -134,19 +134,19 @@ class UrbanityChecker {
   }
 
   /// Infer urbanity based on POI density
-  static Future<String> inferUrbanity(double lat, double lng, {int radius = 500}) async {
+  static Future<String> inferUrbanity(double lat, double lng, {int radius = 3000}) async {
     final density = await getPlaceDensity(lat, lng, radius: radius);
 
     int count = (int.tryParse(density) ?? 0);
 
     if (count > 50) {
-      return "Urban (POIs found: $count)";
+      return "Urban (POIs found in distance $radius: $count)";
     }
     //  else if (count > 15) {
     //   return "Semi-urban (POIs found: $count)";
     // }
     else {
-      return "Rural (POIs found: $count)";
+      return "Rural (POIs found in distance $radius: $count)";
     }
   }
 }

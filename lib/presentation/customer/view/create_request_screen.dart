@@ -85,7 +85,6 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
       final urbananityResult = await UrbanityChecker.inferUrbanity(
         position?.latitude ?? 20.5574253,
         position?.longitude ?? 78.8386951,
-        radius: 500,
       );
 
       customPrint(urbananityResult);
@@ -136,6 +135,12 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
     }
 
     _locationSubscription?.cancel(); // cancel previous listener if any
+
+    await _location.changeSettings(
+      accuracy: loc.LocationAccuracy.high,
+      interval: 20, // 5 sec
+      distanceFilter: 20, // 20 meters
+    );
 
     _locationSubscription = _location.onLocationChanged
         .throttleTime(const Duration(seconds: 30))
@@ -513,7 +518,6 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                                 final urbananityResult = await UrbanityChecker.inferUrbanity(
                                   latLng.latitude,
                                   latLng.longitude,
-                                  radius: 500,
                                 );
 
                                 customPrint(urbananityResult);
@@ -699,7 +703,6 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                     final urbananityResult = await UrbanityChecker.inferUrbanity(
                       tappedLatLng.latitude,
                       tappedLatLng.longitude,
-                      radius: 500,
                     );
 
                     customPrint("Urbanity from map: $urbananityResult");
