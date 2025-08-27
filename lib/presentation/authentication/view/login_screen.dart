@@ -374,7 +374,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: Theme.of(context).textTheme.bodyMedium,
                           controller: phoneController,
                           keyboardType: TextInputType.phone,
-                          autofillHints: [AutofillHints.telephoneNumberNational],
+                          autofillHints: [AutofillHints.telephoneNumber],
                           decoration: InputDecoration(
                             hintText: AppLocalizations.of(context)!.enterMobileHint,
                             hintStyle: Theme.of(context)
