@@ -128,17 +128,19 @@ class _ContactPickerScreenState extends State<ContactPickerScreen> {
                       );
                     } else if (item.contact != null) {
                       final contact = item.contact!;
-                      final phone = contact.phones.isNotEmpty
+                      final rawPhone = contact.phones.isNotEmpty
                           ? contact.phones.first.number
                           : 'No phone number';
+
+                      var phone = rawPhone.replaceAll(RegExp(r'\D'), '');
                       return ListTile(
                         leading: const CircleAvatar(child: Icon(Icons.person)),
                         title: Text(contact.displayName),
                         subtitle: Text(phone),
                         onTap: () {
                           var phoneVal = phone;
-                          if (phone.startsWith('+')) {
-                            phoneVal = phone.replaceRange(0, 3, '');
+                          if (phoneVal.startsWith('91') && phoneVal.length > 10) {
+                            phoneVal = phoneVal.substring(phoneVal.length - 10);
                           }
                           context.pop({
                             'name': contact.displayName,

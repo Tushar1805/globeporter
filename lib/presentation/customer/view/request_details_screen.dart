@@ -799,7 +799,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   height: 8,
                 ),
                 CustomTextField(
-                  readOnly: true,
                   textEditingController: receiverNameController,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(nameRegex),
