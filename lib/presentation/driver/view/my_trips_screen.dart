@@ -274,7 +274,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> with TickerProviderStateM
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            trip?.receiverName ?? '',
+                                            trip?.userData?.name ?? '',
                                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                                   fontSize: 20,
                                                 ),

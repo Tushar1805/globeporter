@@ -150,7 +150,8 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           child: CircleAvatar(
                             radius: size.width * 0.097,
                             backgroundImage: NetworkImage(
-                              authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage,
+                              bookingDetailsResponse?.data?.userData?.profilePhotoUrl ??
+                                  sampleNetworkImage,
                             ),
                             backgroundColor: Colors.white,
                           ),
@@ -158,7 +159,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         SizedBox(width: 15),
                         Center(
                           child: Text(
-                            authCubit.userDetails?.data?.name ?? '',
+                            bookingDetailsResponse?.data?.userData?.name ?? '',
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
                             textAlign: TextAlign.end,
@@ -174,7 +175,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            makePhoneCall(bookingDetailsResponse?.data?.receiverContactNo ?? '');
+                            makePhoneCall(bookingDetailsResponse?.data?.userData?.mobile ?? '');
                           },
                           child: Image.asset(
                             phoneCallIcon,
