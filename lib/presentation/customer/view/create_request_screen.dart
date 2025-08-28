@@ -699,6 +699,13 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                     );
                     locationCubit.position = newPosition;
 
+                    setState(() {
+                      searchPlacesResponse = null;
+                      _sessionToken = null;
+                    });
+
+                    FocusScope.of(context).unfocus();
+
                     // infer urbanity
                     final urbananityResult = await UrbanityChecker.inferUrbanity(
                       tappedLatLng.latitude,

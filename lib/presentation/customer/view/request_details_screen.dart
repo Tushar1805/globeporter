@@ -1090,6 +1090,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         //   altitudeAccuracy: 1.0,
                         //   headingAccuracy: 1.0,
                         // );
+                        setState(() {
+                          searchPlacesResponse = null;
+                          _sessionToken = null;
+                        });
+
+                        FocusScope.of(context).unfocus();
 
                         setState(() {
                           _suppressOnChange = false;
