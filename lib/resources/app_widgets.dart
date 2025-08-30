@@ -725,7 +725,7 @@ void showOtpDialog({
                 controller: otpController,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
-                maxLength: maxLength?? 4,
+                maxLength: maxLength ?? 4,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -845,6 +845,13 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
     });
   }
 
+  void removeItem(int index) {
+    setState(() {
+      items[index].quantiyTypeController.dispose();
+      items.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -918,6 +925,7 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
 
                 ...items.asMap().entries.map((entry) {
                   final item = entry.value;
+                  final index = entry.key;
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -933,12 +941,23 @@ class _DynamicItemDialogState extends State<DynamicItemDialog> {
                           // ---------- Product Name (DROPDOWN) ----------
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Text(
-                              AppLocalizations.of(context)!.productNameString,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(color: primaryColor, fontSize: 18),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.productNameString,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: primaryColor, fontSize: 18),
+                                ),
+                                if (items.length > 1)
+                                  IconButton(
+                                    onPressed: () => removeItem(index),
+                                    icon: const Icon(Icons.close),
+                                    color: primaryColor,
+                                  ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 8),
