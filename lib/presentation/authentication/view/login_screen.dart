@@ -231,6 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   'otp': data?.otp
                 });
               }
+              customPrint("*** OTP *** : ${data?.otp}");
               setState(() {
                 loading = false;
                 errorMessage = '';
