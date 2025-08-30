@@ -304,19 +304,20 @@ class _WalletScreenState extends State<WalletScreen> with TickerProviderStateMix
                                             controller: amountTextController,
                                             textAlign: TextAlign.center,
                                             keyboardType: TextInputType.number,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium
-                                                ?.copyWith(color: Colors.black, letterSpacing: 2),
+                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                  color: Colors.black,
+                                                  letterSpacing: 2,
+                                                  fontSize: 24,
+                                                ),
                                             decoration: InputDecoration(
                                               counterText: '',
                                               filled: true,
                                               fillColor: Colors.white.withOpacity(0.6),
                                               hintText: locale.enterAmountString,
-                                              hintStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(color: Colors.grey),
+                                              hintStyle:
+                                                  Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                        color: Colors.grey,
+                                                      ),
                                               border: OutlineInputBorder(
                                                 borderRadius: BorderRadius.circular(12),
                                                 borderSide: const BorderSide(color: Colors.white),
