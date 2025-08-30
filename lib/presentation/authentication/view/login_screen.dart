@@ -75,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    super.initState();
     fToast = FToast();
     fToast!.init(context);
     unawaited(signIn
@@ -102,7 +103,37 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     });
-    super.initState();
+
+    phoneController.addListener(() {
+      String text = phoneController.text;
+
+      // Remove +91 or 91 if present
+      if (text.startsWith('+91')) {
+        text = text.substring(3);
+      } else if (text.startsWith('91') && text.length > 10) {
+        text = text.substring(2);
+      }
+
+      // Only keep digits and max 10
+      text = text.replaceAll(RegExp(r'\D'), '');
+      if (text.length > 10) {
+        text = text.substring(text.length - 10);
+      }
+
+      // Update only if different
+      if (phoneController.text != text) {
+        phoneController.value = phoneController.value.copyWith(
+          text: text,
+          selection: TextSelection.collapsed(offset: text.length),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    phoneController.dispose();
+    super.dispose();
   }
 
   @override
