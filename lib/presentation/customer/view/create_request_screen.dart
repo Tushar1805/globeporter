@@ -571,9 +571,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                     width: size.width * 0.35,
                     child: elevatedButton(
                       onPressed: () {
-                        // setState(() {
-                        //   isUrban = true;
-                        // });
+                        setState(() {
+                          isUrban = true;
+                        });
                       },
                       title: AppLocalizations.of(context)!.urbanString,
                       backgroundColor: isUrban ? primaryColor : whiteColor,
@@ -588,9 +588,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
                     child: elevatedButton(
                       onPressed: () {
                         setState(() {
-                          // setState(() {
-                          //   isUrban = false;
-                          // });
+                          isUrban = false;
                         });
                       },
                       title: AppLocalizations.of(context)!.ruralString,
