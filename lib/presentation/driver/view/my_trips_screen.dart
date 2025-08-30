@@ -80,6 +80,51 @@ class _MyTripsScreenState extends State<MyTripsScreen> with TickerProviderStateM
     super.dispose();
   }
 
+  void onTap(pending.Data? trip) async {
+    if (RideStatus.accept.value == trip?.bookingStatus ||
+        RideStatus.ongoing.value == trip?.bookingStatus) {
+      context.pushNamed(
+        itemDetailsScreen,
+        extra: {
+          'type': trip?.rideType?.toLowerCase(),
+          'bookingId': trip?.id.toString(),
+        },
+      );
+    } else if (RideStatus.onTheWay.value == trip?.bookingStatus) {
+      // context.pushNamed(
+      //   itemDetailsScreen,
+      //   extra: {
+      //     'type': trip?.rideType?.toLowerCase(),
+      //     'bookingId': trip?.id.toString(),
+      //   },
+      // );
+      await driverCubit
+          .getBookingDetails(bookingId: trip?.id.toString() ?? '1')
+          .then((final response) {
+        context.pushNamed(
+          tripInfoScreen,
+          extra: {
+            'type': trip?.rideType?.toLowerCase(),
+            'data': response?.data,
+          },
+        );
+      });
+    } else if (RideStatus.arrivedAtPickup.value == trip?.bookingStatus ||
+        RideStatus.rideStarted.value == trip?.bookingStatus) {
+      await driverCubit
+          .getBookingDetails(bookingId: trip?.id.toString() ?? '1')
+          .then((final response) {
+        context.pushNamed(
+          startTripScreen,
+          extra: {
+            'type': trip?.rideType?.toLowerCase(),
+            'data': response?.data,
+          },
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -255,156 +300,116 @@ class _MyTripsScreenState extends State<MyTripsScreen> with TickerProviderStateM
                           final trip = driverBookingsResponse?.data?[index];
                           return ScaleTransition(
                             scale: _scaleAnimation,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 20.0),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: secondaryColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(9),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (trip?.isBookingActive == 1) {
+                                  onTap(trip);
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20.0),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: secondaryColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(9),
+                                    ),
                                   ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            trip?.userData?.name ?? '',
-                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                                  fontSize: 20,
-                                                ),
-                                          ),
-                                        ),
-                                        Text(
-                                          // formatDate(date: trip?.bookingDate ?? ''),
-                                          trip?.bookingDate ?? '',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(fontSize: 15, color: greyTextColor),
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.pickupLocationString,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                    ),
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    addressRow(address: trip?.pickupAddress),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.destinationLocationString,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                    ),
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    addressRow(address: trip?.dropAddress),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        CustomRichText(
-                                            title:
-                                                '${AppLocalizations.of(context)!.statusString}: ',
-                                            value: trip?.bookingStatus),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
-                                        trip?.isBookingActive == 1
-                                            ? CustomElevatedButton(
-                                                name: AppLocalizations.of(context)!.goString,
-                                                textWidget: buttonLoading
-                                                    ? CircularProgressIndicator(
-                                                        color: whiteColor,
-                                                      )
-                                                    : Image.asset(
-                                                        arrowForward,
-                                                        width: size.width * 0.05,
-                                                        height: size.height * 0.017,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              trip?.userData?.name ?? '',
+                                              style:
+                                                  Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                                        fontSize: 20,
                                                       ),
-                                                borderRadius: 5,
-                                                alignment: Alignment.centerRight,
-                                                onPressed: () async {
-                                                  if (RideStatus.accept.value ==
-                                                          trip?.bookingStatus ||
-                                                      RideStatus.ongoing.value ==
-                                                          trip?.bookingStatus) {
-                                                    context.pushNamed(
-                                                      itemDetailsScreen,
-                                                      extra: {
-                                                        'type': trip?.rideType?.toLowerCase(),
-                                                        'bookingId': trip?.id.toString(),
-                                                      },
-                                                    );
-                                                  } else if (RideStatus.onTheWay.value ==
-                                                      trip?.bookingStatus) {
-                                                    // context.pushNamed(
-                                                    //   itemDetailsScreen,
-                                                    //   extra: {
-                                                    //     'type': trip?.rideType?.toLowerCase(),
-                                                    //     'bookingId': trip?.id.toString(),
-                                                    //   },
-                                                    // );
-                                                    await driverCubit
-                                                        .getBookingDetails(
-                                                            bookingId: trip?.id.toString() ?? '1')
-                                                        .then((final response) {
-                                                      context.pushNamed(
-                                                        tripInfoScreen,
-                                                        extra: {
-                                                          'type': trip?.rideType?.toLowerCase(),
-                                                          'data': response?.data,
-                                                        },
-                                                      );
-                                                    });
-                                                  } else if (RideStatus.arrivedAtPickup.value ==
-                                                          trip?.bookingStatus ||
-                                                      RideStatus.rideStarted.value ==
-                                                          trip?.bookingStatus) {
-                                                    await driverCubit
-                                                        .getBookingDetails(
-                                                            bookingId: trip?.id.toString() ?? '1')
-                                                        .then((final response) {
-                                                      context.pushNamed(
-                                                        startTripScreen,
-                                                        extra: {
-                                                          'type': trip?.rideType?.toLowerCase(),
-                                                          'data': response?.data,
-                                                        },
-                                                      );
-                                                    });
-                                                  }
-                                                },
-                                                textPadding: const EdgeInsets.symmetric(
-                                                  horizontal: 10,
-                                                  vertical: 4,
-                                                ),
-                                              )
-                                            : SizedBox.shrink(),
-                                      ],
-                                    ),
-                                  ],
+                                            ),
+                                          ),
+                                          Text(
+                                            // formatDate(date: trip?.bookingDate ?? ''),
+                                            trip?.bookingDate ?? '',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(fontSize: 15, color: greyTextColor),
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.pickupLocationString,
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      addressRow(address: trip?.pickupAddress),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.destinationLocationString,
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      addressRow(address: trip?.dropAddress),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomRichText(
+                                              title:
+                                                  '${AppLocalizations.of(context)!.statusString}: ',
+                                              value: trip?.bookingStatus),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          trip?.isBookingActive == 1
+                                              ? CustomElevatedButton(
+                                                  name: AppLocalizations.of(context)!.goString,
+                                                  textWidget: buttonLoading
+                                                      ? CircularProgressIndicator(
+                                                          color: whiteColor,
+                                                        )
+                                                      : Image.asset(
+                                                          arrowForward,
+                                                          width: size.width * 0.05,
+                                                          height: size.height * 0.017,
+                                                        ),
+                                                  borderRadius: 5,
+                                                  alignment: Alignment.centerRight,
+                                                  onPressed: () {
+                                                    onTap(trip);
+                                                  },
+                                                  textPadding: const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 4,
+                                                  ),
+                                                )
+                                              : SizedBox.shrink(),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
