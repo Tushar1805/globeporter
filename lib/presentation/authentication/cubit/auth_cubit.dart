@@ -232,6 +232,31 @@ class AuthCubit extends BaseCubit {
     }
   }
 
+  Future<String?> makePhoneCall({
+    required final String fromNumber,
+    required final String toNumber,
+  }) async {
+    try {
+      emit(StartCallLoadingState('Updating user type'));
+      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.readValue(accessTokenKey);
+
+      final response = await _authRepository.makePhoneCall(
+        lang: lang ?? 'en',
+        accessToken: accessToken ?? '',
+        fromNumber: fromNumber,
+        toNumber: toNumber,
+      );
+
+      emit(StartCallLoadedState(data: response));
+      customPrint("Mobile: ${response['result']['data']['mobile']}");
+      return response['result']['data']['mobile'];
+    } catch (e) {
+      handleExceptions(e);
+      return null;
+    }
+  }
+
   Future<void> logout() async {
     try {
       final accessToken = await storage.readValue(accessTokenKey);

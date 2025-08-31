@@ -1,15 +1,22 @@
 import 'dart:ui' as ui;
 import 'dart:convert';
 
+import 'package:core/di/service_locator.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:country_phone_validator/country_phone_validator.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/resources/app_api_keys.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 
 Future<Uint8List> getBytesFromAssets({required final String path, required final int width}) async {
   ByteData data = await rootBundle.load(path);
@@ -148,5 +155,23 @@ class UrbanityChecker {
     else {
       return "Rural (POIs found in distance $radius: $count)";
     }
+  }
+}
+
+Future<void> makePhoneCall({
+  required final String fromNumber,
+  required final String toNumber,
+  required final BuildContext context,
+}) async {
+  final authCubit = sl<AuthCubit>();
+  final status = await Permission.phone.request();
+  final phoneNumber = await authCubit.makePhoneCall(fromNumber: fromNumber, toNumber: toNumber);
+
+  if (status.isGranted && phoneNumber != null) {
+    FlutterPhoneDirectCaller.callNumber(phoneNumber);
+  } else {
+    Fluttertoast.showToast(
+      msg: AppLocalizations.of(context)!.phoneCallPermissionDeniedString,
+    );
   }
 }

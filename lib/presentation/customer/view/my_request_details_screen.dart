@@ -7,8 +7,6 @@ import 'package:core/di/service_locator.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
@@ -16,13 +14,13 @@ import 'package:globeporter/presentation/customer/model/booking_details_response
 import 'package:globeporter/presentation/customer/states/customer_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
-import 'package:permission_handler/permission_handler.dart';
 
 class MyRequestDetailsScreen extends StatefulWidget {
   const MyRequestDetailsScreen({
@@ -42,18 +40,6 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
   final authCubit = sl<AuthCubit>();
   final customerCubit = sl<CustomerCubit>();
   BookingDetailsResponse? bookingDetailsResponse;
-
-  Future<void> makePhoneCall(String phoneNumber, BuildContext context) async {
-    final status = await Permission.phone.request();
-
-    if (status.isGranted) {
-      FlutterPhoneDirectCaller.callNumber(phoneNumber);
-    } else {
-      Fluttertoast.showToast(
-        msg: AppLocalizations.of(context)!.phoneCallPermissionDeniedString,
-      );
-    }
-  }
 
   Stream<String?> listenOtp(String bookingId) {
     final dbRef = FirebaseDatabase.instance.ref("ride_otp/$bookingId/otp");
@@ -148,7 +134,11 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        makePhoneCall(booking?.driverData?.mobile ?? '', context);
+                                        makePhoneCall(
+                                          fromNumber: booking?.userData?.mobile ?? '',
+                                          toNumber: booking?.driverData?.mobile ?? '',
+                                          context: context,
+                                        );
                                       },
                                       child: Image.asset(
                                         phoneCallIcon,

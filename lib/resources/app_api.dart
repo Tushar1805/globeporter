@@ -46,6 +46,7 @@ const String otpVerifyDriverUrl = '$_baseUrl/otp_verify_ride_by_driver';
 const String endRideDriverUrl = '$_baseUrl/end_ride_by_driver';
 const String findNearbyDriverUrl = '$_baseUrl/find_driver';
 const String updateBookingDetailsDriverUrl = '$_baseUrl/update_booking_detail_by_driver';
+const String startCallUrl = '$_baseUrl/start_call_for_booking';
 
 //* Customer
 const String createUrbanRequestUrl = '$_baseUrl/add_urban_booking';

@@ -7,7 +7,6 @@ import 'package:core/utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
@@ -24,7 +23,6 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TripInfoScreen extends StatefulWidget {
@@ -118,21 +116,6 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
       customPrint('***************** Current location 4 ');
     } catch (e) {
       debugPrint("Error: Getting Location: $e");
-    }
-  }
-
-  Future<void> makePhoneCall(String phoneNumber) async {
-    final status = await Permission.phone.request();
-
-    if (status.isGranted) {
-      FlutterPhoneDirectCaller.callNumber(phoneNumber);
-    } else {
-      showToast(
-        context: context,
-        fToast: fToast!,
-        msg: AppLocalizations.of(context)!.phoneCallPermissionDeniedString,
-        duration: 5,
-      );
     }
   }
 
@@ -347,7 +330,11 @@ class _TripInfoScreenState extends State<TripInfoScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          makePhoneCall(widget.data.userData?.mobile ?? '');
+                          makePhoneCall(
+                            fromNumber: widget.data.driverData?.mobile ?? '',
+                            toNumber: widget.data.userData?.mobile ?? '',
+                            context: context,
+                          );
                         },
                         child: Image.asset(
                           phoneCallIcon,

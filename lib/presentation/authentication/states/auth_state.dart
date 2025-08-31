@@ -79,3 +79,10 @@ class UpdateMobileVerifyLoadingState extends LoadingState {
 class UpdateMobileVerifyLoadedState extends LoadedState {
   UpdateMobileVerifyLoadedState({required super.data});
 }
+class StartCallLoadingState extends LoadingState {
+  StartCallLoadingState(super.loadingMessage);
+}
+
+class StartCallLoadedState extends LoadedState {
+  StartCallLoadedState({required super.data});
+}

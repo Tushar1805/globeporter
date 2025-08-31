@@ -112,6 +112,26 @@ class AuthRepository extends BaseRepository {
     return responseData;
   }
 
+  Future<Map<String, dynamic>> makePhoneCall({
+    required final String lang,
+    required final String accessToken,
+    required final String fromNumber,
+    required final String toNumber,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: startCallUrl,
+      accessToken: accessToken,
+      requestModel: {
+        'lang': lang,
+        'from_number': fromNumber,
+        'to_number': toNumber,
+      },
+    );
+
+    return responseData;
+  }
+
   Future<RegisterResponseModel?> register({
     required final int userId,
     required final String lang,

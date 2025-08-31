@@ -8,7 +8,6 @@ import 'package:core/utils/core_utils.dart';
 import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
@@ -20,10 +19,10 @@ import 'package:globeporter/presentation/driver/states/driver_booking_states.dar
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_extension_functions.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:globeporter/resources/app_utils.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
@@ -72,21 +71,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   //     );
   //   }
   // }
-
-  Future<void> makePhoneCall(String phoneNumber) async {
-    final status = await Permission.phone.request();
-
-    if (status.isGranted) {
-      FlutterPhoneDirectCaller.callNumber(phoneNumber);
-    } else {
-      showToast(
-        context: context,
-        fToast: fToast!,
-        msg: AppLocalizations.of(context)!.phoneCallPermissionDeniedString,
-        duration: 5,
-      );
-    }
-  }
 
   @override
   void initState() {
@@ -175,7 +159,11 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            makePhoneCall(bookingDetailsResponse?.data?.userData?.mobile ?? '');
+                            makePhoneCall(
+                              fromNumber: bookingDetailsResponse?.data?.driverData?.mobile ?? '',
+                              toNumber: bookingDetailsResponse?.data?.userData?.mobile ?? '',
+                              context: context,
+                            );
                           },
                           child: Image.asset(
                             phoneCallIcon,
