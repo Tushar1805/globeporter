@@ -66,6 +66,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     super.initState();
     fToast = FToast();
     fToast!.init(context);
+    getProfileData();
   }
 
   @override
