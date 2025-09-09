@@ -247,7 +247,9 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                 SettingCardContent(
                   title: AppLocalizations.of(context)!.recentPickupString,
                   prefixIcon: likeIcon,
-                  onTap: () {},
+                  onTap: () {
+                    context.pushNamed(etaExampleScreen);
+                  },
                 )
               ],
             ),

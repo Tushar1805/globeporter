@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:globeporter/location/eta_example_screen.dart';
 import 'package:globeporter/presentation/authentication/view/login_screen.dart';
 import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_1_screen.dart';
 import 'package:globeporter/presentation/authentication/view/onboarding/onboarding_2_screen.dart';
@@ -562,6 +563,14 @@ final GoRouter router = GoRouter(
           ),
         );
       },
+    ),
+    GoRoute(
+      name: etaExampleScreen,
+      path: etaExampleScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const EtaSimulatorWidget(),
+      ),
     ),
   ],
 );

@@ -45,3 +45,4 @@ const imageReviewScreen = '/image_review_screen';
 const viewDocumentsScreen = '/view_document_screen';
 const contactPickerScreen = '/contact_picker_screen';
 const transactionHistoryScreen = '/transactinon_history_screen';
+const etaExampleScreen = '/eta_example_scree';

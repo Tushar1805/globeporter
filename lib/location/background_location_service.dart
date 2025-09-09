@@ -8,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/firebase_options.dart';
+import 'package:globeporter/location/eta_notification_service.dart';
 import 'package:globeporter/location/repository/location_repository.dart';
 
 /// ---- CONFIG ----
@@ -33,8 +34,13 @@ Future<void> onStart(ServiceInstance service) async {
     );
   }
 
+   // Initialize ETA handler in its own file
+  final EtaNotificationService etaService = EtaNotificationService();
+  await etaService.init(service);
+
   // Allow UI isolate to send commands to this service.
   service.on('stopService').listen((_) async {
+    await etaService.dispose();
     await service.stopSelf();
   });
 
@@ -234,6 +240,7 @@ Future<void> initializeBackgroundService() async {
       notificationChannelId: 'location_tracking_channel',
       initialNotificationTitle: 'Location tracking starting…',
       initialNotificationContent: 'Preparing sensors',
+      
     ),
     iosConfiguration: IosConfiguration(
       onForeground: onStart,
