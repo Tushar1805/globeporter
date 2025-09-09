@@ -294,11 +294,20 @@ final GoRouter router = GoRouter(
       path: myRequestDetailsScreen,
       pageBuilder: (final context, final state) {
         final params = state.extra as Map<String, dynamic>?;
+
+        // 1. Try getting from existing extra
+        String? bookingId = params?['bookingId'] as String?;
+        String? type = params?['type'] as String?;
+
+        // 2. If null, fallback to query parameters (for deep links)
+        bookingId ??= state.uri.queryParameters['bookingId'];
+        type ??= state.uri.queryParameters['type'];
+
         return slideTransitionPage(
           key: state.pageKey,
           child: MyRequestDetailsScreen(
-            type: params?['type'] as String?,
-            bookingId: params?['bookingId'] as String?,
+            type: type?.toLowerCase(),
+            bookingId: bookingId,
           ),
         );
       },

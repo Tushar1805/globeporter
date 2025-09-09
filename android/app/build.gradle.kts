@@ -64,7 +64,7 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
-    // TODO: Add the dependencies for Firebase products you want to use
+    // TODO: Add the dependencies for Firebase products you want to use     
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
