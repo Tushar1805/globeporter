@@ -134,7 +134,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          authCubit.userDetails?.data?.name ?? 'User Name',
+                          authCubit.userDetails?.data?.name ?? 'Guest',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 color: Colors.white,
                                 fontSize: 22,

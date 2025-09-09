@@ -281,7 +281,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with TickerProvider
               child: BlocBuilder(
                 bloc: authCubit,
                 builder: (final context, final state) {
-                  final name = authCubit.userDetails?.data?.name ?? 'User Name';
+                  final name = authCubit.userDetails?.data?.name ?? 'Guest';
                   final profileUrl =
                       authCubit.userDetails?.data?.profilePhotoUrl ?? sampleNetworkImage;
                   return Row(

@@ -221,7 +221,7 @@ class _WalletScreenState extends State<WalletScreen> with TickerProviderStateMix
                 orderId: data?.data?.orderId ?? 'order_EMBFqjDHEEn80l',
                 contact: authCubit.userDetails?.data?.mobile ?? '',
                 email: authCubit.userDetails?.data?.email ?? 'test@gmail.com',
-                name: authCubit.userDetails?.data?.name ?? 'user name',
+                name: authCubit.userDetails?.data?.name ?? 'Guest',
                 description: "Testing payments",
               );
             }
