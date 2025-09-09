@@ -123,8 +123,20 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     ),
                   ),
                   Positioned(
+                    top: size.height * 0.058,
+                    left: size.width * 0.043,
+                    child: GestureDetector(
+                      onTap: context.pop,
+                      child: Icon(
+                        Icons.arrow_back_ios_new_outlined,
+                        color: whiteColor,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                  Positioned(
                     top: size.height * 0.05,
-                    left: size.width * 0.05,
+                    left: size.width * 0.12,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -141,12 +153,15 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           ),
                         ),
                         SizedBox(width: 15),
-                        Center(
-                          child: Text(
-                            bookingDetailsResponse?.data?.userData?.name ?? '',
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
-                            textAlign: TextAlign.end,
+                        SizedBox(
+                          width: size.width * 0.3,
+                          child: Center(
+                            child: Text(
+                              bookingDetailsResponse?.data?.userData?.name ?? '',
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
+                              // textAlign: TextAlign.end,
+                            ),
                           ),
                         ),
                       ],

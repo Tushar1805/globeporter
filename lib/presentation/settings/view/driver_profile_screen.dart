@@ -128,6 +128,18 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                           ),
                         ),
                         Positioned(
+                          top: size.height * 0.058,
+                          left: size.width * 0.043,
+                          child: GestureDetector(
+                            onTap: context.pop,
+                            child: Icon(
+                              Icons.arrow_back_ios_new_outlined,
+                              color: whiteColor,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        Positioned(
                           top: size.width * 0.2,
                           left: 0,
                           right: 0,

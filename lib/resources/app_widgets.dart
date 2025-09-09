@@ -263,8 +263,20 @@ class CustomStatusBarWidget extends StatelessWidget {
           ),
         ),
         Positioned(
-          top: titlePositionTop ?? size.height * 0.055,
+          top: titlePositionTop ?? size.height * 0.058,
           left: size.width * 0.043,
+          child: GestureDetector(
+            onTap: context.pop,
+            child: Icon(
+              Icons.arrow_back_ios_new_outlined,
+              color: whiteColor,
+              size: 20,
+            ),
+          ),
+        ),
+        Positioned(
+          top: titlePositionTop ?? size.height * 0.055,
+          left: size.width * 0.12,
           child: text ??
               Text(
                 title ?? '',

@@ -10,6 +10,7 @@ import 'package:globeporter/presentation/chats/model/chat_model.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:globeporter/resources/app_images.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -278,6 +279,13 @@ class _ChatScreenState extends State<ChatScreen> {
         appBar: AppBar(
           backgroundColor: primaryColor,
           foregroundColor: whiteColor,
+          leading: GestureDetector(
+            onTap: context.pop,
+            child: Icon(
+              Icons.arrow_back_ios_new_outlined,
+              size: 20,
+            ),
+          ),
           title: Row(
             children: [
               CircleAvatar(

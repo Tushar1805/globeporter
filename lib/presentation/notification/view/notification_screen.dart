@@ -329,11 +329,11 @@ class _NotificationScreenState extends State<NotificationScreen> with TickerProv
       child: Scaffold(
         backgroundColor: whiteColor,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(size.width * 0.35),
+          preferredSize: Size.fromHeight(size.width * 0.25),
           child: CustomStatusBarWidget(
             title: locale.notificationString,
-            height: size.width * 0.35,
-            titlePositionTop: size.width * 0.2,
+            height: size.width * 0.25,
+            // titlePositionTop: size.width * 0.2,
           ),
         ),
         body: BlocConsumer(

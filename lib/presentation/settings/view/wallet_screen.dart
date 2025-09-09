@@ -163,8 +163,20 @@ class _WalletScreenState extends State<WalletScreen> with TickerProviderStateMix
               ),
             ),
             Positioned(
-              top: size.height * 0.055,
+              top: size.height * 0.058,
               left: size.width * 0.043,
+              child: GestureDetector(
+                onTap: context.pop,
+                child: Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                  color: whiteColor,
+                  size: 20,
+                ),
+              ),
+            ),
+            Positioned(
+              top: size.height * 0.055,
+              left: size.width * 0.12,
               child: Text(
                 locale.walletString,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(

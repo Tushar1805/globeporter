@@ -103,8 +103,20 @@ class _MyRequestDetailsScreenState extends State<MyRequestDetailsScreen> {
                       ),
                     ),
                     Positioned(
+                      top: size.height * 0.058,
+                      left: size.width * 0.043,
+                      child: GestureDetector(
+                        onTap: context.pop,
+                        child: Icon(
+                          Icons.arrow_back_ios_new_outlined,
+                          color: whiteColor,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                    Positioned(
                       top: size.height * 0.05,
-                      left: size.width * 0.05,
+                      left: size.width * 0.12,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [

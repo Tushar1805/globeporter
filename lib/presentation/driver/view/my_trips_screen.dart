@@ -376,10 +376,13 @@ class _MyTripsScreenState extends State<MyTripsScreen> with TickerProviderStateM
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          CustomRichText(
-                                              title:
-                                                  '${AppLocalizations.of(context)!.statusString}: ',
-                                              value: trip?.bookingStatus),
+                                          SizedBox(
+                                            width: size.width * 0.55,
+                                            child: CustomRichText(
+                                                title:
+                                                    '${AppLocalizations.of(context)!.statusString}: ',
+                                                value: trip?.bookingStatus),
+                                          ),
                                           const SizedBox(
                                             width: 8,
                                           ),
