@@ -320,7 +320,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                         ),
                         child: Text(
-                          AppLocalizations.of(context)!.offerRideString,
+                          AppLocalizations.of(context)!.postRequestString,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge

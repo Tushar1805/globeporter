@@ -214,36 +214,6 @@ class _MyTripsScreenState extends State<MyTripsScreen> with TickerProviderStateM
           ],
         ),
       ),
-      floatingActionButton: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30), // Large enough for pill shape
-          ),
-          padding: const EdgeInsets.all(14),
-        ),
-        onPressed: () {
-          context.pushNamed(newRideScreen);
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.add,
-              color: whiteColor,
-              size: 24,
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Text(
-              AppLocalizations.of(context)!.newRideString,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor),
-            ),
-          ],
-        ),
-      ),
       body: BlocConsumer(
         bloc: driverCubit,
         listener: (final context, final state) {

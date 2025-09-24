@@ -11,6 +11,7 @@ import 'package:globeporter/presentation/chats/view/chat_list_screen.dart';
 import 'package:globeporter/presentation/driver/cubit/driver_details_cubit.dart';
 import 'package:globeporter/presentation/driver/view/home_screen.dart';
 import 'package:globeporter/presentation/driver/view/my_trips_screen.dart';
+import 'package:globeporter/presentation/driver/view/post_request_list_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -47,6 +48,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
     SettingsScreen(
       role: 'driver',
     ),
+    PostRequestDriverScreen(),
   ];
 
   void getUserDetails() async {
@@ -202,6 +204,13 @@ class _DriverDashboardState extends State<DriverDashboard> {
                   onTap: () => onNavBarTap(0),
                   pageIndex: pageIndex,
                   itemIndex: 0,
+                ),
+                BottomNavBarIcon(
+                  title: AppLocalizations.of(context)!.postRequestString,
+                  icon: myRequestIcon,
+                  onTap: () => onNavBarTap(4),
+                  pageIndex: pageIndex,
+                  itemIndex: 4,
                 ),
                 BottomNavBarIcon(
                   title: AppLocalizations.of(context)!.homeString,
