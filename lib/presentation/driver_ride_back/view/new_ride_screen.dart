@@ -4,16 +4,21 @@ import 'dart:async';
 
 import 'package:core/di/service_locator.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
+import 'package:globeporter/location/model/search_places_response.dart';
+import 'package:globeporter/location/states/location_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_utils.dart';
+import 'package:globeporter/resources/app_widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 class NewRideScreen extends StatefulWidget {
   const NewRideScreen({super.key});
@@ -27,7 +32,13 @@ class _NewRideScreenState extends State<NewRideScreen> {
   final locationCubit = sl<LocationCubit>();
   final TextEditingController currentLocationController = TextEditingController();
   final TextEditingController destinationLocationController = TextEditingController();
-  late final List<Placemark> placemarks;
+  final TextEditingController priceController = TextEditingController();
+  late final List<geocoding.Placemark> placemarks;
+  SearchPlacesResponse? searchPlacesResponse;
+  bool _suppressOnChange = true;
+  String? _sessionToken;
+  var uuid = Uuid();
+  Timer? _debounce;
 
   LatLng source = const LatLng(18.6668, 73.9339); // Genesis
   LatLng destination = const LatLng(21.13435977301947, 79.08025792574747); // Dhantoli Nagpur
@@ -48,7 +59,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
     try {
       position = await locationCubit.determinePosition();
       debugPrint("Position: ${position?.latitude} :: ${position?.longitude}");
-      placemarks = await placemarkFromCoordinates(
+      placemarks = await geocoding.placemarkFromCoordinates(
         position?.latitude ?? 20.5574253,
         position?.longitude ?? 78.8386951,
       );
@@ -56,7 +67,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
           ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
           : "";
       source = LatLng(position?.latitude ?? 18.6668, position?.longitude ?? 73.9339);
-      final placemarks2 = await placemarkFromCoordinates(
+      final placemarks2 = await geocoding.placemarkFromCoordinates(
         destination.latitude,
         destination.longitude,
       );
@@ -66,6 +77,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
       final GoogleMapController controller = await _controller.future;
       final icon = await getBytesFromAssets(path: truckIcon, width: 50);
       setState(() {
+        _suppressOnChange = false;
         _kGooglePlex = CameraPosition(
           target: LatLng(position?.latitude ?? 20.5574253, position?.longitude ?? 78.8386951),
           zoom: 14,
@@ -149,14 +161,49 @@ class _NewRideScreenState extends State<NewRideScreen> {
     }
   }
 
+  void onChange() {
+    if (_suppressOnChange) return;
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (_sessionToken == null) {
+        setState(() {
+          _sessionToken = uuid.v4();
+        });
+      }
+
+      if (destinationLocationController.text.isNotEmpty) {
+        getSuggestion(destinationLocationController.text);
+      }
+    });
+  }
+
+  void getSuggestion(String input) async {
+    locationCubit.searchPickupPlaces(input: input, sesssionToken: _sessionToken);
+  }
+
   @override
   void initState() {
     super.initState();
+
     getCurrentLocation();
+    destinationLocationController.addListener(() {
+      onChange();
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    currentLocationController.dispose();
+    destinationLocationController.dispose();
+    priceController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
     return Scaffold(
       body: Stack(
         children: [
@@ -170,6 +217,50 @@ class _NewRideScreenState extends State<NewRideScreen> {
             mapToolbarEnabled: false,
             myLocationEnabled: false,
             polylines: polylines,
+            onTap: (LatLng tappedLatLng) async {
+              try {
+                // reverse-geocode to human-readable address
+                final placemarks = await geocoding.placemarkFromCoordinates(
+                  tappedLatLng.latitude,
+                  tappedLatLng.longitude,
+                );
+                String selectedAddress = "";
+                if (placemarks.isNotEmpty) {
+                  final place = placemarks.first;
+                  selectedAddress =
+                      "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.administrativeArea}, ${place.country}";
+                }
+
+                // update textfield + cubit
+                setState(() {
+                  _suppressOnChange = true;
+                  destinationLocationController.text = selectedAddress;
+                  locationCubit.currentLocation = selectedAddress;
+                  destination = tappedLatLng;
+                  _markers?.add(
+                    Marker(
+                      markerId: const MarkerId('selected_location'),
+                      position: tappedLatLng,
+                      infoWindow: InfoWindow(title: selectedAddress),
+                    ),
+                  );
+                });
+
+                setState(() {
+                  searchPlacesResponse = null;
+                  _sessionToken = null;
+                });
+
+                FocusScope.of(context).unfocus();
+                routeDirections();
+
+                // animate camera to new location
+                final GoogleMapController mapController = await _controller.future;
+                mapController.animateCamera(CameraUpdate.newLatLng(tappedLatLng));
+              } catch (e) {
+                debugPrint("Error selecting location from map: $e");
+              }
+            },
           ),
 
           // Top bar
@@ -241,7 +332,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
                       Expanded(
                         child: Text(
                           currentLocationController.text,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: theme.bodyMedium,
                         ),
                       ),
                       const Icon(
@@ -256,10 +347,100 @@ class _NewRideScreenState extends State<NewRideScreen> {
                       const Icon(Icons.location_on, size: 16, color: Colors.green),
                       const SizedBox(width: 10),
                       Expanded(
-                          child: Text(destinationLocationController.text,
-                              style: Theme.of(context).textTheme.bodyMedium)),
+                        child: TextField(
+                          decoration: InputDecoration(border: InputBorder.none),
+                          controller: destinationLocationController,
+                          style: theme.bodyMedium,
+                        ),
+                      ),
                       const Icon(Icons.swap_vert_circle_outlined, size: 18),
                     ],
+                  ),
+
+                  BlocConsumer(
+                    bloc: locationCubit,
+                    listener: (final context, final state) {
+                      if (state is SearchPickupLocationResultState) {
+                        setState(() {
+                          searchPlacesResponse = state.data as SearchPlacesResponse?;
+                        });
+                      }
+                    },
+                    builder: (final context, final state) {
+                      final predictions = searchPlacesResponse?.predictions ?? [];
+
+                      if (predictions.isEmpty) return const SizedBox();
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: List.generate(
+                            predictions.length,
+                            (index) {
+                              final place = predictions[index];
+                              return InkWell(
+                                onTap: () async {
+                                  final selectedDescription = place.description ?? '';
+
+                                  // Suppress onChange
+                                  _suppressOnChange = true;
+                                  destinationLocationController.text = selectedDescription;
+
+                                  setState(() {
+                                    searchPlacesResponse = null;
+                                    _sessionToken = null;
+                                  });
+
+                                  FocusScope.of(context).unfocus();
+
+                                  // Allow onChange again after a short delay (e.g. next event loop)
+                                  Future.delayed(Duration(milliseconds: 100), () {
+                                    _suppressOnChange = false;
+                                  });
+
+                                  try {
+                                    List<geocoding.Location> locations =
+                                        await geocoding.locationFromAddress(selectedDescription);
+                                    if (locations.isNotEmpty) {
+                                      final latLng =
+                                          LatLng(locations[0].latitude, locations[0].longitude);
+
+                                      destination = latLng;
+                                      routeDirections();
+
+                                      setState(() {
+                                        _markers?.add(Marker(
+                                          markerId: MarkerId('selected_location'),
+                                          position: latLng,
+                                          infoWindow: InfoWindow(title: selectedDescription),
+                                        ));
+                                      });
+
+                                      final GoogleMapController mapController =
+                                          await _controller.future;
+                                      mapController.animateCamera(CameraUpdate.newLatLng(latLng));
+                                    }
+                                  } catch (e) {
+                                    debugPrint('Error getting location: $e');
+                                  }
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  decoration: const BoxDecoration(
+                                    border: Border(bottom: BorderSide(color: Colors.grey)),
+                                  ),
+                                  child: Text(
+                                    place.description ?? '',
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 14),
 
@@ -270,11 +451,15 @@ class _NewRideScreenState extends State<NewRideScreen> {
                         onTap: _pickDateTime,
                         child: Row(
                           children: [
-                            const Icon(Icons.calendar_today, size: 18),
+                            const Icon(
+                              Icons.calendar_today,
+                              size: 18,
+                              color: primaryColor,
+                            ),
                             const SizedBox(width: 5),
                             Text(
                               DateFormat('dd MMM, hh:mm a').format(selectedDateTime),
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: theme.bodyMedium,
                             ),
                           ],
                         ),
@@ -300,17 +485,19 @@ class _NewRideScreenState extends State<NewRideScreen> {
                   // Fare and Offer Button
                   Row(
                     children: [
-                      // const Icon(Icons.currency_rupee, size: 20),
-                      // const Text("104",
-                      //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                      // const SizedBox(width: 10),
-                      // Container(
-                      //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      //   decoration: BoxDecoration(
-                      //       color: primaryColor, borderRadius: BorderRadius.circular(6)),
-                      //   child: Text(AppLocalizations.of(context)!.newString,
-                      //       style: TextStyle(color: Colors.white, fontSize: 12)),
-                      // ),
+                      SizedBox(
+                        width: 100,
+                        height: 40,
+                        child: CustomTextField(
+                          padding: EdgeInsets.zero,
+                          textEditingController: priceController,
+                          hint: '100',
+                          prefixIcon: const Icon(Icons.currency_rupee, size: 20),
+                          textStyle: theme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                       const Spacer(),
                       ElevatedButton(
                         onPressed: () {},
