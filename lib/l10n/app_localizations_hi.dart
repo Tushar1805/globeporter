@@ -143,6 +143,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get myRequestString => 'मेरे अनुरोध';
 
   @override
+  String get postRequestString => 'पोस्ट अनुरोध';
+
+  @override
   String get statusString => 'स्थिति';
 
   @override

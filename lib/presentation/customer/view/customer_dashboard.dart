@@ -11,6 +11,7 @@ import 'package:globeporter/presentation/chats/view/chat_list_screen.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
+import 'package:globeporter/presentation/customer/view/post_request_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -153,6 +154,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
       SettingsScreen(
         role: 'customer',
       ),
+      PostRequestCustomerScreen(),
     ];
     return BlocListener(
       bloc: authCubit,
@@ -208,6 +210,13 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
                   onTap: () => onNavBarTap(0),
                   pageIndex: pageIndex,
                   itemIndex: 0,
+                ),
+                BottomNavBarIcon(
+                  title: AppLocalizations.of(context)!.postRequestString,
+                  icon: myRequestIcon,
+                  onTap: () => onNavBarTap(4),
+                  pageIndex: pageIndex,
+                  itemIndex: 4,
                 ),
                 BottomNavBarIcon(
                   title: AppLocalizations.of(context)!.homeString,

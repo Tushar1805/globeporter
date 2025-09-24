@@ -358,6 +358,12 @@ abstract class AppLocalizations {
   /// **'My Request'**
   String get myRequestString;
 
+  /// No description provided for @postRequestString.
+  ///
+  /// In en, this message translates to:
+  /// **'Post Request'**
+  String get postRequestString;
+
   /// No description provided for @statusString.
   ///
   /// In en, this message translates to:

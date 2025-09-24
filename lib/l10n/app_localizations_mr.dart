@@ -143,6 +143,9 @@ class AppLocalizationsMr extends AppLocalizations {
   String get myRequestString => 'माझी रिक्वेस्ट';
 
   @override
+  String get postRequestString => 'पोस्ट रिक्वेस्ट';
+
+  @override
   String get statusString => 'स्थिती';
 
   @override

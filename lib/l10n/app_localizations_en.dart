@@ -143,6 +143,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myRequestString => 'My Request';
 
   @override
+  String get postRequestString => 'Post Request';
+
+  @override
   String get statusString => 'Status';
 
   @override

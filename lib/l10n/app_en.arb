@@ -89,6 +89,8 @@
   "quantityString": "Qty.",
   "@quantityString": {},
   "myRequestString": "My Request",
+  "postRequestString": "Post Request",
+  "@postRequestString": {},
   "@myRequestString": {},
   "statusString": "Status",
   "@statusString": {},
