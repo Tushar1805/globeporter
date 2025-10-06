@@ -186,5 +186,7 @@
     "enterNameString": "नाव प्रविष्ट करा",
     "enterEmailString": "ईमेल प्रविष्ट करा",
     "enterPhoneString": "फोन नंबर एंटर करा",
-    "verifyString": "सत्यापित करा"
+    "verifyString": "सत्यापित करा",
+    "enterYourDestinationString": "तुमचे गंतव्यस्थान प्रविष्ट करा",
+    "requestSuccessfullyPostedString": "तुमची विनंती यशस्वीरित्या पोस्ट केली गेली"
 }

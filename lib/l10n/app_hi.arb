@@ -183,5 +183,7 @@
     "enterNameString": "नाम दर्ज करें",
     "enterEmailString": "ईमेल दर्ज करें",
     "enterPhoneString": "फ़ोन नंबर दर्ज करें",
-    "verifyString": "सत्यापित करें"
+    "verifyString": "सत्यापित करें",
+    "enterYourDestinationString": "अपना गंतव्य दर्ज करें",
+    "requestSuccessfullyPostedString": "आपका अनुरोध सफलतापूर्वक पोस्ट हो गया"
 }

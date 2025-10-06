@@ -2,15 +2,21 @@
 
 import 'dart:async';
 
+import 'package:core/app_widgets.dart';
 import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/location/model/search_places_response.dart';
 import 'package:globeporter/location/states/location_states.dart';
+import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
+import 'package:globeporter/presentation/driver_ride_back/cubit/driver_ride_back_cubit.dart';
+import 'package:globeporter/presentation/driver_ride_back/states/driver_ride_back_state.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_utils.dart';
@@ -30,18 +36,25 @@ class NewRideScreen extends StatefulWidget {
 class _NewRideScreenState extends State<NewRideScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   final locationCubit = sl<LocationCubit>();
+  final driverRideBackCubit = sl<DriverRideBackCubit>();
   final TextEditingController currentLocationController = TextEditingController();
   final TextEditingController destinationLocationController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   late final List<geocoding.Placemark> placemarks;
   SearchPlacesResponse? searchPlacesResponse;
+  VehicleTypeResponseModel? vehicleTypeResponseModel;
   bool _suppressOnChange = true;
   String? _sessionToken;
+  String? moveDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String? moveTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
   var uuid = Uuid();
   Timer? _debounce;
+  FToast? fToast;
 
   LatLng source = const LatLng(18.6668, 73.9339); // Genesis
-  LatLng destination = const LatLng(21.13435977301947, 79.08025792574747); // Dhantoli Nagpur
+  // LatLng destination = const LatLng(21.13435977301947, 79.08025792574747); // Dhantoli Nagpur
+  LatLng? destination; // Dhantoli Nagpur
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(20.5574253, 78.8386951),
     zoom: 14,
@@ -50,7 +63,8 @@ class _NewRideScreenState extends State<NewRideScreen> {
 
   int seats = 3;
   DateTime selectedDateTime = DateTime.now();
-  String selectedVehicle = 'Car';
+  String? selectedVehicle;
+  int? selectedVehicleId;
   List<Marker>? _markers;
   Set<Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
@@ -67,13 +81,13 @@ class _NewRideScreenState extends State<NewRideScreen> {
           ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
           : "";
       source = LatLng(position?.latitude ?? 18.6668, position?.longitude ?? 73.9339);
-      final placemarks2 = await geocoding.placemarkFromCoordinates(
-        destination.latitude,
-        destination.longitude,
-      );
-      destinationLocationController.text = placemarks2.isNotEmpty
-          ? "${placemarks2[0].street}, ${placemarks2[0].subLocality}, ${placemarks2[0].locality}, ${placemarks2[0].postalCode}, ${placemarks2[0].administrativeArea}, ${placemarks2[0].country}"
-          : "";
+      // final placemarks2 = await geocoding.placemarkFromCoordinates(
+      //   destination.latitude,
+      //   destination.longitude,
+      // );
+      // destinationLocationController.text = placemarks2.isNotEmpty
+      //     ? "${placemarks2[0].street}, ${placemarks2[0].subLocality}, ${placemarks2[0].locality}, ${placemarks2[0].postalCode}, ${placemarks2[0].administrativeArea}, ${placemarks2[0].country}"
+      //     : "";
       final GoogleMapController controller = await _controller.future;
       final icon = await getBytesFromAssets(path: truckIcon, width: 50);
       setState(() {
@@ -92,7 +106,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
             flat: true,
           )
         ];
-        routeDirections();
+        // routeDirections();
         controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
       });
     } catch (e) {
@@ -106,8 +120,8 @@ class _NewRideScreenState extends State<NewRideScreen> {
         .routeDirection(
       pickupLat: source.latitude,
       pickupLng: source.longitude,
-      dropLat: destination.latitude,
-      dropLng: destination.longitude,
+      dropLat: destination!.latitude,
+      dropLng: destination!.longitude,
     )
         .then((final response) {
       setState(() {});
@@ -126,7 +140,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
       _markers?.add(
         Marker(
           markerId: MarkerId('drop'),
-          position: destination,
+          position: destination!,
           infoWindow: InfoWindow(title: 'Home'),
         ),
       );
@@ -156,6 +170,9 @@ class _NewRideScreenState extends State<NewRideScreen> {
             pickedTime.hour,
             pickedTime.minute,
           );
+
+          moveDate = DateFormat('yyyy-MM-dd').format(selectedDateTime);
+          moveTime = DateFormat('HH:mm:ss').format(selectedDateTime);
         });
       }
     }
@@ -182,14 +199,21 @@ class _NewRideScreenState extends State<NewRideScreen> {
     locationCubit.searchPickupPlaces(input: input, sesssionToken: _sessionToken);
   }
 
+  void getVehicleTypes() async {
+    await driverRideBackCubit.getVehicleTypes();
+  }
+
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast!.init(context);
 
     getCurrentLocation();
     destinationLocationController.addListener(() {
       onChange();
     });
+    getVehicleTypes();
   }
 
   @override
@@ -204,6 +228,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
+    final locale = AppLocalizations.of(context)!;
     return Scaffold(
       body: Stack(
         children: [
@@ -296,30 +321,70 @@ class _NewRideScreenState extends State<NewRideScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Vehicle Tabs
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children:
-                          ["Car", "Bike", "Rider", 'Truck', 'Mini Truck', 'Pickup Truck'].map((v) {
-                        final isSelected = selectedVehicle == v;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: GestureDetector(
-                            onTap: () => setState(() => selectedVehicle = v),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: isSelected ? secondaryColor : Colors.transparent,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(v,
-                                  style:
-                                      TextStyle(color: primaryColor, fontWeight: FontWeight.w600)),
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                  BlocListener(
+                    bloc: driverRideBackCubit,
+                    listener: (final context, final state) {
+                      if (state is VehicleTypesLoadedState) {
+                        vehicleTypeResponseModel = state.data as VehicleTypeResponseModel?;
+                        selectedVehicle = vehicleTypeResponseModel?.data?[0]?.name;
+                        selectedVehicleId = vehicleTypeResponseModel?.data?[0]?.id;
+                        setState(() {});
+                      }
+                    },
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: (vehicleTypeResponseModel?.data != null
+                            ? vehicleTypeResponseModel!.data!
+                                .where((vehicle) => vehicle != null)
+                                .map((vehicle) {
+                                final isSelected = selectedVehicleId == vehicle?.id;
+
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedVehicleId = vehicle?.id;
+                                        selectedVehicle = vehicle?.name;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding:
+                                          const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                      decoration: BoxDecoration(
+                                        color: isSelected ? secondaryColor : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(color: primaryColor, width: 1),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          // Image.network(
+                                          //   vehicle?.imageUrl ?? '',
+                                          //   height: 24,
+                                          //   width: 24,
+                                          //   errorBuilder: (context, error, stackTrace) => Icon(
+                                          //       Icons.directions_car,
+                                          //       color: primaryColor,
+                                          //       size: 20),
+                                          // ),
+                                          // const SizedBox(width: 6),
+                                          Text(
+                                            vehicle?.name ?? '',
+                                            style: TextStyle(
+                                              color: primaryColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList()
+                            : []),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -348,7 +413,13 @@ class _NewRideScreenState extends State<NewRideScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: TextField(
-                          decoration: InputDecoration(border: InputBorder.none),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: locale.enterYourDestinationString,
+                            hintStyle: theme.bodyMedium?.copyWith(
+                              color: Colors.grey.shade500,
+                            ),
+                          ),
                           controller: destinationLocationController,
                           style: theme.bodyMedium,
                         ),
@@ -499,20 +570,68 @@ class _NewRideScreenState extends State<NewRideScreen> {
                         ),
                       ),
                       const Spacer(),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!.postRequestString,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(color: whiteColor, fontSize: 18),
-                        ),
+                      BlocConsumer(
+                        bloc: driverRideBackCubit,
+                        listener: (final context, final state) {
+                          if (state is PlaceDriverRideLoadedState) {
+                            showToast(
+                              context: context,
+                              fToast: fToast!,
+                              msg: locale.requestSuccessfullyPostedString,
+                              duration: 3,
+                            );
+                            context.pop();
+                          }
+                        },
+                        builder: (final context, final state) {
+                          if (state is PlaceDriverRideLoadingState) return LoadingWithoutText();
+                          return ElevatedButton(
+                            onPressed: () async {
+                              if (destinationLocationController.text.isEmpty) {
+                                showToast(
+                                  context: context,
+                                  fToast: fToast!,
+                                  msg:
+                                      '${locale.pleaseEnterString} ${locale.destinationLocationString.toLowerCase()}',
+                                  duration: 3,
+                                );
+                              } else if (priceController.text.isEmpty) {
+                                showToast(
+                                  context: context,
+                                  fToast: fToast!,
+                                  msg:
+                                      '${locale.pleaseEnterString} ${locale.amountString.toLowerCase()}',
+                                  duration: 3,
+                                );
+                              } else {
+                                await driverRideBackCubit.placeDriverBookingRide(
+                                  vehicleTypeId: selectedVehicleId ?? 1,
+                                  pickupAddress: currentLocationController.text,
+                                  dropAddress: destinationLocationController.text,
+                                  pickupLat: source.latitude.toString(),
+                                  pickupLng: source.longitude.toString(),
+                                  dropLat: destination?.latitude.toString() ?? '',
+                                  dropLng: destination?.longitude.toString() ?? '',
+                                  price: priceController.text,
+                                  moveDate: moveDate ?? '',
+                                  moveTime: moveTime ?? '',
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                            ),
+                            child: Text(
+                              locale.postRequestString,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: whiteColor, fontSize: 18),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

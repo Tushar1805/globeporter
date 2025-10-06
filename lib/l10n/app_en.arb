@@ -365,6 +365,9 @@
   "enterPhoneString": "Enter phone number",
   "@enterPhoneString": {},
   "verifyString": "Verify",
-  "@verifyString": {}
-
+  "@verifyString": {},
+  "enterYourDestinationString": "Enter your destination",
+  "@enterYourDestinationString": {},
+  "requestSuccessfullyPostedString": "Your request posted successfully",
+  "@requestSuccessfullyPostedString": {}
 }

@@ -1185,6 +1185,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verify'**
   String get verifyString;
+
+  /// No description provided for @enterYourDestinationString.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your destination'**
+  String get enterYourDestinationString;
+
+  /// No description provided for @requestSuccessfullyPostedString.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request posted successfully'**
+  String get requestSuccessfullyPostedString;
 }
 
 class _AppLocalizationsDelegate

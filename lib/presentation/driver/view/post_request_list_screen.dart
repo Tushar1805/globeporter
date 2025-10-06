@@ -1,12 +1,15 @@
+import 'package:core/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
+import 'package:globeporter/presentation/driver_ride_back/cubit/driver_ride_back_cubit.dart';
+import 'package:globeporter/presentation/driver_ride_back/model/my_posted_ride_model.dart';
+import 'package:globeporter/presentation/driver_ride_back/states/driver_ride_back_state.dart';
 import 'package:globeporter/presentation/notification/cubit/notification_cubit.dart';
 import 'package:globeporter/presentation/notification/states/notification_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
-import 'package:globeporter/resources/app_constants.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -21,14 +24,17 @@ class PostRequestDriverScreen extends StatefulWidget {
 
 class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
     with TickerProviderStateMixin {
-  // late AnimationController _animationController;
-  // late Animation<double> _scaleAnimation;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
   final notificationCubit = sl<NotificationCubit>();
+  final driverRideBackCubit = sl<DriverRideBackCubit>();
   int notificationUnreadCount = 0;
   late AnimationController _notificationAnimationController;
   late Animation<double> _notificationScaleAnimation;
+  MyPostedRidesModel? myPostedRidesModel;
 
   void loadData() async {
+    await driverRideBackCubit.getMyPostedRides();
     await notificationCubit.getNotificatinsUnreadCount();
   }
 
@@ -36,10 +42,10 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
   void initState() {
     loadData();
 
-    // _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
-    // _scaleAnimation =
-    //     CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
+    _scaleAnimation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
 
     _notificationAnimationController = AnimationController(
       vsync: this,
@@ -170,56 +176,76 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
           ],
         ),
       ),
-      body: ListView.builder(
-          itemCount: postRequests.length,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                decoration: BoxDecoration(
-                  color: secondaryColor,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.pickupLocationString,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    addressRow(address: postRequests[index]['pickup']),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!.destinationLocationString,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    addressRow(address: postRequests[index]['destination']),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                ),
-              ),
+      body: BlocConsumer(
+        bloc: driverRideBackCubit,
+        listener: (final context, final state) {
+          if (state is MyPostedRidesLoadedState) {
+            myPostedRidesModel = state.data as MyPostedRidesModel?;
+            _animationController.forward(from: 0);
+          }
+        },
+        builder: (final context, final state) {
+          if (state is MyPostedRidesLoadingState || state is NotificationUnreadCountLoadingState) {
+            return Center(
+              child: LoadingWithoutText(),
             );
-          }),
+          }
+          return ListView.builder(
+              itemCount: myPostedRidesModel?.data?.length,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              itemBuilder: (context, index) {
+                final ride = myPostedRidesModel?.data?[index];
+                return ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(9),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.pickupLocationString,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          addressRow(address: ride?.pickupAddress),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!.destinationLocationString,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          addressRow(address: ride?.dropAddress),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              });
+        },
+      ),
     );
   }
 

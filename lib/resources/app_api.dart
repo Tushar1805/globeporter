@@ -74,3 +74,11 @@ const String addMoneyToWalletUrl = '$_baseUrl/add_money_to_wallet';
 const String getNotificationsUrl = '$_baseUrl/get_notification';
 const String markNotificationReadUrl = '$_baseUrl/read_message_update';
 const String notificationUnreadCountUrl = '$_baseUrl/notification_message_count';
+
+//* Driver bookings
+
+const String placeDriverBookingRideUrl = '$_baseUrl/placed_driver_booking_ride';
+const String myPlacedBookingRideUrl = '$_baseUrl/my_placed_booking_rides';
+const String driverSideBookingForUserUrl = '$_baseUrl/driver_side_bookings_for_user';
+const String driverBookingRideDetailsUrl = '$_baseUrl/driver_booking_ride_details';
+const String findCustomerUrl = '$_baseUrl/find_customer';

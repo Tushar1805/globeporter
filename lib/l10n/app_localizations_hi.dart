@@ -564,4 +564,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get verifyString => 'सत्यापित करें';
+
+  @override
+  String get enterYourDestinationString => 'अपना गंतव्य दर्ज करें';
+
+  @override
+  String get requestSuccessfullyPostedString =>
+      'आपका अनुरोध सफलतापूर्वक पोस्ट हो गया';
 }

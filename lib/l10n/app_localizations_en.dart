@@ -565,4 +565,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get verifyString => 'Verify';
+
+  @override
+  String get enterYourDestinationString => 'Enter your destination';
+
+  @override
+  String get requestSuccessfullyPostedString =>
+      'Your request posted successfully';
 }
