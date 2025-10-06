@@ -1,5 +1,12 @@
 import 'package:globeporter/resources/app_images.dart';
 
+final List<Map<String, String>> postRequests = [
+  {'pickup': 'Pickup location', 'destination': 'Destination Location', 'price': '100'},
+  {'pickup': 'Pickup location', 'destination': 'Destination Location', 'price': '100'},
+  {'pickup': 'Pickup location', 'destination': 'Destination Location', 'price': '100'},
+  {'pickup': 'Pickup location', 'destination': 'Destination Location', 'price': '100'}
+];
+
 final List<Map<String, String>> onboardingData = [
   {
     'image': 'assets/svg/shipped.svg',

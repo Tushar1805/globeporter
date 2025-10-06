@@ -6,6 +6,7 @@ import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/notification/cubit/notification_cubit.dart';
 import 'package:globeporter/presentation/notification/states/notification_states.dart';
 import 'package:globeporter/resources/app_colors.dart';
+import 'package:globeporter/resources/app_constants.dart';
 import 'package:globeporter/resources/app_images.dart';
 import 'package:globeporter/resources/app_widgets.dart';
 import 'package:globeporter/routes/app_routes.dart';
@@ -169,6 +170,75 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
           ],
         ),
       ),
+      body: ListView.builder(
+          itemCount: postRequests.length,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                decoration: BoxDecoration(
+                  color: secondaryColor,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(9),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.pickupLocationString,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    addressRow(address: postRequests[index]['pickup']),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!.destinationLocationString,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    addressRow(address: postRequests[index]['destination']),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
     );
   }
+
+  Widget addressRow({required final String? address}) => Row(
+        children: [
+          Image.asset(
+            locationPinImage,
+            width: 24,
+            height: 32,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: Text(
+              address ?? '',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+            ),
+          )
+        ],
+      );
 }
