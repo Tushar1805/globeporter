@@ -1,4 +1,5 @@
 import 'package:core/di/service_locator.dart';
+import 'package:core/utils/core_utils.dart';
 import 'package:globeporter/basecubit/base_cubit.dart';
 import 'package:globeporter/presentation/driver_ride_back/repo/driver_ride_back_repo.dart';
 import 'package:globeporter/presentation/driver_ride_back/states/driver_ride_back_state.dart';
@@ -22,17 +23,73 @@ class DriverRideBackCubit extends BaseCubit {
     }
   }
 
-  Future<void> getMyPostedRides() async {
+  Future<void> getDriverPostedRides() async {
     try {
       emit(MyPostedRidesLoadingState('Loading Posted Rides...'));
       final lang = await storage.readValue(languageCodeKey);
       final token = await storage.readValue(accessTokenKey);
-      final response = await _driverRideBackRepository.getMyPostedRides(
+      final response = await _driverRideBackRepository.getDriverPostedRides(
         lang: lang ?? 'en',
         token: token ?? '',
       );
 
       emit(MyPostedRidesLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> getCustomerPostedRides() async {
+    try {
+      emit(CustomerPostedRidesLoadingState('Loading posted rides list for customer...'));
+      final lang = await storage.readValue(languageCodeKey);
+      final token = await storage.readValue(accessTokenKey);
+      final response = await _driverRideBackRepository.getCustomerPostedRides(
+        lang: lang ?? 'en',
+        token: token ?? '',
+      );
+
+      emit(CustomerPostedRidesLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> customerAcceptRejectRide({
+    required final String bookingId,
+    required final String status, // Accept or Reject
+  }) async {
+    try {
+      emit(CustomerAcceptRejectLoadingState('Loading Posted Rides...'));
+      final lang = await storage.readValue(languageCodeKey);
+      final token = await storage.readValue(accessTokenKey);
+      final response = await _driverRideBackRepository.customerAccepRejectRide(
+        lang: lang ?? 'en',
+        token: token ?? '',
+        bookingId: bookingId,
+        status: status,
+      );
+
+      emit(CustomerAcceptRejectLoadedState(data: response));
+    } catch (e) {
+      handleExceptions(e);
+    }
+  }
+
+  Future<void> findCustomer(
+      {required final String bookingId, required final String distance}) async {
+    try {
+      emit(FindingCustomerLoadingState('Finding customers for Posted Rides...'));
+      final lang = await storage.readValue(languageCodeKey);
+      final token = await storage.readValue(accessTokenKey);
+      final response = await _driverRideBackRepository.findCustomer(
+        lang: lang ?? 'en',
+        token: token ?? '',
+        bookingId: bookingId,
+        distance: distance,
+      );
+
+      emit(FindingCustomerLoadedState(data: response));
     } catch (e) {
       handleExceptions(e);
     }
@@ -68,6 +125,12 @@ class DriverRideBackCubit extends BaseCubit {
         moveDate: moveDate,
         moveTime: moveTime,
       );
+
+      customPrint('Data: ${response.toString()}');
+      if (response['status_code'] == 200) {
+        getDriverPostedRides();
+        findCustomer(bookingId: response['booking_id'].toString(), distance: "10");
+      }
 
       emit(PlaceDriverRideLoadedState(data: response));
     } catch (e) {

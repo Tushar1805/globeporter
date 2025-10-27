@@ -369,5 +369,15 @@
   "enterYourDestinationString": "Enter your destination",
   "@enterYourDestinationString": {},
   "requestSuccessfullyPostedString": "Your request posted successfully",
-  "@requestSuccessfullyPostedString": {}
+  "@requestSuccessfullyPostedString": {},
+  "noUsersAcceptedYetString": "No users accepted yet.",
+  "@noUsersAcceptedYetString": {},
+  "postedRidesString": "Posted Rides",
+  "@postedRidesString": {},
+  "areYouSureYouWantToAcceptRideString": "Are you sure you want to accept the ride?",
+  "@areYouSureYouWantToAcceptRideString": {},
+  "areYouSureYouWantToRejectRideString": "Are you sure you want to reject the ride?",
+  "@areYouSureYouWantToRejectRideString": {},
+  "noPostedRides": "No Posted Rides",
+  "@noPostedRides": {}
 }

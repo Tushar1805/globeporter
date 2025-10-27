@@ -169,7 +169,7 @@ class NotificationServices {
     );
   }
 
-  void requestNotificationPermission() async {
+  Future<void> requestNotificationPermission() async {
     //  await  AppSettings.openAppSettings(type: App
     final status = await Permission.notification.status;
     if ((Platform.isAndroid && status.isDenied) || (Platform.isIOS && status.isDenied)) {
@@ -196,7 +196,7 @@ class NotificationServices {
     }
   }
 
-  void firebaseInit(final BuildContext context) async {
+  Future<void> firebaseInit(final BuildContext context) async {
     // getInitialMessage will be handled below
     await FirebaseMessaging.instance.getInitialMessage();
 

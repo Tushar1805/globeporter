@@ -34,7 +34,7 @@ Future<void> onStart(ServiceInstance service) async {
     );
   }
 
-   // Initialize ETA handler in its own file
+  // Initialize ETA handler in its own file
   final EtaNotificationService etaService = EtaNotificationService();
   await etaService.init(service);
 
@@ -240,7 +240,6 @@ Future<void> initializeBackgroundService() async {
       notificationChannelId: 'location_tracking_channel',
       initialNotificationTitle: 'Location tracking starting…',
       initialNotificationContent: 'Preparing sensors',
-      
     ),
     iosConfiguration: IosConfiguration(
       onForeground: onStart,

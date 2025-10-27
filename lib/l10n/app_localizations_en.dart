@@ -572,4 +572,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get requestSuccessfullyPostedString =>
       'Your request posted successfully';
+
+  @override
+  String get noUsersAcceptedYetString => 'No users accepted yet.';
+
+  @override
+  String get postedRidesString => 'Posted Rides';
+
+  @override
+  String get areYouSureYouWantToAcceptRideString =>
+      'Are you sure you want to accept the ride?';
+
+  @override
+  String get areYouSureYouWantToRejectRideString =>
+      'Are you sure you want to reject the ride?';
+
+  @override
+  String get noPostedRides => 'No Posted Rides';
 }

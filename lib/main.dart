@@ -2,8 +2,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:core/localization/language_cubit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:core/utils/core_utils.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,6 +28,7 @@ import 'package:globeporter/routes/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'routes/app_router.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 final NotificationServices notificationServices = NotificationServices();
 
@@ -37,39 +40,52 @@ Future<void> _firebaseMessagingBackgroundHandler(
 }
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  setupServiceLocator();
-  await FirebaseMessaging.instance.getInitialMessage().then((final RemoteMessage? message) {
-    customPrint("********************* From Backgound: ${message?.data}");
-    if (message?.data != null) {
-      WidgetsBinding.instance.addPostFrameCallback((final _) {
-        router.go(splashScreen, extra: {'route': message});
-      });
-    }
+  await runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    setupServiceLocator();
+
+    await FirebaseMessaging.instance.getInitialMessage().then((final RemoteMessage? message) {
+      customPrint("********************* From Background: ${message?.data}");
+      if (message?.data != null) {
+        WidgetsBinding.instance.addPostFrameCallback((final _) {
+          router.go(splashScreen, extra: {'route': message});
+        });
+      }
+    });
+
+    await ensurePermissions();
+    // Initialize Crashlytics
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+    // ⚡ Run your app inside the same zone
+    runApp(
+      DevicePreview(
+        enabled: false,
+        tools: const [
+          ...DevicePreview.defaultTools,
+        ],
+        builder: (context) => const GlobePorter(),
+      ),
+    );
+
+    // Optional: set system UI overlays here
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: primaryColor,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+    );
+  }, (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
   });
-  await ensurePermissions();
-  await initializeBackgroundService();
-  await FlutterBackgroundService().startService();
-  runApp(
-    DevicePreview(
-      enabled: false,
-      tools: const [
-        ...DevicePreview.defaultTools,
-      ],
-      builder: (context) => const GlobePorter(),
-    ),
-  );
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: primaryColor,
-      statusBarIconBrightness: Brightness.light,
-      statusBarBrightness: Brightness.dark,
-    ),
-  );
 }
 
 Future<void> ensurePermissions() async {
@@ -105,7 +121,19 @@ class _GlobePorterState extends State<GlobePorter> {
     languageCubit = sl<LanguageCubit>();
     languageCubit.getLanguage();
     _configureNotifications();
+    _initBackgroundService();
     super.initState();
+  }
+
+  Future<void> _initBackgroundService() async {
+    try {
+      await initializeBackgroundService();
+      await FlutterBackgroundService().startService();
+      customPrint("✅ Background service started successfully");
+    } catch (e, st) {
+      customPrint("❌ Failed to start background service: $e");
+      FirebaseCrashlytics.instance.recordError(e, st);
+    }
   }
 
   Future<void> _configureNotifications() async {

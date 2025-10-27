@@ -15,6 +15,7 @@ import 'package:globeporter/presentation/driver/cubit/driver_cubit.dart';
 import 'package:globeporter/presentation/driver/model/pending_bookings_response.dart' as pending;
 import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/presentation/driver/states/driver_booking_states.dart';
+import 'package:globeporter/presentation/driver/widgets/address_row_widget.dart';
 import 'package:globeporter/presentation/notification/cubit/notification_cubit.dart';
 import 'package:globeporter/presentation/notification/states/notification_states.dart';
 import 'package:globeporter/presentation/settings/cubit/wallet_cubit.dart';
@@ -527,7 +528,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with TickerProvider
                                       const SizedBox(
                                         height: 4,
                                       ),
-                                      addressRow(address: trip?.pickupAddress),
+                                      AddressRowWidget(address: trip?.pickupAddress),
                                       const SizedBox(
                                         height: 8,
                                       ),
@@ -541,7 +542,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with TickerProvider
                                       const SizedBox(
                                         height: 4,
                                       ),
-                                      addressRow(address: trip?.dropAddress),
+                                      AddressRowWidget(address: trip?.dropAddress),
                                       const SizedBox(
                                         height: 8,
                                       ),
@@ -641,22 +642,4 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with TickerProvider
     );
   }
 
-  Widget addressRow({required final String? address}) => Row(
-        children: [
-          Image.asset(
-            locationPinImage,
-            width: 24,
-            height: 32,
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: Text(
-              address ?? '',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
-            ),
-          )
-        ],
-      );
 }

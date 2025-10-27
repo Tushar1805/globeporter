@@ -1,7 +1,8 @@
 import 'package:datasource/base_repository.dart';
 import 'package:datasource/network/api_call_type.dart';
 import 'package:globeporter/presentation/authentication/model/vehicle_type_response_model.dart';
-import 'package:globeporter/presentation/driver_ride_back/model/my_posted_ride_model.dart';
+import 'package:globeporter/presentation/driver_ride_back/model/customer_posted_ride_list_model.dart';
+import 'package:globeporter/presentation/driver_ride_back/model/driver_posted_ride_model.dart';
 import 'package:globeporter/resources/app_api.dart';
 
 class DriverRideBackRepository extends BaseRepository {
@@ -21,7 +22,8 @@ class DriverRideBackRepository extends BaseRepository {
     );
   }
 
-  Future<MyPostedRidesModel?> getMyPostedRides({
+  //* Get posted ride for driver
+  Future<DriverPostedRidesModel?> getDriverPostedRides({
     required final String lang,
     required final String token,
   }) async {
@@ -34,9 +36,68 @@ class DriverRideBackRepository extends BaseRepository {
       },
     );
 
-    return MyPostedRidesModel.fromJson(
+    return DriverPostedRidesModel.fromJson(
       responseData as Map<String, dynamic>?,
     );
+  }
+
+  //* Get list of posted rides for customer
+  Future<CustomerPostedRidesListModel?> getCustomerPostedRides({
+    required final String lang,
+    required final String token,
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: pendingDriverBookingUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+      },
+    );
+
+    return CustomerPostedRidesListModel.fromJson(
+      responseData as Map<String, dynamic>?,
+    );
+  }
+
+  Future<Map<String, dynamic>> customerAccepRejectRide({
+    required final String lang,
+    required final String token,
+    required final String bookingId,
+    required final String status, // Accept or Reject
+  }) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: customerAccepRejectRideUrl,
+      accessToken: token,
+      requestModel: {
+        'lang': lang,
+        "booking_id": bookingId,
+        "status": status,
+      },
+    );
+
+    return responseData;
+  }
+
+  //* find customers for the ride
+  Future<Map<String, dynamic>> findCustomer(
+      {required final String lang,
+      required final String token,
+      required final String bookingId,
+      required final String distance}) async {
+    final responseData = await fetchData(
+      apiCallType: ApiCallType.post,
+      apiUrl: findCustomerUrl,
+      accessToken: token,
+      requestModel: {
+        "lang": lang,
+        "booking_id": bookingId,
+        "distance": distance,
+      },
+    );
+
+    return responseData;
   }
 
   //* Place driver ride

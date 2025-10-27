@@ -571,4 +571,22 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get requestSuccessfullyPostedString =>
       'आपका अनुरोध सफलतापूर्वक पोस्ट हो गया';
+
+  @override
+  String get noUsersAcceptedYetString =>
+      'अभी तक कोई उपयोगकर्ता स्वीकार नहीं किया गया है।';
+
+  @override
+  String get postedRidesString => 'पोस्ट की गई सवारी';
+
+  @override
+  String get areYouSureYouWantToAcceptRideString =>
+      'क्या आप वाकई सवारी स्वीकार करना चाहते हैं?';
+
+  @override
+  String get areYouSureYouWantToRejectRideString =>
+      'क्या आप वाकई सवारी को अस्वीकार करना चाहते हैं?';
+
+  @override
+  String get noPostedRides => 'कोई सवारी पोस्ट नहीं की गई';
 }

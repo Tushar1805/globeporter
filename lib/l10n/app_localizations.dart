@@ -1197,6 +1197,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your request posted successfully'**
   String get requestSuccessfullyPostedString;
+
+  /// No description provided for @noUsersAcceptedYetString.
+  ///
+  /// In en, this message translates to:
+  /// **'No users accepted yet.'**
+  String get noUsersAcceptedYetString;
+
+  /// No description provided for @postedRidesString.
+  ///
+  /// In en, this message translates to:
+  /// **'Posted Rides'**
+  String get postedRidesString;
+
+  /// No description provided for @areYouSureYouWantToAcceptRideString.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to accept the ride?'**
+  String get areYouSureYouWantToAcceptRideString;
+
+  /// No description provided for @areYouSureYouWantToRejectRideString.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to reject the ride?'**
+  String get areYouSureYouWantToRejectRideString;
+
+  /// No description provided for @noPostedRides.
+  ///
+  /// In en, this message translates to:
+  /// **'No Posted Rides'**
+  String get noPostedRides;
 }
 
 class _AppLocalizationsDelegate

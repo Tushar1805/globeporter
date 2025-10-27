@@ -11,7 +11,7 @@ import 'package:globeporter/presentation/chats/view/chat_list_screen.dart';
 import 'package:globeporter/presentation/customer/cubit/customer_cubit.dart';
 import 'package:globeporter/presentation/customer/view/create_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
-import 'package:globeporter/presentation/customer/view/post_request_screen.dart';
+import 'package:globeporter/presentation/driver_ride_back/view/customer_post_request_list_screen.dart';
 import 'package:globeporter/presentation/settings/view/settings_screen.dart';
 import 'package:globeporter/resources/app_colors.dart';
 import 'package:globeporter/resources/app_images.dart';
@@ -212,7 +212,7 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
                   itemIndex: 0,
                 ),
                 BottomNavBarIcon(
-                  title: AppLocalizations.of(context)!.postRequestString,
+                  title: AppLocalizations.of(context)!.postedRidesString,
                   icon: myRequestIcon,
                   onTap: () => onNavBarTap(4),
                   pageIndex: pageIndex,

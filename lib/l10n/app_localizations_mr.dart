@@ -570,4 +570,22 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get requestSuccessfullyPostedString =>
       'तुमची विनंती यशस्वीरित्या पोस्ट केली गेली';
+
+  @override
+  String get noUsersAcceptedYetString =>
+      'अद्याप कोणतेही वापरकर्ते स्वीकारलेले नाहीत.';
+
+  @override
+  String get postedRidesString => 'पोस्ट केलेल्या राईड्स';
+
+  @override
+  String get areYouSureYouWantToAcceptRideString =>
+      'तुम्हाला खात्री आहे की तुम्हाला ही राईड स्वीकारायची आहे?';
+
+  @override
+  String get areYouSureYouWantToRejectRideString =>
+      'तुम्हाला खात्री आहे की तुम्हाला राईड नाकारायची आहे?';
+
+  @override
+  String get noPostedRides => 'पोस्ट केलेल्या राईड्स नाहीत';
 }

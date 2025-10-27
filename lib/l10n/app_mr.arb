@@ -188,5 +188,10 @@
     "enterPhoneString": "फोन नंबर एंटर करा",
     "verifyString": "सत्यापित करा",
     "enterYourDestinationString": "तुमचे गंतव्यस्थान प्रविष्ट करा",
-    "requestSuccessfullyPostedString": "तुमची विनंती यशस्वीरित्या पोस्ट केली गेली"
+    "requestSuccessfullyPostedString": "तुमची विनंती यशस्वीरित्या पोस्ट केली गेली",
+    "noUsersAcceptedYetString": "अद्याप कोणतेही वापरकर्ते स्वीकारलेले नाहीत.",
+    "postedRidesString": "पोस्ट केलेल्या राईड्स",
+    "areYouSureYouWantToAcceptRideString": "तुम्हाला खात्री आहे की तुम्हाला ही राईड स्वीकारायची आहे?",
+    "areYouSureYouWantToRejectRideString": "तुम्हाला खात्री आहे की तुम्हाला राईड नाकारायची आहे?",
+    "noPostedRides": "पोस्ट केलेल्या राईड्स नाहीत"
 }

@@ -82,3 +82,5 @@ const String myPlacedBookingRideUrl = '$_baseUrl/my_placed_booking_rides';
 const String driverSideBookingForUserUrl = '$_baseUrl/driver_side_bookings_for_user';
 const String driverBookingRideDetailsUrl = '$_baseUrl/driver_booking_ride_details';
 const String findCustomerUrl = '$_baseUrl/find_customer';
+const String pendingDriverBookingUrl = '$_baseUrl/pending_driver_booking';
+const String customerAccepRejectRideUrl = '$_baseUrl/customer_accept_reject_ride_status';

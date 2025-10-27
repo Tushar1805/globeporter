@@ -185,5 +185,10 @@
     "enterPhoneString": "फ़ोन नंबर दर्ज करें",
     "verifyString": "सत्यापित करें",
     "enterYourDestinationString": "अपना गंतव्य दर्ज करें",
-    "requestSuccessfullyPostedString": "आपका अनुरोध सफलतापूर्वक पोस्ट हो गया"
+    "requestSuccessfullyPostedString": "आपका अनुरोध सफलतापूर्वक पोस्ट हो गया",
+    "noUsersAcceptedYetString": "अभी तक कोई उपयोगकर्ता स्वीकार नहीं किया गया है।",
+    "postedRidesString": "पोस्ट की गई सवारी",
+    "areYouSureYouWantToAcceptRideString": "क्या आप वाकई सवारी स्वीकार करना चाहते हैं?",
+    "areYouSureYouWantToRejectRideString": "क्या आप वाकई सवारी को अस्वीकार करना चाहते हैं?",
+    "noPostedRides": "कोई सवारी पोस्ट नहीं की गई"
 }

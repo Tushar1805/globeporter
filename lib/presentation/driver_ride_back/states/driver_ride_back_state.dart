@@ -23,3 +23,26 @@ class MyPostedRidesLoadingState extends LoadingState {
 class MyPostedRidesLoadedState extends LoadedState {
   MyPostedRidesLoadedState({required super.data});
 }
+
+class FindingCustomerLoadingState extends LoadingState {
+  FindingCustomerLoadingState(super.loadingMessage);
+}
+
+class FindingCustomerLoadedState extends LoadedState {
+  FindingCustomerLoadedState({required super.data});
+}
+
+class CustomerPostedRidesLoadingState extends LoadingState {
+  CustomerPostedRidesLoadingState(super.loadingMessage);
+}
+
+class CustomerPostedRidesLoadedState extends LoadedState {
+  CustomerPostedRidesLoadedState({required super.data});
+}
+class CustomerAcceptRejectLoadingState extends LoadingState {
+  CustomerAcceptRejectLoadingState(super.loadingMessage);
+}
+
+class CustomerAcceptRejectLoadedState extends LoadedState {
+  CustomerAcceptRejectLoadedState({required super.data});
+}
