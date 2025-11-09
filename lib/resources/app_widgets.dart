@@ -102,9 +102,13 @@ class CustomLocationBox extends StatelessWidget {
     super.key,
     required this.currentLocationController,
     this.readOnly,
+    this.fillColor,
+    this.hint,
   });
   final TextEditingController currentLocationController;
   final bool? readOnly;
+  final Color? fillColor;
+  final String? hint;
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +120,9 @@ class CustomLocationBox extends StatelessWidget {
         controller: currentLocationController,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
+          filled: fillColor != null ? true : null,
+          fillColor: fillColor,
+          hintText: hint,
           prefixIconConstraints: BoxConstraints(
             minHeight: MediaQuery.of(context).size.width * 0.0626,
             minWidth: MediaQuery.of(context).size.width * 0.0469,
@@ -189,7 +196,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:padding ?? const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
         onTap: onTap,
         focusNode: focusNode,

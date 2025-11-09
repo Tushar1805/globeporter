@@ -584,6 +584,10 @@ class AppLocalizationsHi extends AppLocalizations {
       'क्या आप वाकई सवारी स्वीकार करना चाहते हैं?';
 
   @override
+  String get areYouSureYouWantToCancelRideString =>
+      'क्या आप वाकई सवारी रद्द करना चाहते हैं?';
+
+  @override
   String get areYouSureYouWantToRejectRideString =>
       'क्या आप वाकई सवारी को अस्वीकार करना चाहते हैं?';
 

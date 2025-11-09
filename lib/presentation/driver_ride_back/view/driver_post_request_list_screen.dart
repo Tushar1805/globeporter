@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:core/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:core/di/service_locator.dart';
@@ -36,6 +38,7 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
   late AnimationController _notificationAnimationController;
   late Animation<double> _notificationScaleAnimation;
   DriverPostedRidesModel? driverPostedRidesModel;
+  RideData? rideData;
 
   void loadData() async {
     await driverRideBackCubit.getDriverPostedRides();
@@ -187,6 +190,9 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
           if (state is MyPostedRidesLoadedState) {
             driverPostedRidesModel = state.data as DriverPostedRidesModel?;
             _animationController.forward(from: 0);
+          } else if (state is DriverAcceptRejectLoadedState) {
+            // final data = state.data as Map<String, dynamic>;
+            driverRideBackCubit.getDriverPostedRides();
           }
         },
         builder: (final context, final state) {
@@ -266,9 +272,13 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
                                 itemBuilder: (context, i) {
                                   final user = acceptedUsers?[i];
                                   final profileUrl = user?.userData?.profilePhotoUrl;
+                                  final isUserAccepted = ((user?.userData?.id ?? false) ==
+                                      (ride?.userData?.id ?? false));
                                   return Card(
                                     margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                    color: Colors.grey.shade100,
+                                    color: isUserAccepted
+                                        ? Colors.grey.shade100
+                                        : Colors.grey.shade300,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12)),
                                     child: Padding(
@@ -307,34 +317,75 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
                                           IconButton(
                                             icon: const Icon(Icons.call, color: primaryColor),
                                             onPressed: () {
-                                              makePhoneCall(
-                                                fromNumber:
-                                                    authCubit.userDetails?.data?.mobile ?? '',
-                                                toNumber: user?.userData?.mobile ?? '',
-                                                context: context,
-                                              );
+                                              if (isUserAccepted || ride?.isBookingActive == 0) {
+                                                makePhoneCall(
+                                                  fromNumber:
+                                                      authCubit.userDetails?.data?.mobile ?? '',
+                                                  toNumber: user?.userData?.mobile ?? '',
+                                                  context: context,
+                                                );
+                                              }
                                             },
                                           ),
                                           IconButton(
                                             icon: const Icon(Icons.message, color: primaryColor),
                                             onPressed: () {
-                                              context.pushNamed(chatScreen, extra: {
-                                                'senderId': ride?.driverId != null
-                                                    ? ride?.driverId.toString()
-                                                    : authCubit.userDetails?.data?.id.toString(),
-                                                'receiverId': user?.userId.toString(),
-                                                'senderName': authCubit.userDetails?.data?.name,
-                                                'type': 'customer',
-                                                'receiverName': user?.userData?.name,
-                                                'receiverImageUrl': user?.userData?.profilePhotoUrl,
-                                              });
+                                              if (isUserAccepted || ride?.isBookingActive == 0) {
+                                                context.pushNamed(chatScreen, extra: {
+                                                  'senderId': ride?.driverId != null
+                                                      ? ride?.driverId.toString()
+                                                      : authCubit.userDetails?.data?.id.toString(),
+                                                  'receiverId': user?.userId.toString(),
+                                                  'senderName': authCubit.userDetails?.data?.name,
+                                                  'type': 'driver',
+                                                  'receiverName': user?.userData?.name,
+                                                  'receiverImageUrl':
+                                                      user?.userData?.profilePhotoUrl,
+                                                });
+                                              }
                                             },
                                           ),
                                           IconButton(
                                             icon: const Icon(Icons.arrow_forward_ios,
                                                 color: primaryColor),
                                             onPressed: () {
-                                              // Navigate to next step screen
+                                              if (ride?.isBookingActive == 0) {
+                                                // Navigate to next step screen
+                                                showCustomDialog(
+                                                  context: context,
+                                                  borderRadius: 18,
+                                                  title:
+                                                      '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
+                                                  onTapYes: () async {
+                                                    setState(() {
+                                                      rideData = ride;
+                                                    });
+                                                    context.pop();
+                                                    await driverRideBackCubit
+                                                        .driverAcceptRejectRide(
+                                                      bookingId: user?.bookingId.toString() ?? '1',
+                                                      userId: user?.userId.toString() ?? '1',
+                                                      status: 'Accept',
+                                                    )
+                                                        .then((_) {
+                                                      context
+                                                          .pushNamed(driverTrackingScreen, extra: {
+                                                        'rideData': ride,
+                                                        'customerData': user,
+                                                      });
+                                                    });
+                                                  },
+                                                  onTapNo: () {
+                                                    context.pop();
+                                                  },
+                                                );
+                                              } else {
+                                                // Navigate to track screen
+                                                context.pushNamed(driverTrackingScreen, extra: {
+                                                  'rideData': ride,
+                                                  'customerData': user,
+                                                });
+                                              }
                                             },
                                           ),
                                         ],

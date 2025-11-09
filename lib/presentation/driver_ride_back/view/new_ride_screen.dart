@@ -73,13 +73,24 @@ class _NewRideScreenState extends State<NewRideScreen> {
     try {
       position = await locationCubit.determinePosition();
       debugPrint("Position: ${position?.latitude} :: ${position?.longitude}");
-      placemarks = await geocoding.placemarkFromCoordinates(
-        position?.latitude ?? 20.5574253,
-        position?.longitude ?? 78.8386951,
-      );
-      currentLocationController.text = placemarks.isNotEmpty
-          ? "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}"
-          : "";
+
+      try {
+        placemarks = await geocoding.placemarkFromCoordinates(
+          position!.latitude,
+          position!.longitude,
+        );
+
+        if (placemarks.isNotEmpty) {
+          final place = placemarks.first;
+          currentLocationController.text =
+              "${place.street ?? ''}, ${place.subLocality ?? ''}, ${place.locality ?? ''}, ${place.postalCode ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}";
+        } else {
+          currentLocationController.text = "Current location unavailable";
+        }
+      } catch (e) {
+        debugPrint("⚠️ Geocoding failed: $e");
+        currentLocationController.text = "Unable to fetch address";
+      }
       source = LatLng(position?.latitude ?? 18.6668, position?.longitude ?? 73.9339);
       // final placemarks2 = await geocoding.placemarkFromCoordinates(
       //   destination.latitude,
@@ -111,6 +122,8 @@ class _NewRideScreenState extends State<NewRideScreen> {
       });
     } catch (e) {
       debugPrint("Error: Getting Location: $e");
+    } finally {
+      if (mounted) setState(() => _suppressOnChange = false);
     }
   }
 
@@ -281,6 +294,10 @@ class _NewRideScreenState extends State<NewRideScreen> {
 
                 // animate camera to new location
                 final GoogleMapController mapController = await _controller.future;
+
+                customPrint("Destination lat: ${destination?.latitude}");
+                customPrint("Destination lng: ${destination?.longitude}");
+                customPrint("Destination address: ${destinationLocationController.text}");
                 mapController.animateCamera(CameraUpdate.newLatLng(tappedLatLng));
               } catch (e) {
                 debugPrint("Error selecting location from map: $e");
@@ -396,7 +413,9 @@ class _NewRideScreenState extends State<NewRideScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          currentLocationController.text,
+                          currentLocationController.text.isEmpty
+                              ? 'Fetching your location...'
+                              : currentLocationController.text,
                           style: theme.bodyMedium,
                         ),
                       ),
@@ -607,9 +626,12 @@ class _NewRideScreenState extends State<NewRideScreen> {
                                 await driverRideBackCubit.placeDriverBookingRide(
                                   vehicleTypeId: selectedVehicleId ?? 1,
                                   pickupAddress: currentLocationController.text,
+                                  // pickupAddress: 'Q-27, Okhla, New Delhi, 110025, Delhi, India',
                                   dropAddress: destinationLocationController.text,
                                   pickupLat: source.latitude.toString(),
                                   pickupLng: source.longitude.toString(),
+                                  // pickupLat: '28.568279922288895',
+                                  // pickupLng: '77.28683285415173',
                                   dropLat: destination?.latitude.toString() ?? '',
                                   dropLng: destination?.longitude.toString() ?? '',
                                   price: priceController.text,

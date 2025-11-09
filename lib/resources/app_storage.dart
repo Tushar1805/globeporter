@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorage {
@@ -28,5 +29,22 @@ class SecureStorage {
 
   Future<void> clearData(final String key) async {
     await FlutterSecureStorage().delete(key: key);
+  }
+
+  Future<String?> safeRead(String key) async {
+    try {
+      return await FlutterSecureStorage().read(
+        key: key,
+        aOptions: _getAndroidOptions(),
+        iOptions: _getIOSOptions(),
+      );
+    } catch (e) {
+      if (e.toString().contains('BAD_DECRYPT')) {
+        debugPrint('🧹 Detected corrupted secure storage key: $key');
+        await FlutterSecureStorage().delete(key: key);
+        return null;
+      }
+      rethrow;
+    }
   }
 }

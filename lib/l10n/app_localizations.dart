@@ -1216,6 +1216,12 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to accept the ride?'**
   String get areYouSureYouWantToAcceptRideString;
 
+  /// No description provided for @areYouSureYouWantToCancelRideString.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel the ride?'**
+  String get areYouSureYouWantToCancelRideString;
+
   /// No description provided for @areYouSureYouWantToRejectRideString.
   ///
   /// In en, this message translates to:

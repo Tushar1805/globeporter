@@ -189,6 +189,7 @@
     "noUsersAcceptedYetString": "अभी तक कोई उपयोगकर्ता स्वीकार नहीं किया गया है।",
     "postedRidesString": "पोस्ट की गई सवारी",
     "areYouSureYouWantToAcceptRideString": "क्या आप वाकई सवारी स्वीकार करना चाहते हैं?",
+    "areYouSureYouWantToCancelRideString": "क्या आप वाकई सवारी रद्द करना चाहते हैं?",  
     "areYouSureYouWantToRejectRideString": "क्या आप वाकई सवारी को अस्वीकार करना चाहते हैं?",
     "noPostedRides": "कोई सवारी पोस्ट नहीं की गई"
 }

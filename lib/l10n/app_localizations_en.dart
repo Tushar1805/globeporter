@@ -584,6 +584,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to accept the ride?';
 
   @override
+  String get areYouSureYouWantToCancelRideString =>
+      'Are you sure you want to cancel the ride?';
+
+  @override
   String get areYouSureYouWantToRejectRideString =>
       'Are you sure you want to reject the ride?';
 

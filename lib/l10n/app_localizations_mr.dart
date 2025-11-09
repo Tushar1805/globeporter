@@ -583,6 +583,10 @@ class AppLocalizationsMr extends AppLocalizations {
       'तुम्हाला खात्री आहे की तुम्हाला ही राईड स्वीकारायची आहे?';
 
   @override
+  String get areYouSureYouWantToCancelRideString =>
+      'तुम्हाला खात्री आहे की तुम्हाला राईड रद्द करायची आहे?';
+
+  @override
   String get areYouSureYouWantToRejectRideString =>
       'तुम्हाला खात्री आहे की तुम्हाला राईड नाकारायची आहे?';
 

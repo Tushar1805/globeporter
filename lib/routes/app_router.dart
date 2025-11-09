@@ -16,9 +16,15 @@ import 'package:globeporter/presentation/customer/view/create_request_screen.dar
 import 'package:globeporter/presentation/customer/view/customer_dashboard.dart';
 import 'package:globeporter/presentation/customer/view/track_driver_screen.dart';
 import 'package:globeporter/presentation/driver/view/accept_ride_notification_screen.dart';
+import 'package:globeporter/presentation/driver_ride_back/model/driver_posted_ride_model.dart';
+import 'package:globeporter/presentation/driver_ride_back/view/customer_side_track_screen.dart';
+import 'package:globeporter/presentation/driver_ride_back/view/driver_track_screen.dart';
+import 'package:globeporter/presentation/driver_ride_back/view/location_picker_screen.dart';
 import 'package:globeporter/presentation/settings/view/customer_profile_screen.dart';
 // import 'package:globeporter/presentation/customer/model/customer_ride_response.dart' as customer;
 import 'package:globeporter/presentation/customer/model/booking_details_response.dart' as booking;
+import 'package:globeporter/presentation/driver_ride_back/model/customer_posted_ride_list_model.dart'
+    as posted_ride;
 import 'package:globeporter/presentation/customer/view/my_request_details_screen.dart';
 import 'package:globeporter/presentation/customer/view/my_request_screen.dart';
 import 'package:globeporter/presentation/customer/view/request_details_screen.dart';
@@ -565,11 +571,46 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      name: driverTrackingScreen,
+      path: driverTrackingScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: DriverRideBackTrackScreen(
+            data: params?['rideData'] as RideData,
+            customerData: params?['customerData'] as AcceptedDriverBookingRideStatus?,
+          ),
+        );
+      },
+    ),
+    GoRoute(
       name: etaExampleScreen,
       path: etaExampleScreen,
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
         child: const EtaSimulatorWidget(),
+      ),
+    ),
+    GoRoute(
+      name: customerSideTrackScreen,
+      path: customerSideTrackScreen,
+      pageBuilder: (final context, final state) {
+        final params = state.extra as Map<String, dynamic>?;
+        return slideTransitionPage(
+          key: state.pageKey,
+          child: TrackRideBackDriverScreen(
+            data: params?['data'] as posted_ride.Data?,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      name: locationPickerScreen,
+      path: locationPickerScreen,
+      pageBuilder: (context, state) => slideTransitionPage(
+        key: state.pageKey,
+        child: const LocationPickerScreen(),
       ),
     ),
   ],

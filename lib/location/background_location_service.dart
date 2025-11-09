@@ -1,6 +1,7 @@
 // background_location_service.dart
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:core/utils/core_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,6 +23,7 @@ const _minDistanceMeters = 25;
 /// Entry point called by the plugin in a background isolate.
 @pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
+  DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -127,12 +129,18 @@ Future<void> onStart(ServiceInstance service) async {
     final lat = p.latitude;
     final lng = p.longitude;
 
-    await locationRepository.updateUserLocation(
-      lang: lang,
-      token: accessToken ?? '',
-      logitude: lng.toString(),
-      latitude: lat.toString(),
-    );
+    try {
+      await locationRepository.updateUserLocation(
+        lang: lang,
+        token: accessToken ?? '',
+        logitude: lng.toString(),
+        latitude: lat.toString(),
+      );
+    } catch (e) {
+      service.invoke('stopService');
+      customPrint('Something went wrong: $e');
+    }
+
     try {
       if (userId != null && userId != '') {
         await dbRef.child(userId!).set({

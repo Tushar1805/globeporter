@@ -376,6 +376,8 @@
   "@postedRidesString": {},
   "areYouSureYouWantToAcceptRideString": "Are you sure you want to accept the ride?",
   "@areYouSureYouWantToAcceptRideString": {},
+  "areYouSureYouWantToCancelRideString": "Are you sure you want to cancel the ride?",
+  "@areYouSureYouWantToCancelRideString": {},
   "areYouSureYouWantToRejectRideString": "Are you sure you want to reject the ride?",
   "@areYouSureYouWantToRejectRideString": {},
   "noPostedRides": "No Posted Rides",

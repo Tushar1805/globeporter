@@ -31,6 +31,10 @@ const driverProfileScreen = '/driver_profile_screen';
 const newRideScreen = '/new_ride_screen';
 const driverRideNotificationScreen = '/driver_ride_notification_screen';
 
+//* Driver Ride back route
+const driverTrackingScreen = '/driver_tracking_screen';
+const customerSideTrackScreen = '/customer_side_track_screen';
+
 //* Chat Routes
 
 const chatScreen = '/chat_screen';
@@ -46,3 +50,4 @@ const viewDocumentsScreen = '/view_document_screen';
 const contactPickerScreen = '/contact_picker_screen';
 const transactionHistoryScreen = '/transactinon_history_screen';
 const etaExampleScreen = '/eta_example_scree';
+const locationPickerScreen = '/location_picker_screen';

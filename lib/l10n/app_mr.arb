@@ -192,6 +192,7 @@
     "noUsersAcceptedYetString": "अद्याप कोणतेही वापरकर्ते स्वीकारलेले नाहीत.",
     "postedRidesString": "पोस्ट केलेल्या राईड्स",
     "areYouSureYouWantToAcceptRideString": "तुम्हाला खात्री आहे की तुम्हाला ही राईड स्वीकारायची आहे?",
+    "areYouSureYouWantToCancelRideString": "तुम्हाला खात्री आहे की तुम्हाला राईड रद्द करायची आहे?",
     "areYouSureYouWantToRejectRideString": "तुम्हाला खात्री आहे की तुम्हाला राईड नाकारायची आहे?",
     "noPostedRides": "पोस्ट केलेल्या राईड्स नाहीत"
 }
