@@ -471,6 +471,12 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
               );
             }
           } else if (state is EndRideLoadedState) {
+            showToast(
+              context: context,
+              fToast: fToast!,
+              msg: "${AppLocalizations.of(context)!.rideString} Completed} ",
+              duration: 3,
+            );
             await driverRideBackCubit.getDriverPostedRides();
             context.pop();
           } else if (state is ErrorState) {

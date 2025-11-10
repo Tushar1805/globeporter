@@ -24,6 +24,7 @@ class LocationCubit extends BaseCubit {
 
   final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high,
+    distanceFilter: 100,
   );
 
   Future<void> _initUserId() async {

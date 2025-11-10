@@ -1233,6 +1233,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Posted Rides'**
   String get noPostedRides;
+
+  /// No description provided for @priceString.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get priceString;
 }
 
 class _AppLocalizationsDelegate

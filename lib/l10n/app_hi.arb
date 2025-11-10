@@ -191,5 +191,6 @@
     "areYouSureYouWantToAcceptRideString": "क्या आप वाकई सवारी स्वीकार करना चाहते हैं?",
     "areYouSureYouWantToCancelRideString": "क्या आप वाकई सवारी रद्द करना चाहते हैं?",  
     "areYouSureYouWantToRejectRideString": "क्या आप वाकई सवारी को अस्वीकार करना चाहते हैं?",
-    "noPostedRides": "कोई सवारी पोस्ट नहीं की गई"
+    "noPostedRides": "कोई सवारी पोस्ट नहीं की गई",
+    "priceString": "कीमत"
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:core/app_widgets.dart';
+import 'package:core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,74 +30,73 @@ class PostRequestDriverScreen extends StatefulWidget {
 
 class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
     with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
   final notificationCubit = sl<NotificationCubit>();
   final driverRideBackCubit = sl<DriverRideBackCubit>();
   final authCubit = sl<AuthCubit>();
-  int notificationUnreadCount = 0;
-  late AnimationController _notificationAnimationController;
-  late Animation<double> _notificationScaleAnimation;
-  DriverPostedRidesModel? driverPostedRidesModel;
-  RideData? rideData;
 
-  void loadData() async {
-    await driverRideBackCubit.getDriverPostedRides();
-    await notificationCubit.getNotificatinsUnreadCount();
-  }
+  late final AnimationController _listAnimationController;
+  late final AnimationController _notificationAnimCtrl;
+  late final Animation<double> _listScaleAnimation;
+  late final Animation<double> _notificationScaleAnimation;
+
+  DriverPostedRidesModel? driverPostedRidesModel;
+  int notificationUnreadCount = 0;
 
   @override
   void initState() {
-    loadData();
+    super.initState();
 
-    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
 
-    _scaleAnimation =
-        CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
-
-    _notificationAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
+    _listAnimationController =
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _listScaleAnimation = CurvedAnimation(
+      parent: _listAnimationController,
+      curve: Curves.easeInOutCubicEmphasized,
     );
 
+    _notificationAnimCtrl =
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _notificationScaleAnimation =
-        CurvedAnimation(parent: _notificationAnimationController, curve: Curves.easeOutBack);
-    super.initState();
+        CurvedAnimation(parent: _notificationAnimCtrl, curve: Curves.easeOutBack);
+  }
+
+  Future<void> _loadData() async {
+    await Future.wait([
+      driverRideBackCubit.getDriverPostedRides(),
+      notificationCubit.getNotificatinsUnreadCount(),
+    ]);
+  }
+
+  @override
+  void dispose() {
+    _listAnimationController.dispose();
+    _notificationAnimCtrl.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
     final locale = AppLocalizations.of(context)!;
-    final theme = Theme.of(context).textTheme;
+
     return Scaffold(
       floatingActionButton: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30), // Large enough for pill shape
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           padding: const EdgeInsets.all(14),
         ),
-        onPressed: () {
-          context.pushNamed(newRideScreen);
-        },
+        onPressed: () => context.pushNamed(newRideScreen),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.add,
-              color: whiteColor,
-              size: 24,
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Text(
-              locale.postRequestString,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor),
-            ),
+            const Icon(Icons.add, color: whiteColor, size: 24),
+            const SizedBox(width: 6),
+            Text(locale.postRequestString,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor)),
           ],
         ),
       ),
@@ -104,80 +104,28 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
         preferredSize: Size.fromHeight(size.width * 0.35),
         child: Stack(
           children: [
-            Container(
-              height: size.width * 0.25,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(size.width * 0.127),
-                  bottomRight: Radius.circular(size.width * 0.127),
-                ),
-              ),
-            ),
+            _HeaderBackground(size: size),
+            _HeaderTitle(size: size, title: locale.postRequestString),
             Positioned(
               top: size.height * 0.055,
               right: 15,
-              child: Center(
-                child: SvgPicture.asset(
-                  appLogoSmall,
-                  width: MediaQuery.sizeOf(context).width * .25,
-                ),
-              ),
-            ),
-            Positioned(
-              top: size.width * 0.1,
-              left: size.width * 0.043,
-              child: Text(
-                locale.postRequestString,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: whiteColor,
-                      fontSize: 24,
-                    ),
-              ),
+              child: SvgPicture.asset(appLogoSmall, width: size.width * 0.25),
             ),
             BlocListener(
               bloc: notificationCubit,
-              listener: (final context, final state) {
+              listener: (context, state) {
                 if (state is NotificationUnreadCountLoadedState) {
-                  setState(() {
-                    notificationUnreadCount = state.data['noti_unread_count'];
-                  });
-                  _notificationAnimationController.forward(from: 0);
+                  notificationUnreadCount = state.data['noti_unread_count'];
+                  _notificationAnimCtrl.forward(from: 0);
                 }
               },
               child: Positioned(
                 top: size.width * 0.1,
                 right: size.width * 0.32,
-                child: Center(
-                  child: GestureDetector(
-                    onTap: () {
-                      context.pushNamed(notificationScreen);
-                    },
-                    child: Stack(
-                      children: [
-                        SizedBox(
-                          height: 40,
-                          width: 40,
-                          child: Icon(
-                            Icons.notifications_active_outlined,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: ScaleTransition(
-                            scale: _notificationScaleAnimation,
-                            child: UnreadBadge(
-                              count: notificationUnreadCount,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                child: NotificationIcon(
+                  animation: _notificationScaleAnimation,
+                  count: notificationUnreadCount,
+                  onTap: () => context.pushNamed(notificationScreen),
                 ),
               ),
             ),
@@ -186,223 +134,321 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
       ),
       body: BlocConsumer(
         bloc: driverRideBackCubit,
-        listener: (final context, final state) {
+        listener: (context, state) {
           if (state is MyPostedRidesLoadedState) {
             driverPostedRidesModel = state.data as DriverPostedRidesModel?;
-            _animationController.forward(from: 0);
+            _listAnimationController.forward(from: 0);
           } else if (state is DriverAcceptRejectLoadedState) {
-            // final data = state.data as Map<String, dynamic>;
             driverRideBackCubit.getDriverPostedRides();
           }
         },
-        builder: (final context, final state) {
+        builder: (context, state) {
           if (state is MyPostedRidesLoadingState || state is NotificationUnreadCountLoadingState) {
-            return Center(
-              child: LoadingWithoutText(),
-            );
+            return const Center(child: LoadingWithoutText());
           }
-          return ListView.builder(
-              itemCount: driverPostedRidesModel?.data?.length,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              itemBuilder: (context, index) {
-                final ride = driverPostedRidesModel?.data?[index];
-                final acceptedUsers = ride?.acceptedDriverBookingRideStatus;
-                return ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: secondaryColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(9),
-                        ),
-                      ),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.pickupLocationString,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              AddressRowWidget(address: ride?.pickupAddress),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                AppLocalizations.of(context)!.destinationLocationString,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              AddressRowWidget(address: ride?.dropAddress),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                            ],
-                          ),
-                          children: [
-                            if (acceptedUsers?.isEmpty ?? false)
-                              Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: Text(
-                                  locale.noUsersAcceptedYetString,
-                                  style: theme.bodyMedium,
-                                ),
-                              )
-                            else
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: acceptedUsers?.length,
-                                itemBuilder: (context, i) {
-                                  final user = acceptedUsers?[i];
-                                  final profileUrl = user?.userData?.profilePhotoUrl;
-                                  final isUserAccepted = ((user?.userData?.id ?? false) ==
-                                      (ride?.userData?.id ?? false));
-                                  return Card(
-                                    margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                    color: isUserAccepted
-                                        ? Colors.grey.shade100
-                                        : Colors.grey.shade300,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12),
-                                      child: Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 24,
-                                            backgroundColor: primaryColor,
-                                            backgroundImage:
-                                                profileUrl != null && profileUrl.isNotEmpty
-                                                    ? NetworkImage(profileUrl)
-                                                    : null,
-                                            child: (profileUrl == null || profileUrl.isEmpty)
-                                                ? const Icon(Icons.person, color: Colors.white)
-                                                : null,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  user?.userName ?? 'Unknown User',
-                                                  style: const TextStyle(
-                                                      fontWeight: FontWeight.bold, fontSize: 15),
-                                                ),
-                                                Text(
-                                                  user?.userData?.email ?? '',
-                                                  style: const TextStyle(
-                                                      fontSize: 13, color: Colors.grey),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.call, color: primaryColor),
-                                            onPressed: () {
-                                              if (isUserAccepted || ride?.isBookingActive == 0) {
-                                                makePhoneCall(
-                                                  fromNumber:
-                                                      authCubit.userDetails?.data?.mobile ?? '',
-                                                  toNumber: user?.userData?.mobile ?? '',
-                                                  context: context,
-                                                );
-                                              }
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.message, color: primaryColor),
-                                            onPressed: () {
-                                              if (isUserAccepted || ride?.isBookingActive == 0) {
-                                                context.pushNamed(chatScreen, extra: {
-                                                  'senderId': ride?.driverId != null
-                                                      ? ride?.driverId.toString()
-                                                      : authCubit.userDetails?.data?.id.toString(),
-                                                  'receiverId': user?.userId.toString(),
-                                                  'senderName': authCubit.userDetails?.data?.name,
-                                                  'type': 'driver',
-                                                  'receiverName': user?.userData?.name,
-                                                  'receiverImageUrl':
-                                                      user?.userData?.profilePhotoUrl,
-                                                });
-                                              }
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.arrow_forward_ios,
-                                                color: primaryColor),
-                                            onPressed: () {
-                                              if (ride?.isBookingActive == 0) {
-                                                // Navigate to next step screen
-                                                showCustomDialog(
-                                                  context: context,
-                                                  borderRadius: 18,
-                                                  title:
-                                                      '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
-                                                  onTapYes: () async {
-                                                    setState(() {
-                                                      rideData = ride;
-                                                    });
-                                                    context.pop();
-                                                    await driverRideBackCubit
-                                                        .driverAcceptRejectRide(
-                                                      bookingId: user?.bookingId.toString() ?? '1',
-                                                      userId: user?.userId.toString() ?? '1',
-                                                      status: 'Accept',
-                                                    )
-                                                        .then((_) {
-                                                      context
-                                                          .pushNamed(driverTrackingScreen, extra: {
-                                                        'rideData': ride,
-                                                        'customerData': user,
-                                                      });
-                                                    });
-                                                  },
-                                                  onTapNo: () {
-                                                    context.pop();
-                                                  },
-                                                );
-                                              } else {
-                                                // Navigate to track screen
-                                                context.pushNamed(driverTrackingScreen, extra: {
-                                                  'rideData': ride,
-                                                  'customerData': user,
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              });
+
+          return RideList(
+            rides: driverPostedRidesModel?.data ?? [],
+            scaleAnimation: _listScaleAnimation,
+            authCubit: authCubit,
+            driverRideBackCubit: driverRideBackCubit,
+          );
         },
       ),
     );
+  }
+}
+
+class _HeaderBackground extends StatelessWidget {
+  final Size size;
+  const _HeaderBackground({required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: size.width * 0.25,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: primaryColor,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(size.width * 0.127),
+          bottomRight: Radius.circular(size.width * 0.127),
+        ),
+      ),
+    );
+  }
+}
+
+class _HeaderTitle extends StatelessWidget {
+  final Size size;
+  final String title;
+  const _HeaderTitle({required this.size, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: size.width * 0.1,
+      left: size.width * 0.043,
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: whiteColor,
+              fontSize: 24,
+            ),
+      ),
+    );
+  }
+}
+
+class NotificationIcon extends StatelessWidget {
+  final Animation<double> animation;
+  final int count;
+  final VoidCallback onTap;
+
+  const NotificationIcon({
+    super.key,
+    required this.animation,
+    required this.count,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        children: [
+          const SizedBox(
+            height: 40,
+            width: 40,
+            child: Icon(Icons.notifications_active_outlined, color: Colors.white, size: 30),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: ScaleTransition(
+              scale: animation,
+              child: UnreadBadge(count: count),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class RideList extends StatelessWidget {
+  final List<RideData> rides;
+  final Animation<double> scaleAnimation;
+  final AuthCubit authCubit;
+  final DriverRideBackCubit driverRideBackCubit;
+
+  const RideList({
+    super.key,
+    required this.rides,
+    required this.scaleAnimation,
+    required this.authCubit,
+    required this.driverRideBackCubit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (rides.isEmpty) {
+      return const Center(child: Text('No rides posted yet.'));
+    }
+
+    return ListView.builder(
+      itemCount: rides.length,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      itemBuilder: (context, index) {
+        return RideTile(
+          ride: rides[index],
+          animation: scaleAnimation,
+          authCubit: authCubit,
+          driverRideBackCubit: driverRideBackCubit,
+        );
+      },
+    );
+  }
+}
+
+class RideTile extends StatelessWidget {
+  final RideData ride;
+  final Animation<double> animation;
+  final AuthCubit authCubit;
+  final DriverRideBackCubit driverRideBackCubit;
+
+  const RideTile({
+    super.key,
+    required this.ride,
+    required this.animation,
+    required this.authCubit,
+    required this.driverRideBackCubit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+    final theme = Theme.of(context).textTheme;
+
+    final acceptedUsers = ride.acceptedDriverBookingRideStatus ?? [];
+    customPrint('Accepted Rides: $acceptedUsers');
+
+    return ScaleTransition(
+      scale: animation,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            color: secondaryColor,
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(locale.pickupLocationString,
+                      style: theme.bodyMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 4),
+                  AddressRowWidget(address: ride.pickupAddress),
+                  const SizedBox(height: 8),
+                  Text(locale.destinationLocationString,
+                      style: theme.bodyMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 4),
+                  AddressRowWidget(address: ride.dropAddress),
+                  const SizedBox(height: 8),
+                ],
+              ),
+              children: acceptedUsers.isEmpty
+                  ? [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(locale.noUsersAcceptedYetString, style: theme.bodyMedium),
+                      ),
+                    ]
+                  : acceptedUsers
+                      .map((user) => AcceptedUserCard(
+                            ride: ride,
+                            user: user,
+                            authCubit: authCubit,
+                            driverRideBackCubit: driverRideBackCubit,
+                          ))
+                      .toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AcceptedUserCard extends StatelessWidget {
+  final RideData ride;
+  final AcceptedDriverBookingRideStatus user;
+  final AuthCubit authCubit;
+  final DriverRideBackCubit driverRideBackCubit;
+
+  const AcceptedUserCard({
+    super.key,
+    required this.ride,
+    required this.user,
+    required this.authCubit,
+    required this.driverRideBackCubit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final profileUrl = user.userData?.profilePhotoUrl ?? '';
+    // final isUserAccepted = (user.userData?.id == ride.userData?.id);
+    final isUserAccepted = user.status?.toLowerCase() == 'accept';
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      color: isUserAccepted ? Colors.grey.shade100 : Colors.grey.shade300,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: primaryColor,
+              backgroundImage: profileUrl.isNotEmpty ? NetworkImage(profileUrl) : null,
+              child: profileUrl.isEmpty ? const Icon(Icons.person, color: Colors.white) : null,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(user.userName ?? 'Unknown User',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text(user.userData?.email ?? '',
+                      style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                ],
+              ),
+            ),
+            _ActionButtons(
+              ride: ride,
+              user: user,
+              authCubit: authCubit,
+              driverRideBackCubit: driverRideBackCubit,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButtons extends StatelessWidget {
+  final RideData ride;
+  final AcceptedDriverBookingRideStatus user;
+  final AuthCubit authCubit;
+  final DriverRideBackCubit driverRideBackCubit;
+
+  const _ActionButtons({
+    required this.ride,
+    required this.user,
+    required this.authCubit,
+    required this.driverRideBackCubit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      IconButton(
+        icon: const Icon(Icons.call, color: primaryColor),
+        onPressed: () {
+          makePhoneCall(
+            fromNumber: authCubit.userDetails?.data?.mobile ?? '',
+            toNumber: user.userData?.mobile ?? '',
+            context: context,
+          );
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.message, color: primaryColor),
+        onPressed: () {
+          context.pushNamed(chatScreen, extra: {
+            'senderId': ride.driverId?.toString() ?? authCubit.userDetails?.data?.id.toString(),
+            'receiverId': user.userId.toString(),
+            'senderName': authCubit.userDetails?.data?.name,
+            'type': 'driver',
+            'receiverName': user.userData?.name,
+            'receiverImageUrl': user.userData?.profilePhotoUrl,
+          });
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.arrow_forward_ios, color: primaryColor),
+        onPressed: () async {
+          context.pushNamed(driverTrackingScreen, extra: {'rideData': ride, 'customerData': user});
+        },
+      ),
+    ]);
   }
 }

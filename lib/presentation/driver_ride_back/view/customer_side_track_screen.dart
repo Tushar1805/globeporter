@@ -38,11 +38,6 @@ class _TrackRideBackDriverScreenState extends State<TrackRideBackDriverScreen> {
   List<LatLng> polylineCoordinates = [];
   Marker? driverMarker;
 
-  final CameraPosition _kGooglePlex = const CameraPosition(
-    target: LatLng(20.5574253, 78.8386951),
-    zoom: 14,
-  );
-
   List<Marker>? _markers;
   StreamSubscription<DatabaseEvent>? _driverLocationSub;
 
@@ -62,9 +57,10 @@ class _TrackRideBackDriverScreenState extends State<TrackRideBackDriverScreen> {
   /// Listen to driver location from Firebase Realtime Database
   void listenToDriverLocation() {
     final driverId = widget.data?.driverId?.toString() ?? '';
+    final myId = authCubit.userDetails?.data?.id.toString();
     if (driverId.isEmpty) return;
 
-    final dbRef = FirebaseDatabase.instance.ref("locations/$driverId");
+    final dbRef = FirebaseDatabase.instance.ref("locations/$myId");
     _driverLocationSub =
         dbRef.onValue.throttleTime(const Duration(seconds: 5)).listen((event) async {
       if (!event.snapshot.exists) return;
@@ -72,27 +68,30 @@ class _TrackRideBackDriverScreenState extends State<TrackRideBackDriverScreen> {
       final data = event.snapshot.value as Map<dynamic, dynamic>?;
       if (data == null || data['latitude'] == null || data['longitude'] == null) return;
 
-      final driverLat = (data['latitude'] as num).toDouble();
-      final driverLng = (data['longitude'] as num).toDouble();
+      final customerLat = (data['latitude'] as num).toDouble();
+      final customerLng = (data['longitude'] as num).toDouble();
 
-      // Fetch customer location (yourself) from RTDB
-      final myId = authCubit.userDetails?.data?.id.toString();
-      final mySnapshot = await FirebaseDatabase.instance.ref("locations/$myId").get();
-      final myData = mySnapshot.value as Map?;
-      if (myData == null) return;
-
-      final myLat = (myData['latitude'] as num).toDouble();
-      final myLng = (myData['longitude'] as num).toDouble();
+      // Fetch Driver location  from RTDB
+      final driverSnapshot = await FirebaseDatabase.instance.ref("locations/$driverId").get();
+      final driverData = driverSnapshot.value as Map?;
+      if (driverData == null) return;
+      final driverLat = (driverData['latitude'] as num).toDouble();
+      final driverLng = (driverData['longitude'] as num).toDouble();
 
       // Calculate distance between customer and driver
-      final distance = Geolocator.distanceBetween(myLat, myLng, driverLat, driverLng);
+      final distance = Geolocator.distanceBetween(
+        customerLat,
+        customerLng,
+        widget.data?.pickupLat ?? 123,
+        widget.data?.pickupLng ?? 123,
+      );
 
       // Update route polyline (optional)
       final response = await locationCubit.routeDirection(
-        pickupLat: myLat,
-        pickupLng: myLng,
-        dropLat: driverLat,
-        dropLng: driverLng,
+        pickupLat: customerLat,
+        pickupLng: customerLng,
+        dropLat: widget.data?.pickupLat ?? 123,
+        dropLng: widget.data?.pickupLng ?? 123,
       );
 
       final points = response?.routes?[0].overviewPolyline?.points ?? '';
@@ -104,7 +103,7 @@ class _TrackRideBackDriverScreenState extends State<TrackRideBackDriverScreen> {
           Polyline(
             polylineId: const PolylineId("route"),
             points: polylineCoordinates,
-            color: Colors.blueAccent,
+            color: primaryColor,
             width: 5,
           ),
         );
@@ -112,7 +111,7 @@ class _TrackRideBackDriverScreenState extends State<TrackRideBackDriverScreen> {
       // Update markers
       final customerMarker = Marker(
         markerId: const MarkerId('customer'),
-        position: LatLng(myLat, myLng),
+        position: LatLng(widget.data?.pickupLat ?? 123, widget.data?.pickupLng ?? 123),
         infoWindow: const InfoWindow(title: 'You'),
       );
 
@@ -127,7 +126,7 @@ class _TrackRideBackDriverScreenState extends State<TrackRideBackDriverScreen> {
       setState(() {});
 
       final controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newLatLng(LatLng(myLat, myLng)));
+      controller.animateCamera(CameraUpdate.newLatLng(LatLng(customerLat, customerLng)));
 
       //  Stop tracking when customer reaches near driver
       if (distance <= 50) {
@@ -171,7 +170,13 @@ class _TrackRideBackDriverScreenState extends State<TrackRideBackDriverScreen> {
       body: SizedBox(
         height: size.height,
         child: GoogleMap(
-          initialCameraPosition: _kGooglePlex,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(
+              locationCubit.position?.latitude ?? 20.5574253,
+              locationCubit.position?.longitude ?? 78.8386951,
+            ),
+            zoom: 14,
+          ),
           markers: Set<Marker>.of(_markers ?? []),
           mapToolbarEnabled: false,
           myLocationEnabled: true,

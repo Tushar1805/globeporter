@@ -592,4 +592,7 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get noPostedRides => 'पोस्ट केलेल्या राईड्स नाहीत';
+
+  @override
+  String get priceString => 'किंमत';
 }

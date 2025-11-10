@@ -164,7 +164,7 @@ class RideData {
         vehicleTypeData = (json['vehicle_type_data'] as Map<String, dynamic>?) != null
             ? VehicleTypeData.fromJson(json['vehicle_type_data'] as Map<String, dynamic>)
             : null,
-        acceptedDriverBookingRideStatus = (json['accepted_driver_booking_ride_status'] as List?)
+        acceptedDriverBookingRideStatus = (json['acceptedDriverBookingRideStatus'] as List?)
             ?.map(
                 (dynamic e) => AcceptedDriverBookingRideStatus.fromJson(e as Map<String, dynamic>))
             .toList();

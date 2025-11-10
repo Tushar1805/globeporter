@@ -220,10 +220,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> with TickerPr
         }
       }
     });
+    _markers?.addAll(nearbyMarkers);
 
-    setState(() {
-      _markers?.addAll(nearbyMarkers);
-    });
+    setState(() {});
   }
 
   void getNotificationCount() async {

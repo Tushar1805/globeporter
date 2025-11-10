@@ -593,4 +593,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noPostedRides => 'No Posted Rides';
+
+  @override
+  String get priceString => 'Price';
 }

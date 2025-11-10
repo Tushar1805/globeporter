@@ -381,5 +381,7 @@
   "areYouSureYouWantToRejectRideString": "Are you sure you want to reject the ride?",
   "@areYouSureYouWantToRejectRideString": {},
   "noPostedRides": "No Posted Rides",
-  "@noPostedRides": {}
+  "@noPostedRides": {},
+  "priceString": "Price",
+  "@priceString": {}
 }

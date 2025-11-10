@@ -382,83 +382,114 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    Card(
-                                      margin:
-                                          const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                      color: Colors.grey.shade100,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12),
-                                        child: Row(
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 24,
-                                              backgroundColor: primaryColor,
-                                              backgroundImage: driverData?.profilePhotoUrl !=
-                                                          null &&
-                                                      (driverData?.profilePhotoUrl?.isNotEmpty ??
-                                                          false)
-                                                  ? NetworkImage(driverData?.profilePhotoUrl ?? '')
-                                                  : null,
-                                              child: (driverData?.profilePhotoUrl == null ||
-                                                      (driverData?.profilePhotoUrl?.isEmpty ??
-                                                          false))
-                                                  ? const Icon(Icons.person, color: Colors.white)
-                                                  : null,
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                    Row(
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.priceString,
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                        ),
+                                        Text(
+                                          ": ₹${ride?.price?.toString()}",
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                color: primaryColor,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                    ride?.isCustomerAcceptRide == 0
+                                        ? SizedBox.shrink()
+                                        : Card(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 6),
+                                            color: Colors.grey.shade100,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(12),
+                                              child: Row(
                                                 children: [
-                                                  Text(
-                                                    driverData?.name ?? 'Jon Doe',
-                                                    style: const TextStyle(
-                                                        fontWeight: FontWeight.bold, fontSize: 15),
+                                                  CircleAvatar(
+                                                    radius: 24,
+                                                    backgroundColor: primaryColor,
+                                                    backgroundImage:
+                                                        driverData?.profilePhotoUrl != null &&
+                                                                (driverData?.profilePhotoUrl
+                                                                        ?.isNotEmpty ??
+                                                                    false)
+                                                            ? NetworkImage(
+                                                                driverData?.profilePhotoUrl ?? '')
+                                                            : null,
+                                                    child: (driverData?.profilePhotoUrl == null ||
+                                                            (driverData?.profilePhotoUrl?.isEmpty ??
+                                                                false))
+                                                        ? const Icon(Icons.person,
+                                                            color: Colors.white)
+                                                        : null,
                                                   ),
-                                                  Text(
-                                                    driverData?.email ?? '',
-                                                    style: const TextStyle(
-                                                        fontSize: 13, color: Colors.grey),
+                                                  const SizedBox(width: 12),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          driverData?.name ?? 'Jon Doe',
+                                                          style: const TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 15),
+                                                        ),
+                                                        Text(
+                                                          driverData?.email ?? '',
+                                                          style: const TextStyle(
+                                                              fontSize: 13, color: Colors.grey),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    icon:
+                                                        const Icon(Icons.call, color: primaryColor),
+                                                    onPressed: () {
+                                                      makePhoneCall(
+                                                        // Customer number
+                                                        fromNumber:
+                                                            authCubit.userDetails?.data?.mobile ??
+                                                                '',
+                                                        // Driver Number
+                                                        toNumber: driverData?.mobile ?? '',
+                                                        context: context,
+                                                      );
+                                                    },
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(Icons.message,
+                                                        color: primaryColor),
+                                                    onPressed: () {
+                                                      context.pushNamed(chatScreen, extra: {
+                                                        // customer
+                                                        'senderId': ride?.driverId != null
+                                                            ? ride?.driverId.toString()
+                                                            : authCubit.userDetails?.data?.id
+                                                                .toString(),
+                                                        // driver
+                                                        'receiverId': driverData?.id.toString(),
+                                                        'senderName':
+                                                            authCubit.userDetails?.data?.name,
+                                                        'type': 'customer',
+                                                        'receiverName': driverData?.name,
+                                                        'receiverImageUrl':
+                                                            driverData?.profilePhotoUrl,
+                                                      });
+                                                    },
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                            IconButton(
-                                              icon: const Icon(Icons.call, color: primaryColor),
-                                              onPressed: () {
-                                                makePhoneCall(
-                                                  // Customer number
-                                                  fromNumber:
-                                                      authCubit.userDetails?.data?.mobile ?? '',
-                                                  // Driver Number
-                                                  toNumber: driverData?.mobile ?? '',
-                                                  context: context,
-                                                );
-                                              },
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(Icons.message, color: primaryColor),
-                                              onPressed: () {
-                                                context.pushNamed(chatScreen, extra: {
-                                                  // customer
-                                                  'senderId': ride?.driverId != null
-                                                      ? ride?.driverId.toString()
-                                                      : authCubit.userDetails?.data?.id.toString(),
-                                                  // driver
-                                                  'receiverId': driverData?.id.toString(),
-                                                  'senderName': authCubit.userDetails?.data?.name,
-                                                  'type': 'customer',
-                                                  'receiverName': driverData?.name,
-                                                  'receiverImageUrl': driverData?.profilePhotoUrl,
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                          ),
                                     const SizedBox(
                                       height: 8,
                                     ),

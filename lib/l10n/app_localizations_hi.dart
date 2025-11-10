@@ -593,4 +593,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get noPostedRides => 'कोई सवारी पोस्ट नहीं की गई';
+
+  @override
+  String get priceString => 'कीमत';
 }
