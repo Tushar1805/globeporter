@@ -15,8 +15,8 @@ class WalletCubit extends BaseCubit {
   }) async {
     try {
       emit(CreateOrderLoadingState('Creating order'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _walletRepository.createOrder(
         lang: lang ?? 'en',
@@ -40,8 +40,8 @@ class WalletCubit extends BaseCubit {
   }) async {
     try {
       emit(AddMoneyToWalletLoadingState('Adding money...'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _walletRepository.addMoneyToWallet(
         lang: lang ?? 'en',
@@ -63,8 +63,8 @@ class WalletCubit extends BaseCubit {
   Future<void> getWalletData() async {
     try {
       emit(WalletDataLoadingState('Loading wallet data'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _walletRepository.getWalletData(
         lang: lang ?? 'en',
@@ -80,8 +80,8 @@ class WalletCubit extends BaseCubit {
   Future<void> getWalletHistory() async {
     try {
       emit(WalletHistoryLoadingState('Loading wallet history'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _walletRepository.getWalletHistory(
         lang: lang ?? 'en',

@@ -14,7 +14,7 @@ class LanguageCubit extends Cubit<Locale> {
   Locale? get appLocale => _appLocale;
 
   Future<void> getLanguage() async {
-    final val = await storage.readValue(languageCodeKey);
+    final val = await storage.safeRead(languageCodeKey);
     _appLocale = Locale(val ?? 'en');
     customPrint('Entered to check Language: ${_appLocale?.languageCode}');
     emit(Locale(val ?? 'en'));

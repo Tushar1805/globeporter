@@ -121,8 +121,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with TickerProvider
     }
 
     final storage = sl<SecureStorage>();
-    final accessToken = await storage.readValue(accessTokenKey) ?? '';
-    final language = await storage.readValue(languageCodeKey) ?? 'en';
+    final accessToken = await storage.safeRead(accessTokenKey) ?? '';
+    final language = await storage.safeRead(languageCodeKey) ?? 'en';
 
     // Now invoke updateConfig (retry if invoke fails)
     final config = {
@@ -641,5 +641,4 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with TickerProvider
       ),
     );
   }
-
 }

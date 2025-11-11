@@ -12,7 +12,7 @@ class ThemeCubit extends Cubit<ThemeData> {
   final storage = sl<SecureStorage>();
 
   Future<void> getTheme() async {
-    final val = await storage.readValue(themeString);
+    final val = await storage.safeRead(themeString);
     customPrint('Entered to check theme: $val');
     if (val == 'dark') {
       theme = darkTheme;

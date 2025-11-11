@@ -24,8 +24,8 @@ class SettingsCubit extends BaseCubit {
   }) async {
     try {
       emit(UpdateProfileLoadingState('Submitting details'));
-      final accessToken = await storage.readValue(accessTokenKey);
-      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final fcmToken = '_test';
 
       final response = await _settingsRepository.updateProfile(

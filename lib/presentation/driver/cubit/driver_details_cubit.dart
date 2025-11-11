@@ -218,14 +218,14 @@ class DriverDetailsCubit extends BaseCubit {
   }
 
   Future<void> getOwnerDetailsData() async {
-    final frontAadhar = await storage.readValue(ownerAadharCardFrontKey);
-    final backAadhar = await storage.readValue(ownerAadharCardBackKey);
-    final frontPan = await storage.readValue(ownerPanCardFrontKey);
-    final backPan = await storage.readValue(ownerPanCardBackKey);
-    final photoPath = await storage.readValue(ownerPhotoKey);
+    final frontAadhar = await storage.safeRead(ownerAadharCardFrontKey);
+    final backAadhar = await storage.safeRead(ownerAadharCardBackKey);
+    final frontPan = await storage.safeRead(ownerPanCardFrontKey);
+    final backPan = await storage.safeRead(ownerPanCardBackKey);
+    final photoPath = await storage.safeRead(ownerPhotoKey);
 
-    ownerName = await storage.readValue(ownerNameKey);
-    ownerPhoneNumber = await storage.readValue(ownerPhoneKey);
+    ownerName = await storage.safeRead(ownerNameKey);
+    ownerPhoneNumber = await storage.safeRead(ownerPhoneKey);
     ownerFrontAdhaar = frontAadhar != null ? File(frontAadhar) : null;
     ownerBackAdhaar = backAadhar != null ? File(backAadhar) : null;
     ownerFrontPan = frontPan != null ? File(frontPan) : null;
@@ -273,13 +273,13 @@ class DriverDetailsCubit extends BaseCubit {
   }
 
   Future<void> getVehicleDetailsData() async {
-    final frontRCPath = await storage.readValue(vehicleRCFrontKey);
-    final backRCPath = await storage.readValue(vehicleRCBackKey);
-    final photoPath = await storage.readValue(vehiclePhotoKey);
+    final frontRCPath = await storage.safeRead(vehicleRCFrontKey);
+    final backRCPath = await storage.safeRead(vehicleRCBackKey);
+    final photoPath = await storage.safeRead(vehiclePhotoKey);
 
-    vehicleNo = await storage.readValue(vehicleNumberKey);
-    vehicleRC = await storage.readValue(vehicleRCNumberKey);
-    vehicleTypeId = await storage.readValue(vehicleTypeKey);
+    vehicleNo = await storage.safeRead(vehicleNumberKey);
+    vehicleRC = await storage.safeRead(vehicleRCNumberKey);
+    vehicleTypeId = await storage.safeRead(vehicleTypeKey);
     vehicleFrontRC = frontRCPath != null ? File(frontRCPath) : null;
     vehicleBackRC = backRCPath != null ? File(backRCPath) : null;
     vehiclePhoto = photoPath != null ? File(photoPath) : null;
@@ -336,17 +336,17 @@ class DriverDetailsCubit extends BaseCubit {
   }
 
   Future<void> getDriverDetailsData() async {
-    final frontAadhar = await storage.readValue(driverAadharCardFrontKey);
-    final backAadhar = await storage.readValue(driverAadharCardBackKey);
-    final frontPan = await storage.readValue(driverPanCardFrontKey);
-    final backPan = await storage.readValue(driverPanCardBackKey);
-    final frontLicence = await storage.readValue(driverLicenceFrontKey);
-    final backLicence = await storage.readValue(driverLicenceBackKey);
-    final photoPath = await storage.readValue(driverPhotoKey);
+    final frontAadhar = await storage.safeRead(driverAadharCardFrontKey);
+    final backAadhar = await storage.safeRead(driverAadharCardBackKey);
+    final frontPan = await storage.safeRead(driverPanCardFrontKey);
+    final backPan = await storage.safeRead(driverPanCardBackKey);
+    final frontLicence = await storage.safeRead(driverLicenceFrontKey);
+    final backLicence = await storage.safeRead(driverLicenceBackKey);
+    final photoPath = await storage.safeRead(driverPhotoKey);
 
-    driverName = await storage.readValue(driverNameKey);
-    driverPhoneNumber = await storage.readValue(driverPhoneKey);
-    driverLicenceNumber = await storage.readValue(driverLicenceKey);
+    driverName = await storage.safeRead(driverNameKey);
+    driverPhoneNumber = await storage.safeRead(driverPhoneKey);
+    driverLicenceNumber = await storage.safeRead(driverLicenceKey);
     driverFrontAdhaar = frontAadhar != null ? File(frontAadhar) : null;
     driverBackAdhaar = backAadhar != null ? File(backAadhar) : null;
     driverFrontPan = frontPan != null ? File(frontPan) : null;
@@ -375,12 +375,12 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> getAllData() async {
     emit(LoadAllDataLoadingState('loading'));
 
-    final ownerDetailsFilled = await storage.readValue(ownerDetailsFilledKey);
-    final vehiclDetailsFilled = await storage.readValue(vehicleDetailsFilledKey);
+    final ownerDetailsFilled = await storage.safeRead(ownerDetailsFilledKey);
+    final vehiclDetailsFilled = await storage.safeRead(vehicleDetailsFilledKey);
 
     // if (ownerDetailsFilled == '1' && vehiclDetailsFilled == '1') {
-    //   ownerName = await storage.readValue(ownerNameKey);
-    //   vehicleNo = await storage.readValue(vehicleNumberKey);
+    //   ownerName = await storage.safeRead(ownerNameKey);
+    //   vehicleNo = await storage.safeRead(vehicleNumberKey);
     //   if (ownerName == null || ownerName == '') {
     //     await getOwnerDetails();
     //   } else {
@@ -393,7 +393,7 @@ class DriverDetailsCubit extends BaseCubit {
     //     await getVehicleDetailsData();
     //   }
     // } else if (ownerDetailsFilled == '1') {
-    //   ownerName = await storage.readValue(ownerNameKey);
+    //   ownerName = await storage.safeRead(ownerNameKey);
     //   if (ownerName == null || ownerName == '') {
     //     await getOwnerDetails();
     //   } else {
@@ -415,21 +415,21 @@ class DriverDetailsCubit extends BaseCubit {
   }
 
   Future<void> getAllDocsFromStorage() async {
-    final ownerFrontAadharpath = await storage.readValue(ownerAadharCardFrontKey);
-    final ownerBackAadharpath = await storage.readValue(ownerAadharCardBackKey);
-    final ownerFrontPanpath = await storage.readValue(ownerPanCardFrontKey);
-    final ownerBackPanpath = await storage.readValue(ownerPanCardBackKey);
-    final ownerPhotoPath = await storage.readValue(ownerPhotoKey);
-    final vehicleFrontRCPath = await storage.readValue(vehicleRCFrontKey);
-    final vehicleBackRCPath = await storage.readValue(vehicleRCBackKey);
-    final vehiclePhotoPath = await storage.readValue(vehiclePhotoKey);
-    final driverFrontAadharPath = await storage.readValue(driverAadharCardFrontKey);
-    final driverBackAadharPath = await storage.readValue(driverAadharCardBackKey);
-    final driverFrontPanPath = await storage.readValue(driverPanCardFrontKey);
-    final driverBackPanPath = await storage.readValue(driverPanCardBackKey);
-    final driverFrontLicencePath = await storage.readValue(driverLicenceFrontKey);
-    final driverBackLicencePath = await storage.readValue(driverLicenceBackKey);
-    final drierPhotoPathPath = await storage.readValue(driverPhotoKey);
+    final ownerFrontAadharpath = await storage.safeRead(ownerAadharCardFrontKey);
+    final ownerBackAadharpath = await storage.safeRead(ownerAadharCardBackKey);
+    final ownerFrontPanpath = await storage.safeRead(ownerPanCardFrontKey);
+    final ownerBackPanpath = await storage.safeRead(ownerPanCardBackKey);
+    final ownerPhotoPath = await storage.safeRead(ownerPhotoKey);
+    final vehicleFrontRCPath = await storage.safeRead(vehicleRCFrontKey);
+    final vehicleBackRCPath = await storage.safeRead(vehicleRCBackKey);
+    final vehiclePhotoPath = await storage.safeRead(vehiclePhotoKey);
+    final driverFrontAadharPath = await storage.safeRead(driverAadharCardFrontKey);
+    final driverBackAadharPath = await storage.safeRead(driverAadharCardBackKey);
+    final driverFrontPanPath = await storage.safeRead(driverPanCardFrontKey);
+    final driverBackPanPath = await storage.safeRead(driverPanCardBackKey);
+    final driverFrontLicencePath = await storage.safeRead(driverLicenceFrontKey);
+    final driverBackLicencePath = await storage.safeRead(driverLicenceBackKey);
+    final drierPhotoPathPath = await storage.safeRead(driverPhotoKey);
 
     ownerFrontAdhaar = ownerFrontAadharpath != null ? File(ownerFrontAadharpath) : null;
     ownerBackAdhaar = ownerBackAadharpath != null ? File(ownerBackAadharpath) : null;
@@ -509,7 +509,7 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> getVehicleType() async {
     try {
       emit(VehicleTypeLoadingState('Loading vehicle types'));
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _driverRepository.getVehicleType(lang: lang ?? 'en');
 
       emit(VehicleTypeLoadedState(data: response));
@@ -521,8 +521,8 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> getOwnerDetails() async {
     try {
       emit(GetOwnerDetailsLoadingState('Loading vehicle types'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.getOwnerDetails(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -549,8 +549,8 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> getVehicleDetails() async {
     try {
       emit(GetVehicleDetailsLoadingState('Loading vehicle types'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.getVehicleDetails(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -576,8 +576,8 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> getDriverDetails() async {
     try {
       emit(GetDriverDetailsLoadingState('Loading vehicle types'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.getDriverDetails(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -607,8 +607,8 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> getVerificationStatus() async {
     try {
       emit(VerificationStatusLoadingState('Getting status'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.getVerificationStatus(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -625,8 +625,8 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> submitOwnerDetails() async {
     try {
       emit(SaveOwnerDetailsLoadingState('Submitting details'));
-      final accessToken = await storage.readValue(accessTokenKey);
-      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
 
       final response = await _driverRepository.submitOwnerDetails(
         lang: lang ?? 'en',
@@ -655,8 +655,8 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> submitVehicleDetails() async {
     try {
       emit(SaveVehicleDetailsLoadingState('Submitting details'));
-      final accessToken = await storage.readValue(accessTokenKey);
-      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
 
       final response = await _driverRepository.submitVehicleDetails(
         lang: lang ?? 'en',
@@ -685,8 +685,8 @@ class DriverDetailsCubit extends BaseCubit {
   Future<void> submitDriverDetails() async {
     try {
       emit(SaveDriverDetailsLoadingState('Submitting details'));
-      final accessToken = await storage.readValue(accessTokenKey);
-      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
 
       final response = await _driverRepository.submitDriverDetails(
         lang: lang ?? 'en',
@@ -734,8 +734,8 @@ class DriverDetailsCubit extends BaseCubit {
   }) async {
     try {
       emit(ReSubmitDocumentsLoadingState('Submitting details'));
-      final accessToken = await storage.readValue(accessTokenKey);
-      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
 
       final response = await _driverRepository.reSubmitDocuments(
         token: accessToken ?? '',

@@ -14,8 +14,8 @@ class NotificationCubit extends BaseCubit {
   Future<void> getNotifications() async {
     try {
       emit(NotificationsLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _notificationRepository.getNotifications(
         lang: lang ?? 'en',
         accessToken: accessToken ?? '',
@@ -30,8 +30,8 @@ class NotificationCubit extends BaseCubit {
   Future<void> markNotificationsRead() async {
     try {
       emit(MarkNotificationsReadLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _notificationRepository.markNotificationsRead(
         lang: lang ?? 'en',
         accessToken: accessToken ?? '',
@@ -46,8 +46,8 @@ class NotificationCubit extends BaseCubit {
   Future<void> getNotificatinsUnreadCount() async {
     try {
       emit(NotificationUnreadCountLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _notificationRepository.getNotificatinsUnreadCount(
         lang: lang ?? 'en',
         accessToken: accessToken ?? '',

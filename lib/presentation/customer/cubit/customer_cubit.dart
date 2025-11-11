@@ -17,7 +17,7 @@ class CustomerCubit extends BaseCubit {
   Future<void> getPackagingType() async {
     try {
       emit(PackagingTypeLoadingState('Loading vehicle types'));
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _customerRepository.getPackagingType(lang: lang ?? 'en');
 
       emit(PackagingTypeLoadedState(data: response));
@@ -29,7 +29,7 @@ class CustomerCubit extends BaseCubit {
   Future<void> getQuantity() async {
     try {
       emit(QuantityLoadingState('Loading Quantities'));
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _customerRepository.getQuantity(lang: lang ?? 'en');
 
       emit(QuantityLoadedState(data: response));
@@ -41,7 +41,7 @@ class CustomerCubit extends BaseCubit {
   Future<void> getVehicleType() async {
     try {
       emit(VehicleTypeLoadingState('Loading vehicle types'));
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _customerRepository.getVehicleType(lang: lang ?? 'en');
 
       emit(VehicleTypeLoadedState(data: response));
@@ -53,8 +53,8 @@ class CustomerCubit extends BaseCubit {
   Future<void> getCustomerRideBookings() async {
     try {
       emit(CustomerRideBookingsLoadingState('Loading customer ride bookings'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _customerRepository.getCustomerRideBookings(
         lang: lang ?? 'en',
@@ -72,8 +72,8 @@ class CustomerCubit extends BaseCubit {
   }) async {
     try {
       emit(BookingDetailsLoadingState('Loading bookings details'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _customerRepository.getBookingDetails(
           lang: lang ?? 'en', accessToken: accessToken ?? '', bookingId: bookingId);
@@ -92,8 +92,8 @@ class CustomerCubit extends BaseCubit {
   }) async {
     try {
       emit(NearbyDriversLoadingState('Loading nearby drivers'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _customerRepository.findNearbyDrivers(
         lang: lang ?? 'en',
@@ -122,8 +122,8 @@ class CustomerCubit extends BaseCubit {
   }) async {
     try {
       emit(CustomerRequestLoadingState('Creating Rural Request'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _customerRepository.createRuralRequest(
         lang: lang ?? 'en',
@@ -165,8 +165,8 @@ class CustomerCubit extends BaseCubit {
   }) async {
     try {
       emit(CustomerRequestLoadingState('Creating Rural Request'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _customerRepository.createUrbanRequest(
         lang: lang ?? 'en',

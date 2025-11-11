@@ -24,7 +24,7 @@ class DriverCubit extends BaseCubit {
   Future<void> getCancellationReasons({required final String userType}) async {
     try {
       emit(RideCancellationReasonsLoadingState('Loading Cancellation Reasons'));
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _driverRepository.getRideCancellationReasons(
         lang: lang ?? 'en',
         userType: userType,
@@ -39,7 +39,7 @@ class DriverCubit extends BaseCubit {
   Future<void> getPackagingType() async {
     try {
       emit(PackagingTypeLoadingState('Loading Packaging types'));
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _driverRepository.getPackagingType(lang: lang ?? 'en');
 
       emit(PackagingTypeLoadedState(data: response));
@@ -51,7 +51,7 @@ class DriverCubit extends BaseCubit {
   Future<void> getProductNames() async {
     try {
       emit(ProductNamesLoadingState('Loading Packaging types'));
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _driverRepository.getProductNames(lang: lang ?? 'en');
 
       emit(ProductNamesLoadedState(data: response));
@@ -65,8 +65,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(BookingDetailsLoadingState('Loading bookings details'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _driverRepository.getBookingDetails(
           lang: lang ?? 'en', accessToken: accessToken ?? '', bookingId: bookingId);
@@ -84,8 +84,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(LoadingState('Loading bookings details'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _driverRepository.getBookingDetails(
           lang: lang ?? 'en', accessToken: accessToken ?? '', bookingId: bookingId);
@@ -104,8 +104,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(UpdateBookingDetailsByDriverLoadingState('Cancelling Ride'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.updateBookingDetailsByDriver(
         lang: lang ?? 'en',
         accessToken: accessToken ?? '',
@@ -125,8 +125,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(DeclineRideByDriverLoadingState('Cancelling Ride'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.declineRideByDriver(
         lang: lang ?? 'en',
         accessToken: accessToken ?? '',
@@ -146,8 +146,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(CancleRideByDriverLoadingState('Cancelling Ride'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.cancelRideByDriver(
         lang: lang ?? 'en',
         accessToken: accessToken ?? '',
@@ -167,8 +167,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(CheckCancleRideByDriverLoadingState('Checking Ride Cancelling Reason'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.checkCancelRideByDriver(
         lang: lang ?? 'en',
         accessToken: accessToken ?? '',
@@ -184,8 +184,8 @@ class DriverCubit extends BaseCubit {
   Future<void> getDriverBookings() async {
     try {
       emit(DriverBookingsLoadingState('Loading driving bookings'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.getDriverBookings(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -202,8 +202,8 @@ class DriverCubit extends BaseCubit {
   Future<void> getPendingBookings() async {
     try {
       emit(PendingBookingsLoadingState('Loading pending bookings'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.getPendingBookings(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -222,8 +222,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(ChangeRideStatusLoadingState('Changin ride status'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.changeRideStatus(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -246,8 +246,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(EndRideStatusLoadingState('Changin ride status'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.changeRideStatus(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -271,8 +271,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(AcceptRideLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.acceptOrRejectRide(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -295,8 +295,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(RejectRideLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.acceptOrRejectRide(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -316,8 +316,8 @@ class DriverCubit extends BaseCubit {
     try {
       emit(GenerateOTPLoadingState('Loading'));
       final dbRef = FirebaseDatabase.instance.ref("ride_otp/$bookingId");
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.generateOtp(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -342,8 +342,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(VerifyRideOTPLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.verifyRideOtpByDriver(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -367,8 +367,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(VerifyEndRideOTPLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.verifyRideOtpByDriver(
         lang: lang ?? 'en',
         token: accessToken ?? '',
@@ -393,8 +393,8 @@ class DriverCubit extends BaseCubit {
   }) async {
     try {
       emit(EndRideLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRepository.endRideByDriver(
         lang: lang ?? 'en',
         token: accessToken ?? '',

@@ -330,7 +330,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   Future<void> _fetchAndShowNearbyUsers() async {
     final data = await locationCubit.fetchNearbyUsers();
-    final userId = await storage.readValue(userIdKey);
+    final userId = await storage.safeRead(userIdKey);
     final truck = await getBytesFromAssets(path: truckIcon, width: 50);
     final auto = await getBytesFromAssets(path: autoIcon, width: 50);
 

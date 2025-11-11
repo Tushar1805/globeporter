@@ -94,8 +94,8 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
   }) async {
     await initializeBackgroundService();
     final service = FlutterBackgroundService();
-    final lang = await storage.readValue(languageCodeKey);
-    final token = await storage.readValue(accessTokenKey);
+    final lang = await storage.safeRead(languageCodeKey);
+    final token = await storage.safeRead(accessTokenKey);
 
     // Send config data to background isolate
     service.invoke('updateConfig', {

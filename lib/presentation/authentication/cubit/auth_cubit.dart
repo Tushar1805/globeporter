@@ -43,8 +43,8 @@ class AuthCubit extends BaseCubit {
     }
     try {
       emit(UserDetailsLoadingState('Getting User details'));
-      final accessToken = await storage.readValue(accessTokenKey);
-      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _authRepository.getUserDetails(
         accessToken: accessToken ?? '',
         lang: lang ?? 'en',
@@ -78,7 +78,7 @@ class AuthCubit extends BaseCubit {
     try {
       emit(LoginLoadingState('Login in process'));
 
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
 
       final response = await _authRepository.login(
         lang: lang ?? 'en',
@@ -99,7 +99,7 @@ class AuthCubit extends BaseCubit {
     try {
       emit(ResendOtpLoadingState('Resending OTP'));
 
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
 
       final response = await _authRepository.login(
         lang: lang ?? 'en',
@@ -120,8 +120,8 @@ class AuthCubit extends BaseCubit {
   }) async {
     try {
       emit(GoogleLoginLoadingState('Login in process'));
-      final lang = await storage.readValue(languageCodeKey);
-      var fcmToken = await storage.readValue(fcmTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      var fcmToken = await storage.safeRead(fcmTokenKey);
       if (fcmToken == null || fcmToken == '') {
         final token = await notificationService.getDeviceToken() ?? '_test';
 
@@ -155,8 +155,8 @@ class AuthCubit extends BaseCubit {
     try {
       emit(RegisterLoadingState('Registration in progress'));
 
-      final lang = await storage.readValue(languageCodeKey);
-      var fcmToken = await storage.readValue(fcmTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      var fcmToken = await storage.safeRead(fcmTokenKey);
       if (fcmToken == null || fcmToken == '') {
         final token = await notificationService.getDeviceToken() ?? '_test';
 
@@ -185,7 +185,7 @@ class AuthCubit extends BaseCubit {
   }) async {
     try {
       emit(OtpVerifyLoadingState('OTP verification in progress'));
-      final lang = await storage.readValue(languageCodeKey);
+      final lang = await storage.safeRead(languageCodeKey);
       final response = await _authRepository.verifyOtp(
         userId: userId,
         lang: lang ?? 'en',
@@ -217,8 +217,8 @@ class AuthCubit extends BaseCubit {
   Future<void> updateUserType({required final String userType}) async {
     try {
       emit(UserTypeLoadingState('Updating user type'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _authRepository.updateUserType(
         userType: userType,
@@ -238,8 +238,8 @@ class AuthCubit extends BaseCubit {
   }) async {
     try {
       emit(StartCallLoadingState('Updating user type'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _authRepository.makePhoneCall(
         lang: lang ?? 'en',
@@ -259,8 +259,8 @@ class AuthCubit extends BaseCubit {
 
   Future<void> logout() async {
     try {
-      final accessToken = await storage.readValue(accessTokenKey);
-      final lang = await storage.readValue(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
 
       await storage.clearAll();
       await storage.saveValue(value: '0', key: ownerDetailsFilledKey);
@@ -284,8 +284,8 @@ class AuthCubit extends BaseCubit {
     try {
       emit(UpdateMobileLoadingState('Update in process'));
 
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
 
       final response = await _authRepository.updateMobileNumber(
         lang: lang ?? 'en',
@@ -307,8 +307,8 @@ class AuthCubit extends BaseCubit {
   }) async {
     try {
       emit(UpdateMobileVerifyLoadingState('OTP verification in progress'));
-      final lang = await storage.readValue(languageCodeKey);
-      final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _authRepository.updateVerifyOtp(
         lang: lang ?? 'en',
         otp: otp,

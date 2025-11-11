@@ -137,12 +137,12 @@ class _SplashScreenState extends State<SplashScreen> with WidgetsBindingObserver
   }
 
   Future<void> init() async {
-    final accessToken = await storage.readValue(accessTokenKey);
-    final detailsFilled = await storage.readValue(detailsFilledKey);
-    final isDetailsVerified = await storage.readValue(isDetailsVerifiedKey);
-    final ownerDetailsFilled = await storage.readValue(ownerDetailsFilledKey);
-    final vehiclDetailsFilled = await storage.readValue(vehicleDetailsFilledKey);
-    final driverDetailsFilled = await storage.readValue(driverDetailsFilledKey);
+    final accessToken = await storage.safeRead(accessTokenKey);
+    final detailsFilled = await storage.safeRead(detailsFilledKey);
+    final isDetailsVerified = await storage.safeRead(isDetailsVerifiedKey);
+    final ownerDetailsFilled = await storage.safeRead(ownerDetailsFilledKey);
+    final vehiclDetailsFilled = await storage.safeRead(vehicleDetailsFilledKey);
+    final driverDetailsFilled = await storage.safeRead(driverDetailsFilledKey);
 
     try {
       await locationCubit.determinePosition();

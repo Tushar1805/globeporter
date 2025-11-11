@@ -25,8 +25,8 @@ class ChatCubit extends BaseCubit {
   }) async {
     try {
       emit(ChatNotificationLoadingState('Loading'));
-      final lang = await storage.readValue(languageCodeKey);
-      // final accessToken = await storage.readValue(accessTokenKey);
+      final lang = await storage.safeRead(languageCodeKey);
+      // final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _chatRepository.sendNotification(
         lang: lang ?? 'en',
         title: title,
