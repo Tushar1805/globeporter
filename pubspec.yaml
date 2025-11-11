@@ -57,14 +57,14 @@ dependencies:
   flutter_phone_direct_caller: ^2.2.1
   razorpay_flutter: ^1.4.0
   firebase_crashlytics: ^4.3.8
+  flutter_background_service:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: 
   flutter_launcher_icons: 
-  flutter_native_splash: ^2.4.6
-  flutter_background_service:
+  flutter_native_splash: ^2.4.6  
 
 flutter_launcher_icons:
   android: true

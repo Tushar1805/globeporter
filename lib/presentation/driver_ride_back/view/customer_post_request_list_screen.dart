@@ -118,8 +118,8 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
       currentLng: locationCubit.position?.longitude.toString() ?? '',
       dropLat: selectedLocation != null ? selectedLocation!['lat'].toString() : '',
       dropLng: selectedLocation != null ? selectedLocation!['lng'].toString() : '',
-      price: appliedFilters['price'] != null ? priceRange.end.toString() : '',
-      orderByColumn: appliedFilters['price'] != null ? 'price' : '',
+      price: appliedFilters['Price'] != null ? priceRange.end.toString() : '',
+      orderByColumn: appliedFilters['Price'] != null ? 'price' : '',
       orderByType: appliedFilters['Order By'],
     );
   }
@@ -735,6 +735,7 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                           appliedFilters['Distance'] = '${distance.round()} km';
                           appliedFilters['Order By'] = orderBy;
                         });
+                        customPrint(appliedFilters['Price']);
                         _applyFilters();
                       },
                       nameSize: 20,
