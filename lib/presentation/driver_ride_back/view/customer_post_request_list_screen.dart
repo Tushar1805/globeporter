@@ -120,7 +120,7 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
       dropLng: selectedLocation != null ? selectedLocation!['lng'].toString() : '',
       price: appliedFilters['Price'] != null ? priceRange.end.toString() : '',
       orderByColumn: appliedFilters['Price'] != null ? 'price' : '',
-      orderByType: appliedFilters['Order By'],
+      orderByType: appliedFilters['Order By'] ?? 'asc',
     );
   }
 
@@ -237,6 +237,7 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
               );
             }
           } else if (state is CustomerCancelRideLoadedState) {
+            context.pop();
             driverRideBackCubit.getCustomerPostedRides(
               radius: '10',
               currentLat: locationCubit.position?.latitude.toString() ?? '',
@@ -521,25 +522,29 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                               SizedBox(
                                                 width: size.width * 0.06,
                                               ),
-                                              CustomElevatedButton(
-                                                name: AppLocalizations.of(context)!.trackString,
-                                                borderRadius: 5,
-                                                alignment: Alignment.centerLeft,
-                                                onPressed: () async {
-                                                  await startCustomerTracking(
-                                                    customerId: authCubit.userDetails?.data?.id
-                                                            ?.toString() ??
-                                                        '1',
-                                                  ).then((_) {
-                                                    context
-                                                        .pushNamed(customerSideTrackScreen, extra: {
-                                                      'data': ride,
-                                                    });
-                                                  });
-                                                },
-                                                textPadding: const EdgeInsets.symmetric(
-                                                    horizontal: 10, vertical: 4),
-                                              )
+                                              ride?.isBookingActive == 0
+                                                  ? SizedBox.shrink()
+                                                  : CustomElevatedButton(
+                                                      name:
+                                                          AppLocalizations.of(context)!.trackString,
+                                                      borderRadius: 5,
+                                                      alignment: Alignment.centerLeft,
+                                                      onPressed: () async {
+                                                        await startCustomerTracking(
+                                                          customerId: authCubit
+                                                                  .userDetails?.data?.id
+                                                                  ?.toString() ??
+                                                              '1',
+                                                        ).then((_) {
+                                                          context.pushNamed(customerSideTrackScreen,
+                                                              extra: {
+                                                                'data': ride,
+                                                              });
+                                                        });
+                                                      },
+                                                      textPadding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 4),
+                                                    )
                                             ],
                                           )
                                         : Row(

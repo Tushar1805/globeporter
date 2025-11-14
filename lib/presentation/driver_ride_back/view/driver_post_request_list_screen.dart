@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
 import 'package:globeporter/presentation/driver/widgets/address_row_widget.dart';
@@ -138,8 +139,6 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
           if (state is MyPostedRidesLoadedState) {
             driverPostedRidesModel = state.data as DriverPostedRidesModel?;
             _listAnimationController.forward(from: 0);
-          } else if (state is DriverAcceptRejectLoadedState) {
-            driverRideBackCubit.getDriverPostedRides();
           }
         },
         builder: (context, state) {
@@ -443,11 +442,48 @@ class _ActionButtons extends StatelessWidget {
           });
         },
       ),
-      IconButton(
-        icon: const Icon(Icons.arrow_forward_ios, color: primaryColor),
-        onPressed: () async {
-          context.pushNamed(driverTrackingScreen, extra: {'rideData': ride, 'customerData': user});
+      BlocListener(
+        bloc: driverRideBackCubit,
+        listener: (final context, final state) {
+          if (state is DriverAcceptRejectLoadedState) {
+            final data = state.data as Map<String, dynamic>;
+            if (data['status_code'] == 200) {
+              context.pushNamed(driverTrackingScreen, extra: {
+                'rideData': ride,
+                'customerData': user,
+              });
+              driverRideBackCubit.getDriverPostedRides();
+            } else {
+              Fluttertoast.showToast(msg: 'Something wen');
+            }
+          }
         },
+        child: IconButton(
+          icon: const Icon(Icons.arrow_forward_ios, color: primaryColor),
+          onPressed: () async {
+            ride.isBookingActive == 1
+                ? context.pushNamed(driverTrackingScreen, extra: {
+                    'rideData': ride,
+                    'customerData': user,
+                  })
+                : showCustomDialog(
+                    context: context,
+                    borderRadius: 18,
+                    title: '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
+                    onTapYes: () async {
+                      context.pop();
+                      await driverRideBackCubit.driverAcceptRejectRide(
+                        bookingId: ride.id.toString(),
+                        status: 'Accept',
+                        userId: user.userId.toString(),
+                      );
+                    },
+                    onTapNo: () {
+                      context.pop();
+                    },
+                  );
+          },
+        ),
       ),
     ]);
   }
