@@ -26,6 +26,7 @@ Depends on all your plugins, and provides a function to register them.
   s.dependency 'firebase_crashlytics'
   s.dependency 'firebase_database'
   s.dependency 'firebase_messaging'
+  s.dependency 'flutter_background_service_ios'
   s.dependency 'flutter_contacts'
   s.dependency 'flutter_facebook_auth'
   s.dependency 'flutter_local_notifications'
