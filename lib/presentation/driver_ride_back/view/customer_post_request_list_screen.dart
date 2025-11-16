@@ -122,7 +122,12 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
           selectedLocation != null ? selectedLocation!['lat'].toString() : '',
       dropLng:
           selectedLocation != null ? selectedLocation!['lng'].toString() : '',
-      price: appliedFilters['Price'] != null ? priceRange.end.toString() : '',
+      priceFrom: appliedFilters['Price'] != null
+          ? priceRange.start.toStringAsFixed(2)
+          : '',
+      priceTo: appliedFilters['Price'] != null
+          ? priceRange.end.toStringAsFixed(2)
+          : '',
       orderByColumn: appliedFilters['Price'] != null ? 'price' : '',
       orderByType: appliedFilters['Order By'] ?? 'asc',
     );
@@ -790,7 +795,7 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                     RangeSlider(
                       min: 0,
                       max: 2000,
-                      divisions: 19,
+                      divisions: 20,
                       values: priceRange,
                       labels: RangeLabels(
                         '₹${priceRange.start.round()}',

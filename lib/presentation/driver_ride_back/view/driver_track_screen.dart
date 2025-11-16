@@ -15,6 +15,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:globeporter/l10n/app_localizations.dart';
 import 'package:globeporter/location/cubit/location_cubit.dart';
 import 'package:globeporter/presentation/authentication/cubit/auth_cubit.dart';
+import 'package:globeporter/presentation/driver/model/ride_cancellation_reason_response.dart';
 import 'package:globeporter/presentation/driver_ride_back/cubit/driver_ride_back_cubit.dart';
 import 'package:globeporter/presentation/driver_ride_back/model/driver_posted_ride_model.dart';
 import 'package:globeporter/presentation/driver_ride_back/states/driver_ride_back_state.dart';
@@ -27,13 +28,15 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class DriverRideBackTrackScreen extends StatefulWidget {
-  const DriverRideBackTrackScreen({required this.data, required this.customerData, super.key});
+  const DriverRideBackTrackScreen(
+      {required this.data, required this.customerData, super.key});
 
   final RideData? data;
   final AcceptedDriverBookingRideStatus? customerData;
 
   @override
-  State<DriverRideBackTrackScreen> createState() => _DriverRideBackTrackScreenState();
+  State<DriverRideBackTrackScreen> createState() =>
+      _DriverRideBackTrackScreenState();
 }
 
 class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
@@ -41,6 +44,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
   final locationCubit = sl<LocationCubit>();
   final authCubit = sl<AuthCubit>();
   final driverRideBackCubit = sl<DriverRideBackCubit>();
+  RideCancellationReasonResponse? rideCancellationReason;
+  final dialogLoadingNotifier = ValueNotifier(false);
   Position? position;
   StreamSubscription<dynamic>? _locationSubscription;
   Set<Polyline> polylines = {};
@@ -49,7 +54,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
   Marker? driverMarker;
   bool rideStarted = false;
   bool loading = false;
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref().child('locations');
+  final DatabaseReference _dbRef =
+      FirebaseDatabase.instance.ref().child('locations');
 
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(20.5574253, 78.8386951),
@@ -57,20 +63,24 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
   );
 
   List<Marker>? _markers;
+  void loadData() async {
+    await driverRideBackCubit.getCancellationReasons(userType: '2');
+  }
 
   void getCurrentLocation() async {
     try {
       final GoogleMapController controller = await _controller.future;
 
       _kGooglePlex = CameraPosition(
-        target: LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLng ?? 78.8386951),
+        target: LatLng(widget.data?.pickupLat ?? 20.5574253,
+            widget.data?.pickupLng ?? 78.8386951),
         zoom: 14,
       );
       _markers = <Marker>[
         Marker(
           markerId: MarkerId('1'),
-          position:
-              LatLng(widget.data?.pickupLat ?? 20.5574253, widget.data?.pickupLat ?? 20.5574253),
+          position: LatLng(widget.data?.pickupLat ?? 20.5574253,
+              widget.data?.pickupLat ?? 20.5574253),
           // infoWindow: InfoWindow(title: 'The title of the marker'),
         )
       ];
@@ -89,7 +99,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
   }
 
   Future<void> startCustomerTracking() async {
-    final pickupLat = widget.data?.pickupLat ?? 0.0; // Driver's pickup point (fixed)
+    final pickupLat =
+        widget.data?.pickupLat ?? 0.0; // Driver's pickup point (fixed)
     final pickupLng = widget.data?.pickupLng ?? 0.0;
     final customerId = widget.customerData?.userData?.id?.toString();
 
@@ -100,9 +111,12 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
 
     try {
       // Listen to customer's location from Firebase
-      _locationSubscription = _dbRef.child(customerId).onValue.listen((event) async {
+      _locationSubscription =
+          _dbRef.child(customerId).onValue.listen((event) async {
         final data = event.snapshot.value as Map?;
-        if (data == null || data['latitude'] == null || data['longitude'] == null) return;
+        if (data == null ||
+            data['latitude'] == null ||
+            data['longitude'] == null) return;
 
         final currentLat = (data['latitude'] as num).toDouble();
         final currentLng = (data['longitude'] as num).toDouble();
@@ -154,9 +168,10 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
         controller.animateCamera(CameraUpdate.newLatLng(currentLatLng));
 
         //  Calculate distance between customer and pickup
-        final pickupDistance =
-            Geolocator.distanceBetween(currentLat, currentLng, pickupLat, pickupLng);
-        customPrint('Customer distance from pickup: ${pickupDistance.toStringAsFixed(2)} m');
+        final pickupDistance = Geolocator.distanceBetween(
+            currentLat, currentLng, pickupLat, pickupLng);
+        customPrint(
+            'Customer distance from pickup: ${pickupDistance.toStringAsFixed(2)} m');
 
         if (pickupDistance <= 70) {
           //  Customer reached pickup
@@ -179,7 +194,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
         buttonTitle: AppLocalizations.of(context)!.okString,
         onTap: () async {
           context.pop();
-          await driverRideBackCubit.generatePostedRideOtp(bookingId: widget.data?.id ?? 1);
+          await driverRideBackCubit.generatePostedRideOtp(
+              bookingId: widget.data?.id ?? 1);
           showOtpDialog(
             context: context,
             borderRadius: 18,
@@ -213,9 +229,12 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
       await _locationSubscription?.cancel();
 
       // Start listening to driver’s location from Firebase
-      _locationSubscription = _dbRef.child(driverId).onValue.listen((event) async {
+      _locationSubscription =
+          _dbRef.child(driverId).onValue.listen((event) async {
         final data = event.snapshot.value as Map?;
-        if (data == null || data['latitude'] == null || data['longitude'] == null) return;
+        if (data == null ||
+            data['latitude'] == null ||
+            data['longitude'] == null) return;
 
         final driverLat = (data['latitude'] as num).toDouble();
         final driverLng = (data['longitude'] as num).toDouble();
@@ -269,8 +288,10 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
         controller.animateCamera(CameraUpdate.newLatLng(driverLatLng));
 
         // Check if driver reached the destination
-        final distance = Geolocator.distanceBetween(driverLat, driverLng, dropLat, dropLng);
-        customPrint('Driver distance to drop: ${distance.toStringAsFixed(2)} m');
+        final distance =
+            Geolocator.distanceBetween(driverLat, driverLng, dropLat, dropLng);
+        customPrint(
+            'Driver distance to drop: ${distance.toStringAsFixed(2)} m');
 
         if (distance <= 70) {
           _locationSubscription?.cancel();
@@ -294,7 +315,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
         buttonTitle: AppLocalizations.of(context)!.okString,
         onTap: () async {
           context.pop();
-          await driverRideBackCubit.generatePostedRideOtp(bookingId: widget.data?.id ?? 1);
+          await driverRideBackCubit.generatePostedRideOtp(
+              bookingId: widget.data?.id ?? 1);
           showOtpDialog(
             context: context,
             borderRadius: 18,
@@ -317,6 +339,7 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
   void initState() {
     fToast = FToast();
     fToast!.init(context);
+    loadData();
     getCurrentLocation();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       startCustomerTracking();
@@ -374,7 +397,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
                     child: CircleAvatar(
                       radius: size.width * 0.097,
                       backgroundImage: NetworkImage(
-                        widget.customerData?.userData?.profilePhotoUrl ?? sampleNetworkImage,
+                        widget.customerData?.userData?.profilePhotoUrl ??
+                            sampleNetworkImage,
                       ),
                       backgroundColor: Colors.white,
                     ),
@@ -386,7 +410,9 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
                       child: Text(
                         widget.customerData?.userData?.name ?? '',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700),
                         // textAlign: TextAlign.end,
                       ),
                     ),
@@ -397,8 +423,10 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
                       GestureDetector(
                         onTap: () {
                           makePhoneCall(
-                            fromNumber: authCubit.userDetails?.data?.mobile ?? '',
-                            toNumber: widget.customerData?.userData?.mobile ?? '',
+                            fromNumber:
+                                authCubit.userDetails?.data?.mobile ?? '',
+                            toNumber:
+                                widget.customerData?.userData?.mobile ?? '',
                             context: context,
                           );
                         },
@@ -415,11 +443,13 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
                             'senderId': widget.data?.driverId != null
                                 ? widget.data?.driverId.toString()
                                 : authCubit.userDetails?.data?.id.toString(),
-                            'receiverId': widget.customerData?.userData?.id.toString(),
+                            'receiverId':
+                                widget.customerData?.userData?.id.toString(),
                             'senderName': authCubit.userDetails?.data?.name,
                             'type': 'driver',
                             'receiverName': widget.customerData?.userData?.name,
-                            'receiverImageUrl': widget.customerData?.userData?.profilePhotoUrl,
+                            'receiverImageUrl':
+                                widget.customerData?.userData?.profilePhotoUrl,
                           });
                         },
                         child: Icon(
@@ -439,7 +469,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
       body: BlocListener(
         bloc: driverRideBackCubit,
         listener: (final context, final state) async {
-          if (state is VerifyStartRideOTPLoadingState || state is VerifyEndRideOTPLoadingState) {
+          if (state is VerifyStartRideOTPLoadingState ||
+              state is VerifyEndRideOTPLoadingState) {
             setState(() {
               loading = true;
             });
@@ -478,6 +509,15 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
               duration: 3,
             );
             await driverRideBackCubit.getDriverPostedRides();
+            context.pop();
+          }
+          if (state is RideCancellationReasonsLoadedState) {
+            rideCancellationReason =
+                state.data as RideCancellationReasonResponse?;
+          } else if (state is DriverCancelRideLoadedState) {
+            context.pop();
+            driverRideBackCubit.getDriverPostedRides();
+            Fluttertoast.showToast(msg: 'Ride cancelled');
             context.pop();
           } else if (state is ErrorState) {
             if (state.errorMessage == 'OTP not match') {
@@ -520,7 +560,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
             const SizedBox(
               height: 20,
             ),
-            CustomText(text: AppLocalizations.of(context)!.pickupLocationString),
+            CustomText(
+                text: AppLocalizations.of(context)!.pickupLocationString),
             const SizedBox(
               height: 4,
             ),
@@ -530,7 +571,8 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
             const SizedBox(
               height: 12,
             ),
-            CustomText(text: AppLocalizations.of(context)!.destinationLocationString),
+            CustomText(
+                text: AppLocalizations.of(context)!.destinationLocationString),
             const SizedBox(
               height: 4,
             ),
@@ -548,20 +590,49 @@ class _DriverRideBackTrackScreenState extends State<DriverRideBackTrackScreen> {
               height: 24,
             ),
             Expanded(
-              child: GoogleMap(
-                initialCameraPosition: _kGooglePlex,
-                markers: Set<Marker>.of(_markers ?? []),
-                mapToolbarEnabled: false,
-                myLocationEnabled: true,
-                onMapCreated: (final controller) {
-                  _controller.complete(controller);
-                },
-                polylines: polylines,
-                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                  Factory<OneSequenceGestureRecognizer>(
-                    () => EagerGestureRecognizer(),
+              child: Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: _kGooglePlex,
+                    markers: Set<Marker>.of(_markers ?? []),
+                    mapToolbarEnabled: false,
+                    myLocationEnabled: true,
+                    onMapCreated: (final controller) {
+                      _controller.complete(controller);
+                    },
+                    polylines: polylines,
+                    gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                      Factory<OneSequenceGestureRecognizer>(
+                        () => EagerGestureRecognizer(),
+                      ),
+                    },
                   ),
-                },
+                  Positioned(
+                    left: MediaQuery.of(context).size.width * 0.4,
+                    bottom: 20,
+                    child: CustomElevatedButton(
+                      name: AppLocalizations.of(context)!.cancelString,
+                      borderRadius: 5,
+                      alignment: Alignment.centerLeft,
+                      backgroundColor: Colors.red,
+                      onPressed: () {
+                        showReasonDialog(
+                          context: context,
+                          reasons: rideCancellationReason,
+                          loadingNotifier: dialogLoadingNotifier,
+                          onTap: (final reasonId) async {
+                            await driverRideBackCubit.driverCancelRide(
+                              bookingId: widget.data?.id.toString() ?? '1',
+                              bookingCancellationId: reasonId,
+                            );
+                          },
+                        );
+                      },
+                      textPadding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

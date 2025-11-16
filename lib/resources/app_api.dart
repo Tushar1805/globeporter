@@ -89,3 +89,4 @@ const String cancelRideByCustomerUrl = '$_baseUrl/cancel_driver_ride_by_user';
 const String cancelRideByDriverUrl = '$_baseUrl/cancel_driver_ride_by_driver';
 const String generateOtpPostedRideUrl = '$_baseUrl/dr_generate_otp';
 const String verifyOtpPosterRideUrl = '$_baseUrl/otp_verify_driver_ride_by_driver';
+const String endPosterRideUrl = '$_baseUrl/end_driver_ride_by_driver';

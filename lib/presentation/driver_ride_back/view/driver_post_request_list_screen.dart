@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:core/app_widgets.dart';
-import 'package:core/utils/core_utils.dart';
+import 'package:datasource/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:core/di/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +26,8 @@ class PostRequestDriverScreen extends StatefulWidget {
   const PostRequestDriverScreen({super.key});
 
   @override
-  State<PostRequestDriverScreen> createState() => _PostRequestDriverScreenState();
+  State<PostRequestDriverScreen> createState() =>
+      _PostRequestDriverScreenState();
 }
 
 class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
@@ -51,17 +52,17 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
       _loadData();
     });
 
-    _listAnimationController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _listAnimationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     _listScaleAnimation = CurvedAnimation(
       parent: _listAnimationController,
       curve: Curves.easeInOutCubicEmphasized,
     );
 
-    _notificationAnimCtrl =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    _notificationScaleAnimation =
-        CurvedAnimation(parent: _notificationAnimCtrl, curve: Curves.easeOutBack);
+    _notificationAnimCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    _notificationScaleAnimation = CurvedAnimation(
+        parent: _notificationAnimCtrl, curve: Curves.easeOutBack);
   }
 
   Future<void> _loadData() async {
@@ -87,7 +88,8 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
       floatingActionButton: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           padding: const EdgeInsets.all(14),
         ),
         onPressed: () => context.pushNamed(newRideScreen),
@@ -97,7 +99,10 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
             const Icon(Icons.add, color: whiteColor, size: 24),
             const SizedBox(width: 6),
             Text(locale.postRequestString,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: whiteColor)),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: whiteColor)),
           ],
         ),
       ),
@@ -142,7 +147,8 @@ class _PostRequestDriverScreenState extends State<PostRequestDriverScreen>
           }
         },
         builder: (context, state) {
-          if (state is MyPostedRidesLoadingState || state is NotificationUnreadCountLoadingState) {
+          if (state is MyPostedRidesLoadingState ||
+              state is NotificationUnreadCountLoadingState) {
             return const Center(child: LoadingWithoutText());
           }
 
@@ -220,7 +226,8 @@ class NotificationIcon extends StatelessWidget {
           const SizedBox(
             height: 40,
             width: 40,
-            child: Icon(Icons.notifications_active_outlined, color: Colors.white, size: 30),
+            child: Icon(Icons.notifications_active_outlined,
+                color: Colors.white, size: 30),
           ),
           Positioned(
             top: 0,
@@ -291,7 +298,6 @@ class RideTile extends StatelessWidget {
     final theme = Theme.of(context).textTheme;
 
     final acceptedUsers = ride.acceptedDriverBookingRideStatus ?? [];
-    customPrint('Accepted Rides: $acceptedUsers');
 
     return ScaleTransition(
       scale: animation,
@@ -310,12 +316,14 @@ class RideTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(locale.pickupLocationString,
-                      style: theme.bodyMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                      style: theme.bodyMedium?.copyWith(
+                          fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
                   AddressRowWidget(address: ride.pickupAddress),
                   const SizedBox(height: 8),
                   Text(locale.destinationLocationString,
-                      style: theme.bodyMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                      style: theme.bodyMedium?.copyWith(
+                          fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
                   AddressRowWidget(address: ride.dropAddress),
                   const SizedBox(height: 8),
@@ -325,7 +333,8 @@ class RideTile extends StatelessWidget {
                   ? [
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: Text(locale.noUsersAcceptedYetString, style: theme.bodyMedium),
+                        child: Text(locale.noUsersAcceptedYetString,
+                            style: theme.bodyMedium),
                       ),
                     ]
                   : acceptedUsers
@@ -375,8 +384,11 @@ class AcceptedUserCard extends StatelessWidget {
             CircleAvatar(
               radius: 24,
               backgroundColor: primaryColor,
-              backgroundImage: profileUrl.isNotEmpty ? NetworkImage(profileUrl) : null,
-              child: profileUrl.isEmpty ? const Icon(Icons.person, color: Colors.white) : null,
+              backgroundImage:
+                  profileUrl.isNotEmpty ? NetworkImage(profileUrl) : null,
+              child: profileUrl.isEmpty
+                  ? const Icon(Icons.person, color: Colors.white)
+                  : null,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -384,7 +396,8 @@ class AcceptedUserCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(user.userName ?? 'Unknown User',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15)),
                   Text(user.userData?.email ?? '',
                       style: const TextStyle(fontSize: 13, color: Colors.grey)),
                 ],
@@ -433,7 +446,8 @@ class _ActionButtons extends StatelessWidget {
         icon: const Icon(Icons.message, color: primaryColor),
         onPressed: () {
           context.pushNamed(chatScreen, extra: {
-            'senderId': ride.driverId?.toString() ?? authCubit.userDetails?.data?.id.toString(),
+            'senderId': ride.driverId?.toString() ??
+                authCubit.userDetails?.data?.id.toString(),
             'receiverId': user.userId.toString(),
             'senderName': authCubit.userDetails?.data?.name,
             'type': 'driver',
@@ -454,8 +468,10 @@ class _ActionButtons extends StatelessWidget {
               });
               driverRideBackCubit.getDriverPostedRides();
             } else {
-              Fluttertoast.showToast(msg: 'Something wen');
+              Fluttertoast.showToast(msg: 'Something went wrong');
             }
+          } else if (state is ErrorState) {
+            Fluttertoast.showToast(msg: state.errorMessage);
           }
         },
         child: IconButton(
@@ -469,7 +485,8 @@ class _ActionButtons extends StatelessWidget {
                 : showCustomDialog(
                     context: context,
                     borderRadius: 18,
-                    title: '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
+                    title:
+                        '₹100 ${AppLocalizations.of(context)!.deductionMessageString}',
                     onTapYes: () async {
                       context.pop();
                       await driverRideBackCubit.driverAcceptRejectRide(

@@ -51,7 +51,8 @@ class DriverRideBackRepository extends BaseRepository {
     required final String radius,
     final String? dropLat,
     final String? dropLng,
-    final String? price,
+    final String? priceFrom,
+    final String? priceTo,
     final String? orderByColumn,
     final String? orderByType,
   }) async {
@@ -66,7 +67,8 @@ class DriverRideBackRepository extends BaseRepository {
         "longitude": currentLng,
         "drop_lat": dropLat ?? '', //28.586643805797078 -> drop location
         "drop_lng": dropLng ?? '', //77.28683285415173
-        "price": price ?? '',
+        "price_from": priceFrom ?? '',
+        "price_to": priceTo ?? '',
         "order_by_col": orderByColumn ?? '', //price
         "order_by_type": orderByType ?? '', // only asc or desc
       },
@@ -245,7 +247,7 @@ class DriverRideBackRepository extends BaseRepository {
   }) async {
     final responseData = await fetchData(
       apiCallType: ApiCallType.post,
-      apiUrl: endRideDriverUrl,
+      apiUrl: endPosterRideUrl,
       accessToken: token,
       requestModel: {
         'lang': lang,

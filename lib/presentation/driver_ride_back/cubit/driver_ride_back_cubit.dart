@@ -46,7 +46,8 @@ class DriverRideBackCubit extends BaseCubit {
       customPrint('Data: ${response.toString()}');
       if (response['status_code'] == 200) {
         getDriverPostedRides();
-        findCustomer(bookingId: response['booking_id'].toString(), distance: "10");
+        findCustomer(
+            bookingId: response['booking_id'].toString(), distance: "10");
       }
 
       emit(PlaceDriverRideLoadedState(data: response));
@@ -59,7 +60,8 @@ class DriverRideBackCubit extends BaseCubit {
     try {
       emit(VehicleTypesLoadingState('Loading Vehicle types'));
       final lang = await storage.safeRead(languageCodeKey);
-      final response = await _driverRideBackRepository.getVehicleType(lang: lang ?? 'en');
+      final response =
+          await _driverRideBackRepository.getVehicleType(lang: lang ?? 'en');
 
       emit(VehicleTypesLoadedState(data: response));
     } catch (e) {
@@ -89,12 +91,14 @@ class DriverRideBackCubit extends BaseCubit {
     required final String radius,
     final String? dropLat,
     final String? dropLng,
-    final String? price,
+    final String? priceFrom,
+    final String? priceTo,
     final String? orderByColumn,
     final String? orderByType,
   }) async {
     try {
-      emit(CustomerPostedRidesLoadingState('Loading posted rides list for customer...'));
+      emit(CustomerPostedRidesLoadingState(
+          'Loading posted rides list for customer...'));
       final lang = await storage.safeRead(languageCodeKey);
       final token = await storage.safeRead(accessTokenKey);
       final response = await _driverRideBackRepository.getCustomerPostedRides(
@@ -105,7 +109,8 @@ class DriverRideBackCubit extends BaseCubit {
         currentLng: currentLng,
         dropLat: dropLat,
         dropLng: dropLng,
-        price: price,
+        priceFrom: priceFrom,
+        priceTo: priceTo,
         orderByColumn: orderByColumn,
         orderByType: orderByType,
       );
@@ -183,7 +188,8 @@ class DriverRideBackCubit extends BaseCubit {
     try {
       emit(RideCancellationReasonsLoadingState('Loading Cancellation Reasons'));
       final lang = await storage.safeRead(languageCodeKey);
-      final response = await _driverRideBackRepository.getRideCancellationReasons(
+      final response =
+          await _driverRideBackRepository.getRideCancellationReasons(
         lang: lang ?? 'en',
         userType: userType,
       );
@@ -221,7 +227,8 @@ class DriverRideBackCubit extends BaseCubit {
   Future<void> findCustomer(
       {required final String bookingId, required final String distance}) async {
     try {
-      emit(FindingCustomerLoadingState('Finding customers for Posted Rides...'));
+      emit(
+          FindingCustomerLoadingState('Finding customers for Posted Rides...'));
       final lang = await storage.safeRead(languageCodeKey);
       final token = await storage.safeRead(accessTokenKey);
       final response = await _driverRideBackRepository.findCustomer(
@@ -242,7 +249,7 @@ class DriverRideBackCubit extends BaseCubit {
   }) async {
     try {
       emit(GenerateOTPLoadingState('Loading'));
-      final dbRef = FirebaseDatabase.instance.ref("ride_otp/$bookingId");
+
       final lang = await storage.safeRead(languageCodeKey);
       final accessToken = await storage.safeRead(accessTokenKey);
       final response = await _driverRideBackRepository.generatePostedRideOtp(
@@ -250,6 +257,10 @@ class DriverRideBackCubit extends BaseCubit {
         token: accessToken ?? '',
         bookingId: bookingId,
       );
+
+      final dbRef = FirebaseDatabase.instance.ref("ride_otp/$bookingId");
+
+      customPrint('OTP: ${response['otp']}');
 
       if (response['status_code'] == 200) {
         await dbRef.update({
@@ -271,7 +282,8 @@ class DriverRideBackCubit extends BaseCubit {
       emit(VerifyStartRideOTPLoadingState('Loading'));
       final lang = await storage.safeRead(languageCodeKey);
       final accessToken = await storage.safeRead(accessTokenKey);
-      final response = await _driverRideBackRepository.verifyOtpPostedRideByDriver(
+      final response =
+          await _driverRideBackRepository.verifyOtpPostedRideByDriver(
         lang: lang ?? 'en',
         token: accessToken ?? '',
         bookingId: bookingId,
@@ -296,7 +308,8 @@ class DriverRideBackCubit extends BaseCubit {
       emit(VerifyEndRideOTPLoadingState('Loading'));
       final lang = await storage.safeRead(languageCodeKey);
       final accessToken = await storage.safeRead(accessTokenKey);
-      final response = await _driverRideBackRepository.verifyOtpPostedRideByDriver(
+      final response =
+          await _driverRideBackRepository.verifyOtpPostedRideByDriver(
         lang: lang ?? 'en',
         token: accessToken ?? '',
         bookingId: bookingId,
