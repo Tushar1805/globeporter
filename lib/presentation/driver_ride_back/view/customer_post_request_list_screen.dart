@@ -32,7 +32,8 @@ class PostRequestCustomerScreen extends StatefulWidget {
   const PostRequestCustomerScreen({super.key});
 
   @override
-  State<PostRequestCustomerScreen> createState() => _PostRequestCustomerScreenState();
+  State<PostRequestCustomerScreen> createState() =>
+      _PostRequestCustomerScreenState();
 }
 
 class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
@@ -53,7 +54,7 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
   final storage = sl<SecureStorage>();
   Map<String, dynamic> appliedFilters = {};
   Map<String, dynamic>? selectedLocation;
-  RangeValues priceRange = const RangeValues(100, 2000);
+  RangeValues priceRange = const RangeValues(0, 2000);
   double distance = 10;
   String orderBy = 'asc';
   String selectedAddress = 'Select Drop Location';
@@ -74,18 +75,19 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
     fToast!.init(context);
     loadData();
 
-    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
-    _scaleAnimation =
-        CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
+    _scaleAnimation = CurvedAnimation(
+        parent: _animationController, curve: Curves.easeInOutCubicEmphasized);
 
     _notificationAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
 
-    _notificationScaleAnimation =
-        CurvedAnimation(parent: _notificationAnimationController, curve: Curves.easeOutBack);
+    _notificationScaleAnimation = CurvedAnimation(
+        parent: _notificationAnimationController, curve: Curves.easeOutBack);
     super.initState();
   }
 
@@ -116,8 +118,10 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
       radius: distance.toString(),
       currentLat: locationCubit.position?.latitude.toString() ?? '',
       currentLng: locationCubit.position?.longitude.toString() ?? '',
-      dropLat: selectedLocation != null ? selectedLocation!['lat'].toString() : '',
-      dropLng: selectedLocation != null ? selectedLocation!['lng'].toString() : '',
+      dropLat:
+          selectedLocation != null ? selectedLocation!['lat'].toString() : '',
+      dropLng:
+          selectedLocation != null ? selectedLocation!['lng'].toString() : '',
       price: appliedFilters['Price'] != null ? priceRange.end.toString() : '',
       orderByColumn: appliedFilters['Price'] != null ? 'price' : '',
       orderByType: appliedFilters['Order By'] ?? 'asc',
@@ -217,9 +221,11 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
         bloc: driverRideBackCubit,
         listener: (final context, final state) {
           if (state is RideCancellationReasonsLoadedState) {
-            rideCancellationReason = state.data as RideCancellationReasonResponse?;
+            rideCancellationReason =
+                state.data as RideCancellationReasonResponse?;
           } else if (state is CustomerPostedRidesLoadedState) {
-            customerPostedRidesListModel = state.data as CustomerPostedRidesListModel?;
+            customerPostedRidesListModel =
+                state.data as CustomerPostedRidesListModel?;
             _animationController.forward(from: 0);
           } else if (state is CustomerAcceptRejectLoadedState) {
             final data = state.data;
@@ -254,16 +260,19 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       'Filters',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.tune_outlined, color: Colors.black87),
+                      icon: const Icon(Icons.tune_outlined,
+                          color: Colors.black87),
                       onPressed: () => _showFilterBottomSheet(context),
                     ),
                   ],
@@ -280,7 +289,8 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                       children: appliedFilters.entries.map((entry) {
                         return Container(
                           margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(
                             color: primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(20),
@@ -295,7 +305,8 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                               const SizedBox(width: 6),
                               GestureDetector(
                                 onTap: () {
-                                  setState(() => appliedFilters.remove(entry.key));
+                                  setState(
+                                      () => appliedFilters.remove(entry.key));
                                   _applyFilters();
                                 },
                                 child: const Icon(Icons.close, size: 16),
@@ -332,17 +343,21 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                     )
                   : Expanded(
                       child: ListView.builder(
-                        itemCount: customerPostedRidesListModel?.data?.length ?? 0,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        itemCount:
+                            customerPostedRidesListModel?.data?.length ?? 0,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
                         itemBuilder: (final context, final index) {
-                          final ride = customerPostedRidesListModel?.data?[index];
+                          final ride =
+                              customerPostedRidesListModel?.data?[index];
                           final driverData = ride?.driverData;
                           return ScaleTransition(
                             scale: _scaleAnimation,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
                                 decoration: BoxDecoration(
                                   color: secondaryColor,
                                   borderRadius: BorderRadius.all(
@@ -356,8 +371,12 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                       height: 8,
                                     ),
                                     Text(
-                                      AppLocalizations.of(context)!.pickupLocationString,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      AppLocalizations.of(context)!
+                                          .pickupLocationString,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -365,13 +384,18 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                     const SizedBox(
                                       height: 4,
                                     ),
-                                    AddressRowWidget(address: ride?.pickupAddress),
+                                    AddressRowWidget(
+                                        address: ride?.pickupAddress),
                                     const SizedBox(
                                       height: 8,
                                     ),
                                     Text(
-                                      AppLocalizations.of(context)!.destinationLocationString,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      AppLocalizations.of(context)!
+                                          .destinationLocationString,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -379,22 +403,30 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                     const SizedBox(
                                       height: 4,
                                     ),
-                                    AddressRowWidget(address: ride?.dropAddress),
+                                    AddressRowWidget(
+                                        address: ride?.dropAddress),
                                     const SizedBox(
                                       height: 8,
                                     ),
                                     Row(
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!.priceString,
-                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          AppLocalizations.of(context)!
+                                              .priceString,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                         ),
                                         Text(
                                           ": ₹${ride?.price?.toString()}",
-                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
                                                 color: primaryColor,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 20,
@@ -409,82 +441,123 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                                 horizontal: 12, vertical: 6),
                                             color: Colors.grey.shade100,
                                             shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(12)),
+                                                borderRadius:
+                                                    BorderRadius.circular(12)),
                                             child: Padding(
                                               padding: const EdgeInsets.all(12),
                                               child: Row(
                                                 children: [
                                                   CircleAvatar(
                                                     radius: 24,
-                                                    backgroundColor: primaryColor,
-                                                    backgroundImage:
-                                                        driverData?.profilePhotoUrl != null &&
-                                                                (driverData?.profilePhotoUrl
-                                                                        ?.isNotEmpty ??
-                                                                    false)
-                                                            ? NetworkImage(
-                                                                driverData?.profilePhotoUrl ?? '')
-                                                            : null,
-                                                    child: (driverData?.profilePhotoUrl == null ||
-                                                            (driverData?.profilePhotoUrl?.isEmpty ??
+                                                    backgroundColor:
+                                                        primaryColor,
+                                                    backgroundImage: driverData
+                                                                    ?.profilePhotoUrl !=
+                                                                null &&
+                                                            (driverData
+                                                                    ?.profilePhotoUrl
+                                                                    ?.isNotEmpty ??
+                                                                false)
+                                                        ? NetworkImage(driverData
+                                                                ?.profilePhotoUrl ??
+                                                            '')
+                                                        : null,
+                                                    child: (driverData
+                                                                    ?.profilePhotoUrl ==
+                                                                null ||
+                                                            (driverData
+                                                                    ?.profilePhotoUrl
+                                                                    ?.isEmpty ??
                                                                 false))
-                                                        ? const Icon(Icons.person,
+                                                        ? const Icon(
+                                                            Icons.person,
                                                             color: Colors.white)
                                                         : null,
                                                   ),
                                                   const SizedBox(width: 12),
                                                   Expanded(
                                                     child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
-                                                          driverData?.name ?? 'Jon Doe',
-                                                          style: const TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 15),
+                                                          driverData?.name ??
+                                                              'Jon Doe',
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 15),
                                                         ),
                                                         Text(
-                                                          driverData?.email ?? '',
-                                                          style: const TextStyle(
-                                                              fontSize: 13, color: Colors.grey),
+                                                          driverData?.email ??
+                                                              '',
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Colors
+                                                                      .grey),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
                                                   IconButton(
-                                                    icon:
-                                                        const Icon(Icons.call, color: primaryColor),
+                                                    icon: const Icon(Icons.call,
+                                                        color: primaryColor),
                                                     onPressed: () {
                                                       makePhoneCall(
                                                         // Customer number
-                                                        fromNumber:
-                                                            authCubit.userDetails?.data?.mobile ??
-                                                                '',
+                                                        fromNumber: authCubit
+                                                                .userDetails
+                                                                ?.data
+                                                                ?.mobile ??
+                                                            '',
                                                         // Driver Number
-                                                        toNumber: driverData?.mobile ?? '',
+                                                        toNumber: driverData
+                                                                ?.mobile ??
+                                                            '',
                                                         context: context,
                                                       );
                                                     },
                                                   ),
                                                   IconButton(
-                                                    icon: const Icon(Icons.message,
+                                                    icon: const Icon(
+                                                        Icons.message,
                                                         color: primaryColor),
                                                     onPressed: () {
-                                                      context.pushNamed(chatScreen, extra: {
-                                                        // customer
-                                                        'senderId': ride?.driverId != null
-                                                            ? ride?.driverId.toString()
-                                                            : authCubit.userDetails?.data?.id
-                                                                .toString(),
-                                                        // driver
-                                                        'receiverId': driverData?.id.toString(),
-                                                        'senderName':
-                                                            authCubit.userDetails?.data?.name,
-                                                        'type': 'customer',
-                                                        'receiverName': driverData?.name,
-                                                        'receiverImageUrl':
-                                                            driverData?.profilePhotoUrl,
-                                                      });
+                                                      context.pushNamed(
+                                                          chatScreen,
+                                                          extra: {
+                                                            // customer
+                                                            'senderId': ride
+                                                                        ?.driverId !=
+                                                                    null
+                                                                ? ride?.driverId
+                                                                    .toString()
+                                                                : authCubit
+                                                                    .userDetails
+                                                                    ?.data
+                                                                    ?.id
+                                                                    .toString(),
+                                                            // driver
+                                                            'receiverId':
+                                                                driverData?.id
+                                                                    .toString(),
+                                                            'senderName':
+                                                                authCubit
+                                                                    .userDetails
+                                                                    ?.data
+                                                                    ?.name,
+                                                            'type': 'customer',
+                                                            'receiverName':
+                                                                driverData
+                                                                    ?.name,
+                                                            'receiverImageUrl':
+                                                                driverData
+                                                                    ?.profilePhotoUrl,
+                                                          });
                                                     },
                                                   ),
                                                 ],
@@ -496,28 +569,40 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                     ),
                                     ride?.isCustomerAcceptRide == 1
                                         ? Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               CustomElevatedButton(
-                                                name: AppLocalizations.of(context)!.cancelString,
+                                                name: AppLocalizations.of(
+                                                        context)!
+                                                    .cancelString,
                                                 borderRadius: 5,
                                                 alignment: Alignment.centerLeft,
                                                 backgroundColor: Colors.red,
                                                 onPressed: () {
                                                   showReasonDialog(
                                                     context: context,
-                                                    reasons: rideCancellationReason,
-                                                    loadingNotifier: dialogLoadingNotifier,
-                                                    onTap: (final reasonId) async {
-                                                      await driverRideBackCubit.customerCancelRide(
-                                                        bookingId: ride?.id.toString() ?? '1',
-                                                        bookingCancellationId: reasonId,
+                                                    reasons:
+                                                        rideCancellationReason,
+                                                    loadingNotifier:
+                                                        dialogLoadingNotifier,
+                                                    onTap:
+                                                        (final reasonId) async {
+                                                      await driverRideBackCubit
+                                                          .customerCancelRide(
+                                                        bookingId: ride?.id
+                                                                .toString() ??
+                                                            '1',
+                                                        bookingCancellationId:
+                                                            reasonId,
                                                       );
                                                     },
                                                   );
                                                 },
-                                                textPadding: const EdgeInsets.symmetric(
-                                                    horizontal: 10, vertical: 4),
+                                                textPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
                                               ),
                                               SizedBox(
                                                 width: size.width * 0.06,
@@ -525,44 +610,58 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                               ride?.isBookingActive == 0
                                                   ? SizedBox.shrink()
                                                   : CustomElevatedButton(
-                                                      name:
-                                                          AppLocalizations.of(context)!.trackString,
+                                                      name: AppLocalizations.of(
+                                                              context)!
+                                                          .trackString,
                                                       borderRadius: 5,
-                                                      alignment: Alignment.centerLeft,
+                                                      alignment:
+                                                          Alignment.centerLeft,
                                                       onPressed: () async {
                                                         await startCustomerTracking(
                                                           customerId: authCubit
-                                                                  .userDetails?.data?.id
+                                                                  .userDetails
+                                                                  ?.data
+                                                                  ?.id
                                                                   ?.toString() ??
                                                               '1',
                                                         ).then((_) {
-                                                          context.pushNamed(customerSideTrackScreen,
+                                                          context.pushNamed(
+                                                              customerSideTrackScreen,
                                                               extra: {
                                                                 'data': ride,
                                                               });
                                                         });
                                                       },
-                                                      textPadding: const EdgeInsets.symmetric(
-                                                          horizontal: 10, vertical: 4),
+                                                      textPadding:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 10,
+                                                              vertical: 4),
                                                     )
                                             ],
                                           )
                                         : Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               CustomElevatedButton(
-                                                name: AppLocalizations.of(context)!.acceptString,
+                                                name: AppLocalizations.of(
+                                                        context)!
+                                                    .acceptString,
                                                 borderRadius: 5,
                                                 alignment: Alignment.centerLeft,
                                                 onPressed: () {
                                                   showCustomDialog(
                                                     context: context,
                                                     borderRadius: 18,
-                                                    title:
-                                                        locale.areYouSureYouWantToAcceptRideString,
+                                                    title: locale
+                                                        .areYouSureYouWantToAcceptRideString,
                                                     onTapYes: () async {
-                                                      driverRideBackCubit.customerAcceptRejectRide(
-                                                        bookingId: ride?.id.toString() ?? '1',
+                                                      driverRideBackCubit
+                                                          .customerAcceptRejectRide(
+                                                        bookingId: ride?.id
+                                                                .toString() ??
+                                                            '1',
                                                         status: 'Accept',
                                                       );
                                                       context.pop();
@@ -572,14 +671,18 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                                     },
                                                   );
                                                 },
-                                                textPadding: const EdgeInsets.symmetric(
-                                                    horizontal: 10, vertical: 4),
+                                                textPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
                                               ),
                                               SizedBox(
                                                 width: size.width * 0.06,
                                               ),
                                               CustomElevatedButton(
-                                                name: AppLocalizations.of(context)!.declineString,
+                                                name: AppLocalizations.of(
+                                                        context)!
+                                                    .declineString,
                                                 borderRadius: 5,
                                                 alignment: Alignment.centerLeft,
                                                 backgroundColor: Colors.red,
@@ -587,11 +690,14 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                                   showCustomDialog(
                                                     context: context,
                                                     borderRadius: 18,
-                                                    title:
-                                                        locale.areYouSureYouWantToRejectRideString,
+                                                    title: locale
+                                                        .areYouSureYouWantToRejectRideString,
                                                     onTapYes: () async {
-                                                      driverRideBackCubit.customerAcceptRejectRide(
-                                                        bookingId: ride?.id.toString() ?? '1',
+                                                      driverRideBackCubit
+                                                          .customerAcceptRejectRide(
+                                                        bookingId: ride?.id
+                                                                .toString() ??
+                                                            '1',
                                                         status: 'Reject',
                                                       );
                                                       context.pop();
@@ -601,8 +707,10 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                                     },
                                                   );
                                                 },
-                                                textPadding: const EdgeInsets.symmetric(
-                                                    horizontal: 10, vertical: 4),
+                                                textPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
                                               )
                                             ],
                                           )
@@ -640,7 +748,8 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                     const Center(
                       child: Text(
                         'Filter Options',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -652,7 +761,8 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: () async {
                         final data =
-                            await context.pushNamed(locationPickerScreen) as Map<String, dynamic>?;
+                            await context.pushNamed(locationPickerScreen)
+                                as Map<String, dynamic>?;
 
                         if (data != null && data['loc'] != null) {
                           // ✅ Update inside the bottom sheet (temporary UI)
@@ -678,7 +788,7 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                     // Price range
                     const Text('Price Range'),
                     RangeSlider(
-                      min: 100,
+                      min: 0,
                       max: 2000,
                       divisions: 19,
                       values: priceRange,
@@ -714,14 +824,16 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                           selectedColor: primaryColor.withAlpha(200),
                           label: const Text('Ascending'),
                           selected: orderBy == 'asc',
-                          onSelected: (_) => setModalState(() => orderBy = 'asc'),
+                          onSelected: (_) =>
+                              setModalState(() => orderBy = 'asc'),
                         ),
                         const SizedBox(width: 10),
                         ChoiceChip(
                           selectedColor: primaryColor.withAlpha(200),
                           label: const Text('Descending'),
                           selected: orderBy == 'desc',
-                          onSelected: (_) => setModalState(() => orderBy = 'desc'),
+                          onSelected: (_) =>
+                              setModalState(() => orderBy = 'desc'),
                         ),
                       ],
                     ),
@@ -744,7 +856,8 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                         _applyFilters();
                       },
                       nameSize: 20,
-                      textPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      textPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
                     ),
                   ],
                 ),
