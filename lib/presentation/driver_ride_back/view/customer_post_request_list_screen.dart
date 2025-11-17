@@ -536,12 +536,8 @@ class _PostRequestCustomerScreenState extends State<PostRequestCustomerScreen>
                                                           chatScreen,
                                                           extra: {
                                                             // customer
-                                                            'senderId': ride
-                                                                        ?.driverId !=
-                                                                    null
-                                                                ? ride?.driverId
-                                                                    .toString()
-                                                                : authCubit
+                                                            'senderId':
+                                                                authCubit
                                                                     .userDetails
                                                                     ?.data
                                                                     ?.id
